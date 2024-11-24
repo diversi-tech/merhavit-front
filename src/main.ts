@@ -1,6 +1,13 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { AppComponent } from './app/app.component';
+import { importProvidersFrom } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { AppComponent } from './app/app.component'; // קומפוננטת הבסיס, מכילה את <router-outlet>
+import { routes } from './app/app.routes';
+import { LoginComponent } from './app/components/Users/login';
 
-bootstrapApplication(AppComponent, appConfig)
+bootstrapApplication(AppComponent, {
+  providers: [
+    importProvidersFrom(RouterModule.forRoot(routes)) // הגדרת הנתיבים
+  ],
+})
   .catch((err) => console.error(err));
