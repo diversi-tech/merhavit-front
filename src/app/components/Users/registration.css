@@ -1,11 +1,12 @@
+/* עיצוב כללי */
 body {
-  font-family: 'Roboto', sans-serif; 
+  font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f9f9f9;
 }
 
-.login-container {
+.registration-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,39 +14,33 @@ body {
   background-color: #f9f9f9;
 }
 
-.login-form {
+.registration-form {
   background-color: #ffffff;
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
-  text-align: center;
+  text-align: right; /* יישור לימין */
+  direction: rtl; /* הגדרת כיוון לימין לשמאל */
 }
 
-h1.greeting {
-  font-family: 'Roboto', sans-serif; 
+.registration-form h1 {
+  font-family: 'Roboto', sans-serif;
   font-size: 24px;
   margin-bottom: 20px;
   color: #333;
+  text-align: center;
 }
 
-.input-group {
-  margin-bottom: 20px;
-  text-align: right; 
-  direction: rtl; 
-}
-
-.input-group label {
-  font-family: 'Roboto', sans-serif; /* או 'Open Sans' */
-  display: inline-block;
+.registration-form label {
   font-size: 14px;
   color: #666;
   margin-bottom: 8px;
+  display: block;
 }
 
-.input-group input {
-  font-family: 'Open Sans', sans-serif; /* או 'Open Sans' */
+.registration-form input {
   width: 100%;
   padding: 10px;
   font-size: 16px;
@@ -53,13 +48,14 @@ h1.greeting {
   border-radius: 5px;
   box-sizing: border-box;
   text-align: right; /* טקסט מיושר לימין */
+  margin-bottom: 20px;
 }
 
-.input-group input::placeholder {
-  color: #bbb; /* צבע חלש לטקסט שבתוך השדה */
+.registration-form input::placeholder {
+  color: #bbb; /* צבע לטקסט בתוך שדות הקלט */
 }
 
-.submit-btn {
+.submit-button {
   width: 100%;
   padding: 12px;
   font-size: 16px;
@@ -71,10 +67,11 @@ h1.greeting {
   transition: background-color 0.3s;
 }
 
-.submit-btn:hover {
+.submit-button:hover {
   background-color: #218838;
 }
 
+/* עיצוב טקסט קישורים בתחתית הטופס */
 .footer {
   text-align: center;
   margin-top: 15px;
@@ -92,4 +89,11 @@ h1.greeting {
 
 .register-link a:hover {
   text-decoration: underline;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin: -15px 0 10px 0; /* מקטין את המרווח מעל ההודעה */
+  text-align: right;
 }

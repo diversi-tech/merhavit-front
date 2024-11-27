@@ -1,27 +1,56 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ApiService } from '../../api.service'; // חיבור ל־ApiService
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
-  standalone: true, // הוספת הגדרה זו אם זו קומפוננטה עצמאית
-  imports: [CommonModule, FormsModule], // ייבוא מודולים נדרשים
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrls: ['./login.css'],
 })
 export class LoginComponent {
-  //משתנים שמתחברים אל HTML כך שזה TWOBINDING
-  phone: string = ''; 
-  id: string = ''; 
+  identity: string = '';
+  currentStep: number = 1; 
 
-  constructor(private router: Router) {} // הוספת Router
+  constructor(private apiService: ApiService, private router: Router) {}
 
-  onSubmit() {
-    console.log('Phone:', this.phone); 
-    console.log('ID:', this.id); 
+  nextStep() {
+    if (this.currentStep === 2) {
+      if (!this.identity) {
+        alert('אנא הכנס תעודת זהות');
+        return;
+      }
+      this.verifyIdentity(); // בדיקת תעודת הזהות מול השרת
+    } else {
+      this.currentStep++;
+    }
   }
-  goToRegister() {
-    this.router.navigate(['/register']); // מעביר את המשתמש לעמוד הרישום
+  // חזרה להתחלה
+  restart() {
+    this.currentStep = 1;
+    this.identity = '';
+  }
+
+  verifyIdentity() {
+    this.apiService.Read(`/users/${this.identity}`).subscribe({
+      next: (response) => {
+        if (response?.isRegistered) {
+          this.currentStep++;
+        } else {
+          alert('משתמש לא קיים, אנא עבור לרישום');
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        alert('שגיאה בתקשורת עם השרת');
+      },
+    });
+  }
+
+  navigateToRegistration() {
+    this.router.navigate(['/registration']); 
   }
 }
