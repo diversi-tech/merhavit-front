@@ -11,5 +11,5 @@ import { MatDialogModule } from '@angular/material/dialog';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'Merhavit-front-end';
+  title = 'routing-app';
 }
