@@ -62,6 +62,12 @@
       <small *ngIf="registrationForm.get('email')?.errors?.['email']">כתובת מייל לא תקינה</small>
     </div>
 
+    <label>סיסמה</label>
+    <input formControlName="password" type="text" placeholder="123456789" />
+    <div *ngIf="registrationForm.get('password')?.touched && registrationForm.get('password')?.invalid" class="error-message">
+      <small>שדה חובה</small>
+    </div>
+
     <label>כיתה</label>
     <input formControlName="class" type="text" placeholder="כיתה" />
     <div *ngIf="registrationForm.get('class')?.touched && registrationForm.get('class')?.invalid" class="error-message">
