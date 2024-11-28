@@ -1,0 +1,35 @@
+<div class="user-management-container">
+  <table class="user-table">
+    <thead>
+      <tr>
+        <th>שם</th>
+        <th>תמונה</th>
+        <th>קבוצות</th>
+        <th>תפקיד</th>
+        <th>טלפון</th>
+        <th>פלאפון</th>
+        <th>עיר</th>
+        <th>ערך</th>
+        <th>ת.ז.</th>
+        <th>פעולות</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.fullName || user.name }}</td>
+        <td><img [src]="user.image" alt="User image" class="user-image"></td>
+        <td>{{ user.groups || 'N/A' }}</td>
+        <td>{{ user.userType || 'N/A' }}</td>
+        <td>{{ user.phoneNumber || 'N/A' }}</td>
+        <td>{{ user.phoneNumber || 'N/A' }}</td>
+        <td>{{ user.address || 'N/A' }}</td>
+        <td>{{ user.specialization || 'N/A' }}</td>
+        <td>{{ user.idNumber || 'N/A' }}</td>
+        <td>
+          <button class="action-button" (click)="editUser(user)">ערוך</button>
+          <button class="action-button" (click)="deleteUser(user)">מחק</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

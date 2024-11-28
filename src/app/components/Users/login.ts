@@ -25,9 +25,11 @@ export class LoginComponent {
     this.apiService.Post('/users/login', loginData).subscribe({
       next: (response) => {
         // Store the token, for example, in localStorage
+        console.log(response);
+        
         localStorage.setItem('access_token', response.access_token);
         console.log('Login successful');
-        this.router.navigate(['/dashboard']); // Redirect to the dashboard or home page
+        this.router.navigate(['']); // Redirect to the dashboard or home page
       },
       error: (err) => {
         console.error('Login failed', err);
