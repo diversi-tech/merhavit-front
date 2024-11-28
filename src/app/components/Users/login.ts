@@ -1,31 +1,41 @@
-import { CommonModule } from '@angular/common';
-import { HttpClientJsonpModule } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ApiService } from '../../api.service';
 
 @Component({
   selector: 'app-login',
-  standalone: true, // הקומפוננטה עצמאית
-  imports: [CommonModule, FormsModule,ReactiveFormsModule], // ייבוא המודולים הנדרשים
   templateUrl: './login.html',
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   styleUrls: ['./login.css'],
 })
 export class LoginComponent {
-  // משתנים לקישור דו-כיווני
-  phone: string = ''; 
   id: string = ''; 
+  password: string = ''; 
+  email: string = ''; 
 
-  constructor(private router: Router) {} // הזרקת Router
+  constructor(private router: Router, private apiService: ApiService) {}
 
-  // פונקציה שתופעל בעת שליחת הטופס
   onSubmit() {
-    console.log('Phone:', this.phone); 
-    console.log('ID:', this.id); 
+    const loginData = { idNumber: this.id, password: this.password }; // Prepare login data
+
+    // Send the login request to the server
+    this.apiService.Post('/users/login', loginData).subscribe({
+      next: (response) => {
+        // Store the token, for example, in localStorage
+        localStorage.setItem('access_token', response.access_token);
+        console.log('Login successful');
+        this.router.navigate(['/dashboard']); // Redirect to the dashboard or home page
+      },
+      error: (err) => {
+        console.error('Login failed', err);
+      }
+    });
   }
 
-  // פונקציה לניווט לעמוד ההרשמה
   goToRegister() {
-    this.router.navigate(['/register']); // ניווט לנתיב /register
+    this.router.navigate(['/registration']);
   }
 }
