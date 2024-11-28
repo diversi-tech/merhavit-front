@@ -18,7 +18,7 @@ export class PersonalDetailsComponent implements OnInit {
     address: '',
     phoneNumber: '',
     email: '',
-    password: '',
+    // password: '',
     class: '',
     specialization: '',
     assignedSeminaryId: '',
@@ -46,7 +46,8 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   onSubmit() {
-    this.apiService.Put('/update-user', this.user).subscribe(
+    console.log("this.user", this.user)
+    this.apiService.Put('/users/update-user', this.user).subscribe(
       (response) => {
         alert('Details updated successfully');
       },
