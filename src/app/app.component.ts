@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ShowComponent } from './show/show.component';
+import { ItemsListComponent } from './show/show.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ItemsListModule } from './show/items-list.module';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,ShowComponent,MatDialogModule],
+  imports: [RouterOutlet,ItemsListComponent,MatDialogModule,ItemsListModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
