@@ -1,1 +1,21 @@
-<router-outlet></router-outlet>
+<div class="layout">
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h2 class="sidebar-title">מרחבית</h2>
+      <img src="assets/books-icon.png" alt="ספרים" class="sidebar-icon" />
+    </div>
+    <ul class="sidebar-menu">
+      <li><a routerLink="/home">ראשי</a></li>
+      <li><a routerLink="/guests">מערכים</a></li>
+      <li><a routerLink="/exercises">עיתונים</a></li>
+      <li><a routerLink="/images">תמונות</a></li>
+      <li><a routerLink="/videos">סרטונים</a></li>
+      <li><a routerLink="/songs">שירים</a></li>
+      <li><a routerLink="/books">ספרים</a></li>
+      <li><a routerLink="/equipment">ציוד</a></li>
+    </ul>
+  </nav>
+</div>

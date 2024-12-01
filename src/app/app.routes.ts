@@ -1,9 +1,17 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './components/Users/login';
-import { RegisterComponent } from './components/Users/register';
+import { RegistrationComponent } from './components/Users/registration';
+import { WelcomeComponent } from './components/Users/welcome';
+import { UserManagementComponent } from './components/Users/user-management';
+import { PersonalDetailsComponent } from './components/Users/personal-details';
+import { SearchComponent } from './components/Students/search/search.component';
 
 export const routes: Routes = [
-  { path: '', component: LoginComponent },  // עמוד הכניסה
-  { path: 'register', component: RegisterComponent },  // עמוד הרישום
+  { path: '', component:  WelcomeComponent},  
+  { path: 'login', component: LoginComponent },  
+  { path: 'students', component:  SearchComponent},
+  { path: 'registration', component: RegistrationComponent },  
+  { path: 'personalDetails/:idNumber', component: PersonalDetailsComponent },  // עמוד הרישום
+  { path: 'user-management', component: UserManagementComponent },  
   { path: '**', redirectTo: '' },  // עמוד ברירת מחדל לכל כתובת לא תקינה
 ];

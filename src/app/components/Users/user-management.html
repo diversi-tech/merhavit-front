@@ -1,0 +1,35 @@
+<div class="user-management-container">
+  <!-- שורת הכותרת -->
+  <div class="user-header">
+    <div class="user-cell">שם</div>
+    <div class="user-cell">ת.ז.</div>
+    <div class="user-cell">רחוב</div>
+    <div class="user-cell">עיר</div>
+    <div class="user-cell">טלפון</div>
+    <div class="user-cell">פלאפון</div>
+    <div class="user-cell">מייל</div>
+    <div class="user-cell">קבוצה</div>
+    <div class="user-cell">התמחות</div>
+    <div class="user-cell">מחיקה</div>
+    <div class="user-cell">לאזור האישי</div>
+  </div>
+
+  <!-- שורות המשתמשים -->
+  <div class="user-row" *ngFor="let user of users">
+    <div class="user-cell">{{ user.name || 'N/A' }}</div>
+    <div class="user-cell">{{ user.idNumber || 'N/A' }}</div>
+    <div class="user-cell">{{ user.street || 'N/A' }}</div>
+    <div class="user-cell">{{ user.city || 'N/A' }}</div>
+    <div class="user-cell">{{ user.phone || 'N/A' }}</div>
+    <div class="user-cell">{{ user.mobile || 'N/A' }}</div>
+    <div class="user-cell">{{ user.email || 'N/A' }}</div>
+    <div class="user-cell">{{ user.group || 'N/A' }}</div>
+    <div class="user-cell">{{ user.specialization || 'N/A' }}</div>
+    <div class="user-cell user-actions">
+      <button class="action-button" (click)="deleteUser(user)">מחק</button>
+    </div>
+    <div class="user-cell user-actions">
+      <button class="action-button" (click)="navigateToPersonalArea(user)">לאזור האישי</button>
+    </div>
+  </div>
+</div>
