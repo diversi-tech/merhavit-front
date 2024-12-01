@@ -4,6 +4,7 @@
     align-items: center;
     height: 100vh;
     background-color: #f4f4f4;
+    direction: rtl;
   }
   
   .login-form {
@@ -74,4 +75,24 @@
   .register-link a:hover {
     text-decoration: underline;
   }
-  
+  /* עיצוב עבור קופסת שחזור סיסמה */
+.password-recovery {
+  margin-top: 20px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.forgot-password a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+}
+
+.input-group input {
+  margin-bottom: 10px;
+}

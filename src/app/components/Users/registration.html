@@ -1,31 +1,4 @@
-<!-- <div class="registration-container">
-  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
-    <h1>הרשמה</h1>
 
-    <label>שם מלא</label>
-    <input formControlName="fullName" type="text" placeholder="רבקה כהן" />
-
-    <label>תעודת זהות</label>
-    <input formControlName="idNumber" type="text" placeholder="0533171258" />
-
-    <label>כתובת</label>
-    <input formControlName="address" type="text" placeholder="שאגת אריה 3" />
-
-    <label>טלפון נייד</label>
-    <input formControlName="phone" type="text" placeholder="0533171258" />
-
-    <label>מייל</label>
-    <input formControlName="email" type="email" placeholder="1234587@gmail.com" />
-
-    <label>כיתה</label>
-    <input formControlName="class" type="number" placeholder="1234587" />
-
-    <label>התמחות</label>
-    <input formControlName="specialization" type="number" placeholder="1234587" />
-
-    <button type="submit" class="submit-button">הרשמי</button>
-  </form>
-</div> -->
 <div class="registration-container">
   <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
     <h1>הרשמה</h1>
@@ -60,6 +33,12 @@
     <div *ngIf="registrationForm.get('email')?.touched && registrationForm.get('email')?.invalid" class="error-message">
       <small *ngIf="registrationForm.get('email')?.errors?.['required']">שדה חובה</small>
       <small *ngIf="registrationForm.get('email')?.errors?.['email']">כתובת מייל לא תקינה</small>
+    </div>
+
+    <label>סיסמה</label>
+    <input formControlName="password" type="text" placeholder="123456789" />
+    <div *ngIf="registrationForm.get('password')?.touched && registrationForm.get('password')?.invalid" class="error-message">
+      <small>שדה חובה</small>
     </div>
 
     <label>כיתה</label>
