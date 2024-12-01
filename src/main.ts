@@ -5,6 +5,7 @@ import { AppComponent } from './app/app.component'; // קומפוננטת הבס
 import { routes } from './app/app.routes';
 import { provideHttpClient } from '@angular/common/http';
 
+
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(RouterModule.forRoot(routes)) ,

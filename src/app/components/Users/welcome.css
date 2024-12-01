@@ -1,0 +1,61 @@
+/* מרכז את התוכן של הדף */
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0; /* ביטול מרווחים */
+  padding: 0; /* ביטול ריפודים */
+}
+
+/* עיצוב לכותרת */
+.welcome-header {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* הגדלת הרווח בין האלמנטים */
+}
+
+.welcome-title {
+  font-size: 4rem; /* הגדלת גודל הטקסט */
+  font-weight: bold;
+  margin: 0;
+}
+
+.welcome-icon {
+  font-size: 4rem; /* הגדלת אייקון */
+}
+
+/* עיצוב לטקסט שמתחת לכותרת */
+.welcome-text {
+  font-size: 1.5rem; /* הגדלת גודל הטקסט */
+  margin-top: 24px; /* הגדלת המרווח העליון */
+  color: #555555;
+}
+
+/* עיצוב לכפתור */
+.login-button {
+  margin-top: 32px; /* הגדלת המרווח העליון */
+  padding: 15px 30px; /* הגדלת הפנים של הכפתור */
+  font-size: 1.2rem; /* הגדלת גודל הטקסט בכפתור */
+  font-weight: bold;
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 30px; /* מעגל את קצוות הכפתור */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* עיצוב לתמונה */
+.welcome-image {
+  width: 100px; /* הגדלת הרוחב */
+  height: auto; /* שמירה על יחס הגובה-רוחב */
+}

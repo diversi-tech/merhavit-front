@@ -1,0 +1,247 @@
+/* body {
+  font-family: Arial, sans-serif;
+  direction: rtl;
+  margin: 0;
+  padding: 0;
+  background-color: #f7f7f7;
+}
+
+.content-wrapper {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.filter-options button {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 8px 15px;
+  margin-right: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.filter-options button:hover {
+  background-color: #e2e2e2;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+}
+
+.item-info {
+  max-width: 70%;
+}
+
+.item-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.item-description {
+  font-size: 14px;
+  color: #666;
+  margin: 5px 0;
+}
+
+.item-details {
+  font-size: 12px;
+  color: #999;
+}
+
+.item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-approve {
+  background-color: #4caf50;
+}
+
+.btn-edit {
+  background-color: #3f51b5;
+}
+
+.item-meta {
+  text-align: right;
+  color: #777;
+  font-size: 12px;
+} */
+
+
+עיצוב כללי
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+  direction: rtl;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #ddd;
+  font-size: 18px;
+}
+
+.header span {
+  font-size: 16px;
+  color: #666;
+}
+
+/* עיצוב כפתורי הסינון */
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-button {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.filter-button.active {
+  border-color: #007bff;
+  color: #007bff;
+}
+
+.filter-button:hover {
+  background-color: #f0f0f0;
+}
+
+/* עיצוב הטבלה */
+.table-container {
+  width: 100%;
+  margin-top: 20px;
+  border-spacing: 0;
+  border-collapse: separate;
+}
+
+.table-container tr {
+  display: grid;
+  grid-template-columns: 100px 1fr 100px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.table-container td {
+  background-color: #fff;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.table-container td:nth-child(3) {
+  justify-content: flex-start;
+}
+
+.table-container img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* עיצוב טקסטים */
+.item-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.item-description {
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.item-details {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 5px;
+}
+
+/* עיצוב כפתורים */
+.action-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.action-button {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.action-button.publish {
+  background-color: #fff;
+  color: #007bff;
+  border: 1px solid #007bff;
+}
+
+.action-button.edit {
+  background-color: #3cb371;
+  color: #fff;
+  border: none;
+}
+
+.action-button.sold {
+  background-color: #ffcfcf;
+  color: #f00;
+  border: none;
+}
+
+.action-button.unique {
+  background-color: #ffecb3;
+  color: #ffa500;
+  border: none;
+}

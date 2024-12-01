@@ -1,20 +1,24 @@
 <div class="login-container">
   <div class="login-form">
-    <h1 class="greeting">שלום, טוב לראות אותך</h1>
-    <div class="input-group">
-      <label for="identity">תעודת זהות</label>
-      <input
-        id="identity"
-        type="text"
-        [(ngModel)]="identity"
-        placeholder="035695874"
-      />
-    </div>
-    <button class="submit-btn" (click)="nextStep()">המשך</button>
+    <h2 class="greeting">שלום, טוב לראות אותך</h2>
+    <form (ngSubmit)="onSubmit()">
+      <div class="input-group">
+        <label for="id">תעודת זהות</label>
+        <input type="text" id="id" [(ngModel)]="id" name="id" required />
+      </div>
+      <div class="input-group">
+        <label for="password">סיסמה</label>
+        <input type="password" id="password" [(ngModel)]="password" name="password" required />
+      </div>
+      <button type="submit" class="submit-btn">המשך</button>
+    </form>
+
     <div class="footer">
-      <span class="register-link">אין לך חשבון?
-        <a (click)="navigateToRegistration()">להרשמה</a>
-      </span>
+      <p class="register-link">
+        אין לך חשבון? <a (click)="goToRegister()">להרשמה</a>
+      </p>
+     
     </div>
+
   </div>
 </div>
