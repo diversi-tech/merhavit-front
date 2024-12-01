@@ -39,4 +39,5 @@ export class UserManagementComponent implements OnInit {
     console.log('Delete user:', user);
     // הוסף כאן את הלוגיקה למחיקת משתמש
   }
+  navigateToPersonalArea(user:any){}
 }
