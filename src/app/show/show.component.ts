@@ -69,6 +69,7 @@ export class ItemsListComponent implements OnInit {
 
   deleteResource(itemToDelete:Item)
   {
+    alert("hiii")
     console.log('Delete item: ', itemToDelete);
     // הוסף כאן את הלוגיקה למחיקת משתמש
 
