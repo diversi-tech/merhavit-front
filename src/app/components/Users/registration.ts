@@ -24,13 +24,20 @@ export class RegistrationComponent {
       idNumber: ['', Validators.required],
       address: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern(/^05\d{8}$/)]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.email]],
       password: ['', Validators.required],
+      confirmPassword: ['', Validators.required], 
       class: ['', [Validators.required, Validators.minLength(6)]],
       specialization: ['', Validators.required],
       seminar: ['', Validators.required],
 
-    });
+    }, { validator: this.passwordMatchValidator }); // הוספת הולידציה של התאמת סיסמאות
+  }
+
+  passwordMatchValidator(formGroup: FormGroup) {
+    const password = formGroup.get('password')?.value;
+    const confirmPassword = formGroup.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
   

@@ -65,9 +65,12 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   cancel() {
-    const idNumber = this.route.snapshot.paramMap.get('idNumber');
+    const idNumber = localStorage.getItem('idNumber'); 
     if (idNumber) {
-      this.loadUserData(idNumber); // טעינה מחדש כדי לאפס שינויים
+      this.loadUserData(idNumber); 
+    }
+    else {
+      console.error('ID number not found in localStorage');
     }
   }
 
