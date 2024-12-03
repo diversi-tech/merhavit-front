@@ -31,7 +31,6 @@ export class ApiService {
   }
   // PUT
   Put(query: string, updatedData: any): Observable<any> {
-    console.log("query", query)
     let fullpath = serverPath + query;
     return this.http.put(fullpath, updatedData, { 
       headers: new HttpHeaders({'Content-Type': 'application/json'}), 
