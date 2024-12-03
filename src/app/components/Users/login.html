@@ -12,7 +12,9 @@
       </div>
       <button type="submit" class="submit-btn">התחברות</button>
     </form>
-
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
     <div class="footer">
       <p class="forgot-password">
         <a (click)="goToForgotPassword()">שכחתי סיסמא</a>

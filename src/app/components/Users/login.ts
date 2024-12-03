@@ -16,21 +16,22 @@ export class LoginComponent {
   id: string = '';
   password: string = '';
   email: string = '';
+  errorMessage: string = ''; // משתנה לשגיאה
 
   constructor(private router: Router, private apiService: ApiService) {}
 
   onSubmit() {
-    const loginData = { idNumber: this.id, password: this.password }; // Prepare login data
+    const loginData = { idNumber: this.id, password: this.password };
 
     this.apiService.Post('/users/login', loginData).subscribe({
       next: (response) => {
         console.log(response);
         localStorage.setItem('access_token', response.access_token);
-        const decodedToken: any = jwtDecode(response.access_token); // פענוח הטוקן
+        const decodedToken: any = jwtDecode(response.access_token);
         const userRole = decodedToken.userType;
         if (userRole === 'Admin') {
           console.log('Redirecting to user management');
-          this.router.navigate(['/user-management']); // ניווט לדף ניהול משתמשים
+          this.router.navigate(['/user-management']);
         } else {
           console.log('Login successful');
           localStorage.setItem('idNumber', this.id);
@@ -39,6 +40,7 @@ export class LoginComponent {
       },
       error: (err) => {
         console.error('Login failed', err);
+        this.errorMessage = 'Invalid credentials. Please try again.'; // הצגת הודעת שגיאה
       },
     });
   }
@@ -56,6 +58,4 @@ export class LoginComponent {
       this.router.navigate(['/forgot-password']);
     }
   }
-  
-  
 }
