@@ -47,12 +47,12 @@ body {
   border: 1px solid #ccc;
   border-radius: 5px;
   box-sizing: border-box;
-  text-align: right; /* טקסט מיושר לימין */
+  text-align: right; 
   margin-bottom: 20px;
 }
 
 .registration-form input::placeholder {
-  color: #bbb; /* צבע לטקסט בתוך שדות הקלט */
+  color: #bbb; 
 }
 
 .submit-button {
@@ -71,7 +71,6 @@ body {
   background-color: #218838;
 }
 
-/* עיצוב טקסט קישורים בתחתית הטופס */
 .footer {
   text-align: center;
   margin-top: 15px;
@@ -94,6 +93,6 @@ body {
 .error-message {
   color: red;
   font-size: 12px;
-  margin: -15px 0 10px 0; /* מקטין את המרווח מעל ההודעה */
+  margin: -15px 0 10px 0; 
   text-align: right;
 }

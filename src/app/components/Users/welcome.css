@@ -1,4 +1,3 @@
-/* מרכז את התוכן של הדף */
 .welcome-container {
   display: flex;
   flex-direction: column;
@@ -8,43 +7,43 @@
   text-align: center;
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
-  margin: 0; /* ביטול מרווחים */
-  padding: 0; /* ביטול ריפודים */
+  margin: 0; 
+  padding: 0; 
 }
 
-/* עיצוב לכותרת */
+
 .welcome-header {
   display: flex;
   align-items: center;
-  gap: 16px; /* הגדלת הרווח בין האלמנטים */
+  gap: 16px; 
 }
 
 .welcome-title {
-  font-size: 4rem; /* הגדלת גודל הטקסט */
+  font-size: 4rem; 
   font-weight: bold;
   margin: 0;
 }
 
 .welcome-icon {
-  font-size: 4rem; /* הגדלת אייקון */
+  font-size: 4rem; 
 }
 
-/* עיצוב לטקסט שמתחת לכותרת */
+
 .welcome-text {
-  font-size: 1.5rem; /* הגדלת גודל הטקסט */
-  margin-top: 24px; /* הגדלת המרווח העליון */
+  font-size: 1.5rem; 
+  margin-top: 24px; 
   color: #555555;
 }
 
-/* עיצוב לכפתור */
+
 .login-button {
-  margin-top: 32px; /* הגדלת המרווח העליון */
-  padding: 15px 30px; /* הגדלת הפנים של הכפתור */
-  font-size: 1.2rem; /* הגדלת גודל הטקסט בכפתור */
+  margin-top: 32px; 
+  padding: 15px 30px; 
+  font-size: 1.2rem; 
   font-weight: bold;
   background-color: #ffffff;
   border: 2px solid #000000;
-  border-radius: 30px; /* מעגל את קצוות הכפתור */
+  border-radius: 30px; 
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -54,8 +53,7 @@
   color: #ffffff;
 }
 
-/* עיצוב לתמונה */
 .welcome-image {
-  width: 100px; /* הגדלת הרוחב */
-  height: auto; /* שמירה על יחס הגובה-רוחב */
+  width: 100px; 
+  height: auto; 
 }
