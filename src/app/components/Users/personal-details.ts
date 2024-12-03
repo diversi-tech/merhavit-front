@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../api.service';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-personal-details',
@@ -24,12 +24,19 @@ export class PersonalDetailsComponent implements OnInit {
     assignedSeminaryId: '',
   };
 
-  constructor(private apiService: ApiService, private route: ActivatedRoute) {}
+  constructor(
+    private apiService: ApiService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    const idNumber = this.route.snapshot.paramMap.get('idNumber'); // קבלת ה-ID מהנתיב
+    const idNumber = localStorage.getItem('idNumber');
     if (idNumber) {
       this.loadUserData(idNumber);
+    } else {
+      console.error('ID number not found in localStorage');
+      this.router.navigate(['/login']);
     }
   }
 
@@ -37,7 +44,7 @@ export class PersonalDetailsComponent implements OnInit {
     this.apiService.Read(`/users/idNumber/${idNumber}`).subscribe(
       (data) => {
         console.log('User data from server:', data);
-        this.user = data; // טעינת נתוני המשתמש מהשרת
+        this.user = data; 
       },
       (error) => {
         console.error('Error fetching data:', error);
@@ -46,7 +53,7 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log("this.user", this.user)
+    console.log('this.user', this.user);
     this.apiService.Put('/users/update-user', this.user).subscribe(
       (response) => {
         alert('Details updated successfully');
@@ -62,5 +69,9 @@ export class PersonalDetailsComponent implements OnInit {
     if (idNumber) {
       this.loadUserData(idNumber); // טעינה מחדש כדי לאפס שינויים
     }
+  }
+
+  goToChangePassword() {
+    this.router.navigate(['/change-password']); 
   }
 }
