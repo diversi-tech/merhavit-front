@@ -1,110 +1,41 @@
-<!-- <div class="page-container">
-  <header class="header">
-    <h1 class="title">מרחבית</h1>
-    <button class="add-btn">+ הוספת פריט חדש</button>
-  </header>
-  <div class="table-container">
-    <table class="styled-table">
-      <thead>
-        <tr>
-          <th>סוג קובץ</th>
-          <th>תאריך העלאה</th>
-          < <th>תאריך</th>
-          <th>מצב</th> -->
-          <!-- <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        פריט לדוגמה
-         <tr>
-          <td>סרטון בנושא סמכות</td>
-          <td>17.02.2020</td>
-          <td>17.02.2020</td>
-          <td><span class="status published">פירסם</span></td>
-          <td>
-            <button class="action-btn">מחיקה</button>
-            < (click)="deleteMedia(item.id) 
-          </td>
-        </tr>
-        <פריטים נוספים -->
-        <!-- <tr>
-          <td>סרטון בנושא סמכות</td>
-          <td>17.02.2020</td>
-          <td>17.02.2020</td>
-          <td><span class="status draft">טיוטה</span></td>
-          <td>
-            <button class="action-btn">עריכה</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>  -->
-
-<!-- 
-<button (click)="previousPage()"><<</button>
-<button (click)="nextPage()">>></button>
-
-<div *ngFor="let message of paginatedMessages">
-  <app-message [message]="message"></app-message>
-</div> -->
-
-<!-- <div *ngFor="let item of items" class="item">
-  <div class="item-info">
-    <p class="item-title">{{ item.title }}</p>
-    <p class="item-description">{{ item.description }}</p>
-    <p class="item-details">
-      <span>מוצאי לאור: {{ item.details.author }}</span> | 
-      <span>שנת הוצאה: {{ item.details.year }}</span>
-    </p>
-  </div>
-  <div class="item-actions">
-    <button class="btn btn-approve">פרסום</button>
-    <button class="btn btn-edit">עריכה</button>
-  </div>
-  <div class="item-meta">
-    <span>{{ item.type }}</span>
-    <span>{{ item.date }}</span>
+<!-- <div class="table-container">
+  <div *ngFor="let item of items" class="row">
+    <div class="item-content">
+      <img [src]="item.coverImage || 'assets/default-image.png'" alt="Item Image" class="item-image">
+      <img [src]="item.coverImage" alt="Item Image" class="item-image">
+      <div class="item-details">
+        <div class="item-title">{{ item.title }}</div>
+        <div class="item-description">{{ item.description }}</div>
+        <div class="item-meta">
+          מחבר: {{ item.Author }} | תאריך הוצאה: {{ item.pablicationDate | date:'dd/MM/yyyy' }}
+        </div>
+      </div>
+    </div>
+    <div class="status" [ngClass]="{'published': item.status === 'published', 'sold': item.status === 'sold'}">
+      {{ item.status }}
+    </div>
+    <div class="actions">
+      <button class="action-button edit">ערוך</button>
+      <button class="action-button delete">מחק</button>
+    </div>
   </div>
 </div> -->
 
-
-<div class="container">
-  <!-- כותרת וסינון -->
-  <div class="header">
-    <span>100 פריטים</span>
-    <div class="filter-buttons">
-      <button class="filter-button active">הכל</button>
-      <button class="filter-button">מאושר</button>
-      <button class="filter-button">לא מאושר</button>
-    </div>
-  </div>
-
-  <!-- טבלה -->
-  <div class="table-container">
-    <!-- שורה ראשונה -->
-    <div class="table-row">
-      <td>
-        <div class="action-buttons">
-          <button class="action-button publish">פרסום</button>
-          <button class="action-button edit">עריכה</button>
+<div class="table-container">
+  <div class="row" *ngFor="let item of items">
+    <div class="item-content">
+      <img [src]="item.coverImage || 'assets/default-image.png'" alt="Item Image" class="item-image">
+      <div class="item-details">
+        <div class="item-title">{{ item.title }}</div>
+        <div class="item-description">{{ item.description }}</div>
+        <div class="item-meta">
+          מחבר: {{ item.Author }} | תאריך הוצאה: {{ item.pablicationDate | date:'dd/MM/yyyy' }}
         </div>
-      </td>
-      <td>
-        <span class="action-button sold">מכר</span>
-      </td>
-      <td>
-        <div>
-          <div class="item-title">סרטון בנושא סבלנות</div>
-          <div class="item-description">הסרטון איך מסבירים בצורה הטובה ביותר...</div>
-          <div class="item-details">מוצא לאור: יוסי כהן | שנת הוצאה: 1953</div>
-        </div>
-      </td>
-      <td>
-        <img src="https://via.placeholder.com/60" alt="תמונה">
-      </td>
+      </div>
     </div>
-
-    <!-- העתק והדבק שורות נוספות -->
+    <div class="actions">
+      <button class="action-button edit">ערוך</button>
+      <button class="action-button delete">מחק</button>
+    </div>
   </div>
 </div>

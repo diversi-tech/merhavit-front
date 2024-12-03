@@ -1,115 +1,111 @@
-// import { Component } from '@angular/core';
-// import { MatDialog } from '@angular/material/dialog';
-// //import { ConfirmDeleteDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
-// @Component({
-//   selector: 'app-show',
-//   standalone: true,
-//   imports: [],
-//   templateUrl: './show.component.html',
-//   styleUrl: './show.component.css'
-// })
-// export class ShowComponent {
-//   constructor(public dialog: MatDialog) { }
-
-//   // deleteMedia(itemId: number): void {
-//   //   const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent);
-
-//     // dialogRef.afterClosed().subscribe(result => {
-//     //   if (result) {
-//     //     // כאן תוכל להוסיף את הלוגיקה למחוק את הפריט מהמידע שלך
-//     //     console.log(`פריט עם ID ${itemId} נמחק.`);
-//     //   }
-//     // });
-//   }
-
-
-// import { Component, Input } from '@angular/core';
-// import { Message } from './message.model';
-
-// @Component({
-//   selector: 'app-messages-list',
-//   templateUrl: './messages-list.component.html',
-//   styleUrls: ['./messages-list.component.css']
-// })
-// export class ShowComponent {
-//   @Input() messages: Message[] = [];
-//   currentPage = 1;
-//   itemsPerPage = 10;
-
-//   get paginatedMessages() {
-//     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-//     return this.messages.slice(startIndex, startIndex + this.itemsPerPage);
-//   }
-
-//   nextPage() {
-//     this.currentPage++;
-//   }
-
-//   previousPage() {
-//     if (this.currentPage > 1) {
-//       this.currentPage--;
-//     }
-//   }
-// }
-
-
-
-// import { Component, OnInit } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import { MatTableModule } from '@angular/material/table';
-
-// @Component({
-//   selector: 'app-items-list',
-//   templateUrl: './items-list.component.html',
-//   styleUrls: ['./items-list.component.css'],
-//   standalone: true,
-//   imports: [CommonModule, MatTableModule]
-// })
-// export class ItemsListComponent implements OnInit {
-//   ngOnInit(): void {
-    
-//   }
-//   items = [
-//     {
-//       title: 'סרטון בנושא סבלנות',
-//       description: 'המפגשים איך מחנכים בורות בסבלנות',
-//       details: {
-//         author: 'קובי שיר',
-//         year: 1953,
-//       },
-//       type: 'מאמר',
-//       date: '17.02.2020',
-//     },
-//     // הוסף עוד פריטים כאן
-//   ];
-// }
-
-import { Component, OnInit } from '@angular/core';
+import { Component, Injectable, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { ApiService } from '../api.service';
+import { log } from 'console';
+
+interface Item   
+ {
+  id:string;
+  description: string;
+  title:string;
+  type:string;
+  Author:string;
+  pablicationDate:Date;
+  Tags:Array<string>;
+  createdBy:string;
+  ApprovedBy:string;
+  coverImage:string;
+  filePath:string;
+}
 
 @Component({
   selector: 'app-items-list',
   templateUrl: './show.component.html', // ודא שהנתיב נכון!
   styleUrls: ['./show.component.css'],
   standalone: true, // זה הופך את הרכיב לעצמאי
-  imports: [CommonModule, MatTableModule] // ייבוא ישיר של מודולים
+  imports: [CommonModule,MatTableModule] // ייבוא ישיר של מודולים
 })
+
+//@Injectable({ providedIn: 'root' })
 export class ItemsListComponent implements OnInit {
-  ngOnInit(): void {
+
+  public items: Item[] = []; //מערך המוצרים של הספריה 
+
+  constructor(private http: HttpClient,private apiService: ApiService) {}
+
+  async ngOnInit(): Promise<void> {
+
+    await this.getItems()
+    console.log("items: "+this.items);
     
+    // this.getItems().subscribe(items => {
+    //   this.items = items;
+    // });
   }
-  items = [
-   {
-          title: 'סרטון בנושא סבלנות',
-           description: 'המפגשים איך מחנכים בורות בסבלנות',
-           details: {
-             author: 'קובי שיר',
-             year: 1953,
-           },
-           type: 'מאמר',
-           date: '17.02.2020',
-         },
-         // הוסף עוד פריטים כאן
-       ];
+
+  async getItems()
+  {
+    console.log("hi");
+    
+    this.apiService.Read('/EducationalResource/getAll').subscribe({
+      next: (response) => {
+      
+        console.log("i this is the response: ",response);
+        
+        if (Array.isArray(response)) {
+          this.items = response;
+        } else {
+          this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching items', err);
+      },
+    });
+  }
+
+  deleteResource(itemToDelete:Item)
+  {
+    console.log('Delete item: ', itemToDelete);
+    // הוסף כאן את הלוגיקה למחיקת משתמש
+
+    //הפונקציה מקבלת את הנתיב שאיתו היא תתחבר לפונ המחיקה בשרת 
+    //וכן את האובייקט למחיקה
+    this.apiService.Delete(`/educational-resource/${itemToDelete.id}`, {}).subscribe(
+      {
+        next: (response) => {
+          // פעולה במידה והמחיקה הצליחה
+          console.log('Item deleted successfully:', response);
+          alert(response.message); // הצגת הודעת הצלחה למשתמש
+          // ניתן לעדכן את ה-UI או להוריד את הפריט מהרשימה המקומית
+          this.items = this.items.filter(item => item.id !== itemToDelete.id);
+        },
+        error: (err) => {
+          // טיפול במקרה של שגיאה
+          console.error('Error deleting item:', err);
+          alert('Failed to delete item. Please try again.');
+        },
+        complete: () => {
+          // פעולה כאשר הקריאה הסתיימה (אופציונלי)
+          console.log('Delete request completed.');
+        }
+      });
+    }
+    
+
+
+
+
+
+  // getItems(): Observable<Item[]> {
+  //   return this.http.get<Item[]>('/EducationalResource/getAll');
+  // }
+
 }
+
+
+
+
