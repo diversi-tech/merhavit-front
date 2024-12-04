@@ -39,6 +39,7 @@ export class LoginComponent {
           this.router.navigate(['/user-management']); // ניווט לדף ניהול משתמשים
         } else {
           console.log('Login successful');
+          localStorage.setItem('idNumber', this.id);
           this.router.navigate(['']); // ניווט לעמוד הבית או דף נפרד
         }
       },

@@ -1,116 +1,74 @@
-/* .personal-details-container {
-    max-width: 700px;
-    margin: auto;
-  }
-  
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  label {
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .button-group {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  
-  .save-button {
-    background-color: #00a650;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .cancel-button {
-    background-color: #ccc;
-    color: black;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    opacity: 0.8;
-  }
-   */
+.personal-details-container {
+  direction: rtl; /* קביעת כיוון כללי */
+  text-align: right; /* יישור טקסט לימין */
+}
 
-   .personal-details-container {
-    direction: rtl; /* קביעת כיוון כללי */
-    text-align: right; /* יישור טקסט לימין */
-  }
-  
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* שני טורים */
-    gap: 15px; /* רווח בין קבוצות השדות */
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  label {
-    margin-bottom: 5px;
-  }
-  
-  input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    text-align: right; /* יישור תוכן הקלט לימין */
-  }
-  
-  .button-group {
-    display: flex;
-    justify-content: flex-end; /* כפתורים מיושרים לצד ימין */
-    gap: 20px; /* רווח בין הכפתורים */
-    /* margin-top: 20px;  */
-  }
-  
-  
-  .save-button, .cancel-button {
-    padding: 12px 30px; /* גודל הכפתורים */
-    border: none;
-    border-radius: 25px; /* פינות מעוגלות */
-    font-size: 16px; /* גודל הטקסט */
-    cursor: pointer;
-    font-weight: bold; /* טקסט מודגש */
-  }
-  
-  .save-button {
-    background-color: #4CAF50; /* צבע ירוק */
-    color: white;
-  }
-  
-  .cancel-button {
-    background-color: white;
-    color: #f44336; /* צבע טקסט אדום */
-    border: 2px solid #f44336; /* מסגרת אדומה */
-  }
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* שני טורים */
+  gap: 15px; /* רווח בין קבוצות השדות */
+}
 
-  .cancel-button:hover {
-    background-color: #f44336;
-    color: white;
-  }
-  
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: right; /* יישור תוכן הקלט לימין */
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end; /* כפתורים מיושרים לצד ימין */
+  gap: 20px; /* רווח בין הכפתורים */
+  /* margin-top: 20px;  */
+}
+
+.save-button,
+.cancel-button {
+  padding: 12px 30px; /* גודל הכפתורים */
+  border: none;
+  border-radius: 25px; /* פינות מעוגלות */
+  font-size: 16px; /* גודל הטקסט */
+  cursor: pointer;
+  font-weight: bold; /* טקסט מודגש */
+}
+
+.save-button {
+  background-color: #4caf50; /* צבע ירוק */
+  color: white;
+}
+
+.cancel-button {
+  background-color: white;
+  color: #f44336; /* צבע טקסט אדום */
+  border: 2px solid #f44336; /* מסגרת אדומה */
+}
+
+.cancel-button:hover {
+  background-color: #f44336;
+  color: white;
+}
+
+.change-password-button {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #4caf50; /* ירוק */
+  color: white;
+}
+
+.change-password-button:hover {
+  background-color: #45a049;
+}
