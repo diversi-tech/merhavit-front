@@ -25,7 +25,7 @@ export class RegistrationComponent {
       address: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern(/^05\d{8}$/)]],
       email: ['', [Validators.email]],
-      password: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required], 
       class: ['', [Validators.required, Validators.minLength(6)]],
       specialization: ['', Validators.required],
