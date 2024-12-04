@@ -75,7 +75,7 @@ export class ItemsListComponent implements OnInit {
 
     //הפונקציה מקבלת את הנתיב שאיתו היא תתחבר לפונ המחיקה בשרת 
     //וכן את האובייקט למחיקה
-    this.apiService.Delete(`/educational-resource/${itemToDelete.id}`, {}).subscribe(
+    this.apiService.Delete(`/EducationalResource/${itemToDelete.id}`, {}).subscribe(
       {
         next: (response) => {
           // פעולה במידה והמחיקה הצליחה
