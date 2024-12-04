@@ -9,8 +9,14 @@ export class ApiService {
   constructor(private http: HttpClient) { }
   // GET
   Read(query: string): Observable<any> {
+    console.log("asdfghjkl;'");
+    
     let fullpath = serverPath + query;
-    return this.http.get(fullpath, { withCredentials: true });
+
+    const ans= this.http.get(fullpath, { withCredentials: true });
+    console.log(ans);
+    
+    return ans
   }
   // POST
   Post(query: string, newData: any): Observable<any> {
@@ -24,7 +30,6 @@ export class ApiService {
   }
   // PUT
   Put(query: string, updatedData: any): Observable<any> {
-    console.log("query", query)
     let fullpath = serverPath + query;
     return this.http.put(fullpath, updatedData, { 
       headers: new HttpHeaders({'Content-Type': 'application/json'}), 
