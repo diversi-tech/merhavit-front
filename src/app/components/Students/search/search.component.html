@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!-- <div class="search-container" dir="rtl">
     <div class="filter-section">
       <select class="filter-dropdown">
@@ -12,7 +13,107 @@
       <button class="filter-button">
         <span>&#9881;</span> 
       </button>
+=======
+<div class="search-bar-container">
+  <div class="top-icons">
+    <!-- אייקון המשתמש עם האות הראשונה -->
+    <div class="icon user-icon">
+>>>>>>> main
     </div>
-    <input type="text" class="search-input" placeholder="חיפוש..."/>
+    <img src="assets/heart-icon.png" alt="לב" class="icon" />
+    <img src="assets/bell-icon.png" alt="פעמון" class="icon" />
   </div>
+<<<<<<< HEAD
    -->
+=======
+
+  <div class="white-box">
+    <div class="white-box-icons">
+      <div class="dropdown-container">
+        <div class="dropdown-header" (click)="toggleFilterOptions()">
+          {{ selectedFileType === "all" ? "כל סוגי הקבצים" : selectedFileType }}
+          <span class="dropdown-arrow">&#9662;</span>
+        </div>
+        <ul *ngIf="showFilterOptions" class="dropdown-options">
+          <li (click)="onSelectFilter('all')">כל סוגי הקבצים</li>
+          <li (click)="onSelectFilter('pictures')">תמונות</li>
+          <li (click)="onSelectFilter('videos')">סרטונים</li>
+          <li (click)="onSelectFilter('presentations')">מצגות</li>
+          <li (click)="onSelectFilter('songs')">שירים</li>
+          <li (click)="onSelectFilter('books')">ספרים</li>
+          <li (click)="onSelectFilter('equipment')">ציוד</li>
+        </ul>
+      </div>
+      <img
+        src="assets/filter-icon.png"
+        alt="פילטר"
+        class="filter-icon"
+        (click)="toggleDetails()"
+      />
+
+      <div class="filter-details-container" *ngIf="showDetails">
+        <div class="filter-details-box">
+           <!-- עמודה שנייה - צד שמאל -->
+           <div class="filter-column">
+            <div class="filter-row">
+              <label for="file-type">סוג קובץ</label>
+              <input id="file-type" type="text" placeholder="סוג קובץ">
+            </div>
+            <div class="filter-row">
+              <label for="borrowable">ניתן להשאלה</label>
+              <input id="borrowable" type="text" placeholder="ניתן להשאלה">
+            </div>
+            <div class="filter-row">
+              <label for="language">שפה:</label>
+              <input id="language" type="text" placeholder="שפה">
+            </div>
+            <div class="filter-row">
+              <label for="subjects">נושאים</label>
+              <input id="subjects" type="text" placeholder="נושאים">
+            </div>
+            <div class="filter-row">
+              <label for="sku">מק"ט</label>
+              <input id="sku" type="text" placeholder="מקט">
+            </div>
+            <div class="filter-row">
+              <label for="borrow-time">משך השאלה</label>
+              <input id="borrow-time" type="text" placeholder="משך השאלה">
+            </div>
+          </div>
+          <!-- עמודה ראשונה - צד ימין -->
+          <div class="filter-column">
+            <div class="filter-row">
+              <label for="title">כותר</label>
+              <input id="title" type="text" placeholder="כותר">
+            </div>
+            <div class="filter-row">
+              <label for="publisher">מו"ל</label>
+              <input id="publisher" type="text" placeholder="מול">
+            </div>
+            <div class="filter-row">
+              <label for="hebrew-year">שנת הוצאה עברי</label>
+              <input id="hebrew-year" type="text" placeholder="שנת הוצאה עברי">
+            </div>
+            <div class="filter-row">
+              <label for="latin-year">שנת הוצאה לועזי</label>
+              <input id="latin-year" type="text" placeholder="שנת הוצאה לועזי">
+            </div>
+            <div class="filter-row">
+              <label for="level">גיל/רמה</label>
+              <input id="level" type="text" placeholder="גיל/רמה">
+            </div>
+            <div class="filter-row">
+              <label for="new-in-database">חדש במאגר</label>
+              <input id="new-in-database" type="text" placeholder="חדש במאגר">
+            </div>
+          </div>
+      
+         
+        </div>
+      </div>
+      
+    </div>
+    <input type="text" class="search-input" placeholder="הקלד מילת חיפוש..." />
+  </div>
+</div>
+>>>>>>> main

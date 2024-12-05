@@ -4,31 +4,36 @@ body {
   margin: 0;
   padding: 0;
   background-color: #f9f9f9;
+  overflow: hidden; /* מניעת גלילה */
 }
 
 .registration-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100vh; /* גובה מלא */
   background-color: #f9f9f9;
 }
 
 .registration-form {
   background-color: #ffffff;
-  padding: 30px;
+  padding: 20px; /* הורדת רווחים כדי לצמצם גובה */
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
   text-align: right; /* יישור לימין */
   direction: rtl; /* הגדרת כיוון לימין לשמאל */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* מבטיח שכל הרכיבים מותאמים לגובה */
+  height: 90vh; /* גובה מותאם למסך */
+  overflow: hidden; /* למנוע גלילה פנימית */
 }
 
 .registration-form h1 {
-  font-family: 'Roboto', sans-serif;
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 20px; /* הקטנת כותרת */
+  margin-bottom: 10px; /* פחות רווח */
   color: #333;
   text-align: center;
 }
@@ -36,29 +41,28 @@ body {
 .registration-form label {
   font-size: 14px;
   color: #666;
-  margin-bottom: 8px;
-  display: block;
+  margin-bottom: 5px; /* הקטנת רווחים */
 }
 
 .registration-form input {
   width: 100%;
-  padding: 10px;
-  font-size: 16px;
+  padding: 8px; /* הקטנת ריפוד */
+  font-size: 14px; /* הקטנת גודל טקסט */
   border: 1px solid #ccc;
   border-radius: 5px;
   box-sizing: border-box;
-  text-align: right; /* טקסט מיושר לימין */
-  margin-bottom: 20px;
+  text-align: right; 
+  margin-bottom: 15px; /* פחות רווח בין השדות */
 }
 
 .registration-form input::placeholder {
-  color: #bbb; /* צבע לטקסט בתוך שדות הקלט */
+  color: #bbb; 
 }
 
 .submit-button {
   width: 100%;
-  padding: 12px;
-  font-size: 16px;
+  padding: 10px; /* הקטנת ריפוד */
+  font-size: 14px; /* הקטנת גופן */
   background-color: #28a745;
   color: white;
   border: none;
@@ -71,29 +75,9 @@ body {
   background-color: #218838;
 }
 
-/* עיצוב טקסט קישורים בתחתית הטופס */
-.footer {
-  text-align: center;
-  margin-top: 15px;
-}
-
-.register-link {
-  font-size: 14px;
-}
-
-.register-link a {
-  color: #007bff;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.register-link a:hover {
-  text-decoration: underline;
-}
-
 .error-message {
   color: red;
   font-size: 12px;
-  margin: -15px 0 10px 0; /* מקטין את המרווח מעל ההודעה */
+  margin: -10px 0 10px 0; /* הקטנת רווחים */
   text-align: right;
 }

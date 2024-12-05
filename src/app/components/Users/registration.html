@@ -1,64 +1,145 @@
-
 <div class="registration-container">
-  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
+  <form
+    [formGroup]="registrationForm"
+    (ngSubmit)="onSubmit()"
+    class="registration-form"
+  >
     <h1>הרשמה</h1>
 
     <label>שם מלא</label>
     <input formControlName="fullName" type="text" placeholder="רבקה כהן" />
-    <div *ngIf="registrationForm.get('fullName')?.touched && registrationForm.get('fullName')?.invalid" class="error-message">
+    <div
+      *ngIf="registrationForm.get('fullName')?.touched && registrationForm.get('fullName')?.invalid"
+      class="error-message"
+    >
       <small>שדה חובה</small>
     </div>
 
     <label>תעודת זהות</label>
     <input formControlName="idNumber" type="text" placeholder="123456789" />
-    <div *ngIf="registrationForm.get('idNumber')?.touched && registrationForm.get('idNumber')?.invalid" class="error-message">
+    <div
+      *ngIf="registrationForm.get('idNumber')?.touched && registrationForm.get('idNumber')?.invalid"
+      class="error-message"
+    >
       <small>שדה חובה</small>
     </div>
 
     <label>כתובת</label>
     <input formControlName="address" type="text" placeholder="שאגת אריה 3" />
-    <div *ngIf="registrationForm.get('address')?.touched && registrationForm.get('address')?.invalid" class="error-message">
+    <div
+      *ngIf="registrationForm.get('address')?.touched && registrationForm.get('address')?.invalid"
+      class="error-message"
+    >
       <small>שדה חובה</small>
     </div>
 
     <label>טלפון נייד</label>
     <input formControlName="phone" type="text" placeholder="0533171258" />
-    <div *ngIf="registrationForm.get('phone')?.touched && registrationForm.get('phone')?.invalid" class="error-message">
-      <small *ngIf="registrationForm.get('phone')?.errors?.['required']">שדה חובה</small>
-      <small *ngIf="registrationForm.get('phone')?.errors?.['pattern']">מספר טלפון לא תקין</small>
+    <div
+      *ngIf="registrationForm.get('phone')?.touched && registrationForm.get('phone')?.invalid"
+      class="error-message"
+    >
+      <small *ngIf="registrationForm.get('phone')?.errors?.['required']"
+        >שדה חובה</small
+      >
+      <small *ngIf="registrationForm.get('phone')?.errors?.['pattern']"
+        >מספר טלפון לא תקין</small
+      >
     </div>
 
     <label>מייל</label>
-    <input formControlName="email" type="email" placeholder="example@gmail.com" />
-    <div *ngIf="registrationForm.get('email')?.touched && registrationForm.get('email')?.invalid" class="error-message">
-      <small *ngIf="registrationForm.get('email')?.errors?.['required']">שדה חובה</small>
-      <small *ngIf="registrationForm.get('email')?.errors?.['email']">כתובת מייל לא תקינה</small>
+    <input
+      formControlName="email"
+      type="email"
+      placeholder="example@gmail.com"
+    />
+    <div
+      *ngIf="registrationForm.get('email')?.touched && registrationForm.get('email')?.invalid"
+      class="error-message"
+    >
+      <small *ngIf="registrationForm.get('email')?.errors?.['required']"
+        >שדה חובה</small
+      >
+      <small *ngIf="registrationForm.get('email')?.errors?.['email']"
+        >כתובת מייל לא תקינה</small
+      >
+    </div>
+    <label>סיסמה</label>
+    <input formControlName="password" type="password" placeholder="הכנס סיסמה" />
+    <div *ngIf="registrationForm.get('password')?.touched && registrationForm.get('password')?.invalid" class="error-message">
+      <small *ngIf="registrationForm.get('password')?.errors?.['required']">שדה חובה</small>
+      <small *ngIf="registrationForm.get('password')?.errors?.['minlength']">סיסמה חייבת להכיל לפחות 6 תווים</small>
     </div>
 
-    <label>סיסמה</label>
-    <input formControlName="password" type="text" placeholder="123456789" />
-    <div *ngIf="registrationForm.get('password')?.touched && registrationForm.get('password')?.invalid" class="error-message">
+    <label>אימות סיסמה</label>
+    <input formControlName="confirmPassword" type="password" placeholder="הכנס שוב סיסמה" />
+    <div *ngIf="registrationForm.errors?.['mismatch']" class="error-message">
+      <small>הסיסמאות אינן תואמות</small>
+    </div>
+
+
+    <!-- <label>סיסמה</label>
+    <input formControlName="password" type="password" placeholder="123456789" />
+    <div
+      *ngIf="registrationForm.get('password')?.touched && registrationForm.get('password')?.invalid"
+      class="error-message"
+    >
+      <small>שדה חובה</small>
+    </div> -->
+
+    <!-- <label>אימות סיסמה</label>
+    <input
+      formControlName="confirmPassword"
+      type="password"
+      placeholder="אימות סיסמה"
+    />
+    <div
+      *ngIf="registrationForm.get('confirmPassword')?.touched && registrationForm.get('confirmPassword')?.invalid"
+      class="error-message"
+    >
       <small>שדה חובה</small>
     </div>
 
+    <div
+      *ngIf="registrationForm.errors?.['passwordMismatch'] && registrationForm.get('confirmPassword')?.touched"
+      class="error-message"
+    >
+      <small>הסיסמאות לא תואמות</small>
+    </div> -->
+
     <label>כיתה</label>
     <input formControlName="class" type="text" placeholder="כיתה" />
-    <div *ngIf="registrationForm.get('class')?.touched && registrationForm.get('class')?.invalid" class="error-message">
+    <div
+      *ngIf="registrationForm.get('class')?.touched && registrationForm.get('class')?.invalid"
+      class="error-message"
+    >
       <small>שדה חובה (מינימום 6 תווים)</small>
     </div>
 
     <label>התמחות</label>
     <input formControlName="specialization" type="text" placeholder="התמחות" />
-    <div *ngIf="registrationForm.get('specialization')?.touched && registrationForm.get('specialization')?.invalid" class="error-message">
+    <div
+      *ngIf="registrationForm.get('specialization')?.touched && registrationForm.get('specialization')?.invalid"
+      class="error-message"
+    >
       <small>שדה חובה</small>
     </div>
 
     <label>סמינר</label>
     <input formControlName="seminar" type="text" placeholder="סמינר" />
-    <div *ngIf="registrationForm.get('seminar')?.touched && registrationForm.get('seminar')?.invalid" class="error-message">
+    <div
+      *ngIf="registrationForm.get('seminar')?.touched && registrationForm.get('seminar')?.invalid"
+      class="error-message"
+    >
       <small>שדה חובה</small>
     </div>
 
-    <button type="submit" class="submit-button" [disabled]="registrationForm.invalid">הרשמי</button>
+    <button
+      type="submit"
+      class="submit-button"
+      [disabled]="registrationForm.invalid"
+    >
+      הרשמי
+    </button>
   </form>
 </div>

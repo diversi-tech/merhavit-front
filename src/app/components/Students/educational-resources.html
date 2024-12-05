@@ -1,0 +1,38 @@
+<div class="resources-container">
+    <div *ngFor="let resource of resources" class="resource-row">
+      <div class="resource-image">
+        <img
+          [src]="resource.displayImage || 'assets/placeholder.png'"
+          alt="Cover Image"
+        />
+      </div>
+  
+      <div class="resource-details">
+        <h3 class="resource-title">{{ resource.title }}</h3>
+        <p class="resource-description">{{ resource.description }}</p>
+      </div>
+  
+      <div class="resource-date">
+        {{ resource.publicationDate | date:'dd.MM.yyyy' }}
+      </div>
+  
+      <div class="resource-type">
+        {{ resource.type }}
+      </div>
+  
+      <div class="resource-type-button">
+        <ng-container *ngIf="resource.type === 'ציוד'">
+          <button class="action-button">
+            להשאלה
+          </button>
+        </ng-container>
+        <ng-container *ngIf="resource.type !== 'ציוד'">
+          <button (click)="toggleFavorite(resource)" class="heart-button">
+            <img src="assets/heart-icon.png" alt="Add to Favorites" class="heart-icon" />
+          </button>
+          <i class="icon-share"></i>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  
