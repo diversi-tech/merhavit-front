@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router'; 
 import { Component } from '@angular/core';
 import {
   FormBuilder,
@@ -18,7 +19,7 @@ import { ApiService } from '../../api.service';
 export class RegistrationComponent {
   registrationForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router) {
     this.registrationForm = this.fb.group({
       fullName: ['', Validators.required],
       idNumber: ['', Validators.required],
@@ -27,7 +28,7 @@ export class RegistrationComponent {
       email: ['', [Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required], 
-      class: ['', [Validators.required, Validators.minLength(6)]],
+      class: ['', [Validators.required]],
       specialization: ['', Validators.required],
       seminar: ['', Validators.required],
 
@@ -48,11 +49,11 @@ export class RegistrationComponent {
         .Post('/users/register', this.registrationForm.value)
         .subscribe({
           next: (response) => {
-            alert('הרשמה בוצעה בהצלחה');
             this.registrationForm.reset();
+            this.router.navigate(['/success-registration']);
           },
           error: (error) => {
-            alert('התרחשה שגיאה: ' + error.error.message);
+            alert( error.error.message);
           },
           complete: () => {
             console.log('בקשה הושלמה בהצלחה');
