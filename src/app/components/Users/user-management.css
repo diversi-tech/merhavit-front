@@ -8,47 +8,46 @@
 .user-header, .user-row {
   display: flex;
   align-items: center;
-  padding: 15px 0; /* מרווח אחיד */
-  border-bottom: 1px solid #dcdcdc; /* קו דק */
+  padding: 15px 0; 
+  border-bottom: 1px solid #dcdcdc;
 }
 
 .user-header {
   font-size: 20px;
-  background-color: #f3f7fd; /* צבע רקע כותרת */
+  background-color: #f3f7fd; 
   font-weight: bold;
 }
 
 .user-row:last-child {
-  border-bottom: none; /* ביטול הקו בשורה האחרונה */
+  border-bottom: none; 
 }
 
 .user-cell {
-  flex: 1; /* כל תא מקבל רוחב שווה */
+  flex: 1; 
   text-align: center;
-  padding: 0 0px; /* מרווח פנימי אחיד */
-  box-sizing: border-box; /* מבטיח שרוחב התא כולל padding */
+  padding: 0 0px; 
+  box-sizing: border-box; 
 }
 
 .user-header .user-cell {
-  color: #4a5568; /* צבע טקסט כותרת */
+  color: #4a5568; 
 }
 
 .user-row .user-cell {
-  color: #2d3748; /* צבע טקסט רגיל */
+  color: #2d3748; 
 }
 
-/* אפקט hover */
 .user-row:hover {
-  background-color: #f0f0f0; /* צבע רקע אפור עדין */
-  cursor: pointer; /* הופך את הסמן ליד */
+  background-color: #f0f0f0; 
+  cursor: pointer; 
 }
 
 .user-actions {
-  flex: 0.5; /* כפתור הפעולות */
+  flex: 0.5; 
 }
 
 .action-button {
-  background-color: #38a169; /* צבע ירוק לכפתור */
+  background-color: #38a169; 
   color: #fff;
   padding: 6px 12px;
   border: none;
@@ -59,5 +58,5 @@
 }
 
 .action-button:hover {
-  background-color: #2f855a; /* צבע כהה יותר במעבר עכבר */
+  background-color: #2f855a;
 }
