@@ -1,40 +1,4 @@
 <p>upload-resource works!</p>
-<!-- <div class="upload-container">
-  <h1>הוספת קובץ</h1>
-
-  <div class="image-container">
-    <img src="assets/camera-placeholder.jpg" alt="Camera and equipment" />
-    <div class="upload-overlay">
-      <label for="fileUpload" class="upload-button">העלה קובץ ממחשב</label>
-      <input type="file" id="fileUpload" (change)="onFileSelected($event)" hidden />
-      <p *ngIf="uploadedFileName">הקובץ שנבחר: {{ uploadedFileName }}</p>
-    </div>
-  </div>
-
-  <h2>פרטי הקובץ</h2>
-  <form>
-    <label>תאריך העלאה:</label>
-    <input type="date" [(ngModel)]="uploadDate" name="uploadDate" />
-
-    <label>תאריך פרסום:</label>
-    <input type="date" [(ngModel)]="publishDate" name="publishDate" />
-
-    <label>סוג הקובץ:</label>
-    <input type="text" [(ngModel)]="fileType" name="fileType" />
-  </form>
-
-  <h2>סטטוס</h2>
-  <form>
-    <label>מאושר להורדה/להשאלה:</label>
-    <select [(ngModel)]="isApproved" name="approvalStatus">
-      <option [value]="true">כן</option>
-      <option [value]="false">לא</option>
-    </select>
-
-    <label>תוקף השאלה:</label>
-    <input type="text" [(ngModel)]="loanValidity" name="loanValidity" />
-  </form>
-</div> -->
 
 
 <div class="container">
@@ -42,16 +6,27 @@
 
   <!-- העלאת קובץ -->
   <div class="image-container">
-    <img [src]="previewImage || 'D:/Users/User/Desktop/פרונט/2public/camera-placeholder.jpg'" alt="תמונה לדוגמה" />
+    <div *ngIf="isVideo">
+      <video [src]="previewImage"></video>
+    </div>
+
+    <div *ngIf="isPDF">
+      <embed [src]="previewImage" type="application/pdf" >
+    </div>
+
+    <div *ngIf="isImage">
+      <img [src]="previewImage " alt="תמונה לדוגמה" />    
+    </div>
+
+    <div *ngIf="isAudio">
+      <audio [src]="previewImage" controls></audio>
+    </div>
+
+    
     <div class="upload-overlay">
-      <button (click)="fileInput.click()">העלה קובץ</button>
-      <input
-        type="file"
-        #fileInput
-        (change)="onFileSelected($event)"
-        accept=".jpg, .jpeg, .png, .pdf"
-        style="display: none;"
-      />
+      <button (click)="fileInput.click()">העלה קובץ PDF/ תמונה/וידאו/אודיו</button>
+      <input type="file" #fileInput (change)="onFileSelected($event)" accept=".jpg, .jpeg, .png, .pdf, video/*,.mp3,.wav"
+        style="display: none;" />
     </div>
   </div>
 
@@ -61,10 +36,6 @@
       <!-- כותרת: פרטי קובץ -->
       <div class="form-section">
         <h2>פרטי קובץ</h2>
-        <div class="form-group">
-          <label for="publishDate">תאריך פרסום</label>
-          <input type="date" id="publishDate" formControlName="publishDate" />
-        </div>
         <div class="form-group">
           <label for="uploadDate">תאריך העלאה</label>
           <input type="date" id="uploadDate" formControlName="uploadDate" />
@@ -84,7 +55,7 @@
       </div>
 
       <!-- כותרת: סטטוס -->
-      <div class="form-section">
+      <!-- <div class="form-section">
         <h2>סטטוס</h2>
         <div class="form-group">
           <label for="approved">מאושר להשאלה</label>
@@ -97,43 +68,87 @@
           <label for="loanValidity">תוקף השאלה</label>
           <input type="text" id="loanValidity" formControlName="loanValidity" />
         </div>
-      </div>
-    </div>
+      </div>-->
+    </div> 
 
-    <div class="form-section-container">
-      <!-- כותרת: למי מיועד -->
-      <div class="form-section">
-        <h2>למי מיועד</h2>
-        <div class="form-group">
-          <label for="specialization">התמחות</label>
-          <select id="specialization" formControlName="specialization">
-            <option *ngFor="let specialization of specializations" [value]="specialization">{{ specialization }}</option>
-          </select>
+      <div class="form-section-container">
+        <!-- כותרת: למי מיועד -->
+        <div class="form-section">
+          <h2>למי מיועד</h2>
+          <!-- <mat-form-field>
+            <mat-label>התמחות</mat-label>
+            formControlName="specializations" 
+            <mat-chip-grid #chipList aria-label="רשימת התמחות">
+              <mat-chip-row *ngFor="let specialization of specializations" [removable]="true" (removed)="remove(specialization)">
+                {{specialization}}
+                <button matChipRemove>×</button>
+              </mat-chip-row>
+              <input
+              matInput
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="add($event)"
+                [matAutocomplete]="auto"
+                placeholder="הוסיפי התמחות"
+                
+              />
+               
+            </mat-chip-grid>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectSpecialization($event)">
+              <mat-option *ngFor="let specialization of filteredSpecializations$ | async" [value]="specialization">
+                {{ specialization }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field> -->
+          <mat-form-field>
+            <mat-label>התמחות</mat-label>
+            <mat-chip-grid #chipList aria-label="רשימת התמחות">
+              <mat-chip-row *ngFor="let specialization of specializations" [removable]="true" (removed)="remove(specialization)">
+                {{specialization}}
+                <button matChipRemove>×</button>
+              </mat-chip-row>
+              <input
+              matInput
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="add($event)"
+                [matAutocomplete]="auto"
+                placeholder="הוסיפי התמחות"
+              />
+            </mat-chip-grid>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectSpecialization($event)">
+              <mat-option *ngFor="let specialization of filteredSpecializations$ | async" [value]="specialization">
+                {{ specialization }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          
+          <div class="form-group">
+            <label for="ageGroup">לאיזה גיל מיועד הקובץ</label>
+            <select id="ageGroup" formControlName="ageGroup">
+              <option *ngFor="let age of ageGroups" [value]="age">{{ age }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="level">איזה רמה מיועד</label>
+            <select id="level" formControlName="level">
+              <option *ngFor="let level of levels" [value]="level">{{ level }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="language">שפה</label>
+            <select id="language" formControlName="language">
+              <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
+            </select>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="ageGroup">לאיזה גיל מיועד הקובץ</label>
-          <select id="ageGroup" formControlName="ageGroup">
-            <option *ngFor="let age of ageGroups" [value]="age">{{ age }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="level">איזה רמה מיועד</label>
-          <select id="level" formControlName="level">
-            <option *ngFor="let level of levels" [value]="level">{{ level }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="language">שפה</label>
-          <select id="language" formControlName="language">
-            <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
-          </select>
-        </div>
-      </div>
 
-      <!-- כותרת: אודות הקובץ -->
-      <div class="form-section">
-        <h2>אודות הקובץ</h2>
-        <div class="form-group">
+        <!-- כותרת: אודות הקובץ -->
+        <div class="form-section">
+          <h2>אודות הקובץ</h2>
+          <!-- <div class="form-group">
           <label for="purchaseLocation">איפה נקנה</label>
           <select id="purchaseLocation" formControlName="purchaseLocation">
             <option *ngFor="let location of purchaseLocations" [value]="location">{{ location }}</option>
@@ -150,27 +165,30 @@
         <div class="form-group">
           <label for="copies">מס עותקים</label>
           <input type="number" id="copies" formControlName="copies" />
-        </div>
-        <div class="form-group">
-          <label for="releaseYear">שנת הוצאה</label>
-          <input type="text" id="releaseYear" formControlName="releaseYear" />
-        </div>
-        <div class="form-group">
-          <label for="author">מחבר/זמר</label>
-          <input type="text" id="author" formControlName="author" />
+        </div> -->
+          <div class="form-group">
+            <label for="releaseYear">שנת הוצאה</label>
+            <input type="text" id="releaseYear" formControlName="releaseYear" />
+          </div>
+          <div class="form-group">
+            <label for="author">מחבר/זמר</label>
+            <input type="text" id="author" formControlName="author" />
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- ללא כותרת -->
-    <div class="form-section">
-      <div class="form-group">
-        <label for="additionalInfo">מה עוד כדאי לדעת?</label>
-        <textarea id="additionalInfo" rows="4" formControlName="additionalInfo"></textarea>
+      <div class="form-section">
+        <div class="form-group">
+          <label for="tags">תגיות</label>
+          <input type="text" id="tags" formControlName="tags" placeholder="הכניסי תגיות מופרדות בפסיקים"/>
+        </div>
+        <div class="form-group">
+          <label for="additionalInfo">מה עוד כדאי לדעת?</label>
+          <textarea id="additionalInfo" rows="4" formControlName="additionalInfo"></textarea>
+        </div>
       </div>
-    </div>
 
-    <!-- כפתור שליחה -->
-    <button type="submit">שלח</button>
+      <!-- כפתור שליחה -->
+      <button type="submit">שלח</button>
   </form>
 </div>
