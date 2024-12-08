@@ -65,19 +65,46 @@
       >
     </div>
     <label>סיסמה</label>
-    <input formControlName="password" type="password" placeholder="הכנס סיסמה" />
-    <div *ngIf="registrationForm.get('password')?.touched && registrationForm.get('password')?.invalid" class="error-message">
-      <small *ngIf="registrationForm.get('password')?.errors?.['required']">שדה חובה</small>
-      <small *ngIf="registrationForm.get('password')?.errors?.['minlength']">סיסמה חייבת להכיל לפחות 6 תווים</small>
+    <input
+      formControlName="password"
+      type="password"
+      placeholder="הכנס סיסמה"
+    />
+    <div
+      *ngIf="registrationForm.get('password')?.touched && registrationForm.get('password')?.invalid"
+      class="error-message"
+    >
+      <small *ngIf="registrationForm.get('password')?.errors?.['required']"
+        >שדה חובה</small
+      >
+      <small *ngIf="registrationForm.get('password')?.errors?.['minlength']"
+        >סיסמה חייבת להכיל לפחות 6 תווים</small
+      >
     </div>
 
     <label>אימות סיסמה</label>
-    <input formControlName="confirmPassword" type="password" placeholder="הכנס שוב סיסמה" />
+    <input
+      formControlName="confirmPassword"
+      type="password"
+      placeholder="הכנס שוב סיסמה"
+    />
     <div *ngIf="registrationForm.errors?.['mismatch']" class="error-message">
       <small>הסיסמאות אינן תואמות</small>
     </div>
 
+    <div
+      *ngIf="registrationForm.get('confirmPassword')?.touched && registrationForm.get('confirmPassword')?.invalid"
+      class="error-message"
+    >
+      <small>שדה חובה</small>
+    </div>
 
+    <div
+      *ngIf="registrationForm.errors?.['passwordMismatch'] && registrationForm.get('confirmPassword')?.touched"
+      class="error-message"
+    >
+      <small>הסיסמאות לא תואמות</small>
+    </div>
     <!-- <label>סיסמה</label>
     <input formControlName="password" type="password" placeholder="123456789" />
     <div
