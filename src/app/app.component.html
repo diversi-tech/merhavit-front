@@ -1,7 +1,5 @@
 <div class="layout">
-  <main class="content">
-    <router-outlet></router-outlet>
-  </main>
+  
   <nav class="sidebar">
     <div class="sidebar-header">
       <h2 class="sidebar-title">מרחבית</h2>
@@ -19,4 +17,12 @@
 
     </ul>
   </nav>
+  <div class="main-container">
+    <div class="header" *ngIf="showSearchComponent">
+      <app-search></app-search>
+    </div>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>
