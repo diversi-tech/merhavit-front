@@ -13,7 +13,7 @@ import { SuccessRegistrationComponent } from './components/Users/success-registr
 import { EducationalResourcesComponent } from './components/Students/educational-resources';
 
 export const routes: Routes = [
-  { path: '', component:  EducationalResourcesComponent},  
+  { path: '', component:  WelcomeComponent},  
   { path: 'login', component: LoginComponent },  
   { path: 'students', component:  SearchComponent},
   {path:'show-details',component:ItemsListComponent},
