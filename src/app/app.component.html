@@ -1,20 +1,50 @@
 <div class="layout">
-  
   <nav class="sidebar">
     <div class="sidebar-header">
       <h2 class="sidebar-title">מרחבית</h2>
       <img src="assets/books-icon.png" alt="ספרים" class="sidebar-icon" />
     </div>
     <ul class="sidebar-menu">
-      <li><a routerLink="/home">ראשי</a></li>
-      <li><a routerLink="/guests">מערכים</a></li>
-      <li><a routerLink="/exercises">עיתונים</a></li>
-      <li><a routerLink="/images">תמונות</a></li>
-      <li><a routerLink="/show-details">נתונים</a></li>
-      <li><a routerLink="/songs">שירים</a></li>
-      <li><a routerLink="/books">ספרים</a></li>
-      <li><a routerLink="/equipment">ציוד</a></li>
-
+      <li>
+        <a routerLink="/home">
+          <i class="far fa-calendar-alt"></i> הכל
+        </a>
+      </li>
+      <li>
+        <a routerLink="/guests">
+          <i class="fas fa-layer-group"></i> מערכים
+        </a>
+      </li>
+      <li>
+        <a href="#" (click)="toggleSubMenu('images')">
+          <i class="far fa-image"></i> תמונות
+          <i
+            class="fas fa-chevron-down submenu-icon"
+            [ngClass]="{ open: activeSubMenu === 'images' }"
+          ></i>
+        </a>
+        <ul class="submenu" *ngIf="activeSubMenu === 'images'">
+          <li><a routerLink="/images/posters">כרזות</a></li>
+          <li><a routerLink="/images/worksheets">דפי עבודה</a></li>
+          <li><a routerLink="/images/illustrations">איורים</a></li>
+          <li><a routerLink="/images/creations">יצירות</a></li>
+        </ul>
+      </li>
+      <li>
+        <a routerLink="/movies">
+          <i class="fas fa-play"></i> סרטונים
+        </a>
+      </li>
+      <li>
+        <a routerLink="/songs">
+          <i class="fas fa-music"></i> שירים
+        </a>
+      </li>
+      <li>
+        <a routerLink="/books">
+          <i class="fas fa-book"></i> ספרים
+        </a>
+      </li>
     </ul>
   </nav>
   <div class="main-container">

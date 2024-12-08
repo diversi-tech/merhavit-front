@@ -31,7 +31,7 @@ export class LoginComponent {
         const userRole = decodedToken.userType;
         if (userRole === 'Admin') {
           console.log('Redirecting to user management');
-          this.router.navigate(['/user-management']);
+          this.router.navigate(['/personal-details']);
         } else {
           console.log('Login successful');
           localStorage.setItem('idNumber', this.id);
