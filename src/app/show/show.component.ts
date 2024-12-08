@@ -13,7 +13,7 @@ interface Item  
   title:string;
   type:string;
   Author:string;
-  pablicationDate:Date;
+  publicationDate: Date;
   Tags:Array<string>;
   createdBy:string;
   ApprovedBy:string;

@@ -48,21 +48,24 @@
   color: #fff;
 }
 
-/* טבלה */
+
 .table-container {
-  width: 100%;
-  margin-top: 20px;
+  direction: rtl;           
+  display: flex;            
+  flex-direction: column;   
+  align-items: center;      
+  background-color: #ffffff; 
 }
 
 .row {
   display: flex;
+  justify-content: space-between; /* מרווח בין התוכן והכפתורים */
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #fff;
+  width: 90%;              /* רוחב של כל פריט - אפשר לשנות בהתאם לצורך */
+  max-width: 800px;        /* רוחב מקסימלי של הפריטים */
+  padding: 20px 0;           /* מרווח פנימי בתוך כל פריט */
+  background-color: transparent; 
+  border-bottom: 1px solid #dcdcdc; 
 }
 
 .item-content {
@@ -96,11 +99,17 @@
 
 .item-meta {
   font-size: 12px;
-  color: #aaa;
+  color:black;
   margin-top: 5px;
 }
+.meta-label {
+  font-weight: bold; 
+}
 
-/* סטטוס */
+.meta-value {
+  font-weight: normal; 
+}
+
 .row .status {
   font-size: 12px;
   font-weight: bold;
@@ -125,7 +134,6 @@
   color: #007b00;
 }
 
-/* כפתורי הפעולות */
 .actions {
   display: flex;
   gap: 10px;
@@ -135,24 +143,29 @@
   padding: 5px 15px;
   font-size: 14px;
   border-radius: 20px;
-  border: 1px solid #007b00;
-  background-color: transparent;
-  color: #007b00;
   cursor: pointer;
   transition: all 0.3s;
 }
 
-.action-button:hover {
-  background-color: #007b00;
-  color: #fff;
-}
-
 .action-button.edit {
-  border-color: #777;
-  color: #777;
+  border: 1px solid #28a745; /* ירוק */
+  color: #28a745;
 }
 
 .action-button.edit:hover {
-  background-color: #777;
+  background-color: #28a745;
   color: #fff;
+}
+
+.action-button.delete {
+  border: none;        /* ללא מסגרת */
+  background-color: transparent; /* ללא רקע */
+  color:black;         /* צבע הטקסט */
+  cursor: pointer;
+  transition: all 0.3s; /* מעבר חלק */
+}
+
+.action-button.delete:hover {
+  background-color: f3f7fd;
+  color:red;
 }
