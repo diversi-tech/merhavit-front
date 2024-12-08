@@ -169,3 +169,29 @@
   background-color: f3f7fd;
   color:red;
 }
+
+.action-button.favorite,
+.action-button.download,
+.action-button.order {
+  padding: 5px 15px;
+  font-size: 14px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.action-button.favorite:hover,
+.action-button.download:hover {
+  color:#218838;
+}
+
+.action-button.order {
+  background-color: #28a745;
+  color: #fff;
+  border-radius: 20px;
+}
+
+.action-button.order:hover {
+  background-color: #218838;
+}

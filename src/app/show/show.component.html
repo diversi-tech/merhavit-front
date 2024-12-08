@@ -18,13 +18,28 @@
       </div>
     </div>
 
-    <div class="actions">
-      <button class="action-button delete" (click)="deleteResource(item)">
-        <i class="far fa-trash-alt"></i>
+  <!-- הצגת כפתורים לספרנית -->
+  <div class="actions" *ngIf="userType === 'Librarian'">
+    <button class="action-button delete" (click)="deleteResource(item)">
+      <i class="far fa-trash-alt"></i> 
+    </button>
+    <button class="action-button edit">עריכה</button>
+  </div>
 
-      </button>
+  <!-- הצגת כפתורים לתלמידה -->
+  <div class="actions" *ngIf="userType === 'Student'">
+    <button class="action-button favorite">
+      <i class="far fa-heart"></i> 
+    </button>
+    <!-- כפתורים להורדה עבור Article, Video, Scanned Document -->
+    <button class="action-button download" *ngIf="item.type === 'Article' || item.type === 'Video' || item.type === 'Scanned Document'">
+      <i class="fas fa-download"></i> 
+    </button>
 
-      <button class="action-button edit">עריכה</button>
-    </div>
+    <!-- כפתור להזמנה עבור Book -->
+    <button class="action-button order" *ngIf="item.type === 'Book'">
+      להזמנה
+    </button>
+  </div>
   </div>
 </div>
