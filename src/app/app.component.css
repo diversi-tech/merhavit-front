@@ -108,3 +108,38 @@
   padding: 0; 
   margin: 0; 
 }
+/* סגנון כללי של תת-תפריט */
+.submenu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  background-color: #c7d8f0; /* רקע כחול כהה יותר */
+  border-radius: 15px;
+}
+
+.submenu li a {
+  display: block;
+  padding: 10px 20px;
+  color: #333;
+  font-size: 16px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+
+}
+
+.submenu li a:hover {
+  background-color: #a9c1e5; /* רקע כחול כהה עוד יותר */
+  color: #000;
+}
+
+/* אייקון החץ */
+.submenu-icon {
+  margin-right: auto; /* מצמיד את החץ לצד שמאל */
+  transition: transform 0.3s ease;
+}
+
+.submenu-icon.open {
+  transform: rotate(180deg); /* סיבוב החץ */
+}
+
