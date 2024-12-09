@@ -13,16 +13,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class PersonalDetailsComponent implements OnInit {
   user = {
-    fullName: '',
-    idNumber: '',
-    address: '',
-    phoneNumber: '',
-    email: '',
-    // password: '',
-    class: '',
+    firstName: '',
+    lastName: '',
+    phone: '',
+    mobile: '',
+    street: '',
+    city: '',
     specialization: '',
-    assignedSeminaryId: '',
+    role: '',
   };
+  activeTab: string = 'personal-details';
+
 
   constructor(
     private apiService: ApiService,
@@ -76,5 +77,27 @@ export class PersonalDetailsComponent implements OnInit {
 
   goToChangePassword() {
     this.router.navigate(['/change-password']); 
+  }
+  navigateTo(tab: string) {
+    this.activeTab = tab;
+    switch (tab) {
+      case 'returns':
+        this.router.navigate(['/returns']);
+        break;
+      case 'activity-questions':
+        this.router.navigate(['/activity-questions']);
+        break;
+      case 'orders':
+        this.router.navigate(['/orders']);
+        break;
+      case 'favorites':
+        this.router.navigate(['/favorites']);
+        break;
+      case 'notifications':
+        this.router.navigate(['/notifications']);
+        break;
+      default:
+        this.router.navigate(['/personal-details']);
+    }
   }
 }

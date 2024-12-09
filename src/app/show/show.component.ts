@@ -2,9 +2,11 @@ import { Component, Injectable, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+// import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
-import { log } from 'console';
+// import { log } from 'console';
+import { jwtDecode } from 'jwt-decode';
+
 
 interface Item   
  {
@@ -13,7 +15,7 @@ interface Item  
   title:string;
   type:string;
   Author:string;
-  pablicationDate:Date;
+  publicationDate: Date;
   Tags:Array<string>;
   createdBy:string;
   ApprovedBy:string;
@@ -23,27 +25,40 @@ interface Item  
 
 @Component({
   selector: 'app-items-list',
-  templateUrl: './show.component.html', // ודא שהנתיב נכון!
+  templateUrl: './show.component.html', 
   styleUrls: ['./show.component.css'],
-  standalone: true, // זה הופך את הרכיב לעצמאי
-  imports: [CommonModule,MatTableModule] // ייבוא ישיר של מודולים
+  standalone: true, 
+  imports: [CommonModule,MatTableModule] 
 })
 
 //@Injectable({ providedIn: 'root' })
 export class ItemsListComponent implements OnInit {
 
   public items: Item[] = []; //מערך המוצרים של הספריה 
+  public userType: string = ''; // משתנה לשמירת סוג המשתמש
 
   constructor(private http: HttpClient,private apiService: ApiService) {}
 
   async ngOnInit(): Promise<void> {
-
+    this.getUserTypeFromToken(); 
     await this.getItems()
     console.log("items: "+this.items);
     
     // this.getItems().subscribe(items => {
     //   this.items = items;
     // });
+  }
+
+  getUserTypeFromToken(): void {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        this.userType = decodedToken.userType || '';
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
   }
 
   async getItems()

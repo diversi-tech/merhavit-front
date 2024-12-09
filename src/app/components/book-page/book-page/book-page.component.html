@@ -1,35 +1,13 @@
-<p>book-page works!</p>
+<div *ngIf="book">
+  <h1>{{ book.title }}</h1>
+  <p>{{ book.description }}</p>
+  <p>Author: {{ book.author }}</p>
+  <p>Published: {{ book.publishedDate }}</p>
+</div>
 
-<!-- לסדר את הקוד הזה -->
-<!-- <div>
-    <mat-card class="demo-inline-calendar-card">
-        <mat-calendar [(selected)]="selected"></mat-calendar>
-    </mat-card>
-    <p>Selected date: {{selected()}}</p>
-</div> -->
-
-<h1>kuhuhih</h1>
-<!-- <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Outline form field</mat-label>
-      <input matInput placeholder="Placeholder">
-      <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-      <mat-hint>Hint</mat-hint>
-    </mat-form-field>
-  </p>
-<form [formGroup]="rentalForm">
-    <mat-form-field>
-        <input matInput placeholder="שם" formControlName="name">
-    </mat-form-field>
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-
-    <mat-checkbox *ngFor="let accessory of accessories" [value]="accessory.id">
-        {{ accessory.name }}
-    </mat-checkbox>
-
-    <button mat-raised-button color="primary" type="submit">השכר</button>
-</form>
-
-<div *ngFor="let product of similarProducts">
-</div> -->
+<h2>Similar Books:</h2>
+<ul>
+  <li *ngFor="let similarBook of similarBooks">
+    {{ similarBook.title }} by {{ similarBook.author }}
+  </li>
+</ul>

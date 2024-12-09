@@ -10,12 +10,10 @@ import { ItemsListComponent } from './show/show.component';
 import { ForgotPasswordComponent } from './components/Users/forgot-password';
 import { ResetPasswordComponent } from './components/Users/reset-password';
 import { SuccessRegistrationComponent } from './components/Users/success-registration';
-import { EducationalResourcesComponent } from './components/Students/educational-resources';
-import { BookPageComponent } from './components/b/book-page.component';
+import { BookPageComponent } from './components/book-page/book-page/book-page.component';
 
 export const routes: Routes = [
-  { path: '', component:  BookPageComponent},  
-  // { path: '', component:  EducationalResourcesComponent},  
+  { path: '', component:  WelcomeComponent},  
   { path: 'login', component: LoginComponent },  
   { path: 'students', component:  SearchComponent},
   {path:'show-details',component:ItemsListComponent},
@@ -27,7 +25,6 @@ export const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },  
   { path: 'success-registration', component: SuccessRegistrationComponent },  
   {path:'show-details',component:ItemsListComponent},
-  {path:'educational-resources',component:EducationalResourcesComponent},
-
+  {path: 'book-page', component: BookPageComponent},
   { path: '**', redirectTo: '' },  // עמוד ברירת מחדל לכל כתובת לא תקינה
 ];
