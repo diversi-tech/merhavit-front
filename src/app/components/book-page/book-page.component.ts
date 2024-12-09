@@ -14,7 +14,7 @@ import {MatInputModule} from '@angular/material/input';
   imports: [MatCardModule, MatDatepickerModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DatepickerInlineCalendarExample {
+export class BookPageComponent {
   selected = model<Date | null>(null);
 }
 
