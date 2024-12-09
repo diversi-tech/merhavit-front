@@ -11,9 +11,11 @@ import { ForgotPasswordComponent } from './components/Users/forgot-password';
 import { ResetPasswordComponent } from './components/Users/reset-password';
 import { SuccessRegistrationComponent } from './components/Users/success-registration';
 import { EducationalResourcesComponent } from './components/Students/educational-resources';
+import { BookPageComponent } from './components/b/book-page.component';
 
 export const routes: Routes = [
-  { path: '', component:  EducationalResourcesComponent},  
+  { path: '', component:  BookPageComponent},  
+  // { path: '', component:  EducationalResourcesComponent},  
   { path: 'login', component: LoginComponent },  
   { path: 'students', component:  SearchComponent},
   {path:'show-details',component:ItemsListComponent},

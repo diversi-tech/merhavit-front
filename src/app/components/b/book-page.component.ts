@@ -7,9 +7,9 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 
 @Component({
-  selector: 'datepicker-inline-calendar-example',
-  templateUrl: 'datepicker-inline-calendar-example.html',
-  styleUrl: 'datepicker-inline-calendar-example.css',
+  selector: 'book-page',
+  templateUrl: 'book-page.component.html',
+  styleUrl: 'book-page.component.css',
   providers: [provideNativeDateAdapter()],
   imports: [MatCardModule, MatDatepickerModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
