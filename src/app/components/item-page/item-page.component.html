@@ -2,10 +2,17 @@
   <div *ngIf="item" class="grid-item item-1">
     <img [src]="item.filePath" alt="{{ item.title }} cover" *ngIf="item.filePath">
   </div>
-  <div *ngIf="item" class="grid-item item-2">
+  <div *ngIf="item" class="grid-item item-2 item-details">
     <h1>{{ item.title }}</h1>
-    <p>{{ item.subject }}</p>
-    <p>{{ item.specializations }}</p>
+    <p><strong>תאריך פרסום:</strong> {{ item.publicationDate }}</p>
+    <p><strong>נושא:</strong> {{ item.subject }}</p>
+    <p><strong>גיל:</strong> {{ item.ages }}</p>
+    <p><strong>רמה:</strong> {{ item.level }}</p>
+    <p><strong>שפה:</strong> {{ item.language }}</p>
+    <p><strong>שנת הוצאה לאור:</strong> {{ item.releaseYear }}</p>
+    <p><strong>מחבר:</strong> {{ item.author }}</p>
+    <p><strong>תיאור:</strong> {{ item.description }}</p>
+    <p><strong>חוות דעת:</strong> {{ item.tags.join(', ') }}</p>
   </div>
   <div class="grid-item item-3">
     <h2>פריטים דומים</h2>
