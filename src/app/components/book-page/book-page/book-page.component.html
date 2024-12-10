@@ -1,13 +1,12 @@
 <div *ngIf="book">
   <h1>{{ book.title }}</h1>
-  <p>{{ book.description }}</p>
-  <p>Author: {{ book.author }}</p>
-  <p>Published: {{ book.publishedDate }}</p>
+  <p>{{ book.subject }}</p>
+  <p>{{ book.specializations }}</p>
 </div>
 
 <h2>Similar Books:</h2>
 <ul>
   <li *ngFor="let similarBook of similarBooks">
-    {{ similarBook.title }} by {{ similarBook.author }}
+    {{ similarBook.title }}
   </li>
 </ul>

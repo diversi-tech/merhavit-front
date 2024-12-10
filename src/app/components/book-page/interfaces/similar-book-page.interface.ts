@@ -1,7 +1,7 @@
 export interface SimilarBook {
-    id: string;
+    // id: string;
     title: string;
-    author: string;
-    imageUrl: string;
+    subject: string;
+    specializations: string;
   }
   

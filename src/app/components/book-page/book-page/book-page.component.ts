@@ -1,108 +1,107 @@
-import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../api.service';
-import { Book } from '../interfaces/book-page.interface';
-import { SimilarBook } from '../interfaces/similar-book-page.interface';
-import { CommonModule } from '@angular/common'; // דרוש עבור Standalone
-import { ActivatedRoute } from '@angular/router'; // נדרש לשליפת הפרמטרים מהנתיב
+// import { Component, OnInit } from '@angular/core';
+// import { ApiService } from '../../../api.service';
+// import { Book } from '../interfaces/book-page.interface';
+// import { SimilarBook } from '../interfaces/similar-book-page.interface';
+// import { CommonModule } from '@angular/common'; // דרוש עבור Standalone
+// import { ActivatedRoute } from '@angular/router'; // נדרש לשליפת הפרמטרים מהנתיב
 
 
 // @Component({
 //   selector: 'app-book-page',
-//   standalone: true,
 //   templateUrl: './book-page.component.html',
 //   styleUrls: ['./book-page.component.css'],
+//   standalone: true,
+//   imports: [CommonModule], // הוספת CommonModule עבור *ngIf ו-*ngFor
 // })
 // export class BookPageComponent implements OnInit {
-//   book!: Book; // פרטי הספר
-//   similarBooks: SimilarBook[] = []; // ספרים דומים
-//   bookId!: string; // ID דינמי מהנתיב
+//   book: Book | null = null;
+//   similarBooks: Book[] = [];
 
-//   constructor(private apiService: ApiService, private route: ActivatedRoute) {}
+//   constructor(private route: ActivatedRoute, private apiService: ApiService) {}
 
 //   ngOnInit(): void {
-//     // שליפת ה-ID מהנתיב
-//     this.route.paramMap.subscribe((params) => {
-//       this.bookId = params.get('id') || ''; // קבלת ה-ID מהנתיב (ברירת מחדל: מחרוזת ריקה)
-//       if (this.bookId) {
-//         this.fetchBookDetails();
-//         this.fetchSimilarBooks();
-//       }
-//     });
+//     const bookId = this.route.snapshot.paramMap.get('id');
+//     if (bookId) {
+//       this.fetchBookDetails(bookId);
+//       this.fetchSimilarBooks(bookId);
+//     }
 //   }
 
-//   // שליפת פרטי הספר
-//   fetchBookDetails(): void {
-//     this.apiService.Read(`/book-page/${this.bookId}`).subscribe({
+//   fetchBookDetails(bookId: string) {
+//     this.apiService.Read(`/book-page/${bookId}`).subscribe({
 //       next: (response) => {
-//         this.book = response; // שמירת נתוני הספר
+//         this.book = response;
 //       },
-//       error: (error) => {
-//         console.error('Error fetching book details:', error);
+//       error: (err) => {
+//         console.error('Error fetching book details', err);
 //       },
 //     });
 //   }
 
-//   // שליפת ספרים דומים
-//   fetchSimilarBooks(): void {
-//     this.apiService.Read(`/book-page/${this.bookId}/similar`).subscribe({
+//   fetchSimilarBooks(bookId: string) {
+//     this.apiService.Read(`/book-page/${bookId}/similar`).subscribe({
 //       next: (response) => {
-//         this.similarBooks = response; // שמירת רשימת ספרים דומים
+//         this.similarBooks = response;
 //       },
-//       error: (error) => {
-//         console.error('Error fetching similar books:', error);
+//       error: (err) => {
+//         console.error('Error fetching similar books', err);
 //       },
 //     });
 //   }
 // }
 
-
+import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../../api.service';
+import { Book } from '../interfaces/book-page.interface';
+import { SimilarBook } from '../interfaces/similar-book-page.interface';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-book-page',
-  standalone: true,
   templateUrl: './book-page.component.html',
   styleUrls: ['./book-page.component.css'],
+  standalone: true,
+  imports: [CommonModule],
 })
 export class BookPageComponent implements OnInit {
-  book!: Book; // פרטי הספר
-  similarBooks: SimilarBook[] = []; // ספרים דומים
-  bookId!: string; // ID של הספר מהנתיב
+  book: Book | null = null;
+  similarBooks: SimilarBook[] = [];
 
-  constructor(private apiService: ApiService, private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private apiService: ApiService) {}
 
   ngOnInit(): void {
-    // קבלת ה-ID מתוך הפרמטר שנשלח לנתיב
-    this.route.queryParams.subscribe((params) => {
-      this.bookId = params['id']; // ה-ID מועבר כפרמטר ב-URL
-      if (this.bookId) {
-        this.fetchBookDetails(); // קריאה לפונקציה שמביאה את פרטי הספר
-        this.fetchSimilarBooks(); // קריאה לפונקציה שמביאה ספרים דומים
-      } else {
-        console.error('Book ID not provided in URL.');
-      }
+    const bookId = this.route.snapshot.paramMap.get('id');
+    if (bookId) {
+      this.fetchBookDetails(bookId);
+      this.fetchSimilarBooks(bookId);
+    } else {
+      console.error('Book ID not found in route');
+    }
+  }
+
+  fetchBookDetails(bookId: string) {
+    console.log('Fetching book details for ID:', bookId);
+    this.apiService.Read(`/book-page/${bookId}`).subscribe({
+      next: (response) => {
+        console.log('Book details received:', response);
+        this.book = response;
+      },
+      error: (err) => {
+        console.error('Error fetching book details', err);
+      },
     });
   }
 
-  // שליפת פרטי הספר
-  fetchBookDetails(): void {
-    this.apiService.Read(`/book-page/${this.bookId}`).subscribe({
+  fetchSimilarBooks(bookId: string) {
+    console.log('Fetching similar books for ID:', bookId);
+    this.apiService.Read(`/book-page/${bookId}/similar`).subscribe({
       next: (response) => {
-        this.book = response; // שמירת נתוני הספר
+        console.log('Similar books received:', response);
+        this.similarBooks = response;
       },
-      error: (error) => {
-        console.error('Error fetching book details:', error);
-      },
-    });
-  }
-
-  // שליפת ספרים דומים
-  fetchSimilarBooks(): void {
-    this.apiService.Read(`/book-page/${this.bookId}/similar`).subscribe({
-      next: (response) => {
-        this.similarBooks = response; // שמירת רשימת ספרים דומים
-      },
-      error: (error) => {
-        console.error('Error fetching similar books:', error);
+      error: (err) => {
+        console.error('Error fetching similar books', err);
       },
     });
   }
