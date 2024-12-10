@@ -1,7 +1,7 @@
 export interface Book {
-  // id: string;
   title: string;
   subject: string;
   specializations: string;
-  publishedDate?: string; // הוספת התכונה PublishedDate (שדה אופציונלי)
+  filePath: string; // הוספת התמונה
+  publishedDate?: string;
 }

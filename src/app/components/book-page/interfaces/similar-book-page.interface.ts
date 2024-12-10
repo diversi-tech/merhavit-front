@@ -1,7 +1,5 @@
 export interface SimilarBook {
-    // id: string;
-    title: string;
-    subject: string;
-    specializations: string;
-  }
-  
+  title: string;
+  filePath: string; // הוספת התמונה
+  specializations: string;
+}

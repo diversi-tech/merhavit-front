@@ -1,12 +1,13 @@
 <div *ngIf="book">
   <h1>{{ book.title }}</h1>
   <p>{{ book.subject }}</p>
-  <p>{{ book.specializations }}</p>
+  <p>specializations: {{ book.specializations }}</p>
+  <img [src]="book.filePath" alt="{{ book.title }} cover" *ngIf="book.filePath">
 </div>
 
 <h2>Similar Books:</h2>
 <ul>
   <li *ngFor="let similarBook of similarBooks">
-    {{ similarBook.title }}
+    <img [src]="similarBook.filePath" alt="{{ similarBook.title }} cover" *ngIf="similarBook.filePath">
   </li>
 </ul>
