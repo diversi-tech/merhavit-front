@@ -1,0 +1,18 @@
+<div class="grid-container">
+  <div *ngIf="item" class="grid-item item-1">
+    <img [src]="item.filePath" alt="{{ item.title }} cover" *ngIf="item.filePath">
+  </div>
+  <div *ngIf="item" class="grid-item item-2">
+    <h1>{{ item.title }}</h1>
+    <p>{{ item.subject }}</p>
+    <p>{{ item.specializations }}</p>
+  </div>
+  <div class="grid-item item-3">
+    <h2>פריטים דומים</h2>
+    <div class="similar-items">
+      <div *ngFor="let similarItem of similarItems" class="similar-item">
+        <img [src]="similarItem.filePath" alt="{{ similarItem.title }} cover" *ngIf="similarItem.filePath">
+      </div>
+    </div>
+  </div>
+</div>

@@ -10,7 +10,7 @@ import { ItemsListComponent } from './show/show.component';
 import { ForgotPasswordComponent } from './components/Users/forgot-password';
 import { ResetPasswordComponent } from './components/Users/reset-password';
 import { SuccessRegistrationComponent } from './components/Users/success-registration';
-import { BookPageComponent } from './components/book-page/book-page/book-page.component';
+import { ItemPageComponent } from './components/item-page/item-page.component';
 
 export const routes: Routes = [
   { path: '', component:  WelcomeComponent},  
@@ -25,6 +25,6 @@ export const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },  
   { path: 'success-registration', component: SuccessRegistrationComponent },  
   {path:'show-details',component:ItemsListComponent},
-  {path: 'book-page/:id', component: BookPageComponent},
+  {path: 'item-page/:id', component: ItemPageComponent},
   { path: '**', redirectTo: '' },  // עמוד ברירת מחדל לכל כתובת לא תקינה
 ];

@@ -5,13 +5,13 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ItemsListModule } from './show/items-list.module';
 import { CommonModule } from '@angular/common';
 import { SearchComponent } from './components/Students/search/search.component';
-import { BookPageComponent } from './components/book-page/book-page/book-page.component';
+import { ItemPageComponent } from './components/item-page/item-page.component';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive,ItemsListComponent,MatDialogModule,ItemsListModule,SearchComponent, BookPageComponent],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive,ItemsListComponent,MatDialogModule,ItemsListModule,SearchComponent, ItemPageComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'] 
 })

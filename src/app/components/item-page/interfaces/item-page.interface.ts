@@ -1,4 +1,4 @@
-export interface Book {
+export interface Item {
   title: string;
   subject: string;
   specializations: string;
