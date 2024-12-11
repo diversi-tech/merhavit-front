@@ -9,6 +9,8 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
         Authorization: `Bearer ${token}`
       }
     });
+    console.log('Token Added:', token);
+
     return next(clonedReq); // שימוש ב-HttpHandlerFn במקום HttpHandler
   }
   return next(req);
