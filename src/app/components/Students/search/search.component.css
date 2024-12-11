@@ -3,62 +3,57 @@
   align-items: center;
   justify-content: space-between;
   background-color: #f3f7fd;
-  padding: 20px;
-  height: 100px;
+  padding: 1.5vh;
+  height: 15vh;
 }
 
 .top-icons {
   display: flex;
-  gap: 20px;
+  gap: 3vh;
 }
 
 .icon {
-  width: 30px;
-  height: 30px;
+  width: 2.1vw;
+  height: 4.5vh;
   cursor: pointer;
 }
 
 .user-icon {
   background-color: #27c95a; 
   border-radius: 50%;
-  padding: 5px;
+  padding: 1vh;
 }
 
 .white-box {
   display: flex;
   align-items: center;
   background-color: white;
-  border-radius: 10px;
-  padding: 10px 15px;
+  border-radius: 1vh;
+  padding: 1vh 1.5vh;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 47%; 
-  height: 60px;
+  width: 40vw; 
+  height: 8vh;
   justify-content: space-between;
 }
 
 .search-input {
   border: none;
   outline: none;
-  font-size: 30px; 
+  font-size: 1.3vw; 
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   text-align: right;
   flex-grow: 1; 
   direction: rtl;
-  padding-right: 10px; 
+  padding-right: 1.3vh; 
 }
 
 .white-box-icons {
   display: flex;
-  gap: 15px;
+  gap: 1vh;
   align-items: center; 
   direction: ltr;
 }
 
-.filter-icon {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-}
 /*תיבת סינון לפי סוג*/
 
 .file-type-dropdown {
@@ -84,18 +79,18 @@
 
 .dropdown-container {
   position: relative;
-  width: 220px; 
+  width: 12vw; 
   font-family: Arial, sans-serif;
   direction: rtl;
 }
 
 .dropdown-header {
   background-color: white;
-  font-size: 16px; 
+  font-size: 2.3vh; 
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  border: 2px solid #000; 
-  border-radius: 5px; 
-  padding: 10px 15px;
+  border: 0.2vh solid #000; 
+  border-radius: 1vh; 
+  padding: 1.2vh 1.2vh;
   display: flex;
   justify-content: space-between;
   align-items: center;

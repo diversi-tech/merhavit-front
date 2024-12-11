@@ -5,12 +5,13 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ItemsListModule } from './show/items-list.module';
 import { CommonModule } from '@angular/common';
 import { SearchComponent } from './components/Students/search/search.component';
+import { ItemPageComponent } from './components/item-page/item-page.component';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive,ItemsListComponent,MatDialogModule,ItemsListModule,SearchComponent],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive,ItemsListComponent,MatDialogModule,ItemsListModule,SearchComponent, ItemPageComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'] 
 })
@@ -24,7 +25,7 @@ export class AppComponent {
     this.router.events.subscribe(() => {
   
         // נתיבים שבהם לא נרצה להציג את הקומפוננטה
-        const excludedRoutes = ['/login', '/registration', '/welcome','/'];
+        const excludedRoutes = ['/login', '/registration', '/welcome','/','/reset-password','/forgot-password'];
         this.showSearchComponent = !excludedRoutes.includes(this.router.url);
       
     });

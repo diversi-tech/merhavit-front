@@ -1,0 +1,79 @@
+.item-details {
+  display: flex;
+  padding: 2vh;
+  background-color: #ffffff;
+  align-items: flex-start; /* הצמדת הפרטים והתמונה לימין והעלאת הטקסט לראש התמונה */
+  justify-content: flex-end; /* הצמדת התמונה לפרטים */
+}
+
+.item-details img {
+  max-width: 15vw; /* הגדלת גודל התמונה */
+  margin-left: 1vw; /* ריווח בין התמונה לפרטים */
+}
+
+.item-details h1, .item-details p {
+  margin: 0 0 1vw; 
+  text-align: right; /* הצמדת הטקסט לימין */
+}
+
+.similar-items {
+  margin-top: 2vh;
+  overflow-x: auto;
+  white-space: nowrap;
+  text-align: right; /* הצמדת הכותרת והספרים לימין */
+}
+
+.similar-items h2 {
+  margin-bottom: 1vh;
+  text-align: right; /* הצמדת הכותרת לימין */
+}
+
+.similar-item {
+  display: inline-block;
+  margin-right: 2vw;
+  vertical-align: top; /* כדי ליישר תמונות ברוחב שווה */
+}
+
+.similar-item img {
+  max-width: 10vw; /* הגבלת גודל התמונה */
+  margin-bottom: 2vh;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-areas: 
+    "item-2 item-1"
+    "item-3 item-3";
+  grid-template-columns: 1fr auto; /* קביעה ידנית של רוחב העמודות */
+  gap: 1vw; /* ריווח בין האלמנטים */
+}
+
+.grid-item {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.item-1 {
+  grid-area: item-1;
+  display: flex;
+  justify-content: flex-end; /* הצמדת התמונה לימין */
+}
+
+.item-2 {
+  grid-area: item-2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* הצמדת הטקסט לתחילת הפרטים */
+  align-items: flex-end; /* הצמדת הטקסט לימין */
+}
+
+.item-3 {
+  grid-area: item-3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* הצמדת הכותרת והספרים לימין */
+}
