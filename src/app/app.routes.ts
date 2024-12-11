@@ -12,7 +12,7 @@ import { ResetPasswordComponent } from './components/Users/reset-password';
 import { SuccessRegistrationComponent } from './components/Users/success-registration';
 
 export const routes: Routes = [
-  { path: '', component:  LoginComponent},  
+  { path: '', component:  PasswordChangeComponent},  
   { path: 'login', component: LoginComponent },  
   { path: 'students', component:  SearchComponent},
   {path:'show-details',component:ItemsListComponent},

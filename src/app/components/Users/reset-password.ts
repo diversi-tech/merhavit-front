@@ -13,6 +13,8 @@ import { Router } from '@angular/router';
 })
 export class ResetPasswordComponent {
   resetPasswordForm: FormGroup;
+  errorMessage: string = ''; // משתנה לשגיאה
+
 
   constructor(private fb: FormBuilder, private apiService: ApiService,private router: Router) {
     this.resetPasswordForm = this.fb.group({
@@ -26,7 +28,7 @@ export class ResetPasswordComponent {
       const { password, confirmPassword } = this.resetPasswordForm.value;
 
       if (password !== confirmPassword) {
-        alert('הסיסמאות אינן תואמות!');
+        this.errorMessage = 'הסיסמאות אינן תואמות!';  
         return;
       }
 
@@ -40,7 +42,7 @@ export class ResetPasswordComponent {
               this.router.navigate(['/login']);            },
             error: (err) => {
               console.error('Error changing password', err);
-              alert('הייתה בעיה בשינוי הסיסמה');
+              this.errorMessage = err?.error?.message ; 
             }
           });
       } else {
