@@ -6,13 +6,19 @@
   justify-content: flex-end; /* הצמדת התמונה לפרטים */
 }
 
+.item-1 video{
+  width: 30vw; /* גודל התמונה */
+  height: 40vh;
+
+}
+
 .item-details img {
   max-width: 15vw; /* הגדלת גודל התמונה */
   margin-left: 1vw; /* ריווח בין התמונה לפרטים */
 }
 
 .item-details h1, .item-details p {
-  margin: 0 0 1vw; 
+  margin: 0 2vw 1vw; 
   text-align: right; /* הצמדת הטקסט לימין */
 }
 
@@ -76,4 +82,15 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end; /* הצמדת הכותרת והספרים לימין */
+} 
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center
 }

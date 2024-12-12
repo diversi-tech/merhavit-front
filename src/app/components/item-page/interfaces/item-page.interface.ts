@@ -1,7 +1,24 @@
+// export interface Item {
+//   title: string;
+//   subject: string;
+//   publicationDate: string;
+//   ages: string;
+//   level: string;
+//   language: string;
+//   releaseYear: string;
+//   author: string;
+//   description: string;
+//   tags: string[],
+//   type: 'image' | 'video' | 'audio' | 'file'  | 'unknown', // הוספת השדה 'type'
+//   filePath: string; // הוספת התמונה
+//   publishedDate?: string;
+// }
+
 export interface Item {
   title: string;
-  subject: string;
   publicationDate: string;
+  type: string;
+  subject: string;
   ages: string;
   level: string;
   language: string;
@@ -9,6 +26,7 @@ export interface Item {
   author: string;
   description: string;
   tags: string[];
-  filePath: string; // הוספת התמונה
-  publishedDate?: string;
+  createdBy: string | null;
+  filePath: string;
+  specializations: string;
 }
