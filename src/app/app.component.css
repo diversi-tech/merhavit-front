@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .layout {
   display: flex;
   height: 100vh;
@@ -9,41 +15,37 @@
 }
 
 .sidebar {
-  width: 280px;
+  width: 15vw; /* הצמצום של הרוחב ל-20% */
   background-color: #f3f7fd;
-  border-left: 1px solid #ddd; 
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 20px;
+  padding: 2vh 1.5vw; /* פדינג גמיש */
   height: 100vh;
   box-sizing: border-box;
-  direction: rtl; 
-  border-left: none; 
-
+  direction: rtl;
 }
 
 .sidebar-header {
   display: flex;
   align-items: center; 
   justify-content: flex-start;
-  margin-bottom: 20px;
-  font-size: 16px;
+  margin-bottom: 2vh;
+  font-size: 1.2rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 }
 
 .sidebar-icon {
-  width: 70px;
+  width: 5vw;
   height: auto;
-  margin-left: 10px; 
+  margin-left: 2vw; 
 }
 
 .sidebar-title {
   font-weight: normal; 
-
-  font-size: 40px; 
+  font-size: 2.5rem; /* גודל גמיש */
   margin: 0; 
-  padding-left: 10px; 
+  padding-left: 0; 
 }
 
 .sidebar-menu {
@@ -55,8 +57,8 @@
 }
 
 .sidebar-menu li {
-  margin: 15px 0; 
-  font-size: 16px; 
+  margin: 1.5vh 0; 
+  font-size: 1rem; 
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 }
 
@@ -64,9 +66,9 @@
   display: block;
   text-decoration: none;
   color: #333;
-  font-size: 18px; 
-  padding: 10px 15px;
-  border-radius: 5px;
+  font-size: 1.4rem;
+  padding: 1.5vh 0;
+  border-radius: 0.5rem;
   transition: background-color 0.3s ease;
 }
 
@@ -83,11 +85,6 @@
   box-sizing: border-box; 
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 .main-container {
   flex: 1;
   display: flex;
@@ -108,24 +105,24 @@
   padding: 0; 
   margin: 0; 
 }
+
 /* סגנון כללי של תת-תפריט */
 .submenu {
   list-style-type: none;
   padding: 0;
   margin: 0;
   background-color: #c7d8f0; /* רקע כחול כהה יותר */
-  border-radius: 15px;
+  border-radius: 1rem;
 }
 
 .submenu li a {
   display: block;
-  padding: 10px 20px;
+  padding: 1.2vh 2.5vw;
   color: #333;
-  font-size: 16px;
+  font-size: 1rem;
   text-decoration: none;
   transition: background-color 0.3s ease;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-
 }
 
 .submenu li a:hover {
@@ -142,4 +139,3 @@
 .submenu-icon.open {
   transform: rotate(180deg); /* סיבוב החץ */
 }
-

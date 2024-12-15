@@ -9,7 +9,6 @@ export class ApiService {
   constructor(private http: HttpClient) {}
   // GET
   Read(query: string): Observable<any> {
-    console.log("asdfghjkl;'");
 
     let fullpath = serverPath + query;
 
