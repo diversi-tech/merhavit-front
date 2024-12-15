@@ -10,6 +10,7 @@ import { ItemsListComponent } from './show/show.component';
 import { ForgotPasswordComponent } from './components/Users/forgot-password';
 import { ResetPasswordComponent } from './components/Users/reset-password';
 import { SuccessRegistrationComponent } from './components/Users/success-registration';
+import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
 
 export const routes: Routes = [
   { path: '', component:  WelcomeComponent},  
@@ -24,5 +25,6 @@ export const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },  
   { path: 'success-registration', component: SuccessRegistrationComponent },  
   {path:'show-details',component:ItemsListComponent},
+  {path:'upload-resource',component:UploadResourceComponent},
   { path: '**', redirectTo: '' },  // עמוד ברירת מחדל לכל כתובת לא תקינה
 ];

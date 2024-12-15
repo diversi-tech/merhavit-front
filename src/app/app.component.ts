@@ -6,7 +6,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ItemsListModule } from './show/items-list.module';
 import { CommonModule } from '@angular/common';
 import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @Component({

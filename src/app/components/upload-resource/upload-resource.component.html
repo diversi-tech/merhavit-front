@@ -30,27 +30,64 @@
     </div>
   </div>
 
+  <!-- העלאת תמונה -->
+  <div class="image-container">
+    <img [src]="displayImage" alt="תמונת שער"/>
+    
+    <div class="upload-overlay">
+      <button (click)="imageInput.click()">העלה תמונת שער(אפציונלי) </button>
+      <input type="file" #imageInput (change)="onImageSelected($event)" accept=".jpg, .jpeg, .png"
+        style="display: none;" />
+    </div>
+  </div>
+    
+
   <!-- טופס -->
+
   <form [formGroup]="fileForm" (ngSubmit)="onSubmit()">
     <div class="form-section-container">
       <!-- כותרת: פרטי קובץ -->
       <div class="form-section">
         <h2>פרטי קובץ</h2>
         <div class="form-group">
-          <label for="uploadDate">תאריך העלאה</label>
-          <input type="date" id="uploadDate" formControlName="uploadDate" />
+          <label for="title">כותרת </label>
+          <input type="text" id="title" formControlName="title" />
         </div>
         <div class="form-group">
-          <label for="fileType">סוג קובץ</label>
-          <select id="fileType" formControlName="fileType">
+          <label for="publicationDate">תאריך העלאה</label>
+          <input type="date" id="publicationDate" formControlName="publicationDate" />
+        </div>
+        <div class="form-group">
+          <label for="type">סוג קובץ</label>
+          <select id="type" formControlName="type">
             <option *ngFor="let type of fileTypes" [value]="type">{{ type }}</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="topic">נושא</label>
-          <select id="topic" formControlName="topic">
-            <option *ngFor="let topic of topics" [value]="topic">{{ topic }}</option>
-          </select>
+          <label for="subject">נושא</label>
+          <mat-form-field class="autocomplete-container">
+            <mat-chip-grid #subjectChipList  aria-label="רשימת התמחות">
+              <mat-chip-row *ngFor="let subject of multipleChoiceFields['subjects'].optionSelected" [removable]="true" (removed)="remove(subject,'subjects')">
+                {{subject}}
+                <button matChipRemove>×</button>
+              </mat-chip-row>
+              <input
+              matInput
+                [matChipInputFor]="subjectChipList "
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="add($event,'subjects')"
+                [matAutocomplete]="subjectsAuto"
+                placeholder="הוסיפי נושא"
+              />
+            </mat-chip-grid>
+            <mat-autocomplete #subjectsAuto="matAutocomplete" (optionSelected)="select($event,'subjects')" [disableRipple]="true">
+              <mat-option *ngFor="let subject of (multipleChoiceFields['subjects'].filteredOption$ | async)" [value]="subject">
+                {{ subject }}
+              </mat-option>
+              <button mat-raised-button color="primary" class="custom-button" (click)="openDialog()" >+ נושא חדש</button>
+            </mat-autocomplete>
+          </mat-form-field>
         </div>
       </div>
 
@@ -75,68 +112,66 @@
         <!-- כותרת: למי מיועד -->
         <div class="form-section">
           <h2>למי מיועד</h2>
-          <!-- <mat-form-field>
-            <mat-label>התמחות</mat-label>
-            formControlName="specializations" 
-            <mat-chip-grid #chipList aria-label="רשימת התמחות">
-              <mat-chip-row *ngFor="let specialization of specializations" [removable]="true" (removed)="remove(specialization)">
+          
+          <div class="form-group">
+          <label for="specializations">התמחות</label>
+           <mat-form-field class="autocomplete-container">
+            <mat-chip-grid #specializationsChipList  aria-label="רשימת התמחות">
+              <mat-chip-row *ngFor="let specialization of multipleChoiceFields['specializations'].optionSelected" [removable]="true" (removed)="remove(specialization,'specializations')">
                 {{specialization}}
                 <button matChipRemove>×</button>
               </mat-chip-row>
               <input
               matInput
-                [matChipInputFor]="chipList"
+                [matChipInputFor]="specializationsChipList "
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                 [matChipInputAddOnBlur]="true"
-                (matChipInputTokenEnd)="add($event)"
-                [matAutocomplete]="auto"
-                placeholder="הוסיפי התמחות"
-                
-              />
-               
-            </mat-chip-grid>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectSpecialization($event)">
-              <mat-option *ngFor="let specialization of filteredSpecializations$ | async" [value]="specialization">
-                {{ specialization }}
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field> -->
-          <mat-form-field>
-            <mat-label>התמחות</mat-label>
-            <mat-chip-grid #chipList aria-label="רשימת התמחות">
-              <mat-chip-row *ngFor="let specialization of specializations" [removable]="true" (removed)="remove(specialization)">
-                {{specialization}}
-                <button matChipRemove>×</button>
-              </mat-chip-row>
-              <input
-              matInput
-                [matChipInputFor]="chipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                [matChipInputAddOnBlur]="true"
-                (matChipInputTokenEnd)="add($event)"
-                [matAutocomplete]="auto"
+                (matChipInputTokenEnd)="add($event,'specializations')"
+                [matAutocomplete]="specializationsAuto"
                 placeholder="הוסיפי התמחות"
               />
             </mat-chip-grid>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectSpecialization($event)">
-              <mat-option *ngFor="let specialization of filteredSpecializations$ | async" [value]="specialization">
+            <mat-autocomplete #specializationsAuto="matAutocomplete" (optionSelected)="select($event,'specializations')" [disableRipple]="true">
+              <mat-option *ngFor="let specialization of (multipleChoiceFields['specializations'].filteredOption$ | async)" [value]="specialization">
                 {{ specialization }}
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
-          
-          <div class="form-group">
-            <label for="ageGroup">לאיזה גיל מיועד הקובץ</label>
-            <select id="ageGroup" formControlName="ageGroup">
-              <option *ngFor="let age of ageGroups" [value]="age">{{ age }}</option>
-            </select>
-          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="ages">לאיזה גיל מיועד הקובץ</label>
+           <mat-form-field class="autocomplete-container">
+            <mat-chip-grid #agesChipList  aria-label="רשימת גילאים">
+              <mat-chip-row *ngFor="let age of multipleChoiceFields['ages'].optionSelected" [removable]="true" (removed)="remove(age,'ages')">
+                {{age}}
+                <button matChipRemove>×</button>
+              </mat-chip-row>
+              <input
+              matInput
+                [matChipInputFor]="agesChipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="add($event,'ages')"
+                [matAutocomplete]="agesAuto"
+                placeholder="הוסיפי גיל"
+              />
+            </mat-chip-grid>
+            <mat-autocomplete #agesAuto="matAutocomplete" (optionSelected)="select($event,'ages')" [disableRipple]="true">
+              <mat-option *ngFor="let age of (multipleChoiceFields['ages'].filteredOption$ | async)" [value]="age">
+                {{ age }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>  
+        
           <div class="form-group">
             <label for="level">איזה רמה מיועד</label>
             <select id="level" formControlName="level">
               <option *ngFor="let level of levels" [value]="level">{{ level }}</option>
             </select>
           </div>
+
           <div class="form-group">
             <label for="language">שפה</label>
             <select id="language" formControlName="language">
@@ -144,7 +179,7 @@
             </select>
           </div>
         </div>
-
+       
         <!-- כותרת: אודות הקובץ -->
         <div class="form-section">
           <h2>אודות הקובץ</h2>
@@ -166,6 +201,7 @@
           <label for="copies">מס עותקים</label>
           <input type="number" id="copies" formControlName="copies" />
         </div> -->
+        
           <div class="form-group">
             <label for="releaseYear">שנת הוצאה</label>
             <input type="text" id="releaseYear" formControlName="releaseYear" />
@@ -180,15 +216,35 @@
       <div class="form-section">
         <div class="form-group">
           <label for="tags">תגיות</label>
-          <input type="text" id="tags" formControlName="tags" placeholder="הכניסי תגיות מופרדות בפסיקים"/>
+          <mat-form-field class="autocomplete-container">
+            <mat-chip-grid #tagsChipList  aria-label="רשימת תגיות">
+              <mat-chip-row *ngFor="let tag of multipleChoiceFields['tags'].optionSelected" [removable]="true" (removed)="remove(tag,'tags')">
+                {{tag.name}}
+                <button matChipRemove>×</button>
+              </mat-chip-row>
+              <input
+              matInput
+                [matChipInputFor]="tagsChipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="add($event,'tags')"
+                [matAutocomplete]="tagsAuto"
+                placeholder="הוסיפי תגית"
+              />
+            </mat-chip-grid>
+            <mat-autocomplete #tagsAuto="matAutocomplete" (optionSelected)="select($event,'tags')" [disableRipple]="true">
+              <mat-option *ngFor="let tag of (multipleChoiceFields['tags'].filteredOption$ | async)" [value]="tag._id">
+                {{ tag.name }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
         </div>
         <div class="form-group">
-          <label for="additionalInfo">מה עוד כדאי לדעת?</label>
-          <textarea id="additionalInfo" rows="4" formControlName="additionalInfo"></textarea>
+          <label for="description">מה עוד כדאי לדעת?</label>
+          <textarea id="description" rows="4" formControlName="description"></textarea>
         </div>
       </div>
 
       <!-- כפתור שליחה -->
       <button type="submit">שלח</button>
   </form>
-</div>

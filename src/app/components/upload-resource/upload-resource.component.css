@@ -232,14 +232,57 @@ mat-form-field .mat-form-field-flex {
 
   
   mat-form-field .mat-form-field-underline {
-    border: none !important;
+    border: none ;
+  }
+  mat-form-field {
+    width: 300px; /* או כל רוחב אחר שתואם לשאר השדות */
+    max-width: 100%;
   }
 
-  mat-autocomplete {
-    z-index: 1000; /* ערך גבוה להצגת הרשימה מעל */
+  /* mat-autocomplete {
+    z-index: 1000; /* ערך גבוה להצגת הרשימה מעל 
     position: absolute
-  }
+  } */
 
   mat-chip-grid {
     min-width: 200px;
   }
+
+  .custom-button {
+    color: #63d36e; /* צבע הטקסט */
+    font-weight: bold;
+  }
+  
+  .custom-button:hover {
+    background-color: #45a049; /* צבע הרקע במעבר עכבר */
+  }
+  
+
+  /* .mat-autocomplete-panel {
+    position: absolute !important;
+    z-index: 1000 !important;
+  }
+  .cdk-overlay-pane{
+    position: absolute !important;
+    z-index: 1000 !important; 
+    overflow: visible !important; /* מבטל חיתוך גם עבור הרשימה 
+    position: absolute !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+
+  } */
+
+  .cdk-overlay-pane {
+    position: absolute !important; /* שמירה על מיקום יחסית */
+    z-index: 1000 !important;
+}
+  
+
+ /* .cdk-overlay-container {
+    position: relative !important;
+    z-index: 1000 !important; /* וודאי שכפתור לא חוסם */
+    /*
+  }
+  */

@@ -14,7 +14,7 @@ export class ApiService {
     let fullpath = serverPath + query;
 
     const ans= this.http.get(fullpath, { withCredentials: true });
-    console.log(ans);
+    console.log("ans: "+ans);
     
     return ans
   }
@@ -24,7 +24,7 @@ export class ApiService {
     console.log(fullpath);
     
     return this.http.post(fullpath, newData, { 
-      headers: new HttpHeaders({'Content-Type': 'application/json'}), 
+      //headers: new HttpHeaders({'Content-Type': 'application/json'}), 
       withCredentials: true 
     });
   }
