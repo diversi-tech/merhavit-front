@@ -1,31 +1,15 @@
-<<<<<<< HEAD
-<!-- <div class="search-container" dir="rtl">
-    <div class="filter-section">
-      <select class="filter-dropdown">
-        <option value="all">כל סוגי הקבצים</option>
-        <option value="pictures">תמונות</option>
-        <option value="videos">סרטונים</option>
-        <option value="presentations">מצגות</option>
-        <option value="songs">שירים</option>
-        <option value="books">ספרים</option>
-        <option value="equipment">ציוד</option>
-      </select>
-      <button class="filter-button">
-        <span>&#9881;</span> 
-      </button>
-=======
+
 <div class="search-bar-container">
   <div class="top-icons">
     <!-- אייקון המשתמש עם האות הראשונה -->
-    <div class="icon user-icon">
->>>>>>> main
-    </div>
-    <img src="assets/heart-icon.png" alt="לב" class="icon" />
-    <img src="assets/bell-icon.png" alt="פעמון" class="icon" />
+    <div class="icon user-icon"></div>
+
+    <!-- אייקון לב (Font Awesome) -->
+    <i class="fas fa-heart" style="color:#434343; font-size:5vh; width:4vw;"></i>
+
+    <!-- אייקון פעמון (Font Awesome) -->
+    <i class="fas fa-bell" style="color:#434343; font-size:5vh; width:4vw;"></i>
   </div>
-<<<<<<< HEAD
-   -->
-=======
 
   <div class="white-box">
     <div class="white-box-icons">
@@ -44,17 +28,14 @@
           <li (click)="onSelectFilter('equipment')">ציוד</li>
         </ul>
       </div>
-      <img
-        src="assets/filter-icon.png"
-        alt="פילטר"
-        class="filter-icon"
-        (click)="toggleDetails()"
-      />
+
+      <!-- אייקון פילטר -->
+      <i (click)="toggleDetails()" class="fas fa-filter" style="color:#434343; font-size:4vh; cursor:pointer;"></i>
 
       <div class="filter-details-container" *ngIf="showDetails">
         <div class="filter-details-box">
-           <!-- עמודה שנייה - צד שמאל -->
-           <div class="filter-column">
+          <!-- עמודה שנייה - צד שמאל -->
+          <div class="filter-column">
             <div class="filter-row">
               <label for="file-type">סוג קובץ</label>
               <input id="file-type" type="text" placeholder="סוג קובץ">
@@ -107,11 +88,8 @@
               <input id="new-in-database" type="text" placeholder="חדש במאגר">
             </div>
           </div>
-      
-         
         </div>
       </div>
-      
     </div>
     <input type="text" class="search-input" placeholder="הקלד מילת חיפוש..." />
   </div>
