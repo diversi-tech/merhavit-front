@@ -4,14 +4,14 @@ import { ItemsListComponent } from './show/show.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ItemsListModule } from './show/items-list.module';
 import { CommonModule } from '@angular/common';
-import { SearchComponent } from './components/Students/search/search.component';
+import { SearchComponent } from './components/Student/search/search.component';
 import { ItemPageComponent } from './components/item-page/item-page.component';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive,SearchResultComponent,ItemsListComponent,MatDialogModule,ItemsListModule ],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive,SearchComponent,ItemsListComponent,MatDialogModule,ItemsListModule ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'] 
 })

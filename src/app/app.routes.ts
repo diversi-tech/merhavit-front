@@ -5,7 +5,7 @@ import { WelcomeComponent } from './components/Users/welcome';
 import { UserManagementComponent } from './components/Users/user-management';
 import { PersonalDetailsComponent } from './components/Users/personal-details';
 import { PasswordChangeComponent } from './components/Users/password-change';
-import { SearchComponent } from './components/Students/search/search.component';
+import { SearchComponent } from './components/Student/search/search.component';
 import { ItemsListComponent } from './show/show.component';
 import { ForgotPasswordComponent } from './components/Users/forgot-password';
 import { ResetPasswordComponent } from './components/Users/reset-password';

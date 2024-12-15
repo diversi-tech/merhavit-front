@@ -31,7 +31,6 @@ interface Item  
   imports: [CommonModule,MatTableModule] 
 })
 
-//@Injectable({ providedIn: 'root' })
 export class ItemsListComponent implements OnInit {
 
   public items: Item[] = []; //מערך המוצרים של הספריה 
@@ -43,10 +42,7 @@ export class ItemsListComponent implements OnInit {
     this.getUserTypeFromToken(); 
     await this.getItems()
     console.log("items: "+this.items);
-    
-    // this.getItems().subscribe(items => {
-    //   this.items = items;
-    // });
+  
   }
 
   getUserTypeFromToken(): void {
@@ -180,11 +176,6 @@ export class ItemsListComponent implements OnInit {
       const match = filePath.match(/\.[0-9a-z]+$/i);
       return match ? match[0] : null;
     }
-
-
-  // getItems(): Observable<Item[]> {
-  //   return this.http.get<Item[]>('/EducationalResource/getAll');
-  // }
 
 }
 
