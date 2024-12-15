@@ -9,12 +9,12 @@ export class ApiService {
   constructor(private http: HttpClient) {}
   // GET
   Read(query: string): Observable<any> {
-    console.log("asdfghjkl;'");
+    console.log("query", query);
 
     let fullpath = serverPath + query;
 
     const ans = this.http.get(fullpath, { withCredentials: true });
-    console.log(ans);
+    console.log("ans", ans);
 
     return ans;
   }
