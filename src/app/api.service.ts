@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-const serverPath = 'http://localhost:3001';
+const serverPath = 'https://merhavit-back.onrender.com';
+//const serverPath = 'http://localhost:3004';
+
 @Injectable({
   providedIn: 'root',
 })
