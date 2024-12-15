@@ -1,36 +1,219 @@
-.search-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
-  }
-  
-  .filter-section {
-    display: flex;
-    align-items: center;
-  }
-  
-  .filter-dropdown {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    margin-right: 8px;
-  }
-  
-  .filter-button {
-    background-color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-  }
-  
-  .search-input {
-    flex: 1;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    margin-left: 16px;
-  }
-  
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f3f7fd;
+  padding: 1.5vh;
+  height: 15vh;
+}
+
+.top-icons {
+  display: flex;
+  gap: 3vh;
+}
+
+.icon {
+  width: 2.1vw;
+  height: 4.5vh;
+  cursor: pointer;
+}
+
+.user-icon {
+  background-color: #27c95a; 
+  border-radius: 50%;
+  padding: 1vh;
+}
+
+.white-box {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 1vh;
+  padding: 1vh 1.5vh;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 40vw; 
+  height: 8vh;
+  justify-content: space-between;
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  font-size: 1.3vw; 
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-align: right;
+  flex-grow: 1; 
+  direction: rtl;
+  padding-right: 1.3vh; 
+}
+
+.white-box-icons {
+  display: flex;
+  gap: 1vh;
+  align-items: center; 
+  direction: ltr;
+}
+
+/*תיבת סינון לפי סוג*/
+
+.file-type-dropdown {
+  border: 2px solid #000; 
+  border-radius: 5px; 
+  padding: 10px 20px; 
+  background-color: #fff; 
+  font-size: 18px; 
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; 
+  cursor: pointer;
+  width: 200%;
+  direction: rtl;
+  box-shadow: none; 
+}
+
+.file-type-dropdown option {
+  border: none; 
+  font-size: 16px; 
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: white; 
+  padding: 10px; 
+}
+
+.dropdown-container {
+  position: relative;
+  width: 12vw; 
+  font-family: Arial, sans-serif;
+  direction: rtl;
+}
+
+.dropdown-header {
+  background-color: white;
+  font-size: 2.3vh; 
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  border: 0.2vh solid #000; 
+  border-radius: 1vh; 
+  padding: 1.2vh 1.2vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dropdown-options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: none; 
+  border-radius: 5px; 
+  background-color: white;
+  position: absolute;
+  width: 100%;
+  top: 50px; 
+  z-index: 1000;
+  box-shadow: none; 
+}
+
+.dropdown-options li {
+  padding: 15px;
+  font-size: 16px; 
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; 
+  cursor: pointer;
+  text-align: right; 
+  direction: rtl; 
+}
+
+.dropdown-options li:hover {
+  border-radius: 5px; 
+
+  background-color: #f0f8ff; 
+}
+/* תיבת סינון עם פרטים*/
+.filter-details-container {
+  position: absolute;
+  top: 120px; /* מקם מתחת לתיבת החיפוש */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px; /* פינות מעוגלות */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  z-index: 2000;
+  width: 80%; /* מתאים לגודל הרצוי */
+}
+
+/* שורות של קלט */
+.filter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.filter-row label {
+  font-size: 16px; /* גודל טקסט רגיל */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin-left: 10px;
+}
+
+.filter-row input {
+  width: 70%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+/* תיבת הפרטים */
+.filter-details-container {
+  position: absolute;
+  top: 120px; /* מיקום מתחת לתיבת החיפוש */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px; /* פינות מעוגלות */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px; /* ריווח פנימי */
+  z-index: 2000;
+  width: auto; /* אין רוחב קבוע */
+  min-width: 600px; /* רוחב מינימלי */
+  box-sizing: border-box; /* חשוב כדי לכלול ריווחים וגבולות */
+}
+
+/* תיבה כללית עם שתי עמודות */
+.filter-details-box {
+  display: flex;
+  justify-content: space-between; /* הפרדת העמודות */
+  gap: 3px; /* רווח של 3px בין העמודות */
+  width: 100%; /* מלא את רוחב ה-container */
+  box-sizing: border-box; /* כולל ריווחים וגבולות */
+}
+
+/* עמודה אחת */
+.filter-column {
+  display: flex;
+  flex-direction: column;
+  gap: 3px; /* רווח של 3px בין השדות בעמודה */
+  flex: 1; /* כל עמודה תתפוס חצי מהרוחב */
+}
+
+/* שורות של קלט */
+.filter-row {
+  display: flex;
+  flex-direction: column; /* יישור אנכי של תוויות ושדות */
+  align-items: flex-start; /* יישור התווית והשדה לשמאל */
+}
+
+.filter-row label {
+  font-size: 16px; /* גודל טקסט אחיד */
+  font-weight: bold;
+  margin-bottom: 5px; /* מרווח מתחת לתווית */
+}
+
+.filter-row input {
+  width: 100%; /* ה-INPUT יתפוס את כל רוחב העמודה */
+  max-width: 300px; /* הגבלה לרוחב מקסימלי של 300px */
+  padding: 8px; /* ריווח פנימי קטן יותר */
+  font-size: 14px; /* גודל טקסט אחיד */
+  border: 1px solid #ccc;
+  border-radius: 5px; /* פינות מעוגלות */
+  text-align: right; /* יישור הטקסט לימין */
+  box-sizing: border-box; /* כולל את הריווח הפנימי במסגרת הכללית של השדה */
+}

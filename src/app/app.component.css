@@ -1,46 +1,51 @@
-/* Layout style */
 .layout {
   display: flex;
   height: 100vh;
+  flex-direction: row-reverse; 
   font-family: Arial, sans-serif;
-  margin: 0; /* ביטול רווחים ברירת מחדל */
-  padding: 0; /* ביטול רווחים ברירת מחדל */
-  overflow: hidden; /* מונע גלילה */
+  margin: 0; 
+  padding: 0; 
+  overflow: hidden; 
 }
 
-/* Sidebar style */
 .sidebar {
   width: 280px;
   background-color: #f3f7fd;
-  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd; 
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* למנוע רווחים מיותרים */
+  align-items: flex-start;
   padding: 20px;
-  height: 100vh; /* וודא שהסיידבאר יכסה את כל הגובה */
-  box-sizing: border-box; /* כוללים את ה-padding בחישוב הגודל */
+  height: 100vh;
+  box-sizing: border-box;
+  direction: rtl; 
+  border-left: none; 
+
 }
 
 .sidebar-header {
   display: flex;
-  align-items: center; /* שורה אחת */
-  justify-content: flex-start; /* יישור לתחילת השורה */
+  align-items: center; 
+  justify-content: flex-start;
   margin-bottom: 20px;
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 }
 
 .sidebar-icon {
   width: 70px;
   height: auto;
-  margin-left: 10px; /* רווח בין התמונה לכותרת */
+  margin-left: 10px; 
 }
 
 .sidebar-title {
-  font-size: 50px; /* גודל הפונט לכותרת */
-  margin: 0; /* מניעת רווחים מיותרים */
-  padding-left: 10px; /* רווח בין התמונה לכותרת */
+  font-weight: normal; 
+
+  font-size: 40px; 
+  margin: 0; 
+  padding-left: 10px; 
 }
 
-/* Sidebar menu */
 .sidebar-menu {
   list-style-type: none;
   padding: 0;
@@ -50,14 +55,16 @@
 }
 
 .sidebar-menu li {
-  margin: 15px 0; /* הגדלת המרווחים בין הפריטים */
+  margin: 15px 0; 
+  font-size: 16px; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 }
 
 .sidebar-menu li a {
   display: block;
   text-decoration: none;
   color: #333;
-  font-size: 18px; /* הגדלת הגודל של הפונט */
+  font-size: 18px; 
   padding: 10px 15px;
   border-radius: 5px;
   transition: background-color 0.3s ease;
@@ -67,19 +74,72 @@
   background-color: #d5dff4;
 }
 
-/* Main content style */
 .content {
   flex: 1;
-  padding: 0; /* ביטול מרווחים סביב התוכן */
-  margin: 0; /* ביטול מרווחים */
-  overflow: hidden; /* מניעת גלילה */
-  height: 100vh; /* וודא שהתוכן יכסה את כל הגובה */
-  box-sizing: border-box; /* כוללים את ה-padding בחישוב הגודל */
+  padding: 0; 
+  margin: 0;
+  overflow: hidden; 
+  height: 100vh; 
+  box-sizing: border-box; 
 }
 
-/* אפס את מרווחי ברירת המחדל */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+.main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.header {
+  padding: 0; 
+  margin: 0; 
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto; 
+  box-sizing: border-box;
+  padding: 0; 
+  margin: 0; 
+}
+/* סגנון כללי של תת-תפריט */
+.submenu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  background-color: #c7d8f0; /* רקע כחול כהה יותר */
+  border-radius: 15px;
+}
+
+.submenu li a {
+  display: block;
+  padding: 10px 20px;
+  color: #333;
+  font-size: 16px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+
+}
+
+.submenu li a:hover {
+  background-color: #a9c1e5; /* רקע כחול כהה עוד יותר */
+  color: #000;
+}
+
+/* אייקון החץ */
+.submenu-icon {
+  margin-right: auto; /* מצמיד את החץ לצד שמאל */
+  transition: transform 0.3s ease;
+}
+
+.submenu-icon.open {
+  transform: rotate(180deg); /* סיבוב החץ */
+}
+

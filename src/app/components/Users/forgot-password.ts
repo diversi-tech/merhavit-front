@@ -16,6 +16,8 @@ export class ForgotPasswordComponent {
   code: string = '';
   remainingTime: number = 300; 
   timerInterval: any;
+  errorMessage: string = ''; // משתנה לשגיאה
+  successMessage: string = '';
 
   constructor(private apiService: ApiService, private router: Router) {}
 
@@ -25,7 +27,6 @@ export class ForgotPasswordComponent {
       this.idNumber = storedId;
       this.sendResetEmail(); // קריאה לפונקציה ששולחת את המייל
     } else {
-      alert('לא הוזנה תעודת זהות, חזור לעמוד הקודם.');
       this.router.navigate(['/login']);
     }
 
@@ -74,7 +75,7 @@ export class ForgotPasswordComponent {
     this.sendResetEmail(); // שימוש בפונקציה לשליחה חוזרת
     this.remainingTime = 300; 
     this.startTimer(); 
-    alert('קוד אימות נוסף נשלח לאימייל שלך.');
+    this.successMessage='קוד אימות נוסף נשלח לאימייל שלך.';
   }
 
   onSubmitVerifyCode() {
@@ -82,11 +83,10 @@ export class ForgotPasswordComponent {
       .Post('/users/verify-code', { idNumber: this.idNumber, code: this.code })
       .subscribe({
         next: () => {
-          alert('הקוד אושר בהצלחה');
           this.router.navigate(['/reset-password']); // ניווט לעמוד איפוס סיסמה
         },
         error: (err) => {
-          alert('קוד לא תקין');
+          this.errorMessage='קוד לא תקין';
           console.error('Failed to verify code', err);
         },
       });
