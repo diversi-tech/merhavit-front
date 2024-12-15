@@ -1,31 +1,31 @@
 /* מיכל כללי */
 .personal-details-container {
-  margin-top: 40px;
+  margin-top: 2.5rem; /* 40px -> 2.5rem */
   direction: rtl; /* כתיבה מימין לשמאל */
   text-align: right; /* יישור התוכן לשמאל */
   width: 50%; /* רוחב המיכל */
-  margin-left: auto; /* יידחוף את המיכל לימין */
-  margin-right: 70px; /* צמוד לצד ימין */
+  margin-left: auto; /* יידחוף את המיכל לשמאל */
+  margin-right: 4.375rem; /* 70px -> 4.375rem */
 }
 
 /* סרגל כרטיסיות */
 .nav-tabs {
-  font-size: 18px; 
+  font-size: 1.125rem; /* 18px -> 1.125rem */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   justify-content: flex-start;
-  margin-bottom: 40px;
+  margin-bottom: 2.5rem; /* 40px -> 2.5rem */
 }
 
 .nav-tabs div {
-  padding: 15px 25px; /* טאב גדול יותר */
+  padding: 0.9375rem 1.5625rem; /* 15px 25px -> 0.9375rem 1.5625rem */
   cursor: pointer;
   font-weight: bold;
   color: #333;
 }
 
 .nav-tabs div.active {
-  border-bottom: 2px solid #000; /* קו תחתון לטאב הנבחר */
+  border-bottom: 0.125rem solid #000; /* 2px -> 0.125rem */
   color: #000;
 }
 
@@ -33,7 +33,7 @@
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* שני טורים שווים */
-  gap: 20px;
+  gap: 1.25rem; /* 20px -> 1.25rem */
 }
 
 /* כל קבוצת שדות */
@@ -44,20 +44,20 @@
 
 /* כותרות של השדות */
 label {
-  font-size: 18px; 
+  font-size: 1.125rem; /* 18px -> 1.125rem */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  margin-bottom: 5px;
+  margin-bottom: 0.3125rem; /* 5px -> 0.3125rem */
   font-weight: bold;
   color: #555;
 }
 
 /* עיצוב השדות */
 input {
-  font-size: 18px; 
+  font-size: 1.125rem; /* 18px -> 1.125rem */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 0.75rem; /* 12px -> 0.75rem */
+  border: 0.0625rem solid #ccc; /* 1px -> 0.0625rem */
+  border-radius: 0.3125rem; /* 5px -> 0.3125rem */
   width: 90%;
 }
 
@@ -65,27 +65,27 @@ input {
 .button-group {
   display: flex;
   justify-content: flex-start;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 0.625rem; /* 10px -> 0.625rem */
+  margin-top: 1.25rem; /* 20px -> 1.25rem */
   direction: ltr;
 }
 
 .save-button {
   background-color: #4caf50;
   color: white;
-  font-size: 20px; /* גודל פונט גדול יותר */
+  font-size: 1.25rem; /* 20px -> 1.25rem */
   border: none;
-  padding: 10px 20px;
-  border-radius: 25px;
+  padding: 0.625rem 1.25rem; /* 10px 20px -> 0.625rem 1.25rem */
+  border-radius: 1.5625rem; /* 25px -> 1.5625rem */
   cursor: pointer;
 }
 
 .cancel-button {
   background-color: white;
   color: #f44336;
-  font-size: 20px; /* גודל פונט גדול יותר */
-  border: 2px solid #f44336;
-  padding: 10px 20px;
-  border-radius: 25px;
+  font-size: 1.25rem; /* 20px -> 1.25rem */
+  border: 0.125rem solid #f44336; /* 2px -> 0.125rem */
+  padding: 0.625rem 1.25rem; /* 10px 20px -> 0.625rem 1.25rem */
+  border-radius: 1.5625rem; /* 25px -> 1.5625rem */
   cursor: pointer;
 }

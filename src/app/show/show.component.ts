@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../api.service';
 // import { log } from 'console';
 import { jwtDecode } from 'jwt-decode';
+import { log } from 'console';
 
 
 interface Item   
@@ -51,6 +52,8 @@ export class ItemsListComponent implements OnInit {
       try {
         const decodedToken: any = jwtDecode(token);
         this.userType = decodedToken.userType || '';
+        console.log(this.userType);
+        
       } catch (error) {
         console.error('Error decoding token:', error);
       }

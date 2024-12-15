@@ -3,23 +3,23 @@
   align-items: center;
   justify-content: space-between;
   background-color: #f3f7fd;
-  padding: 1.5vh;
-  height: 15vh;
+  padding: 2vh;
+  height: 12vh;
 }
 
 .top-icons {
   display: flex;
-  gap: 3vh;
+  gap: 2vw;
 }
 
 .icon {
-  width: 2.1vw;
-  height: 4.5vh;
+  width: 4vw;
+  height: 8vh;
   cursor: pointer;
 }
 
 .user-icon {
-  background-color: #27c95a; 
+  background-color: #27c95a;
   border-radius: 50%;
   padding: 1vh;
 }
@@ -28,10 +28,11 @@
   display: flex;
   align-items: center;
   background-color: white;
-  border-radius: 1vh;
-  padding: 1vh 1.5vh;
+  border-radius: 1rem;
+  padding: 1rem 2vw;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 40vw; 
+  width: 100%;
+  max-width: 40vw; /* הצטמצם כך שהתיבה לא תהיה ארוכה מדי */
   height: 8vh;
   justify-content: space-between;
 }
@@ -39,58 +40,43 @@
 .search-input {
   border: none;
   outline: none;
-  font-size: 1.3vw; 
+  font-size: 1.8rem; /* הגדלתי את גודל הכתב */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  text-align: right;
-  flex-grow: 1; 
+  flex-grow: 1;
   direction: rtl;
-  padding-right: 1.3vh; 
+  padding-right: 1rem;
 }
 
 .white-box-icons {
   display: flex;
-  gap: 1vh;
-  align-items: center; 
-  direction: ltr;
+  gap: 1rem;
+  align-items: center;
 }
-
-/*תיבת סינון לפי סוג*/
 
 .file-type-dropdown {
-  border: 2px solid #000; 
-  border-radius: 5px; 
-  padding: 10px 20px; 
-  background-color: #fff; 
-  font-size: 18px; 
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; 
-  cursor: pointer;
-  width: 200%;
+  border: 0.2rem solid #000;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background-color: #fff;
+  font-size: 1.2rem; /* הגדלתי את גודל הכתב */
+  width: 100%;
+  max-width: 20rem;
   direction: rtl;
-  box-shadow: none; 
-}
-
-.file-type-dropdown option {
-  border: none; 
-  font-size: 16px; 
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: white; 
-  padding: 10px; 
 }
 
 .dropdown-container {
   position: relative;
-  width: 12vw; 
-  font-family: Arial, sans-serif;
+  width: 100%;
+  max-width: 20rem;
   direction: rtl;
 }
 
 .dropdown-header {
   background-color: white;
-  font-size: 2.3vh; 
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  border: 0.2vh solid #000; 
-  border-radius: 1vh; 
-  padding: 1.2vh 1.2vh;
+  font-size: 1.2rem;
+  border: 0.2rem solid #000;
+  border-radius: 0.5rem;
+  padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -99,121 +85,62 @@
 
 .dropdown-options {
   list-style: none;
-  padding: 0;
   margin: 0;
-  border: none; 
-  border-radius: 5px; 
   background-color: white;
   position: absolute;
   width: 100%;
-  top: 50px; 
+  top: 3vh;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  box-shadow: none; 
 }
 
 .dropdown-options li {
-  padding: 15px;
-  font-size: 16px; 
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; 
+  padding: 1rem; /* הגדלתי את המרווח */
+  font-size: 1.2rem; /* הגדלתי את גודל הכתב */
   cursor: pointer;
-  text-align: right; 
-  direction: rtl; 
+  text-align: right;
 }
 
-.dropdown-options li:hover {
-  border-radius: 5px; 
-
-  background-color: #f0f8ff; 
-}
-/* תיבת סינון עם פרטים*/
 .filter-details-container {
   position: absolute;
-  top: 120px; /* מקם מתחת לתיבת החיפוש */
+  top: 10vh;
   left: 50%;
   transform: translateX(-50%);
   background-color: white;
   border: 1px solid #ccc;
-  border-radius: 10px; /* פינות מעוגלות */
+  border-radius: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  z-index: 2000;
-  width: 80%; /* מתאים לגודל הרצוי */
+  padding: 1rem;
+  width: 90%;
+  max-width: 45rem; /* שיניתי את הרוחב שלה כך שהיא לא תהיה רחבה מדי */
 }
 
-/* שורות של קלט */
 .filter-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.filter-row label {
-  font-size: 16px; /* גודל טקסט רגיל */
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  margin-left: 10px;
-}
-
-.filter-row input {
-  width: 70%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-/* תיבת הפרטים */
-.filter-details-container {
-  position: absolute;
-  top: 120px; /* מיקום מתחת לתיבת החיפוש */
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 10px; /* פינות מעוגלות */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 15px; /* ריווח פנימי */
-  z-index: 2000;
-  width: auto; /* אין רוחב קבוע */
-  min-width: 600px; /* רוחב מינימלי */
-  box-sizing: border-box; /* חשוב כדי לכלול ריווחים וגבולות */
-}
-
-/* תיבה כללית עם שתי עמודות */
-.filter-details-box {
-  display: flex;
-  justify-content: space-between; /* הפרדת העמודות */
-  gap: 3px; /* רווח של 3px בין העמודות */
-  width: 100%; /* מלא את רוחב ה-container */
-  box-sizing: border-box; /* כולל ריווחים וגבולות */
-}
-
-/* עמודה אחת */
-.filter-column {
   display: flex;
   flex-direction: column;
-  gap: 3px; /* רווח של 3px בין השדות בעמודה */
-  flex: 1; /* כל עמודה תתפוס חצי מהרוחב */
-}
-
-/* שורות של קלט */
-.filter-row {
-  display: flex;
-  flex-direction: column; /* יישור אנכי של תוויות ושדות */
-  align-items: flex-start; /* יישור התווית והשדה לשמאל */
+  margin-bottom: 2vh;
 }
 
 .filter-row label {
-  font-size: 16px; /* גודל טקסט אחיד */
-  font-weight: bold;
-  margin-bottom: 5px; /* מרווח מתחת לתווית */
+  font-size: 1.2rem; /* הגדלתי את גודל הכתב */
+  margin-bottom: 1vh;
 }
 
 .filter-row input {
-  width: 100%; /* ה-INPUT יתפוס את כל רוחב העמודה */
-  max-width: 300px; /* הגבלה לרוחב מקסימלי של 300px */
-  padding: 8px; /* ריווח פנימי קטן יותר */
-  font-size: 14px; /* גודל טקסט אחיד */
+  width: 100%;
+  padding: 1rem; /* הגדלתי את המרווח */
+  font-size: 1.2rem; /* הגדלתי את גודל הכתב */
   border: 1px solid #ccc;
-  border-radius: 5px; /* פינות מעוגלות */
-  text-align: right; /* יישור הטקסט לימין */
-  box-sizing: border-box; /* כולל את הריווח הפנימי במסגרת הכללית של השדה */
+  border-radius: 0.5rem;
+}
+
+.filter-details-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2vw;
+}
+
+.filter-column {
+  flex: 1 1 45%;
+  min-width: 25vw; /* שיניתי את הרוחב כך שיהיה יותר דינמי */
 }
