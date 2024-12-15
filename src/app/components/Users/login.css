@@ -1,57 +1,61 @@
+/* עיצוב כללי לדף הכניסה */
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #f4f4f4;
   direction: rtl;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
 .login-form {
   background-color: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border-radius: 0.625rem; /* 10px */
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 25rem; /* 400px */
 }
 
 h2.greeting {
   text-align: center;
-  font-size: 22px;
-  margin-bottom: 20px;
+  font-size: 1.5rem; /* 22px */
+  margin-bottom: 1.25rem; /* 20px */
   color: #333;
 }
 
 .input-group {
-  margin-bottom: 15px;
+  margin-bottom: 1rem; /* 15px */
 }
 
 .input-group label {
   display: block;
-  font-size: 14px;
+  font-size: 0.875rem; /* 14px */
   color: #666;
-  margin-bottom: 5px;
+  margin-bottom: 0.5rem;
 }
 
 .input-group input {
   width: 100%;
-  padding: 10px;
-  font-size: 16px;
+  padding: 0.625rem; /* 10px */
+  font-size: 1rem; /* 16px */
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 0.3125rem; /* 5px */
   box-sizing: border-box;
 }
 
 .submit-btn {
   width: 100%;
-  padding: 12px;
-  font-size: 16px;
+  padding: 0.75rem; /* 12px */
+  font-size: 1rem;
   background-color: #28a745;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 0.3125rem; /* 5px */
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .submit-btn:hover {
@@ -60,55 +64,45 @@ h2.greeting {
 
 .footer {
   text-align: center;
-  margin-top: 15px;
+  margin-top: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.forgot-password a {
-  color: #000000;
-  text-decoration: none;
-}
-
-.forgot-password a:hover {
-  text-decoration: underline;
-}
-
-.register-link {
-  font-size: 14px;
-}
-
+.forgot-password a,
 .register-link a {
   color: #000000;
   text-decoration: none;
+  font-size: 0.875rem; /* 14px */
 }
 
+.forgot-password a:hover,
 .register-link a:hover {
   text-decoration: underline;
 }
-.password-recovery {
-  margin-top: 20px;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+/* שדה הסיסמה עם אייקון */
+.password-wrapper {
+  position: relative;
+  width: 100%;
 }
 
-.forgot-password a {
-  color: #000000;
-  text-decoration: none;
-}
-
-.forgot-password a:hover {
-  text-decoration: underline;
+.eye-icon {
+  position: absolute;
+  left: 0.625rem; /* מרווח מהקצה */
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.25rem; /* 20px */
 }
 
 .input-group input {
-  margin-bottom: 10px;
+  padding-left: 2.5rem; /* מרווח לאייקון */
 }
+
 .error-message {
-  margin-top: 20px;
+  margin-top: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -118,80 +112,10 @@ h2.greeting {
   background-color: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
-  padding: 15px;
-  border-radius: 5px;
+  padding: 0.2rem;
+  border-radius: 0.3125rem; /* 5px */
   width: 100%;
-  max-width: 400px;
-  position: relative;
-}
-
-.error-box p {
-  margin: 0;
-  padding-right: 30px; /* Make space for the close button */
-}
-
-.success-message {
-  background-color: #d4edda;
-  color: #155724;
-  padding: 15px;
-  border-radius: 5px;
-  margin-bottom: 15px;
-  font-size: 14px;
+  max-width: 25rem; /* 400px */
+  box-sizing: border-box;
   text-align: center;
 }
-
-.close-btn:hover {
-  color: #f44336;
-}
-
-
-.close-btn:hover {
-  color: #f44336;
-}
-.password-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.eye-icon {
-  position: absolute;
-  left: 10px; /* ממוקם בצד השמאלי */
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  font-size: 20px;
-}
-
-.input-group input {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
-  padding-left: 35px; /* הוספנו רווח לאייקון */
-}
-.password-change-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f4f4f4;
-  direction: rtl;
-}
-
-.password-change-form {
-  background-color: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-}
-
-
-
-
-
-
-

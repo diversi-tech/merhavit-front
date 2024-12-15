@@ -4,69 +4,66 @@ body {
   margin: 0;
   padding: 0;
   background-color: #f9f9f9;
-  overflow: hidden; /* מניעת גלילה */
 }
 
 .registration-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* גובה מלא */
+  min-height: 100vh; /* גובה דינאמי */
   background-color: #f9f9f9;
+  padding: 1rem; /* ריפוד כללי למובייל */
+  box-sizing: border-box;
 }
 
 .registration-form {
   background-color: #ffffff;
-  padding: 20px; /* הורדת רווחים כדי לצמצם גובה */
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem; /* ריפוד יחסי */
+  border-radius: 0.75rem; /* פינות מעוגלות */
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 400px; /* הגבלה לדסקטופ */
   text-align: right; /* יישור לימין */
-  direction: rtl; /* הגדרת כיוון לימין לשמאל */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* מבטיח שכל הרכיבים מותאמים לגובה */
-  height: 90vh; /* גובה מותאם למסך */
-  overflow: hidden; /* למנוע גלילה פנימית */
+  direction: rtl; /* כיוון לימין */
 }
 
 .registration-form h1 {
-  font-size: 20px; /* הקטנת כותרת */
-  margin-bottom: 10px; /* פחות רווח */
+  font-size: 1.5rem; /* גודל יחסי */
+  margin-bottom: 1rem; /* רווח כותרת */
   color: #333;
   text-align: center;
 }
 
 .registration-form label {
-  font-size: 14px;
+  font-size: 1rem;
   color: #666;
-  margin-bottom: 5px; /* הקטנת רווחים */
+  margin-bottom: 0.25rem; /* רווח קטן */
 }
 
 .registration-form input {
   width: 100%;
-  padding: 8px; /* הקטנת ריפוד */
-  font-size: 14px; /* הקטנת גודל טקסט */
+  padding: 0.5rem; /* ריפוד יחסי */
+  font-size: 1rem;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 0.25rem;
   box-sizing: border-box;
-  text-align: right; 
-  margin-bottom: 15px; /* פחות רווח בין השדות */
+  margin-bottom: 1rem;
+  text-align: right;
 }
 
 .registration-form input::placeholder {
-  color: #bbb; 
+  color: #bbb;
+  font-size: 0.9rem;
 }
 
 .submit-button {
   width: 100%;
-  padding: 10px; /* הקטנת ריפוד */
-  font-size: 14px; /* הקטנת גופן */
+  padding: 0.75rem;
+  font-size: 1rem;
   background-color: #28a745;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   cursor: pointer;
   transition: background-color 0.3s;
 }
@@ -77,7 +74,30 @@ body {
 
 .error-message {
   color: red;
-  font-size: 12px;
-  margin: -10px 0 10px 0; /* הקטנת רווחים */
+  font-size: 0.85rem; /* טקסט קטן יותר */
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
   text-align: right;
+}
+
+/* MEDIA QUERIES: התאמות למסכים שונים */
+@media (max-width: 768px) {
+  .registration-form {
+    padding: 1rem;
+    max-width: 90%; /* הקטנת רוחב במסכים קטנים */
+  }
+  .registration-form h1 {
+    font-size: 1.25rem; /* כותרת קטנה יותר */
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-form {
+    padding: 0.75rem;
+  }
+  .registration-form input,
+  .submit-button {
+    font-size: 0.9rem; /* גודל טקסט מותאם */
+    padding: 0.5rem;
+  }
 }
