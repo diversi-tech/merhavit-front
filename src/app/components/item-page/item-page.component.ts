@@ -75,12 +75,17 @@ export class ItemPageComponent implements OnInit {
   similarItems: SimilarItem[] = [];
   previewUrl: SafeResourceUrl | null = null;
   isImage = false;
+  isAudio = false;
   isVideo = false;
   isPDF = false;
-  isAudio = false;
-  isOverlayOpen = false; // משתנה עבור ההגדלה
+  isPlaying = false; // משתנה לעקוב אם השיר מתנגן או לא
+  audioElement: HTMLAudioElement | null = null; // אלמנט האודיו
 
-  constructor(private route: ActivatedRoute, private apiService: ApiService, private sanitizer: DomSanitizer) {}
+  constructor(
+    private route: ActivatedRoute, 
+    private apiService: ApiService, 
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit(): void {
     const itemId = this.route.snapshot.paramMap.get('id');
@@ -112,6 +117,7 @@ export class ItemPageComponent implements OnInit {
       next: (response) => {
         console.log('Similar items received:', response);
         this.similarItems = response;
+        console.log('Similar items state:', this.similarItems); // לוג לווידוא הנתונים
       },
       error: (err) => {
         console.error('Error fetching similar items', err);
@@ -132,7 +138,7 @@ export class ItemPageComponent implements OnInit {
     } else if (fileType.includes('קובץ') || fileType.includes('pdf') || fileType.includes('word')) {
       this.clearPreviewsExcept('document');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
-    } else if (fileType.includes('אודיו') || fileType.includes('audio')) {
+    } else if (fileType.includes('אודיו') || fileType.includes('שיר')) {
       this.clearPreviewsExcept('audio');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
     }
@@ -140,25 +146,31 @@ export class ItemPageComponent implements OnInit {
 
   clearPreviewsExcept(type: 'image' | 'video' | 'document' | 'audio') {
     this.isImage = type === 'image';
+    this.isAudio = type === 'audio';
     this.isVideo = type === 'video';
     this.isPDF = type === 'document';
-    this.isAudio = type === 'audio';
   }
 
-  getCoverImage(item: SimilarItem): SafeResourceUrl {
-    if (!item || !item.filePath) {
-      return this.sanitizer.bypassSecurityTrustUrl(''); // שימוש בערך ברירת מחדל
+  toggleAudioPlayback() {
+    if (this.isPlaying) {
+      // עצור את השיר
+      if (this.audioElement) {
+        this.audioElement.pause();
+      }
+      this.isPlaying = false;
+    } else {
+      // הפעל את השיר
+      if (!this.audioElement) {
+        this.audioElement = new Audio(this.previewUrl as string);
+        this.audioElement.play();
+      } else {
+        this.audioElement.play();
+      }
+      this.isPlaying = true;
     }
-
-    const fileType = item.type.toLowerCase();
-    return fileType.includes('image') ? this.sanitizer.bypassSecurityTrustUrl(item.filePath) : this.sanitizer.bypassSecurityTrustUrl(item.coverImage ?? '');
   }
 
-  openOverlay() {
-    this.isOverlayOpen = true;
-  }
-
-  closeOverlay() {
-    this.isOverlayOpen = false;
+  getCoverImage(item: SimilarItem): string {
+    return item.coverImage || 'נתיב ברירת מחדל לתמונה';
   }
 }

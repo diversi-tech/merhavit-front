@@ -65,6 +65,15 @@
     <p>הפריט לא נמצא</p>
   </ng-template>
   
+  <!-- <div class="grid-item item-3">
+    <h2>פריטים דומים</h2>
+    <div class="similar-items">
+      <div *ngFor="let similarItem of similarItems" class="similar-item">
+        <img *ngIf="similarItem?.filePath" [src]="getCoverImage(similarItem)" [alt]="similarItem?.title || 'Cover image not found'">
+      </div>
+    </div>
+  </div> -->
+
   <div class="grid-item item-3">
     <h2>פריטים דומים</h2>
     <div class="similar-items">
@@ -73,6 +82,7 @@
       </div>
     </div>
   </div>
+  
 </div>
 
 <div class="overlay" *ngIf="isOverlayOpen" (click)="closeOverlay()">
