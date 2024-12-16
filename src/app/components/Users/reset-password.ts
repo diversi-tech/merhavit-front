@@ -13,6 +13,8 @@ import { Router } from '@angular/router';
 })
 export class ResetPasswordComponent {
   resetPasswordForm: FormGroup;
+  errorMessage: string = ''; // משתנה לשגיאה
+
 
   constructor(private fb: FormBuilder, private apiService: ApiService,private router: Router) {
     this.resetPasswordForm = this.fb.group({
@@ -22,30 +24,43 @@ export class ResetPasswordComponent {
   }
 
   onSubmit() {
-    if (this.resetPasswordForm.valid) {
-      const { password, confirmPassword } = this.resetPasswordForm.value;
+    this.errorMessage = ''; // איפוס הודעת השגיאה
 
-      if (password !== confirmPassword) {
-        alert('הסיסמאות אינן תואמות!');
+    if (this.resetPasswordForm.invalid) {
+      // הצגת שגיאה אם אחד השדות לא מולא
+      if (this.resetPasswordForm.get('password')?.errors?.['required'] || this.resetPasswordForm.get('confirmPassword')?.errors?.['required']) {
+        this.errorMessage = 'יש למלא את כל השדות!';
         return;
       }
 
-      const idNumber = localStorage.getItem('idNumber'); // תעודת זהות (או מזהה אחר)
-
-      if (idNumber) {
-        // קריאה לשירות API לשלוח את הסיסמה החדשה
-        this.apiService.Post('/users/reset-password', { idNumber, password })
-          .subscribe({
-            next: (response) => {
-              this.router.navigate(['/login']);            },
-            error: (err) => {
-              console.error('Error changing password', err);
-              alert('הייתה בעיה בשינוי הסיסמה');
-            }
-          });
-      } else {
-        alert('לא נמצאה תעודת זהות');
+      if (this.resetPasswordForm.get('password')?.errors?.['minlength']) {
+        this.errorMessage = 'הסיסמה חייבת לכלול לפחות 8 תווים!';
+        return;
       }
+    }
+
+    const { password, confirmPassword } = this.resetPasswordForm.value;
+
+    if (password !== confirmPassword) {
+      this.errorMessage = 'הסיסמאות אינן תואמות!';
+      return;
+    }
+
+    const idNumber = localStorage.getItem('idNumber');
+
+    if (idNumber) {
+      // קריאה ל-API
+      this.apiService.Post('/users/reset-password', { idNumber, password }).subscribe({
+        next: () => {
+          this.router.navigate(['/login']);
+        },
+        error: (err) => {
+          console.error('Error changing password', err);
+          this.errorMessage = err?.error?.message || 'שגיאה בשינוי הסיסמה';
+        }
+      });
+    } else {
+      alert('לא נמצאה תעודת זהות');
     }
   }
 }

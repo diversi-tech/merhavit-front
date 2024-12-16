@@ -8,18 +8,23 @@ import { jwtDecode } from 'jwt-decode';
 @Component({
   selector: 'app-login',
   templateUrl: './login.html',
+  styleUrls: ['./login.css'],
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  styleUrls: ['./login.css'],
+
 })
 export class LoginComponent {
   id: string = '';
   password: string = '';
   email: string = '';
+  showPassword: boolean = false; // משתנה לבדוק אם להציג את הסיסמה
   errorMessage: string = ''; // משתנה לשגיאה
 
   constructor(private router: Router, private apiService: ApiService) {}
 
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword; // שינוי מצג הסיסמה
+  }
   onSubmit() {
     const loginData = { idNumber: this.id, password: this.password };
 
@@ -35,12 +40,12 @@ export class LoginComponent {
         } else {
           console.log('Login successful');
           localStorage.setItem('idNumber', this.id);
-          this.router.navigate(['']);
+          this.router.navigate(['/show-details']);
         }
       },
       error: (err) => {
         console.error('Login failed', err);
-        this.errorMessage = 'Invalid credentials. Please try again.'; // הצגת הודעת שגיאה
+        this.errorMessage = err?.error?.message || 'Invalid credentials. Please try again.'; 
       },
     });
   }
@@ -51,11 +56,12 @@ export class LoginComponent {
 
   goToForgotPassword() {
     if (this.id === '') {
-      alert('אנא הכנס תעודת זהות לפני שתמשיך לדף שכחתי סיסמה.');
+      this.errorMessage='אנא הכנס תעודת זהות לפני שתמשיך לדף שכחתי סיסמה.';
       return;
     } else {
       localStorage.setItem('idNumber', this.id);
       this.router.navigate(['/forgot-password']);
     }
   }
+
 }

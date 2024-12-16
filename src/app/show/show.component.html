@@ -28,11 +28,11 @@
 
   <!-- הצגת כפתורים לתלמידה -->
   <div class="actions" *ngIf="userType === 'Student'">
-    <button class="action-button favorite">
+    <button class="action-button favorite" (click)="addToFavorites(item)">
       <i class="far fa-heart"></i> 
     </button>
     <!-- כפתורים להורדה עבור Article, Video, Scanned Document -->
-    <button class="action-button download" *ngIf="item.type === 'Article' || item.type === 'Video' || item.type === 'Scanned Document'">
+    <button class="action-button download" *ngIf="item.type === 'Article' || item.type === 'Video' || item.type === 'Song' || item.type === 'Scanned Document'" (click)="downloadResource(item)">
       <i class="fas fa-download"></i> 
     </button>
 

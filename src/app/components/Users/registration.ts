@@ -19,7 +19,7 @@ import { ApiService } from '../../api.service';
 export class RegistrationComponent {
   registrationForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router) {
+  constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router ) {
     this.registrationForm = this.fb.group({
       fullName: ['', Validators.required],
       idNumber: ['', Validators.required],

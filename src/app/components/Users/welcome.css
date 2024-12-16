@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .welcome-container {
   display: flex;
   flex-direction: column;
@@ -7,43 +13,38 @@
   text-align: center;
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
-  margin: 0; 
-  padding: 0; 
 }
-
 
 .welcome-header {
   display: flex;
   align-items: center;
-  gap: 16px; 
+  gap: 1.5vw; /* הקטנתי את המרווח */
 }
 
 .welcome-title {
-  font-size: 4rem; 
+  font-size: 4vw; /* הקטנתי את גודל הטקסט */
   font-weight: bold;
   margin: 0;
 }
 
 .welcome-icon {
-  font-size: 4rem; 
+  font-size: 6vw; /* הקטנתי את גודל האייקון */
 }
 
-
 .welcome-text {
-  font-size: 1.5rem; 
-  margin-top: 24px; 
+  font-size: 1.5vw; /* הקטנתי את גודל הטקסט */
+  margin-top: 1.5vh; /* הקטנתי את המרווח העליון */
   color: #555555;
 }
 
-
 .login-button {
-  margin-top: 32px; 
-  padding: 15px 30px; 
-  font-size: 1.2rem; 
+  margin-top: 3vh; /* הקטנתי את המרווח העליון */
+  padding: 1.5vh 2vw; /* הקטנתי את הפדינג */
+  font-size: 1.4vw; /* הקטנתי את גודל הפונט */
   font-weight: bold;
   background-color: #ffffff;
-  border: 2px solid #000000;
-  border-radius: 30px; 
+  border: 0.2rem solid #000000;
+  border-radius: 1.5rem; /* הקטנתי את רדיוס הגבול */
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -54,6 +55,6 @@
 }
 
 .welcome-image {
-  width: 100px; 
-  height: auto; 
+  width: 6vw; /* הקטנתי את רוחב התמונה */
+  height: auto;
 }
