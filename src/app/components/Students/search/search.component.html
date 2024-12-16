@@ -91,6 +91,32 @@
         </div>
       </div>
     </div>
-    <input type="text" class="search-input" placeholder="הקלד מילת חיפוש..." />
+
+    <input
+      type="text"
+      class="search-input"
+      placeholder="הקלד מילת חיפוש..."
+      (focus)="showSearchHistory()"
+      (blur)="hideSearchHistory()"
+    />
+
+    <div
+      class="search-history-box"
+      *ngIf="isSearchHistoryVisible"
+    >
+      <div
+        *ngFor="let item of mockSearchHistory"
+        class="search-history-item"
+        (click)="onHistoryItemClick(item)"
+      >
+        
+        
+        <i class="fas fa-search"> </i>
+        <span>{{ item }}</span>
+        
+    </div>
+  </div>
+  
+
   </div>
 </div>

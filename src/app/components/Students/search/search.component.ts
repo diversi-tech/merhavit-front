@@ -13,8 +13,38 @@ export class SearchComponent {
   selectedFileType: string = 'all';
   showFilterOptions: boolean = false;
   showDetails: boolean = false;
+  isSearchHistoryVisible: boolean = false;
+  searchQuery: string = ''; // משתנה למעקב אחר החיפוש
 
- 
+  // רשימה מדומה של היסטוריית חיפושים
+  mockSearchHistory: string[] = [
+    'איך נוצר הר געש הסבר לילדים',
+    'הר געש מתפרץ',
+    'הר געש בישראל',
+    'שמות של הרי געש',
+    'הר געש רדום',
+    'הר געש פעיל',
+  ];
+  // הצגת תיבת ההיסטוריה
+  showSearchHistory() {
+    this.isSearchHistoryVisible = true;
+  }
+
+  // הסתרת תיבת ההיסטוריה
+  hideSearchHistory() {
+    setTimeout(() => {
+      this.isSearchHistoryVisible = false;
+    }, 200); // השהיה קטנה כדי לאפשר לחיצה על פריטים
+  }
+
+  onHistoryItemClick(item: string): void {
+    // פעולה בעת לחיצה על היסטוריית החיפושים
+    this.searchQuery = item; // מעדכן את שורת החיפוש עם הערך שנבחר
+    console.log('Selected from history:', item);
+  
+    // אם יש צורך לבצע חיפוש מיידי
+    // this.performSearch(item);
+  }
 
   // פונקציה להצגת אפשרויות
   toggleFilterOptions() {
