@@ -28,6 +28,7 @@ export interface Item {
   description: string;
   tags: string[];
   createdBy: string | null;
+  coverImage: string;
   filePath: string;
   specializations: string[];
 }

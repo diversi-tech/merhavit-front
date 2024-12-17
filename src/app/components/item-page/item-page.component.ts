@@ -4,7 +4,7 @@
 // import { SimilarItem } from './interfaces/similar-item-page.interface';
 // import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 // import { CommonModule } from '@angular/common';
-// import { ActivatedRoute } from '@angular/router';
+// import { ActivatedRoute, Router } from '@angular/router';
 
 // @Component({
 //   selector: 'app-item-page',
@@ -22,13 +22,13 @@
 //   isVideo = false;
 //   isPDF = false;
 //   isPlaying = false; // משתנה לעקוב אם השיר מתנגן או לא
-//   isOverlayOpen = false; // משתנה לעקוב אם overlay פתוח
 //   audioElement: HTMLAudioElement | null = null; // אלמנט האודיו
 
 //   constructor(
 //     private route: ActivatedRoute,
 //     private apiService: ApiService,
-//     private sanitizer: DomSanitizer
+//     private sanitizer: DomSanitizer,
+//     private router: Router
 //   ) {}
 
 //   ngOnInit(): void {
@@ -119,14 +119,13 @@
 //     return item.coverImage || 'נתיב ברירת מחדל לתמונה';
 //   }
 
-//   openOverlay() {
-//     this.isOverlayOpen = true;
-//   }
-
-//   closeOverlay() {
-//     this.isOverlayOpen = false;
+//   navigateToItem(itemId: string) {
+//     this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+//       this.router.navigate(['/item-page', itemId]);
+//     });
 //   }
 // }
+
 
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../api.service';
@@ -151,8 +150,6 @@ export class ItemPageComponent implements OnInit {
   isAudio = false;
   isVideo = false;
   isPDF = false;
-  isPlaying = false; // משתנה לעקוב אם השיר מתנגן או לא
-  audioElement: HTMLAudioElement | null = null; // אלמנט האודיו
 
   constructor(
     private route: ActivatedRoute,
@@ -176,9 +173,8 @@ export class ItemPageComponent implements OnInit {
     this.apiService.Read(`/item-page/${itemId}`).subscribe({
       next: (response) => {
         console.log('Item details received:', response);
-        // בדיקה האם tags הוא מערך
         if (!Array.isArray(response.tags)) {
-          response.tags = []; // במקרה שלא, נהפוך אותו למערך ריק
+          response.tags = [];
         }
         this.item = response;
         this.setPreviewUrl(response);
@@ -206,19 +202,26 @@ export class ItemPageComponent implements OnInit {
     const fileType = item?.type?.toLowerCase() ?? '';
     const fileUrl = item?.filePath ?? '';
 
-    if (fileType.includes('תמונה') || fileType.includes('image')) {
-      this.clearPreviewsExcept('image');
-      this.previewUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
-    } else if (fileType.includes('וידאו') || fileType.includes('video')) {
-      this.clearPreviewsExcept('video');
-      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
-    } else if (fileType.includes('קובץ') || fileType.includes('pdf') || fileType.includes('word')) {
-      this.clearPreviewsExcept('document');
-      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
-    } else if (fileType.includes('אודיו') || fileType.includes('שיר')) {
+    console.log('File Type:', fileType);
+    console.log('File URL:', fileUrl);
+
+    if (fileType.includes('audio') || fileType.includes('אודיו') || fileType.includes('שיר')) {
       this.clearPreviewsExcept('audio');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
+    } else if (fileType.includes('image') || fileType.includes('תמונה')) {
+      this.clearPreviewsExcept('image');
+      this.previewUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
+    } else if (fileType.includes('video') || fileType.includes('וידאו')) {
+      this.clearPreviewsExcept('video');
+      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
+    } else if (fileType.includes('pdf') || fileType.includes('קובץ')) {
+      this.clearPreviewsExcept('document');
+      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
+    } else {
+      console.error('Unknown file type:', fileType);
+      this.previewUrl = null;
     }
+    console.log('Cover image URL:', this.item?.coverImage);
   }
 
   clearPreviewsExcept(type: 'image' | 'video' | 'document' | 'audio') {
@@ -228,30 +231,13 @@ export class ItemPageComponent implements OnInit {
     this.isPDF = type === 'document';
   }
 
-  toggleAudioPlayback() {
-    if (this.isPlaying) {
-      if (this.audioElement) {
-        this.audioElement.pause();
-      }
-      this.isPlaying = false;
-    } else {
-      if (!this.audioElement) {
-        this.audioElement = new Audio(this.previewUrl as string);
-        this.audioElement.play();
-      } else {
-        this.audioElement.play();
-      }
-      this.isPlaying = true;
-    }
-  }
-
-  getCoverImage(item: SimilarItem): string {
-    return item.coverImage || 'נתיב ברירת מחדל לתמונה';
-  }
-
   navigateToItem(itemId: string) {
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
       this.router.navigate(['/item-page', itemId]);
     });
+  }
+
+  getCoverImageSimilarItem(item: SimilarItem): string {
+    return item.coverImage || 'נתיב ברירת מחדל לתמונה';
   }
 }

@@ -30,6 +30,10 @@
   align-items: center;
 }
 
+.item-1 audio{
+  width: 50vw;
+}
+
 .item-1 video, .item-1 img, .item-1 embed, .item-1 audio {
   max-width: 100%; /* תמונה לא תחרוג מהרוחב הקבוע */
   max-height: 100%; /* תמונה לא תחרוג מהגובה הקבוע */
@@ -106,4 +110,14 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end; /* הצמדת הכותרת והספרים לימין */
+}
+
+/* תמונה לאודיו */
+#audio-cover-image {
+  display: block;
+  margin: 0 auto 1vh;
+  width: 50vw; /* קביעת רוחב קבוע */
+  height: 50vh; /* קביעת גובה קבוע */
+  max-width: 25vw; /* גבול מקסימלי לרוחב */
+  border-radius: 1rem; /* עיגול קצוות */
 }
