@@ -8,53 +8,57 @@
 .user-header, .user-row {
   display: flex;
   align-items: center;
-  padding: 15px 0; 
-  border-bottom: 1px solid #dcdcdc;
+  padding: 1.5vh 0; /* הקטנתי את ה-padding */
+  border-bottom: 0.1rem solid #dcdcdc;
 }
 
 .user-header {
-  font-size: 20px;
-  background-color: #f3f7fd; 
+  margin-top: 0.5rem;
+  font-size: 1.4rem; /* הגדלתי את גודל הכתב */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;  background-color: #f3f7fd;
   font-weight: bold;
 }
 
 .user-row:last-child {
-  border-bottom: none; 
+  border-bottom: none;
 }
 
 .user-cell {
-  flex: 1; 
+  flex: 1;
   text-align: center;
-  padding: 0 0px; 
-  box-sizing: border-box; 
+  padding: 0 1.5vw; /* הקטנתי את הפדינג */
+  box-sizing: border-box;
 }
 
 .user-header .user-cell {
-  color: #4a5568; 
+  color: #4a5568;
 }
 
 .user-row .user-cell {
-  color: #2d3748; 
+  font-size: 1.4rem; /* הגדלתי את גודל הכתב */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #2d3748;
 }
 
 .user-row:hover {
-  background-color: #f0f0f0; 
-  cursor: pointer; 
+  background-color: #f0f0f0;
+  cursor: pointer;
 }
 
 .user-actions {
-  flex: 0.5; 
+  flex: 0.5;
 }
 
 .action-button {
-  background-color: #38a169; 
+  background-color: #38a169;
   color: #fff;
-  padding: 6px 12px;
+  padding: 0.5vh 2vw; /* הקטנתי את ה-padding */
   border: none;
-  border-radius: 20px;
-  font-size: 14px;
+  border-radius: 1.5rem; /* הקטנתי את הרדיוס */
+  font-size: 1.2rem; /* הקטנתי את גודל הפונט */
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-top: 0.5rem;
 }
 
 .action-button:hover {

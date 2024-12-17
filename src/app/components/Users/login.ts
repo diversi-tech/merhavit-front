@@ -40,7 +40,7 @@ export class LoginComponent {
         } else {
           console.log('Login successful');
           localStorage.setItem('idNumber', this.id);
-          this.router.navigate(['']);
+          this.router.navigate(['/show-details']);
         }
       },
       error: (err) => {
