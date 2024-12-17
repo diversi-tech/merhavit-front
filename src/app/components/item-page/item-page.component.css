@@ -73,6 +73,13 @@
   margin-bottom: 2vh;
 }
 
+.item-3 video, .item-3 img, .item-3 embed, .item-3 audio {
+  max-width: 20vw; /* תמונה לא תחרוג מהרוחב הקבוע */
+  max-height: 20vh; /* תמונה לא תחרוג מהגובה הקבוע */
+  /* object-fit: cover; שמירה על יחס גובה-רוחב */
+}
+
+
 .grid-container {
   display: grid;
   grid-template-areas: 
@@ -122,7 +129,31 @@
   border-radius: 1rem; /* עיגול קצוות */
 }
 
+.image-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 30rem; /* לדוגמה, ניתן להתאים לפי עיצוב */
+  height: auto;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.overlay-svg {
+  position: absolute;
+  top: 1vh; /* מרחק מהחלק העליון */
+  left: 6rem; /* מרחק מהחלק השמאלי */
+  z-index: 1;
+  pointer-events: none; /* כדי שה-SVG לא יחסום לחיצות */
+}
+
+
 /* הצגת מסמך */
 .item-1 p{
   text-align: center;
 }
+
