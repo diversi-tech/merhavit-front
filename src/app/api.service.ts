@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { log } from 'node:console';
-const serverPath = "http://localhost:3001"
+const serverPath = "http://localhost:3004"
 @Injectable({
   providedIn: 'root'
 })

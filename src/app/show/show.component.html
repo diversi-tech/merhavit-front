@@ -1,27 +1,5 @@
-<!-- <div class="table-container">
-  <div *ngFor="let item of items" class="row">
-    <div class="item-content">
-      <img [src]="item.coverImage || 'assets/default-image.png'" alt="Item Image" class="item-image">
-      <img [src]="item.coverImage" alt="Item Image" class="item-image">
-      <div class="item-details">
-        <div class="item-title">{{ item.title }}</div>
-        <div class="item-description">{{ item.description }}</div>
-        <div class="item-meta">
-          מחבר: {{ item.Author }} | תאריך הוצאה: {{ item.pablicationDate | date:'dd/MM/yyyy' }}
-        </div>
-      </div>
-    </div>
-    <div class="status" [ngClass]="{'published': item.status === 'published', 'sold': item.status === 'sold'}">
-      {{ item.status }}
-    </div>
-    <div class="actions">
-      <button class="action-button edit">ערוך</button>
-      <button class="action-button delete">מחק</button>
-    </div>
-  </div>
-</div> -->
 
-<div class="table-container">
+<div *ngIf="items && items.length > 0" class="table-container">
   <div class="row" *ngFor="let item of items">
     <div class="item-content">
       <img [src]="item.coverImage || 'assets/default-image.png'" alt="Item Image" class="item-image">
@@ -34,8 +12,19 @@
       </div>
     </div>
     <div class="actions">
-      <button class="action-button edit">ערוך</button>
+      <button class="action-button edit" (click)="editItem(item)">ערוך</button>
       <button class="action-button delete" (click)="deleteResource(item)">מחק</button>
     </div>
   </div>
+</div>
+<router-outlet></router-outlet>
+
+<div class="pagination-container">
+  <mat-paginator
+  [length]="totalItems"
+  [pageSizeOptions]="[2, 4, 6, 8]"
+  (page)="onPageChange($event)"
+  showFirstLastButtons
+  >
+</mat-paginator> 
 </div>

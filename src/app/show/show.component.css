@@ -51,8 +51,14 @@
 /* טבלה */
 .table-container {
   width: 100%;
+  max-height: 80vh; /* הגובה המרבי של הקונטיינר */
+  overflow-y: auto; /* אפשר גלילה אנכית */
   margin-top: 20px;
+  border: 1px solid #ddd; /* הוסף גבול כדי להפריד את הקונטיינר */
+  border-radius: 5px; /* עגל את הפינות */
+  background-color: #fff; /* צבע רקע */
 }
+
 
 .row {
   display: flex;
@@ -156,3 +162,121 @@
   background-color: #777;
   color: #fff;
 }
+
+.pagination-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #444;
+  margin: 20px 0;
+  overflow-x: auto;
+  white-space: nowrap; /* מונע העברת שורות */
+}
+
+.pagination-container .arrow {
+  font-size: 18px;
+  margin: 0 10px;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.3s;
+}
+
+.pagination-container .arrow:hover {
+  color: #000;
+}
+
+.pagination-info {
+  font-size: 16px;
+  color: #444;
+}
+
+.custom-snack-bar {
+  background-color: #323232; /* צבע רקע */
+  color: white; /* צבע טקסט */
+  font-size: 24px; /* גודל טקסט גדול יותר */
+  text-align: center; /* מרכז את הטקסט */
+  padding: 20px; /* רווח פנימי */
+  position: fixed; /* מיקום קבוע */
+  top: 50%; /* מיקום במרכז */
+  left: 50%; /* מיקום במרכז */
+  transform: translate(-50%, -50%); /* מרכז את ההודעה */
+  z-index: 1000; /* ודא שההודעה מעל רכיבים אחרים */
+}
+.mat-paginator .mat-paginator-range-label {
+  color: rgb(255, 68, 0);
+}
+.mat-paginator .mat-select {
+  border: none !important;
+  width: 30px; /* הגדר רוחב קבוע לתיבת הבחירה */
+  font-size: 10px; /* שנה את גודל הפונט לפי הצורך */
+}
+
+.mat-paginator .mat-select-trigger {
+  padding: 0; /* הסר רווח פנימי כדי להקטין את הגודל */
+  min-width: 0; /* הסר את הרוחב המינימלי */
+  background: transparent !important; /* צבע רקע שקוף */
+}
+
+.mat-paginator .mat-select-arrow {
+  display: none; /* הסתר את החץ אם לא נדרש */
+}
+
+.mat-paginator .mat-select .mat-select-placeholder {
+  font-size: 10px; /* שנה את גודל הפונט של ההנחיה */
+}
+
+.mat-paginator .mat-select .mat-select-value {
+  font-size: 10px; /* שנה את גודל הפונט של הערך הנבחר */
+}
+
+
+
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+.mat-paginator {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  flex-shrink: 0; /* מונע מה-paginator להתכווץ */
+}
+
+.mat-paginator .mat-paginator-page-size {
+  display: flex;
+  align-items: center;
+}
+
+.mat-paginator .mat-paginator-range-label {
+  color: blue;
+  font-weight: bold;
+}
+
+.mat-paginator .mat-select-trigger {
+  min-width: 40px; /* צמצום גודל הריבוע */
+  font-size: 14px;
+}
+
+.mat-paginator .mat-icon-button {
+  color: #0078d4;
+}
+
+.mat-paginator .mat-button-disabled {
+  color: #ccc;
+}
+:root {
+  --select-box-width: 5px; /* התאם את הרוחב הרצוי */
+}
+
+.mat-paginator-range-label select {
+  width: var(--select-box-width);
+}
+
+
