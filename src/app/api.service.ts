@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-// const serverPath = 'https://merhavit-back.onrender.com';
-const serverPath = 'http://localhost:3001';
+const serverPath = 'https://merhavit-back.onrender.com';
+// const serverPath = 'http://localhost:3004';
 
 @Injectable({
   providedIn: 'root',
@@ -11,11 +11,12 @@ export class ApiService {
   constructor(private http: HttpClient) {}
   // GET
   Read(query: string): Observable<any> {
+    console.log("query", query);
 
     let fullpath = serverPath + query;
 
     const ans = this.http.get(fullpath, { withCredentials: true });
-    console.log(ans);
+    console.log("ans", ans);
 
     return ans;
   }

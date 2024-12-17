@@ -4,6 +4,11 @@ import { ItemsListComponent } from './show/show.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ItemsListModule } from './show/items-list.module';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { EditMediaComponent } from './edit-media/edit-media.component';
+import { MediaService } from './edit-media/media.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { materialize } from 'rxjs';
 import { SearchComponent } from './components/Students/search/search.component';
 import { ItemPageComponent } from './components/item-page/item-page.component';
 
@@ -11,7 +16,7 @@ import { ItemPageComponent } from './components/item-page/item-page.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive,ItemsListComponent,MatDialogModule,ItemsListModule,SearchComponent, ItemPageComponent],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive,ItemsListComponent,MatDialogModule,ItemsListModule,SearchComponent, ItemPageComponent,FormsModule,EditMediaComponent,ReactiveFormsModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'] 
 })
@@ -40,3 +45,4 @@ toggleSubMenu(menu: string): void {
   }
 }
 }
+//MediaService
