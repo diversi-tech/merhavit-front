@@ -1,18 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
-/* .cdk-overlay-pane {
-    position: absolute !important;
-    z-index: 1000; /* ודא שהוא מופיע מעל כל רכיב אחר 
-    transform: none !important;
-  }
-
-  html, body {
-    margin: 0;
-    padding: 0;
-    overflow: visible !important;
+.quill-input {
+    width: 100%;
+    max-width: 500px; /* רוחב מקסימלי */
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 4px;
+    min-height: 40px; /* גובה מינימלי */
   }
   
-  .cdk-overlay-container {
-    position: fixed;
-    z-index: 1000;
+  .ql-toolbar {
+    border: none;
+    margin-bottom: 5px;
   }
-   */
+  
+  .ql-container {
+    display: none !important;
+    min-height: 100px;
+    overflow-y: auto;
+  }
+  
+  .ql-editor {
+    min-height: 100px;
+    padding: 10px;
+  }
+  

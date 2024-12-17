@@ -22,11 +22,11 @@ export class ApiService {
   Post(query: string, newData: any): Observable<any> {
     let fullpath = serverPath + query;
     console.log(fullpath);
-    
-    return this.http.post(fullpath, newData, { 
-      //headers: new HttpHeaders({'Content-Type': 'application/json'}), 
-      withCredentials: true 
-    });
+    return query=='/EducationalResource'?
+     this.http.post(fullpath, newData, {  withCredentials: true })
+     :  this.http.post(fullpath, newData, { 
+        headers: new HttpHeaders({'Content-Type': 'application/json'}), 
+        withCredentials: true})
   }
   // PUT
   Put(query: string, updatedData: any): Observable<any> {

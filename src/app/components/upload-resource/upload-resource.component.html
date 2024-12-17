@@ -1,11 +1,21 @@
-<p>upload-resource works!</p>
+<div>
+<h1>טופס העלאת קובץ</h1>
 
+<mat-radio-group
+  aria-labelledby="example-radio-group-label"
+  class="example-radio-group"
+  [(ngModel)]="formMode">
+    <mat-radio-button class="example-radio-button" [value]="'edit'">עריכת תוכן</mat-radio-button>
+    <mat-radio-button class="example-radio-button" [value]="'add'">העלאת תוכן </mat-radio-button>
+    <mat-radio-button class="example-radio-button" [value]="'addLink'">קישורים</mat-radio-button>
+</mat-radio-group>
 
 <div class="container">
-  <h1>טופס העלאת קובץ</h1>
+
 
   <!-- העלאת קובץ -->
   <div class="image-container">
+    <div *ngIf="formMode=='add'">
     <div *ngIf="isVideo">
       <video [src]="previewImage"></video>
     </div>
@@ -29,17 +39,40 @@
         style="display: none;" />
     </div>
   </div>
+  <div *ngIf="formMode=='edit'">
+    <quill-editor [(ngModel)]="content" theme="snow" [modules]="editorModules"></quill-editor>
+  </div>
+  <div *ngIf="formMode=='addLink'">
+    <div class="link-input-container">
+      <label for="linkInput">הדבק קישור</label>
+      <div class="LinkInput-wrapper">
+        <span>🔗</span>
+        <input
+          id="linkInput"
+          type="url"
+          placeholder="הדבק קישור כאן"
+          [(ngModel)]="link"
+          (input)="onLinkChange()"
+        />
+      </div>
+      <div *ngIf="link && !isValidLink" class="error-message">
+        הקישור אינו חוקי. יש לוודא שמדובר ב-URL תקין.
+      </div>
+    </div>
+  </div>
+  </div>
 
   <!-- העלאת תמונה -->
-  <div class="image-container">
+  <div *ngIf="isNotImage" class="image-container" >
     <img [src]="displayImage" alt="תמונת שער"/>
     
     <div class="upload-overlay">
-      <button (click)="imageInput.click()">העלה תמונת שער(אפציונלי) </button>
+      <button (click)="imageInput.click()">העלה תמונת שער </button>
       <input type="file" #imageInput (change)="onImageSelected($event)" accept=".jpg, .jpeg, .png"
         style="display: none;" />
     </div>
   </div>
+</div>
     
 
   <!-- טופס -->
@@ -59,7 +92,7 @@
         </div>
         <div class="form-group">
           <label for="type">סוג קובץ</label>
-          <select id="type" formControlName="type">
+          <select id="type" formControlName="type" (change)="onFileTypeChange($event)">
             <option *ngFor="let type of fileTypes" [value]="type">{{ type }}</option>
           </select>
         </div>
@@ -219,7 +252,7 @@
           <mat-form-field class="autocomplete-container">
             <mat-chip-grid #tagsChipList  aria-label="רשימת תגיות">
               <mat-chip-row *ngFor="let tag of multipleChoiceFields['tags'].optionSelected" [removable]="true" (removed)="remove(tag,'tags')">
-                {{tag.name}}
+                {{getTagById(tag)}}
                 <button matChipRemove>×</button>
               </mat-chip-row>
               <input
@@ -248,3 +281,5 @@
       <!-- כפתור שליחה -->
       <button type="submit">שלח</button>
   </form>
+
+  </div>
