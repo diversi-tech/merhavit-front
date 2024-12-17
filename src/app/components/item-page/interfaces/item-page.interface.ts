@@ -14,11 +14,12 @@
 //   publishedDate?: string;
 // }
 
+
 export interface Item {
   title: string;
   publicationDate: string;
   type: string;
-  subject: string;
+  subject: string[];
   ages: string;
   level: string;
   language: string;
@@ -28,5 +29,6 @@ export interface Item {
   tags: string[];
   createdBy: string | null;
   filePath: string;
-  specializations: string;
+  specializations: string[];
 }
+
