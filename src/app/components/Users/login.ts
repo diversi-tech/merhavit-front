@@ -8,48 +8,60 @@ import { jwtDecode } from 'jwt-decode';
 @Component({
   selector: 'app-login',
   templateUrl: './login.html',
+  styleUrls: ['./login.css'],
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  styleUrls: ['./login.css'],
+
 })
 export class LoginComponent {
-  id: string = ''; 
-  password: string = ''; 
-  email: string = ''; 
+  id: string = '';
+  password: string = '';
+  email: string = '';
+  showPassword: boolean = false; // משתנה לבדוק אם להציג את הסיסמה
+  errorMessage: string = ''; // משתנה לשגיאה
 
   constructor(private router: Router, private apiService: ApiService) {}
 
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword; // שינוי מצג הסיסמה
+  }
   onSubmit() {
-    const loginData = { idNumber: this.id, password: this.password }; // Prepare login data
+    const loginData = { idNumber: this.id, password: this.password };
 
-    // Send the login request to the server
     this.apiService.Post('/users/login', loginData).subscribe({
       next: (response) => {
-        // Store the token in localStorage
         console.log(response);
         localStorage.setItem('access_token', response.access_token);
-
-        // Decode the token to check user role
-        const decodedToken: any = jwtDecode(response.access_token); // פענוח הטוקן
-        const userRole = decodedToken.userType; // שמירת תפקיד המשתמש מתוך הטוקן
-
-        // אם התפקיד הוא Admin, עבור אל עמוד ניהול המשתמשים
+        const decodedToken: any = jwtDecode(response.access_token);
+        const userRole = decodedToken.userType;
         if (userRole === 'Admin') {
           console.log('Redirecting to user management');
-          this.router.navigate(['/user-management']); // ניווט לדף ניהול משתמשים
+          this.router.navigate(['/personal-details']);
         } else {
           console.log('Login successful');
           localStorage.setItem('idNumber', this.id);
-          this.router.navigate(['']); // ניווט לעמוד הבית או דף נפרד
+          this.router.navigate(['/show-details']);
         }
       },
       error: (err) => {
         console.error('Login failed', err);
-      }
+        this.errorMessage = err?.error?.message || 'Invalid credentials. Please try again.'; 
+      },
     });
   }
 
   goToRegister() {
     this.router.navigate(['/registration']);
   }
+
+  goToForgotPassword() {
+    if (this.id === '') {
+      this.errorMessage='אנא הכנס תעודת זהות לפני שתמשיך לדף שכחתי סיסמה.';
+      return;
+    } else {
+      localStorage.setItem('idNumber', this.id);
+      this.router.navigate(['/forgot-password']);
+    }
+  }
+
 }

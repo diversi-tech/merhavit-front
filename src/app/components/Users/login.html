@@ -8,17 +8,36 @@
       </div>
       <div class="input-group">
         <label for="password">סיסמה</label>
-        <input type="password" id="password" [(ngModel)]="password" name="password" required />
+        <div class="password-wrapper">
+          <i 
+            class="fa fa-eye eye-icon" 
+            (click)="togglePasswordVisibility()"></i> <!-- אייקון עין משמאל -->
+          <input 
+            type="{{ showPassword ? 'text' : 'password' }}" 
+            id="password" 
+            [(ngModel)]="password" 
+            name="password" 
+            required />
+        </div>
       </div>
-      <button type="submit" class="submit-btn">המשך</button>
+      
+      <button type="submit" class="submit-btn">התחברות</button>
     </form>
 
+    <!-- הצגת שגיאה אם יש -->
+    <div *ngIf="errorMessage" class="error-message">
+      <div class="error-box">
+        <p>{{ errorMessage }}</p>
+      </div>
+    </div>
+
     <div class="footer">
+      <p class="forgot-password">
+        <a (click)="goToForgotPassword()">שכחתי סיסמא</a>
+      </p>
       <p class="register-link">
         אין לך חשבון? <a (click)="goToRegister()">להרשמה</a>
       </p>
-     
     </div>
-
   </div>
 </div>

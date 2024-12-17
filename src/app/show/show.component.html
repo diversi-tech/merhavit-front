@@ -1,29 +1,49 @@
-
-<!-- <div class="pagination-controls">
-  <button (click)="previousPage()" [disabled]="currentPage === 0">הקודם</button>
-  <span>דף {{ currentPage + 1 }}</span>
-  <button (click)="nextPage()">הבא</button>
-</div> -->
 <div class="pagination-container">
   <span class="arrow" (click)="previousPage()" [class.disabled]="currentPage === 0">❮</span>
   <span class="arrow" (click)="nextPage()">❯</span>
 </div>
-
-<div class="table-container">
+<div class="table-container" style="direction: rtl">
   <div class="row" *ngFor="let item of items">
     <div class="item-content">
-      <img [src]="item.coverImage || 'assets/default-image.png'" alt="Item Image" class="item-image">
+      <img
+        [src]="item.coverImage || 'assets/default-image.png'"
+        alt="Item Image"
+        class="item-image"
+      />
+
       <div class="item-details">
         <div class="item-title">{{ item.title }}</div>
         <div class="item-description">{{ item.description }}</div>
         <div class="item-meta">
-          מחבר: {{ item.Author }} | תאריך הוצאה: {{ item.pablicationDate | date:'dd/MM/yyyy' }}
+          <span class="meta-label">מחבר:</span> <span class="meta-value">{{ item.Author }}</span> |
+          <span class="meta-label">תאריך הוצאה:</span> <span class="meta-value">{{ item.publicationDate | date:'dd/MM/yyyy' }}</span>
         </div>
+        
       </div>
     </div>
-    <div class="actions">
-      <button class="action-button edit" (click)="editItem(item)">ערוך</button>
-      <button class="action-button delete" (click)="deleteResource(item)">מחק</button>
-    </div>
+
+  <!-- הצגת כפתורים לספרנית -->
+  <div class="actions" *ngIf="userType === 'Librarian'">
+    <button class="action-button delete" (click)="deleteResource(item)">
+      <i class="far fa-trash-alt"></i> 
+    </button>
+    <button class="action-button edit">עריכה</button>
+  </div>
+
+  <!-- הצגת כפתורים לתלמידה -->
+  <div class="actions" *ngIf="userType === 'Student'">
+    <button class="action-button favorite" (click)="addToFavorites(item)">
+      <i class="far fa-heart"></i> 
+    </button>
+    <!-- כפתורים להורדה עבור Article, Video, Scanned Document -->
+    <button class="action-button download" *ngIf="item.type === 'תמונה' || item.type === 'סרטון' || item.type === 'שיר' || item.type === 'מערך'" (click)="downloadResource(item)">
+      <i class="fas fa-download"></i> 
+    </button>
+
+    <!-- כפתור להזמנה עבור Book -->
+    <button class="action-button order" *ngIf="item.type === 'ספר'">
+      להזמנה
+    </button>
+  </div>
   </div>
 </div>

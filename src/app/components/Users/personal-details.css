@@ -1,74 +1,91 @@
+/* מיכל כללי */
 .personal-details-container {
-  direction: rtl; /* קביעת כיוון כללי */
-  text-align: right; /* יישור טקסט לימין */
+  margin-top: 2.5rem; /* 40px -> 2.5rem */
+  direction: rtl; /* כתיבה מימין לשמאל */
+  text-align: right; /* יישור התוכן לשמאל */
+  width: 50%; /* רוחב המיכל */
+  margin-left: auto; /* יידחוף את המיכל לשמאל */
+  margin-right: 4.375rem; /* 70px -> 4.375rem */
 }
 
+/* סרגל כרטיסיות */
+.nav-tabs {
+  font-size: 1.125rem; /* 18px -> 1.125rem */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 2.5rem; /* 40px -> 2.5rem */
+}
+
+.nav-tabs div {
+  padding: 0.9375rem 1.5625rem; /* 15px 25px -> 0.9375rem 1.5625rem */
+  cursor: pointer;
+  font-weight: bold;
+  color: #333;
+}
+
+.nav-tabs div.active {
+  border-bottom: 0.125rem solid #000; /* 2px -> 0.125rem */
+  color: #000;
+}
+
+/* טופס הגריד */
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* שני טורים */
-  gap: 15px; /* רווח בין קבוצות השדות */
+  grid-template-columns: repeat(2, 1fr); /* שני טורים שווים */
+  gap: 1.25rem; /* 20px -> 1.25rem */
 }
 
+/* כל קבוצת שדות */
 .form-group {
   display: flex;
   flex-direction: column;
 }
 
+/* כותרות של השדות */
 label {
-  margin-bottom: 5px;
+  font-size: 1.125rem; /* 18px -> 1.125rem */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin-bottom: 0.3125rem; /* 5px -> 0.3125rem */
+  font-weight: bold;
+  color: #555;
 }
 
+/* עיצוב השדות */
 input {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  text-align: right; /* יישור תוכן הקלט לימין */
+  font-size: 1.125rem; /* 18px -> 1.125rem */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 0.75rem; /* 12px -> 0.75rem */
+  border: 0.0625rem solid #ccc; /* 1px -> 0.0625rem */
+  border-radius: 0.3125rem; /* 5px -> 0.3125rem */
+  width: 90%;
 }
 
+/* כפתורים */
 .button-group {
   display: flex;
-  justify-content: flex-end; /* כפתורים מיושרים לצד ימין */
-  gap: 20px; /* רווח בין הכפתורים */
-  /* margin-top: 20px;  */
-}
-
-.save-button,
-.cancel-button {
-  padding: 12px 30px; /* גודל הכפתורים */
-  border: none;
-  border-radius: 25px; /* פינות מעוגלות */
-  font-size: 16px; /* גודל הטקסט */
-  cursor: pointer;
-  font-weight: bold; /* טקסט מודגש */
+  justify-content: flex-start;
+  gap: 0.625rem; /* 10px -> 0.625rem */
+  margin-top: 1.25rem; /* 20px -> 1.25rem */
+  direction: ltr;
 }
 
 .save-button {
-  background-color: #4caf50; /* צבע ירוק */
+  background-color: #4caf50;
   color: white;
+  font-size: 1.25rem; /* 20px -> 1.25rem */
+  border: none;
+  padding: 0.625rem 1.25rem; /* 10px 20px -> 0.625rem 1.25rem */
+  border-radius: 1.5625rem; /* 25px -> 1.5625rem */
+  cursor: pointer;
 }
 
 .cancel-button {
   background-color: white;
-  color: #f44336; /* צבע טקסט אדום */
-  border: 2px solid #f44336; /* מסגרת אדומה */
-}
-
-.cancel-button:hover {
-  background-color: #f44336;
-  color: white;
-}
-
-.change-password-button {
-  padding: 12px 30px;
-  border: none;
-  border-radius: 25px;
-  font-size: 16px;
+  color: #f44336;
+  font-size: 1.25rem; /* 20px -> 1.25rem */
+  border: 0.125rem solid #f44336; /* 2px -> 0.125rem */
+  padding: 0.625rem 1.25rem; /* 10px 20px -> 0.625rem 1.25rem */
+  border-radius: 1.5625rem; /* 25px -> 1.5625rem */
   cursor: pointer;
-  font-weight: bold;
-  background-color: #4caf50; /* ירוק */
-  color: white;
-}
-
-.change-password-button:hover {
-  background-color: #45a049;
 }
