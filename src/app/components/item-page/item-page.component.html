@@ -1,110 +1,5 @@
 <!-- <div class="grid-container">
   <div *ngIf="item" class="grid-item item-1">
-    <img [src]="item.filePath" alt="{{ item.title }} cover" *ngIf="item.filePath">
-  </div>
-  <div *ngIf="item" class="grid-item item-2 item-details">
-    <h1>{{ item.title }}</h1>
-    <p><strong>תאריך פרסום:</strong> {{ item.publicationDate }}</p>
-    <p><strong>נושא:</strong> {{ item.subject }}</p>
-    <p><strong>גיל:</strong> {{ item.ages }}</p>
-    <p><strong>רמה:</strong> {{ item.level }}</p>
-    <p><strong>שפה:</strong> {{ item.language }}</p>
-    <p><strong>שנת הוצאה לאור:</strong> {{ item.releaseYear }}</p>
-    <p><strong>מחבר:</strong> {{ item.author }}</p>
-    <p><strong>תיאור:</strong> {{ item.description }}</p>
-    <p><strong>חוות דעת:</strong> {{ item.tags.join(', ') }}</p>
-  </div>
-  <div class="grid-item item-3">
-    <h2>פריטים דומים</h2>
-    <div class="similar-items">
-      <div *ngFor="let similarItem of similarItems" class="similar-item">
-        <img [src]="similarItem.filePath" alt="{{ similarItem.title }} cover" *ngIf="similarItem.filePath">
-      </div>
-    </div>
-  </div>
-</div> -->
-
-
-<!-- <div class="grid-container">
-  <div *ngIf="item" class="grid-item item-1">
-    <ng-container *ngIf="previewUrl; else noFile">
-      <div *ngIf="isImage">
-        <img [src]="previewUrl" [alt]="item?.title || 'Image not found'" (click)="openOverlay()">
-      </div>
-      <div *ngIf="isVideo">
-        <video *ngIf="previewUrl" [src]="previewUrl" controls (click)="openOverlay()"></video>
-      </div>
-      <div *ngIf="isPDF">
-        <embed *ngIf="previewUrl" [src]="previewUrl" type="application/pdf" (click)="openOverlay()">
-      </div>
-      <div *ngIf="isAudio">
-        <audio *ngIf="previewUrl" [src]="previewUrl" controls (click)="openOverlay()"></audio>
-      </div>
-    </ng-container>
-    <ng-template #noFile>
-      <p>הקובץ לא קיים</p>
-    </ng-template>
-  </div>
-  
-  <div *ngIf="item; else noItem" class="grid-item item-2 item-details">
-    <h1>{{ item?.title || '' }}</h1>
-    <p><strong>Publication Date:</strong> {{ item?.publicationDate || '' }}</p>
-    <p><strong>Type:</strong> {{ item?.type || '' }}</p>
-    <p><strong>Subject:</strong> {{ item?.subject || '' }}</p>
-    <p><strong>Ages:</strong> {{ item?.ages || '' }}</p>
-    <p><strong>Level:</strong> {{ item?.level || '' }}</p>
-    <p><strong>Language:</strong> {{ item?.language || '' }}</p>
-    <p><strong>Release Year:</strong> {{ item?.releaseYear || '' }}</p>
-    <p><strong>Author:</strong> {{ item?.author || '' }}</p>
-    <p><strong>Description:</strong> {{ item?.description || '' }}</p>
-    <p *ngIf="item?.tags?.length"><strong>Tags:</strong> {{ item?.tags?.join(', ') }}</p>
-    <p><strong>Created By:</strong> {{ item?.createdBy || '' }}</p>
-    <p><strong>Specializations:</strong> {{ item?.specializations || '' }}</p>
-  </div>
-  <ng-template #noItem>
-    <p>הפריט לא נמצא</p>
-  </ng-template> -->
-  
-  <!-- <div class="grid-item item-3">
-    <h2>פריטים דומים</h2>
-    <div class="similar-items">
-      <div *ngFor="let similarItem of similarItems" class="similar-item">
-        <img *ngIf="similarItem?.filePath" [src]="getCoverImage(similarItem)" [alt]="similarItem?.title || 'Cover image not found'">
-      </div>
-    </div>
-  </div> -->
-
-  <!-- <div class="grid-item item-3">
-    <h2>פריטים דומים</h2>
-    <div class="similar-items">
-      <div *ngFor="let similarItem of similarItems" class="similar-item">
-        <img *ngIf="similarItem?.filePath" [src]="getCoverImage(similarItem)" [alt]="similarItem?.title || 'Cover image not found'">
-      </div>
-    </div>
-  </div>
-  
-</div>
-
-<div class="overlay" *ngIf="isOverlayOpen" (click)="closeOverlay()">
-  <div class="overlay-content" (click)="$event.stopPropagation()">
-    <div *ngIf="isImage">
-      <img [src]="previewUrl" [alt]="item?.title || 'Image not found'">
-    </div>
-    <div *ngIf="isVideo">
-      <video [src]="previewUrl" controls></video>
-    </div>
-    <div *ngIf="isPDF">
-      <embed [src]="previewUrl" type="application/pdf">
-    </div>
-    <div *ngIf="isAudio">
-      <audio [src]="previewUrl" controls></audio>
-    </div>
-  </div>
-</div> -->
-
-
-<div class="grid-container">
-  <div *ngIf="item" class="grid-item item-1">
     <ng-container *ngIf="previewUrl; else noFile">
       <div *ngIf="isImage">
         <img [src]="previewUrl" [alt]="item?.title || 'Image not found'" (click)="openOverlay()">
@@ -147,6 +42,58 @@
     <h2>פריטים דומים</h2>
     <div class="similar-items">
       <div *ngFor="let similarItem of similarItems" class="similar-item">
+        <img *ngIf="similarItem?.coverImage" [src]="getCoverImage(similarItem)" [alt]="similarItem?.title || 'Cover image not found'">
+        <p *ngIf="!similarItem?.coverImage">הקובץ לא נמצא</p>
+      </div>
+    </div>
+  </div>
+</div>
+ -->
+
+ <div class="grid-container">
+  <div *ngIf="item" class="grid-item item-1">
+    <ng-container *ngIf="previewUrl; else noFile">
+      <div *ngIf="isImage">
+        <img [src]="previewUrl" [alt]="item?.title || 'Image not found'">
+      </div>
+      <div *ngIf="isVideo">
+        <video *ngIf="previewUrl" [src]="previewUrl" controls></video>
+      </div>
+      <div *ngIf="isPDF">
+        <embed *ngIf="previewUrl" [src]="previewUrl" type="application/pdf">
+      </div>
+      <div *ngIf="isAudio">
+        <audio *ngIf="previewUrl" [src]="previewUrl" controls></audio>
+      </div>
+    </ng-container>
+    <ng-template #noFile>
+      <p>הקובץ לא קיים</p>
+    </ng-template>
+  </div>
+  
+  <div *ngIf="item; else noItem" class="grid-item item-2 item-details">
+    <h1>{{ item?.title || '' }}</h1>
+    <p><strong>Publication Date:</strong> {{ item?.publicationDate || '' }}</p>
+    <p><strong>Type:</strong> {{ item?.type || '' }}</p>
+    <p><strong>Subject:</strong> {{ item?.subject?.join(', ') || '' }}</p>
+    <p><strong>Ages:</strong> {{ item?.ages || '' }}</p>
+    <p><strong>Level:</strong> {{ item?.level || '' }}</p>
+    <p><strong>Language:</strong> {{ item?.language || '' }}</p>
+    <p><strong>Release Year:</strong> {{ item?.releaseYear || '' }}</p>
+    <p><strong>Author:</strong> {{ item?.author || '' }}</p>
+    <p><strong>Description:</strong> {{ item?.description || '' }}</p>
+    <p *ngIf="item?.tags?.length"><strong>Tags:</strong> {{ item?.tags?.join(', ') }}</p>
+    <p><strong>Created By:</strong> {{ item?.createdBy || '' }}</p>
+    <p><strong>Specializations:</strong> {{ item?.specializations?.join(', ') || '' }}</p>
+  </div>
+  <ng-template #noItem>
+    <p>הפריט לא נמצא</p>
+  </ng-template>
+  
+  <div class="grid-item item-3">
+    <h2>פריטים דומים</h2>
+    <div class="similar-items">
+      <div *ngFor="let similarItem of similarItems" class="similar-item" (click)="navigateToItem(similarItem._id)">
         <img *ngIf="similarItem?.coverImage" [src]="getCoverImage(similarItem)" [alt]="similarItem?.title || 'Cover image not found'">
         <p *ngIf="!similarItem?.coverImage">הקובץ לא נמצא</p>
       </div>
