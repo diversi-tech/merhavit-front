@@ -121,3 +121,8 @@
   max-width: 25vw; /* גבול מקסימלי לרוחב */
   border-radius: 1rem; /* עיגול קצוות */
 }
+
+/* הצגת מסמך */
+.item-1 p{
+  text-align: center;
+}

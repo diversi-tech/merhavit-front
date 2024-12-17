@@ -1,57 +1,4 @@
-<!-- <div class="grid-container">
-  <div *ngIf="item" class="grid-item item-1">
-    <ng-container *ngIf="previewUrl; else noFile">
-      <div *ngIf="isImage">
-        <img [src]="previewUrl" [alt]="item?.title || 'Image not found'">
-      </div>
-      <div *ngIf="isVideo">
-        <video *ngIf="previewUrl" [src]="previewUrl" controls></video>
-      </div>
-      <div *ngIf="isPDF">
-        <embed *ngIf="previewUrl" [src]="previewUrl" type="application/pdf">
-      </div>
-      <div *ngIf="isAudio">
-        <audio *ngIf="previewUrl" [src]="previewUrl" controls></audio>
-      </div>
-    </ng-container>
-    <ng-template #noFile>
-      <p>הקובץ לא קיים</p>
-    </ng-template>
-  </div>
-  
-  <div *ngIf="item; else noItem" class="grid-item item-2 item-details">
-    <h1>{{ item?.title || '' }}</h1>
-    <p><strong>Publication Date:</strong> {{ item?.publicationDate || '' }}</p>
-    <p><strong>Type:</strong> {{ item?.type || '' }}</p>
-    <p><strong>Subject:</strong> {{ item?.subject?.join(', ') || '' }}</p>
-    <p><strong>Ages:</strong> {{ item?.ages || '' }}</p>
-    <p><strong>Level:</strong> {{ item?.level || '' }}</p>
-    <p><strong>Language:</strong> {{ item?.language || '' }}</p>
-    <p><strong>Release Year:</strong> {{ item?.releaseYear || '' }}</p>
-    <p><strong>Author:</strong> {{ item?.author || '' }}</p>
-    <p><strong>Description:</strong> {{ item?.description || '' }}</p>
-    <p *ngIf="item?.tags?.length"><strong>Tags:</strong> {{ item?.tags?.join(', ') }}</p>
-    <p><strong>Created By:</strong> {{ item?.createdBy || '' }}</p>
-    <p><strong>Specializations:</strong> {{ item?.specializations?.join(', ') || '' }}</p>
-  </div>
-  <ng-template #noItem>
-    <p>הפריט לא נמצא</p>
-  </ng-template>
-  
-  <div class="grid-item item-3">
-    <h2>פריטים דומים</h2>
-    <div class="similar-items">
-      <div *ngFor="let similarItem of similarItems" class="similar-item" (click)="navigateToItem(similarItem._id)">
-        <img *ngIf="similarItem?.coverImage" [src]="getCoverImage(similarItem)" [alt]="similarItem?.title || 'Cover image not found'">
-        <p *ngIf="!similarItem?.coverImage">הקובץ לא נמצא</p>
-      </div>
-    </div>
-  </div>
-</div>
- -->
-
-
- <div class="grid-container">
+<div class="grid-container">
   <!-- קובץ הפריט -->
   <div *ngIf="item" class="grid-item item-1">
     <ng-container *ngIf="previewUrl; else noFile">
@@ -62,8 +9,25 @@
         <video [src]="previewUrl" controls></video>
       </div>
       <div *ngIf="isPDF">
-        <embed [src]="previewUrl" type="application/pdf">
+        <!-- הצגת תמונת הכריכה -->
+        <a 
+          *ngIf="item?.coverImage" 
+          [href]="previewUrl" 
+          target="_blank" 
+          rel="noopener noreferrer"
+        >
+          <img 
+            [src]="item.coverImage" 
+            [alt]="'Cover image for ' + (item?.title || 'document')" 
+            class="document-cover-image" 
+            style="cursor: pointer; max-width: 100%; height: auto;"
+          >
+        </a>
+        <p>לחצי 👆 על הכריכה להצגת המסמך*</p>
       </div>
+      
+      
+      
       <div *ngIf="isAudio">
         <!-- הצגת תמונת הכריכה מעל השיר -->
         <img *ngIf="item?.coverImage" [src]="item.coverImage" [alt]="'Cover image for ' + (item?.title || 'audio')" id="audio-cover-image">
@@ -78,18 +42,15 @@
   <!-- פרטי הפריט -->
   <div *ngIf="item" class="grid-item item-2 item-details">
     <h1>{{ item?.title || '' }}</h1>
-    <p><strong>Publication Date:</strong> {{ item?.publicationDate || '' }}</p>
-    <p><strong>Type:</strong> {{ item?.type || '' }}</p>
-    <p><strong>Subject:</strong> {{ item?.subject?.join(', ') || '' }}</p>
-    <p><strong>Ages:</strong> {{ item?.ages || '' }}</p>
-    <p><strong>Level:</strong> {{ item?.level || '' }}</p>
-    <p><strong>Language:</strong> {{ item?.language || '' }}</p>
-    <p><strong>Release Year:</strong> {{ item?.releaseYear || '' }}</p>
-    <p><strong>Author:</strong> {{ item?.author || '' }}</p>
-    <p><strong>Description:</strong> {{ item?.description || '' }}</p>
-    <p *ngIf="item?.tags?.length"><strong>Tags:</strong> {{ item?.tags?.join(', ') }}</p>
-    <p><strong>Created By:</strong> {{ item?.createdBy || '' }}</p>
-    <p><strong>Specializations:</strong> {{ item?.specializations?.join(', ') || '' }}</p>
+    <p><strong>תאריך פרסום:</strong> {{ item?.publicationDate || '' }}</p>
+    <p><strong>נושא:</strong> {{ item?.subject?.join(', ') || '' }}</p>
+    <p><strong>גיל:</strong> {{ item?.ages || '' }}</p>
+    <p><strong>רמה:</strong> {{ item?.level || '' }}</p>
+    <p><strong>שפה:</strong> {{ item?.language || '' }}</p>
+    <p><strong>שנת הוצאה לאור:</strong> {{ item?.releaseYear || '' }}</p>
+    <p><strong>מחבר:</strong> {{ item?.author || '' }}</p>
+    <p><strong>תיאור:</strong> {{ item?.description || '' }}</p>
+    <p *ngIf="item?.tags?.length"><strong>חוות דעת:</strong> {{ item?.tags?.join(', ') }}</p>
   </div>
 
   <!-- פריטים דומים -->
