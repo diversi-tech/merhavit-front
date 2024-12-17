@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../api.service'; // Import ApiService
+import { ApiService } from '../../api.service'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -11,10 +11,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
 })
 export class UserManagementComponent implements OnInit {
-  users: any[] = []; // מערך המשתמשים
+  users: any[] = []; 
 
   constructor(private apiService: ApiService) {}
-  //  כאשר הדף נטען קריאה לשרת לשלוף את המשתמשים
   ngOnInit(): void {
     this.getUsers();
   }
@@ -32,12 +31,10 @@ export class UserManagementComponent implements OnInit {
 
   editUser(user: any) {
     console.log('Edit user:', user);
-    // הוסף כאן את הלוגיקה לעריכת משתמש
   }
 
   deleteUser(user: any) {
     console.log('Delete user:', user);
-    // הוסף כאן את הלוגיקה למחיקת משתמש
   }
   navigateToPersonalArea(user:any){}
 }

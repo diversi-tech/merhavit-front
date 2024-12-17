@@ -1,86 +1,75 @@
-
 .container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 75rem; /* 1200px = 75rem עם root 16px */
   margin: auto;
   font-family: Arial, sans-serif;
   direction: rtl;
   color: #333;
 }
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 0;
-  border-bottom: 1px solid #ddd;
-  font-size: 18px;
+  padding: 2vh 2%; /* מרווח יחסי */
+  border-bottom: 0.1em solid #ddd;
+  font-size: 1.2rem;
 }
 
 .header span {
-  font-size: 16px;
+  font-size: 1rem;
   color: #777;
 }
 
 .filter-buttons {
   display: flex;
-  gap: 10px;
+  gap: 1rem;
 }
 
 .filter-button {
-  padding: 8px 16px;
-  border: 1px solid #ddd;
+  padding: 0.5em 1em;
+  border: 0.1em solid #ddd;
   background-color: transparent;
-  font-size: 14px;
+  font-size: 1rem;
   color: #777;
-  border-radius: 20px;
+  border-radius: 2em;
   cursor: pointer;
   transition: 0.3s;
 }
 
-.filter-button.active {
-  background-color: #007bff;
-  color: #fff;
-  border-color: #007bff;
-}
-
+.filter-button.active,
 .filter-button:hover {
   background-color: #007bff;
   color: #fff;
 }
 
-/* טבלה */
 .table-container {
-  width: 100%;
-  max-height: 80vh; /* הגובה המרבי של הקונטיינר */
-  overflow-y: auto; /* אפשר גלילה אנכית */
-  margin-top: 20px;
-  border: 1px solid #ddd; /* הוסף גבול כדי להפריד את הקונטיינר */
-  border-radius: 5px; /* עגל את הפינות */
-  background-color: #fff; /* צבע רקע */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
 }
-
 
 .row {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #fff;
+  align-items: center;
+  width: 90%;
+  max-width: 50rem; /* 800px = 50rem */
+  padding: 2vh 0; /* מרווח יחסי */
+  border-bottom: 0.1em solid #dcdcdc;
 }
 
 .item-content {
   display: flex;
-  gap: 20px;
+  gap: 2vw; /* מרווח יחסי לרוחב */
   align-items: center;
 }
 
 .item-image {
-  width: 60px;
-  height: 60px;
-  border-radius: 5px;
+  width: 5vw;
+  height: 5vw;
+  border-radius: 0.5rem;
   object-fit: cover;
 }
 
@@ -89,194 +78,150 @@
 }
 
 .item-title {
-  font-size: 16px;
+  font-size: 1.2rem;
   font-weight: bold;
   color: #007bff;
-  margin-bottom: 5px;
+  margin-bottom: 0.3em;
 }
 
 .item-description {
-  font-size: 14px;
+  font-size: 1rem;
   color: #666;
 }
 
 .item-meta {
-  font-size: 12px;
-  color: #aaa;
-  margin-top: 5px;
+  font-size: 0.9rem;
+  color: black;
+  margin-top: 0.5em;
 }
 
-/* סטטוס */
-.row .status {
-  font-size: 12px;
+.meta-label {
   font-weight: bold;
-  padding: 5px 15px;
-  border-radius: 20px;
+}
+
+.meta-value {
+  font-weight: normal;
+}
+
+.status {
+  font-size: 0.9rem;
+  font-weight: bold;
+  padding: 0.5em 1em;
+  border-radius: 2em;
   color: #fff;
   text-align: center;
 }
 
-.row .status.sold {
+.status.sold {
   background-color: #ffcccc;
   color: #d80000;
 }
 
-.row .status.unique {
+.status.unique {
   background-color: #fff4cc;
   color: #d4a017;
 }
 
-.row .status.published {
+.status.published {
   background-color: #d4f5d4;
   color: #007b00;
 }
 
-/* כפתורי הפעולות */
 .actions {
   display: flex;
-  gap: 10px;
+  gap: 1rem;
 }
 
 .action-button {
-  padding: 5px 15px;
-  font-size: 14px;
-  border-radius: 20px;
-  border: 1px solid #007b00;
-  background-color: transparent;
-  color: #007b00;
+  padding: 0.5em 1em;
+  font-size: 1rem;
+  border-radius: 2em;
   cursor: pointer;
   transition: all 0.3s;
 }
 
-.action-button:hover {
-  background-color: #007b00;
-  color: #fff;
-}
-
 .action-button.edit {
-  border-color: #777;
-  color: #777;
+  border: 0.1em solid #28a745;
+  color: #28a745;
 }
 
 .action-button.edit:hover {
-  background-color: #777;
+  background-color: #28a745;
   color: #fff;
 }
 
-.pagination-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Roboto', sans-serif;
-  font-size: 14px;
-  color: #444;
-  margin: 20px 0;
-  overflow-x: auto;
-  white-space: nowrap; /* מונע העברת שורות */
-}
-
-.pagination-container .arrow {
-  font-size: 18px;
-  margin: 0 10px;
+.action-button.delete {
+  border: none;
+  background-color: transparent;
+  color: black;
   cursor: pointer;
-  color: #888;
-  transition: color 0.3s;
 }
 
-.pagination-container .arrow:hover {
-  color: #000;
+.action-button.delete:hover {
+  background-color: #f3f7fd;
+  color: red;
 }
 
-.pagination-info {
-  font-size: 16px;
-  color: #444;
+.action-button.favorite:hover,
+.action-button.download:hover {
+  color: #218838;
 }
 
-.custom-snack-bar {
-  background-color: #323232; /* צבע רקע */
-  color: white; /* צבע טקסט */
-  font-size: 24px; /* גודל טקסט גדול יותר */
-  text-align: center; /* מרכז את הטקסט */
-  padding: 20px; /* רווח פנימי */
-  position: fixed; /* מיקום קבוע */
-  top: 50%; /* מיקום במרכז */
-  left: 50%; /* מיקום במרכז */
-  transform: translate(-50%, -50%); /* מרכז את ההודעה */
-  z-index: 1000; /* ודא שההודעה מעל רכיבים אחרים */
-}
-.mat-paginator .mat-paginator-range-label {
-  color: rgb(255, 68, 0);
-}
-.mat-paginator .mat-select {
-  border: none !important;
-  width: 30px; /* הגדר רוחב קבוע לתיבת הבחירה */
-  font-size: 10px; /* שנה את גודל הפונט לפי הצורך */
+.action-button.order {
+  background-color: #28a745;
+  color: #fff;
+  border-radius: 2em;
 }
 
-.mat-paginator .mat-select-trigger {
-  padding: 0; /* הסר רווח פנימי כדי להקטין את הגודל */
-  min-width: 0; /* הסר את הרוחב המינימלי */
-  background: transparent !important; /* צבע רקע שקוף */
+.action-button.order:hover {
+  background-color: #218838;
 }
 
-.mat-paginator .mat-select-arrow {
-  display: none; /* הסתר את החץ אם לא נדרש */
+/* מדיה קווריס לריספונסיביות במסכים קטנים */
+@media (max-width: 48rem) { /* 768px = 48rem */
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .item-content {
+    flex-direction: column;
+    gap: 1vh;
+    align-items: flex-start;
+  }
+
+  .item-image {
+    width: 20vw;
+    height: 20vw;
+  }
+
+  .actions {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .filter-buttons {
+    flex-wrap: wrap;
+  }
+  .pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #444;
+    margin: 10px 0;
+  }
+  
+  .pagination-container .arrow {
+    font-size: 18px;
+    margin: 0 10px;
+    cursor: pointer;
+    color: #888;
+    transition: color 0.3s;
+  }
+  
+  .pagination-container .arrow:hover {
+    color: #000;
+  }
 }
-
-.mat-paginator .mat-select .mat-select-placeholder {
-  font-size: 10px; /* שנה את גודל הפונט של ההנחיה */
-}
-
-.mat-paginator .mat-select .mat-select-value {
-  font-size: 10px; /* שנה את גודל הפונט של הערך הנבחר */
-}
-
-
-
-
-.pagination-container {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-  overflow-x: auto;
-}
-
-.mat-paginator {
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  flex-shrink: 0; /* מונע מה-paginator להתכווץ */
-}
-
-.mat-paginator .mat-paginator-page-size {
-  display: flex;
-  align-items: center;
-}
-
-.mat-paginator .mat-paginator-range-label {
-  color: blue;
-  font-weight: bold;
-}
-
-.mat-paginator .mat-select-trigger {
-  min-width: 40px; /* צמצום גודל הריבוע */
-  font-size: 14px;
-}
-
-.mat-paginator .mat-icon-button {
-  color: #0078d4;
-}
-
-.mat-paginator .mat-button-disabled {
-  color: #ccc;
-}
-:root {
-  --select-box-width: 5px; /* התאם את הרוחב הרצוי */
-}
-
-.mat-paginator-range-label select {
-  width: var(--select-box-width);
-}
-
-

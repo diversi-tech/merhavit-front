@@ -102,6 +102,7 @@
                 "input": "public",
                 "output": "/"
               }
+              
             ],
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
