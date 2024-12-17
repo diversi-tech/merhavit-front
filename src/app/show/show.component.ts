@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
 import { log } from 'console';
+import { Router } from '@angular/router';
 
 interface Item   
  {
@@ -34,7 +35,7 @@ export class ItemsListComponent implements OnInit {
 
   public items: Item[] = []; //מערך המוצרים של הספריה 
 
-  constructor(private http: HttpClient,private apiService: ApiService) {}
+  constructor(private http: HttpClient,private apiService: ApiService,private router: Router) {}
 
   async ngOnInit(): Promise<void> {
 
@@ -46,11 +47,11 @@ export class ItemsListComponent implements OnInit {
     // });
   }
 
-  async getItems()
+  async getItems(page: number = 0, limit: number = 2)
   {
     console.log("hi");
     
-    this.apiService.Read('/EducationalResource/getAll').subscribe({
+    this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}`).subscribe({
       next: (response) => {
       
         console.log("i this is the response: ",response);
@@ -65,6 +66,14 @@ export class ItemsListComponent implements OnInit {
         console.error('Error fetching items', err);
       },
     });
+  }
+
+  editItem(item:Item)
+  {
+        // ניווט לדף edit-media
+    this.router.navigate(['/edit-media'], {
+      state: { id: item.id } 
+    })
   }
 
   deleteResource(itemToDelete:Item)
@@ -87,7 +96,7 @@ export class ItemsListComponent implements OnInit {
         error: (err) => {
           // טיפול במקרה של שגיאה
           console.error('Error deleting item:', err);
-          alert('Failed to delete item. Please try again.');
+          alert(err.error.message || 'Failed to delete item. Please try again.');
         },
         complete: () => {
           // פעולה כאשר הקריאה הסתיימה (אופציונלי)
@@ -95,15 +104,22 @@ export class ItemsListComponent implements OnInit {
         }
       });
     }
+
     
+//הוספת לוגיקת דפדוף
+currentPage: number = 0;
 
+nextPage() {
+    this.currentPage++;
+    this.getItems(this.currentPage);
+}
 
-
-
-
-  // getItems(): Observable<Item[]> {
-  //   return this.http.get<Item[]>('/EducationalResource/getAll');
-  // }
+previousPage() {
+    if (this.currentPage > 0) {
+        this.currentPage--;
+        this.getItems(this.currentPage);
+    }
+}
 
 }
 

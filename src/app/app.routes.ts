@@ -7,6 +7,7 @@ import { PersonalDetailsComponent } from './components/Users/personal-details';
 import {PasswordChangeComponent} from './components/Users/password-change'
 import { SearchComponent } from './components/Students/search/search.component';
 import { ItemsListComponent } from './show/show.component'
+import { EditMediaComponent } from './edit-media/edit-media.component';
 
 export const routes: Routes = [
   { path: '', component:  WelcomeComponent},  
@@ -17,6 +18,6 @@ export const routes: Routes = [
   { path: 'personal-details', component: PersonalDetailsComponent },  
   { path: 'change-password', component: PasswordChangeComponent }, 
     { path: 'user-management', component: UserManagementComponent },
-  {path:'show-details',component:ItemsListComponent},
+  { path: 'edit-media', component: EditMediaComponent },
   { path: '**', redirectTo: '' },  // עמוד ברירת מחדל לכל כתובת לא תקינה
 ];
