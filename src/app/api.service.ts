@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-// const serverPath = 'https://merhavit-back.onrender.com';
-const serverPath = 'http://localhost:3001';
+//const serverPath = 'https://merhavit-back.onrender.com';
+const serverPath = 'http://localhost:3004';
 
 @Injectable({
   providedIn: 'root',
@@ -25,11 +25,11 @@ export class ApiService {
   Post(query: string, newData: any): Observable<any> {
     let fullpath = serverPath + query;
     console.log(fullpath);
-
-    return this.http.post(fullpath, newData, {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      withCredentials: true,
-    });
+    return query=='/EducationalResource'?
+     this.http.post(fullpath, newData, {  withCredentials: true })
+     :  this.http.post(fullpath, newData, { 
+        headers: new HttpHeaders({'Content-Type': 'application/json'}), 
+        withCredentials: true})
   }
   // PUT
   Put(query: string, updatedData: any): Observable<any> {
