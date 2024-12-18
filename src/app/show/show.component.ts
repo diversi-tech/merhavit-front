@@ -227,50 +227,51 @@ export class ItemsListComponent implements OnInit {
       }
 
     try {
-        const decodedToken: any = jwtDecode(token);
-        const userId = decodedToken.idNumber; // נניח שה-`id` של המשתמש נמצא בטוקן
-        const requestData = {
-          userId: userId,
-          itemId: item._id,
-        };
+      const decodedToken: any = jwtDecode(token);
+      const userId = decodedToken.idNumber; // נניח שה-`id` של המשתמש נמצא בטוקן
+      const requestData = {
+        userId: userId,
+        itemId: item.id,
+      };
+    
+      console.log('Request Data:', requestData);
 
-        console.log('Request Data:', requestData);
+    this.apiService.Post('/favorites/add', requestData).subscribe({
+      next: (response) => {
+        console.log('Item added to favorites:', response);
+        alert('המוצר נוסף למועדפים בהצלחה!');
+      },
+      error: (err) => {
+        console.error('Error adding item to favorites:', err);
+        alert('שגיאה בהוספת המוצר למועדפים. אנא נסה שוב.');
+      },
+    });
+  } catch(error) {
+    console.error('Error decoding token:', error);
+    alert('שגיאה באימות המשתמש.');
+  }
+}
+getFileExtension(filePath: string): string | null {
+  const match = filePath.match(/\.[0-9a-z]+$/i);
+  return match ? match[0] : null;
+}
+//הוספת לוגיקת דפדוף
+currentPage: number = 0;
 
-        this.apiService.Post('/favorites/add', requestData).subscribe({
-          next: (response) => {
-            console.log('Item added to favorites:', response);
-            alert('המוצר נוסף למועדפים בהצלחה!');
-          },
-          error: (err) => {
-            console.error('Error adding item to favorites:', err);
-            alert('שגיאה בהוספת המוצר למועדפים. אנא נסה שוב.');
-          },
-        });
-      } catch(error) {
-        console.error('Error decoding token:', error);
-        alert('שגיאה באימות המשתמש.');
-      }
-    }
-   
-    getFileExtension(filePath: string): string | null {
-      const match = filePath.match(/\.[0-9a-z]+$/i);
-      return match ? match[0] : null;
-    }
-    //הוספת לוגיקת דפדוף
-    currentPage: number = 0;
+nextPage() {
+  this.currentPage++;
+  this.getItems(this.currentPage);
+}
 
-    nextPage() {
-      this.currentPage++;
-      this.getItems(this.currentPage);
-    }
-
-    previousPage() {
-      if (this.currentPage > 0) {
-        this.currentPage--;
-        this.getItems(this.currentPage);
-      }
-
-    }
-
+previousPage() {
+  if (this.currentPage > 0) {
+    this.currentPage--;
+    this.getItems(this.currentPage);
   }
 
+}
+
+ navigateToItemPage(itemId: string): void {
+    this.router.navigate([`/item-page/${itemId}`]);
+  }
+}
