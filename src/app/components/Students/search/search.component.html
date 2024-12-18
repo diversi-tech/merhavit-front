@@ -11,6 +11,13 @@
     <i class="fas fa-bell" style="color:#434343; font-size:5vh; width:4vw;"></i>
   </div>
 
+  <!-- כפתור העלאה -->
+  <div *ngIf="userType!='Student'">
+    <button [routerLink]="'/upload-resource'">
+      העלאת קובץ
+  </button>
+  </div>
+
   <div class="white-box">
     <div class="white-box-icons">
       <div class="dropdown-container">

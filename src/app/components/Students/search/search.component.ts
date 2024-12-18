@@ -1,19 +1,21 @@
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule,RouterModule],
 })
 export class SearchComponent {
   selectedFileType: string = 'all';
   showFilterOptions: boolean = false;
   showDetails: boolean = false;
-
+  public userType: string = ''; // משתנה לשמירת סוג המשתמש
  
 
   // פונקציה להצגת אפשרויות
@@ -35,6 +37,20 @@ export class SearchComponent {
 toggleDetails() {
   this.showDetails = !this.showDetails;
 }
+
+getUserTypeFromToken(): void {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        this.userType = decodedToken.userType || '';
+        console.log(this.userType);
+
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+  }
 
   
 }

@@ -144,3 +144,19 @@
   flex: 1 1 45%;
   min-width: 25vw; /* שיניתי את הרוחב כך שיהיה יותר דינמי */
 }
+
+button {
+  background-color: #27c95a; /* צבע ירוק */
+  color: white; /* צבע טקסט לבן */
+  border: none; /* ללא גבול */
+  border-radius: 20px; /* פינות מעוגלות */
+  padding: 10px 20px; /* ריווח פנימי */
+  font-size: 16px; /* גודל טקסט */
+  cursor: pointer; /* מצביע יד */
+  text-align: center; /* יישור טקסט */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* הצללה */
+}
+
+button:hover {
+  background-color: #008000; /* ירוק כהה יותר במעבר עכבר */
+}
