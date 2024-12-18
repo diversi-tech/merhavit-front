@@ -30,8 +30,7 @@ import Quill from 'quill'; // Import Quill
   selector: 'app-upload-resource',
   standalone: true,
   imports: [CommonModule,FormsModule,ReactiveFormsModule,MatChipsModule, MatAutocompleteModule, 
-    MatFormFieldModule, MatInputModule,MatIconModule,OverlayModule,MatAutocompleteModule,MatDialogModule, 
-    MatButtonModule,MatRadioModule,QuillModule],
+    MatFormFieldModule, MatInputModule,MatIconModule,OverlayModule,MatAutocompleteModule,MatDialogModule, MatButtonModule,MatRadioModule,QuillModule],
   templateUrl: './upload-resource.component.html',
   styleUrls: ['./upload-resource.component.css']
 })

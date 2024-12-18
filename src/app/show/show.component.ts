@@ -20,7 +20,7 @@ interface Item {
   title: string;
   type: string;
   Author: string;
-  pablicationDate: Date;
+  pablicationDate: Date; //pablicationDate
   Tags: Array<string>;
   createdBy: string;
   ApprovedBy: string;
