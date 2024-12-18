@@ -90,7 +90,6 @@ export class ItemsListComponent implements OnInit {
   }
 
   deleteResource(itemToDelete: Item) {
-    alert('hiii');
     console.log('Delete item: ', itemToDelete);
     // הוסף כאן את הלוגיקה למחיקת משתמש
 
@@ -158,6 +157,9 @@ export class ItemsListComponent implements OnInit {
         `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
           item.filePath
         )}`
+        // `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
+        //   item.filePath
+        // )}&download=true` 
       )
       // .Read(`/EducationalResource/presigned-url?filePath=${item.filePath}`)
 
