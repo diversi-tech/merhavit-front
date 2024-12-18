@@ -3,7 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../api.service';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { jwtDecode } from 'jwt-decode'; 
+import { jwtDecode } from 'jwt-decode';
+
+
 
 @Component({
   selector: 'app-personal-details',
@@ -16,12 +18,13 @@ export class PersonalDetailsComponent implements OnInit {
   user = {
     firstName: '',
     lastName: '',
-    phone: '',
-    mobile: '',
-    street: '',
-    city: '',
+    address: '',
+    phoneNumber: '',
+    email: '',
+    password: '',
+    class: '',
     specialization: '',
-    role: '',
+    assignedSeminaryId: '',
   };
   activeTab: string = 'personal-details';
 
@@ -39,6 +42,7 @@ export class PersonalDetailsComponent implements OnInit {
       try {
         const decodedToken: any = jwtDecode(token);
         const idNumber = decodedToken.idNumber; 
+        console.log('idNumber', idNumber)
         if (idNumber) {
           this.loadUserData(idNumber);
         } else {

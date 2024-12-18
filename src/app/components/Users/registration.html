@@ -6,10 +6,19 @@
   >
     <h1>הרשמה</h1>
 
-    <label>שם מלא</label>
-    <input formControlName="fullName" type="text" placeholder="רבקה כהן" />
+    <label>שם פרטי</label>
+    <input formControlName="firstName" type="text" placeholder="רבקה" />
     <div
-      *ngIf="registrationForm.get('fullName')?.touched && registrationForm.get('fullName')?.invalid"
+      *ngIf="registrationForm.get('firstName')?.touched && registrationForm.get('firstName')?.invalid"
+      class="error-message"
+    >
+      <small>שדה חובה</small>
+    </div>
+
+    <label>שם משפחה</label>
+    <input formControlName="lastName" type="text" placeholder="כהן" />
+    <div
+      *ngIf="registrationForm.get('lastName')?.touched && registrationForm.get('lastName')?.invalid"
       class="error-message"
     >
       <small>שדה חובה</small>
@@ -140,7 +149,7 @@
       *ngIf="registrationForm.get('class')?.touched && registrationForm.get('class')?.invalid"
       class="error-message"
     >
-      <small>שדה חובה (מינימום 6 תווים)</small>
+      <small>שדה חובה</small>
     </div>
 
     <label>התמחות</label>

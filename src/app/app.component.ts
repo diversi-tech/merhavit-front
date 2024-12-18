@@ -11,12 +11,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { materialize } from 'rxjs';
 import { SearchComponent } from './components/Students/search/search.component';
 import { ItemPageComponent } from './components/item-page/item-page.component';
+import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive,ItemsListComponent,MatDialogModule,ItemsListModule,SearchComponent, ItemPageComponent,FormsModule,EditMediaComponent,ReactiveFormsModule],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive,ItemsListComponent,MatDialogModule,ItemsListModule,SearchComponent, ItemPageComponent,FormsModule,EditMediaComponent,ReactiveFormsModule,ItemsListModule ,UploadResourceComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'] 
 })

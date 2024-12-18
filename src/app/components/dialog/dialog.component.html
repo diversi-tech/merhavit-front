@@ -1,0 +1,12 @@
+<p>dialog works!</p>
+<h2 mat-dialog-title>הוספת נושא חדש</h2>
+<mat-dialog-content>
+  <mat-form-field appearance="outline"  style="width: 100%;">
+    <mat-label>נושא חדש</mat-label>
+    <input matInput [(ngModel)]="newSubject" />
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="cancel()">ביטול</button>
+  <button mat-raised-button color="primary" (click)="save()">שמור</button>
+</mat-dialog-actions>
