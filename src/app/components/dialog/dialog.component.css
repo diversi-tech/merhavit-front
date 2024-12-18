@@ -1,0 +1,10 @@
+input.mat-input-element {
+    color: #000000 !important; /* צבע חזק לטקסט */
+    font-weight: bold; /* טקסט מודגש */
+  }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end; /* יישור לימין או לסוף */
+  }
+  

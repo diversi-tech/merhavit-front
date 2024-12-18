@@ -21,7 +21,8 @@ export class RegistrationComponent {
 
   constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router ) {
     this.registrationForm = this.fb.group({
-      fullName: ['', Validators.required],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
       idNumber: ['', Validators.required],
       address: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern(/^05\d{8}$/)]],
