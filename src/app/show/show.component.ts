@@ -7,6 +7,8 @@ import { ApiService } from '../api.service';
 // import { log } from 'console';
 import { jwtDecode } from 'jwt-decode';
 import { log } from 'console';
+import { RouterModule, Router } from '@angular/router';
+
 
 interface Item {
   id: string;
@@ -35,7 +37,7 @@ export class ItemsListComponent implements OnInit {
   public items: Item[] = []; //מערך המוצרים של הספריה
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
 
-  constructor(private http: HttpClient, private apiService: ApiService) {}
+  constructor(private http: HttpClient, private apiService: ApiService, private router: Router) {}
 
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
@@ -222,4 +224,9 @@ export class ItemsListComponent implements OnInit {
   // getItems(): Observable<Item[]> {
   //   return this.http.get<Item[]>('/EducationalResource/getAll');
   // }
+
+  navigateToItemPage(itemId: string): void {
+    this.router.navigate([`/item-page/${itemId}`]);
+  }
+  
 }

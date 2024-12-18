@@ -13,7 +13,7 @@ export class SuccessRegistrationComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      this.router.navigate(['/next-page']);
+      this.router.navigate(['/show-details']);
     }, 5000);
   }
 }

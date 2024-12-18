@@ -16,12 +16,13 @@ export class PersonalDetailsComponent implements OnInit {
   user = {
     firstName: '',
     lastName: '',
-    phone: '',
-    mobile: '',
-    street: '',
-    city: '',
+    address: '',
+    phoneNumber: '',
+    email: '',
+    password: '',
+    class: '',
     specialization: '',
-    role: '',
+    assignedSeminaryId: '',
   };
   activeTab: string = 'personal-details';
 
@@ -39,6 +40,7 @@ export class PersonalDetailsComponent implements OnInit {
       try {
         const decodedToken: any = jwtDecode(token);
         const idNumber = decodedToken.idNumber; 
+        console.log('idNumber', idNumber)
         if (idNumber) {
           this.loadUserData(idNumber);
         } else {

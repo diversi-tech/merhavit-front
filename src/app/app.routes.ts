@@ -25,6 +25,6 @@ export const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'success-registration', component: SuccessRegistrationComponent },
   { path: 'show-details', component: ItemsListComponent },
-  {path: 'item-page/:id', component: ItemPageComponent},
+  { path: 'item-page/:id', component: ItemPageComponent },
   { path: '**', redirectTo: '' }, // עמוד ברירת מחדל לכל כתובת לא תקינה
 ];
