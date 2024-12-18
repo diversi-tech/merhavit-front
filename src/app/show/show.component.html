@@ -1,3 +1,7 @@
+<div class="pagination-container">
+  <span class="arrow" (click)="previousPage()" [class.disabled]="currentPage === 0">❮</span>
+  <span class="arrow" (click)="nextPage()">❯</span>
+</div>
 <div class="table-container" style="direction: rtl" >
   <div class="row" *ngFor="let item of items">
     <div class="item-content" (click)="navigateToItemPage(item.id)">

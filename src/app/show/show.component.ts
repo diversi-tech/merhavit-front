@@ -56,17 +56,17 @@ export class ItemsListComponent implements OnInit {
         const decodedToken: any = jwtDecode(token);
         this.userType = decodedToken.userType || '';
         console.log(this.userType);
-        
+
       } catch (error) {
         console.error('Error decoding token:', error);
       }
     }
   }
 
-  async getItems() {
+  async getItems(page: number = 0, limit: number = 2) {
     console.log('hi');
 
-    this.apiService.Read('/EducationalResource/getAll').subscribe({
+    this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}`).subscribe({
       next: (response) => {
         console.log('i this is the response: ', response);
 
@@ -80,6 +80,13 @@ export class ItemsListComponent implements OnInit {
         console.error('Error fetching items', err);
       },
     });
+  }
+
+  editItem(item: Item) {
+    // ניווט לדף edit-media
+    this.router.navigate(['/edit-media'], {
+      state: { id: item.id }
+    })
   }
 
   deleteResource(itemToDelete: Item) {
@@ -102,7 +109,7 @@ export class ItemsListComponent implements OnInit {
         error: (err) => {
           // טיפול במקרה של שגיאה
           console.error('Error deleting item:', err);
-          alert('Failed to delete item. Please try again.');
+          alert(err.error.message || 'Failed to delete item. Please try again.');
         },
         complete: () => {
           // פעולה כאשר הקריאה הסתיימה (אופציונלי)
@@ -178,10 +185,10 @@ export class ItemsListComponent implements OnInit {
       });
   }
 
+
   getFileNameFromPath(filePath: string): string {
     return filePath.split('/').pop() || 'downloaded-file';
   }
-
   addToFavorites(item: Item): void {
     const token = localStorage.getItem('access_token');
     if (!token) {
@@ -197,36 +204,45 @@ export class ItemsListComponent implements OnInit {
         userId: userId,
         itemId: item.id,
       };
-
+    
       console.log('Request Data:', requestData);
 
-      this.apiService.Post('/favorites/add', requestData).subscribe({
-        next: (response) => {
-          console.log('Item added to favorites:', response);
-          alert('המוצר נוסף למועדפים בהצלחה!');
-        },
-        error: (err) => {
-          console.error('Error adding item to favorites:', err);
-          alert('שגיאה בהוספת המוצר למועדפים. אנא נסה שוב.');
-        },
-      });
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      alert('שגיאה באימות המשתמש.');
-    }
+    this.apiService.Post('/favorites/add', requestData).subscribe({
+      next: (response) => {
+        console.log('Item added to favorites:', response);
+        alert('המוצר נוסף למועדפים בהצלחה!');
+      },
+      error: (err) => {
+        console.error('Error adding item to favorites:', err);
+        alert('שגיאה בהוספת המוצר למועדפים. אנא נסה שוב.');
+      },
+    });
+  } catch(error) {
+    console.error('Error decoding token:', error);
+    alert('שגיאה באימות המשתמש.');
+  }
+}
+getFileExtension(filePath: string): string | null {
+  const match = filePath.match(/\.[0-9a-z]+$/i);
+  return match ? match[0] : null;
+}
+//הוספת לוגיקת דפדוף
+currentPage: number = 0;
+
+nextPage() {
+  this.currentPage++;
+  this.getItems(this.currentPage);
+}
+
+previousPage() {
+  if (this.currentPage > 0) {
+    this.currentPage--;
+    this.getItems(this.currentPage);
   }
 
-  getFileExtension(filePath: string): string | null {
-    const match = filePath.match(/\.[0-9a-z]+$/i);
-    return match ? match[0] : null;
-  }
+}
 
-  // getItems(): Observable<Item[]> {
-  //   return this.http.get<Item[]>('/EducationalResource/getAll');
-  // }
-
-  navigateToItemPage(itemId: string): void {
+ navigateToItemPage(itemId: string): void {
     this.router.navigate([`/item-page/${itemId}`]);
   }
-  
 }
