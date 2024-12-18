@@ -18,6 +18,10 @@ export class SearchComponent {
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
  
 
+  ngOnInit(): void {
+    this.getUserTypeFromToken(); // טוען את סוג המשתמש כאשר הקומפוננטה נטענת
+  }
+  
   // פונקציה להצגת אפשרויות
   toggleFilterOptions() {
     this.showFilterOptions = !this.showFilterOptions;
