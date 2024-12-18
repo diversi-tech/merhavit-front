@@ -158,6 +158,9 @@ export class ItemsListComponent implements OnInit {
         `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
           item.filePath
         )}`
+        // `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
+        //   item.filePath
+        // )}&download=true` 
       )
       // .Read(`/EducationalResource/presigned-url?filePath=${item.filePath}`)
 
