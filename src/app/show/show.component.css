@@ -203,4 +203,25 @@
   .filter-buttons {
     flex-wrap: wrap;
   }
+  .pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #444;
+    margin: 10px 0;
+  }
+  
+  .pagination-container .arrow {
+    font-size: 18px;
+    margin: 0 10px;
+    cursor: pointer;
+    color: #888;
+    transition: color 0.3s;
+  }
+  
+  .pagination-container .arrow:hover {
+    color: #000;
+  }
 }

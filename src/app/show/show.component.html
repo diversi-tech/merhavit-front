@@ -1,6 +1,10 @@
-<div class="table-container" style="direction: rtl">
+<div class="pagination-container">
+  <span class="arrow" (click)="previousPage()" [class.disabled]="currentPage === 0">❮</span>
+  <span class="arrow" (click)="nextPage()">❯</span>
+</div>
+<div class="table-container" style="direction: rtl" >
   <div class="row" *ngFor="let item of items">
-    <div class="item-content">
+    <div class="item-content" (click)="navigateToItemPage(item.id)">
       <img
         [src]="item.coverImage || 'assets/default-image.png'"
         alt="Item Image"
@@ -32,12 +36,12 @@
       <i class="far fa-heart"></i> 
     </button>
     <!-- כפתורים להורדה עבור Article, Video, Scanned Document -->
-    <button class="action-button download" *ngIf="item.type === 'Article' || item.type === 'Video' || item.type === 'Song' || item.type === 'Scanned Document'" (click)="downloadResource(item)">
+    <button class="action-button download" *ngIf="item.type === 'תמונה' || item.type === 'סרטון' || item.type === 'שיר' || item.type === 'מערך'" (click)="downloadResource(item)">
       <i class="fas fa-download"></i> 
     </button>
 
     <!-- כפתור להזמנה עבור Book -->
-    <button class="action-button order" *ngIf="item.type === 'Book'">
+    <button class="action-button order" *ngIf="item.type === 'ספר'">
       להזמנה
     </button>
   </div>

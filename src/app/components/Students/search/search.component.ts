@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule,RouterModule],
 })
 export class SearchComponent {
   selectedFileType: string = 'all';
@@ -15,7 +17,7 @@ export class SearchComponent {
   showDetails: boolean = false;
   isSearchHistoryVisible: boolean = false;
   searchQuery: string = ''; // משתנה למעקב אחר החיפוש
-
+  public userType: string = ''; // משתנה לשמירת סוג המשתמש
   // רשימה מדומה של היסטוריית חיפושים
   mockSearchHistory: string[] = [
     'איך נוצר הר געש הסבר לילדים',
@@ -65,6 +67,20 @@ export class SearchComponent {
 toggleDetails() {
   this.showDetails = !this.showDetails;
 }
+
+getUserTypeFromToken(): void {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        this.userType = decodedToken.userType || '';
+        console.log(this.userType);
+
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+  }
 
   
 }

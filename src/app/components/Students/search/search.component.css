@@ -3,26 +3,32 @@
   align-items: center;
   justify-content: space-between;
   background-color: #f3f7fd;
-  padding: 1.5vh 2vw; /* התאמת מרווחים */
-  height: 10vh; /* גובה כללי */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1vh;
+  height: 8vh;
 }
 
 .top-icons {
   display: flex;
-  gap: 1.5vw; /* רווח בין האייקונים */
+  gap: 0.5vw; /* הקטנת המרווח בין האייקונים */
 }
 
 .icon {
-  width: 3vw;
-  height: 6vh;
+  width: 2vw;  /* הקטנת רוחב האייקון */
+  height: 4vh; /* הקטנת גובה האייקון */
   cursor: pointer;
 }
 
 .user-icon {
   background-color: #27c95a;
   border-radius: 50%;
-  display: flex;
+  padding: 0.3vh; /* הקטנת הפדינג */
+   display: flex;
+}
+
+.top-icons i {
+  color: #434343;
+  font-size: 4.5vh; /* גודל אייקונים */
+  cursor: pointer;
   justify-content: center;
   align-items: center;
   color: white;
@@ -30,22 +36,16 @@
   font-weight: bold;
 }
 
-.top-icons i {
-  color: #434343;
-  font-size: 4.5vh; /* גודל אייקונים */
-  cursor: pointer;
-}
-
 .white-box {
   display: flex;
   align-items: center;
   background-color: white;
-  border-radius: 2rem;
-  padding: 0.5rem 1rem; /* התאמת ריפוד */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 1rem;
+  padding: 1rem 2vw;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 60%; /* התאמת רוחב */
-  max-width: 50vw; /* מגבלת רוחב מקסימלית */
-  height: 8vh;
+  max-width: 40vw; /* הצטמצם כך שהתיבה לא תהיה ארוכה מדי */
+  height: 6vh;
   justify-content: space-between;
   position: relative;
 }
@@ -53,11 +53,11 @@
 .search-input {
   border: none;
   outline: none;
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   flex-grow: 1;
   direction: rtl;
-  padding-right: 1rem;
+  padding-right: 0.5rem;
 }
 
 .white-box-icons {
@@ -66,18 +66,30 @@
   align-items: center;
 }
 
+.file-type-dropdown {
+  border: 0.1rem solid #000;
+  border-radius: 0.3rem;
+  padding: 0.5rem;
+  background-color: #fff;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 15rem;
+  direction: rtl;
+}
+
 .dropdown-container {
   position: relative;
+  width: 100%;
   max-width: 15rem;
-  margin-left: 1vw;
+  direction: rtl;
 }
 
 .dropdown-header {
   background-color: white;
-  font-size: 1.2rem;
-  border: 0.2rem solid #ccc;
-  border-radius: 0.5rem;
-  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border: 0.1rem solid #000;
+  border-radius: 0.3rem;
+  padding: 0.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -91,44 +103,30 @@
   background-color: white;
   position: absolute;
   width: 100%;
-  top: 100%;
-  right: 0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  border: 1px solid #ddd;
+  top: 2vh;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
 .dropdown-options li {
-  padding: 0.8rem 1rem;
-  font-size: 1.2rem;
+  padding: 0.5rem;
+  font-size: 1rem;
   cursor: pointer;
   text-align: right;
 }
 
 .filter-details-container {
   position: absolute;
-  top: 10vh;
+  top: 7vh;
   left: 50%;
   transform: translateX(-50%);
   background-color: white;
   border: 1px solid #ccc;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem;
   width: 90%;
-  max-width: 45rem;
-  z-index: 10;
-}
-
-.filter-details-box {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5vw;
-}
-
-.filter-column {
-  flex: 1 1 45%;
-  min-width: 20vw;
+  max-width: 30rem;
 }
 
 .filter-row {
@@ -138,17 +136,16 @@
 }
 
 .filter-row label {
-  font-size: 1.1rem;
+  font-size: 1rem;
   margin-bottom: 0.5vh;
-  color: #333;
 }
 
 .filter-row input {
   width: 100%;
-  padding: 0.8rem;
-  font-size: 1.2rem;
+  padding: 0.5rem;
+  font-size: 1rem;
   border: 1px solid #ccc;
-  border-radius: 0.5rem;
+  border-radius: 0.3rem;
 }
 
 .search-history-box {
@@ -181,6 +178,7 @@
 
 .search-history-item i {
   margin-left: 8px; /* ריווח בין האייקון לטקסט */
+  min-width: 20vw;
   font-size: 1.2rem; /* גודל האייקון */
   color: #a5b1bc; /* צבע האייקון */
 }
@@ -188,4 +186,28 @@
 
 .search-history-item:hover {
   background-color: #f3f7fd; /* רקע ב-hover */
+}
+
+button:hover {
+  background-color: #008000; /* ירוק כהה יותר במעבר עכבר */
+}
+.upload-button {
+  background-color: #27c95a; /* ירוק */
+  color: white; /* טקסט לבן */
+  border: none;
+  border-radius: 20px;
+  padding: 0.5vh 1vw; /* ריווח פנימי */
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-right: 1vw; /* רווח קטן מימין */
+}
+
+.upload-button:hover {
+  background-color: #008000; /* ירוק כהה */
+}
+.top-icons {
+  display: flex;
+  align-items: center;
+  gap: 1vw; /* מרווח קבוע בין האייקונים */
 }

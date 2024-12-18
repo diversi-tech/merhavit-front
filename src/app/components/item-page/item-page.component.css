@@ -1,9 +1,43 @@
 .item-details {
   display: flex;
   padding: 2vh;
-  background-color: #ffffff;
+  background-color: #ffff;
   align-items: flex-start; /* הצמדת הפרטים והתמונה לימין והעלאת הטקסט לראש התמונה */
   justify-content: flex-end; /* הצמדת התמונה לפרטים */
+}
+
+.item-1 {
+  width: 25vw; /* קביעת רוחב קבוע */
+  height: 55vh; /* קביעת גובה קבוע */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.item-1 img{
+  width: 25vw; /* קביעת רוחב קבוע */
+  height: 55vh; /* קביעת גובה קבוע */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.item-1 video{
+  width: 25vw; /* קביעת רוחב קבוע */
+  height: 40vh; /* קביעת גובה קבוע */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.item-1 audio{
+  width: 50vw;
+}
+
+.item-1 video, .item-1 img, .item-1 embed, .item-1 audio {
+  max-width: 100%; /* תמונה לא תחרוג מהרוחב הקבוע */
+  max-height: 100%; /* תמונה לא תחרוג מהגובה הקבוע */
+  object-fit: cover; /* שמירה על יחס גובה-רוחב */
 }
 
 .item-details img {
@@ -12,7 +46,7 @@
 }
 
 .item-details h1, .item-details p {
-  margin: 0 0 1vw; 
+  margin: 0 2vw 1vw;
   text-align: right; /* הצמדת הטקסט לימין */
 }
 
@@ -39,13 +73,20 @@
   margin-bottom: 2vh;
 }
 
+.item-3 video, .item-3 img, .item-3 embed, .item-3 audio {
+  max-width: 20vw; /* תמונה לא תחרוג מהרוחב הקבוע */
+  max-height: 20vh; /* תמונה לא תחרוג מהגובה הקבוע */
+  /* object-fit: cover; שמירה על יחס גובה-רוחב */
+}
+
+
 .grid-container {
   display: grid;
   grid-template-areas: 
     "item-2 item-1"
     "item-3 item-3";
   grid-template-columns: 1fr auto; /* קביעה ידנית של רוחב העמודות */
-  gap: 1vw; /* ריווח בין האלמנטים */
+  gap: 0.5vw; /* ריווח בין האלמנטים */
 }
 
 .grid-item {
@@ -77,3 +118,42 @@
   flex-direction: column;
   align-items: flex-end; /* הצמדת הכותרת והספרים לימין */
 }
+
+/* תמונה לאודיו */
+#audio-cover-image {
+  display: block;
+  margin: 0 auto 1vh;
+  width: 50vw; /* קביעת רוחב קבוע */
+  height: 50vh; /* קביעת גובה קבוע */
+  max-width: 25vw; /* גבול מקסימלי לרוחב */
+  border-radius: 1rem; /* עיגול קצוות */
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 30rem; /* לדוגמה, ניתן להתאים לפי עיצוב */
+  height: auto;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.overlay-svg {
+  position: absolute;
+  top: 1vh; /* מרחק מהחלק העליון */
+  left: 6rem; /* מרחק מהחלק השמאלי */
+  z-index: 1;
+  pointer-events: none; /* כדי שה-SVG לא יחסום לחיצות */
+}
+
+
+/* הצגת מסמך */
+.item-1 p{
+  text-align: center;
+}
+
