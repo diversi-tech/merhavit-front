@@ -9,12 +9,7 @@
   
     <!-- אייקון פעמון ריק (Font Awesome) -->
     <i class="far fa-bell" style="color:#434343; font-size:3vh; width:2vw;"></i>
-  </div>
-  
-
-  <!-- כפתור העלאה -->
-  <div *ngIf="userType!='Student'">
-    <button [routerLink]="'/upload-resource'">
+    <button *ngIf="userType!='Student'" [routerLink]="'/upload-resource'" class="upload-button">
       העלאת קובץ
   </button>
   </div>
