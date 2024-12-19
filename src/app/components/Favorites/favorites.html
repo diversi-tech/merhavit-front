@@ -1,0 +1,19 @@
+<div class="favorites-container" dir="rtl">
+    <h2>המועדפים שלי</h2>
+  
+    <div *ngIf="favorites.length === 0">
+      <p>אין לך פריטים מועדפים.</p>
+    </div>
+  
+    <div *ngIf="favorites.length > 0">
+      <ul class="favorites-list">
+        <li *ngFor="let favorite of favorites">
+          <span>{{ favorite.name }}</span>
+          <button class="remove-button" (click)="removeFavorite(favorite.id)">
+            הסר מהמועדפים
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  

@@ -1,0 +1,29 @@
+.favorites-container {
+    padding: 20px;
+  }
+  
+  .favorites-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .favorites-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .remove-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .remove-button:hover {
+    background-color: #e60000;
+  }
+  

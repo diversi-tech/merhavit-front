@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router'; // ייבוא Router
@@ -35,8 +35,15 @@ export class SearchComponent {
     this.isSearchHistoryVisible = true;
   }
 
-  // הסתרת תיבת ההיסטוריה
-  hideSearchHistory() {
+  ngOnInit(): void {
+     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      // הקוד יפעל רק בצד הלקוח
+      this.getUserTypeFromToken();
+    } else {
+      console.warn('Code is running on the server. Skipping token check.');
+    } 
+  
+    hideSearchHistory() {
     setTimeout(() => {
       this.isSearchHistoryVisible = false;
     }, 200); // השהיה קטנה כדי לאפשר לחיצה על פריטים
@@ -55,6 +62,7 @@ export class SearchComponent {
   toggleFilterOptions() {
     this.showFilterOptions = !this.showFilterOptions;
   }
+
 
   // פונקציה לטיפול בשינוי סוג קובץ
   onFilterChange(event: any) {
@@ -89,4 +97,32 @@ export class SearchComponent {
     localStorage.removeItem('access_token'); // הסרת ה-token
     this.router.navigate(['/welcome']); // ניווט לעמוד welcome
   }
+  toggleFilterOptions() {
+    this.showFilterOptions = !this.showFilterOptions;
+  }
+
+  toggleDetails() {
+    this.showDetails = !this.showDetails;
+  }
+
+  onSelectFilter(option: string) {
+    this.selectedFileType = option;
+    this.showFilterOptions = false; // סוגר את התפריט לאחר הבחירה
+  }
+
+  @HostListener('document:click', ['$event.target'])
+  onDocumentClick(target: HTMLElement) {
+    const dropdownContainer = document.querySelector('.dropdown-container') as HTMLElement;
+    const filterDetailsBox = document.querySelector('.filter-details-box') as HTMLElement;
+
+    // בדיקה אם הלחיצה הייתה מחוץ לאזור התפריט או הסינון
+    if (dropdownContainer && !dropdownContainer.contains(target)) {
+      this.showFilterOptions = false;
+    }
+
+    if (filterDetailsBox && !filterDetailsBox.contains(target) && !target.classList.contains('fa-filter')) {
+      this.showDetails = false;
+    }
+  }
+ 
 }
