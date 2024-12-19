@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router'; // ייבוא Router
@@ -21,40 +21,19 @@ export class SearchComponent {
 
 
   ngOnInit(): void {
-    this.getUserTypeFromToken(); // טוען את סוג המשתמש כאשר הקומפוננטה נטענת
-    // this.loadFavoriteStatus();
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      // הקוד יפעל רק בצד הלקוח
+      this.getUserTypeFromToken();
+    } else {
+      console.warn('Code is running on the server. Skipping token check.');
+    }
   }
 
-  // isFavorite: boolean = false;
-
-  // toggleFavorite(): void {
-  //   this.isFavorite = !this.isFavorite;
-  // }
-
-  // loadFavoriteStatus(): void {
-  //   // לדוגמה: בדיקה אם יש ב-localStorage מידע על המועדפים
-  //   const favoriteStatus = localStorage.getItem('isFavorite');
-  //   this.isFavorite = favoriteStatus === 'true';
-  // }
-  
-  // פונקציה להצגת אפשרויות
-  toggleFilterOptions() {
-    this.showFilterOptions = !this.showFilterOptions;
-  }
 
   // פונקציה לטיפול בשינוי סוג קובץ
   onFilterChange(event: any) {
     this.selectedFileType = event.target.value;
     console.log('סוג הקובץ שנבחר:', this.selectedFileType);
-  }
-  onSelectFilter(filter: string) {
-    this.selectedFileType = filter;
-    this.showFilterOptions = false; // סגור את הרשימה
-    console.log('סוג הקובץ שנבחר:', filter);
-  }
-
-  toggleDetails() {
-    this.showDetails = !this.showDetails;
   }
 
   getUserTypeFromToken(): void {
@@ -75,4 +54,32 @@ export class SearchComponent {
     localStorage.removeItem('access_token'); // הסרת ה-token
     this.router.navigate(['/welcome']); // ניווט לעמוד welcome
   }
+  toggleFilterOptions() {
+    this.showFilterOptions = !this.showFilterOptions;
+  }
+
+  toggleDetails() {
+    this.showDetails = !this.showDetails;
+  }
+
+  onSelectFilter(option: string) {
+    this.selectedFileType = option;
+    this.showFilterOptions = false; // סוגר את התפריט לאחר הבחירה
+  }
+
+  @HostListener('document:click', ['$event.target'])
+  onDocumentClick(target: HTMLElement) {
+    const dropdownContainer = document.querySelector('.dropdown-container') as HTMLElement;
+    const filterDetailsBox = document.querySelector('.filter-details-box') as HTMLElement;
+
+    // בדיקה אם הלחיצה הייתה מחוץ לאזור התפריט או הסינון
+    if (dropdownContainer && !dropdownContainer.contains(target)) {
+      this.showFilterOptions = false;
+    }
+
+    if (filterDetailsBox && !filterDetailsBox.contains(target) && !target.classList.contains('fa-filter')) {
+      this.showDetails = false;
+    }
+  }
+ 
 }

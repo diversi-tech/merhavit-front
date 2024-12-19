@@ -50,16 +50,19 @@ export class ItemsListComponent implements OnInit {
   }
 
   getUserTypeFromToken(): void {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      try {
-        const decodedToken: any = jwtDecode(token);
-        this.userType = decodedToken.userType || '';
-        // console.log(this.userType);
-
-      } catch (error) {
-        console.error('Error decoding token:', error);
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          this.userType = decodedToken.userType || '';
+          console.log(this.userType);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
       }
+    } else {
+      console.warn('Code is running on the server. Skipping token check.');
     }
   }
 
