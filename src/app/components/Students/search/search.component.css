@@ -178,7 +178,6 @@
 
 .search-history-item i {
   margin-left: 8px; /* ריווח בין האייקון לטקסט */
-  min-width: 20vw;
   font-size: 1.2rem; /* גודל האייקון */
   color: #a5b1bc; /* צבע האייקון */
 }

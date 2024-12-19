@@ -82,6 +82,8 @@ export class ItemsListComponent implements OnInit {
     });
   }
 
+  
+
   editItem(item: Item) {
     // ניווט לדף edit-media
     this.router.navigate(['/edit-media'], {

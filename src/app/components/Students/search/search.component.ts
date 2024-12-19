@@ -27,6 +27,9 @@ export class SearchComponent {
     'הר געש רדום',
     'הר געש פעיל',
   ];
+
+  constructor(private router: Router) {}
+  
   // הצגת תיבת ההיסטוריה
   showSearchHistory() {
     this.isSearchHistoryVisible = true;
