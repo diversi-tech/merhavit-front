@@ -8,7 +8,7 @@ import { ApiService } from '../api.service';
 import { jwtDecode } from 'jwt-decode';
 import { log } from 'console';
 import { RouterModule, Router } from '@angular/router';
-
+import { SearchService } from '../components/search.service'
 
 interface Item {
   id: string;
@@ -37,7 +37,7 @@ export class ItemsListComponent implements OnInit {
   public items: Item[] = []; //מערך המוצרים של הספריה
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
 
-  constructor(private http: HttpClient, private apiService: ApiService, private router: Router) {}
+  constructor(private http: HttpClient, private apiService: ApiService, private router: Router,private searchService: SearchService) {}
 
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
@@ -66,23 +66,68 @@ export class ItemsListComponent implements OnInit {
     }
   }
 
-  async getItems(page: number = 0, limit: number = 2) {
+  async getItems(page: number = 0, limit: number = 2,searchTerm:string = '', typeFilter: string = '') {
     console.log('hi');
-
-    this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}`).subscribe({
-      next: (response) => {
-        console.log('i this is the response: ', response);
-
-        if (Array.isArray(response)) {
-          this.items = response;
-        } else {
-          this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
-        }
-      },
-      error: (err) => {
-        console.error('Error fetching items', err);
-      },
-    });
+    if(searchTerm!==''&&typeFilter==='')
+      {this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&searchTerm=${searchTerm}`).subscribe({
+        next: (response) => {
+          console.log('i this is the response: ', response);
+  
+          if (Array.isArray(response)) {
+            this.items = response;
+          } else {
+            this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+          }
+        },
+        error: (err) => {
+          console.error('Error fetching items', err);
+        },
+      });}
+      if(searchTerm===''&&typeFilter!=='')
+        {this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&typeFilter=${typeFilter}`).subscribe({
+          next: (response) => {
+            console.log('i this is the response: ', response);
+    
+            if (Array.isArray(response)) {
+              this.items = response;
+            } else {
+              this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+            }
+          },
+          error: (err) => {
+            console.error('Error fetching items', err);
+          },
+        });}
+        if(searchTerm!==''&&typeFilter!=='')
+          {this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&searchTerm=${searchTerm}&typeFilter=${typeFilter}`).subscribe({
+            next: (response) => {
+              console.log('i this is the response: ', response);
+      
+              if (Array.isArray(response)) {
+                this.items = response;
+              } else {
+                this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+              }
+            },
+            error: (err) => {
+              console.error('Error fetching items', err);
+            },
+          });}
+          else
+          { this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}`).subscribe({
+            next: (response) => {
+              console.log('i this is the response: ', response);
+      
+              if (Array.isArray(response)) {
+                this.items = response;
+              } else {
+                this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+              }
+            },
+            error: (err) => {
+              console.error('Error fetching items', err);
+            },
+          });}
   }
 
   editItem(item: Item) {

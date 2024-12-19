@@ -3,6 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router'; // ייבוא Router
 import { jwtDecode } from 'jwt-decode';
+import { SearchService } from '../../search.service';
 
 @Component({
   selector: 'app-search',
@@ -16,8 +17,12 @@ export class SearchComponent {
   showFilterOptions: boolean = false;
   showDetails: boolean = false;
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
+  searchResults: any[] = [];
+  searchTerm = '';
+  typeFilter = '';
 
-  constructor(private router: Router) {}
+
+  constructor(private router: Router, private searchService: SearchService) { }
 
 
   ngOnInit(): void {
@@ -81,5 +86,19 @@ export class SearchComponent {
       this.showDetails = false;
     }
   }
- 
+
+  onsearch(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.searchTerm = target.value; // עדכון המשתנה ללא הצגה ב-HTML
+    console.log(this.searchTerm); // להדפיס לקונסול אם את רוצה לראות את הערך
+    this.searchService.getItems(0, 10, this.searchTerm, this.typeFilter).subscribe({
+      next: (response) => {
+        console.log('Search results:', response);
+        this.searchResults = Array.isArray(response) ? response : response.data || [];
+      },
+      error: (err) => {
+        console.error('Error performing search:', err);
+      },
+    });
+  }
 }
