@@ -16,9 +16,32 @@ export class SearchComponent {
   showFilterOptions: boolean = false;
   showDetails: boolean = false;
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
+  public firstName: string = ''; // משתנה לשם פרטי (אות ראשונה)
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    console.log('Token:', localStorage.getItem('access_token'));
+  }
 
+  ngOnInit(): void {
+    this.extractUserDetailsFromToken(); // קריאה לפונקציה בעת טעינת הרכיב
+  }
+
+  // פענוח ה-JWT וקבלת האות הראשונה של השם
+  extractUserDetailsFromToken(): void {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        const firstName = decodedToken.firstName || ''; // שים לב שהשדה הזה צריך להתאים לשם במבנה ה-token
+        this.firstName = firstName.charAt(0).toUpperCase(); // קבלת האות הראשונה
+        console.log('First Name Initial:',firstName);
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    } else {
+      console.error('Token not found in localStorage');
+    }
+  }
 
   // פונקציה להצגת אפשרויות
   toggleFilterOptions() {
@@ -30,6 +53,7 @@ export class SearchComponent {
     this.selectedFileType = event.target.value;
     console.log('סוג הקובץ שנבחר:', this.selectedFileType);
   }
+
   onSelectFilter(filter: string) {
     this.selectedFileType = filter;
     this.showFilterOptions = false; // סגור את הרשימה

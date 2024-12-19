@@ -165,12 +165,12 @@
   height: 4vh; /* הקטנת גובה האייקון */
   cursor: pointer;
 }
-
+/* 
 .user-icon {
   background-color: #27c95a;
   border-radius: 50%;
-  padding: 0.3vh; /* הקטנת הפדינג */
-}
+  padding: 0.3vh;
+} */
 
 .white-box {
   display: flex;
@@ -351,4 +351,21 @@ button:hover {
 
 .logout-button svg {
   margin-left: 0.5rem;
+}
+.user-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #27c95a; /* צבע רקע */
+  color: white; /* צבע טקסט */
+  font-size: 18px;
+  font-weight: bold;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* עיגול */
+  text-align: center;
+  cursor: pointer;
+}
+.user-icon:hover {
+  background-color: #008000; /* ירוק כהה */
 }
