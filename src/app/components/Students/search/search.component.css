@@ -25,6 +25,7 @@
 }
 
 
+
 .white-box {
   display: flex;
   align-items: center;
@@ -352,3 +353,6 @@ button:hover {
 .logout-button svg {
   margin-left: 0.5rem;
 }
+
+
+

@@ -22,7 +22,20 @@ export class SearchComponent {
 
   ngOnInit(): void {
     this.getUserTypeFromToken(); // טוען את סוג המשתמש כאשר הקומפוננטה נטענת
+    // this.loadFavoriteStatus();
   }
+
+  // isFavorite: boolean = false;
+
+  // toggleFavorite(): void {
+  //   this.isFavorite = !this.isFavorite;
+  // }
+
+  // loadFavoriteStatus(): void {
+  //   // לדוגמה: בדיקה אם יש ב-localStorage מידע על המועדפים
+  //   const favoriteStatus = localStorage.getItem('isFavorite');
+  //   this.isFavorite = favoriteStatus === 'true';
+  // }
   
   // פונקציה להצגת אפשרויות
   toggleFilterOptions() {
