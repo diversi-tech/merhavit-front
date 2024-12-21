@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component,ViewEncapsulation, computed, ElementRef, inject, model, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component,ViewEncapsulation, computed, ElementRef, inject, model, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
@@ -20,6 +20,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import { QuillModule } from 'ngx-quill';
 import Quill from 'quill'; // Import Quill
 import { transliterate } from 'transliteration';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -39,6 +40,7 @@ import { transliterate } from 'transliteration';
 })
 export class UploadResourceComponent  
 {
+  @ViewChild('formContainer', { read: ViewContainerRef }) viewContainerRef!: ViewContainerRef;
   fileForm: FormGroup;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
@@ -104,7 +106,7 @@ export class UploadResourceComponent
   
   
 
-  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer,private apiService:ApiService,private dialog: MatDialog) {
+  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer,private apiService:ApiService,private dialog: MatDialog,private snackBar: MatSnackBar) {
     // יצירת טופס
     this.fileForm = this.fb.group({
       title: ['', Validators.required],
@@ -409,15 +411,44 @@ export class UploadResourceComponent
         this.apiService.Post('/EducationalResource',formData).subscribe({
           next: (response) => {
            console.log('טופס נשלח בהצלחה:', this.fileForm.value); 
+           this.showMessage("טופס נשלח בהצלחה")
           },
           error: (err) =>  
           {
            console.log('תקלה בשליחת טופס',err);
+           this.showMessage('תקלה בשליחת טופס')
           },
         });
   }else{
     console.log("טופס לא תקין");
-     
+    this.showMessage("טופס לא תקין")
   }
+  setTimeout(() => {
+    const element = document.querySelector('[id^="cdk-overlay-"]');
+    console.log("element",element);
+    
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 0);
 }
+
+showMessage(message: string, action: string = 'סגור', duration: number = 1000000) {
+  console.log("this.viewContainerRef",this.viewContainerRef);
+  
+  // if (!this.viewContainerRef) {
+  //   console.error('viewContainerRef לא מאותחל!');
+  //   return;
+  // }
+  this.snackBar.open(message, action, {
+    duration,
+    horizontalPosition: 'center',
+    verticalPosition: 'top',
+    panelClass: ['custom-snackbar'],
+    viewContainerRef: this.viewContainerRef, // הגדרת הקונטיינר
+  });
+  }
+
 }
+
+
