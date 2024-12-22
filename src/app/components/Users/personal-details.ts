@@ -36,37 +36,32 @@ export class PersonalDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const token = localStorage.getItem('access_token');
-    
-    if (token) {
-      try {
-        const decodedToken: any = jwtDecode(token);
-        const idNumber = decodedToken.idNumber; 
-        console.log('idNumber', idNumber)
-        if (idNumber) {
-          this.loadUserData(idNumber);
-        } else {
-          console.error('ID number not found in token');
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          const idNumber = decodedToken.idNumber; 
+          console.log('idNumber', idNumber);
+          if (idNumber) {
+            this.loadUserData(idNumber);
+          } else {
+            console.error('ID number not found in token');
+            this.router.navigate(['/login']);
+          }
+        } catch (error) {
+          console.error('Error decoding token:', error);
           this.router.navigate(['/login']);
         }
-      } catch (error) {
-        console.error('Error decoding token:', error);
+      } else {
+        console.error('Access token not found in localStorage');
         this.router.navigate(['/login']);
       }
     } else {
-      console.error('Access token not found in localStorage');
-      this.router.navigate(['/login']);
+      console.warn('Code is running on the server. Skipping token check.');
     }
   }
-  // ngOnInit() {
-  //   const idNumber = localStorage.getItem('idNumber');
-  //   if (idNumber) {
-  //     this.loadUserData(idNumber);
-  //   } else {
-  //     console.error('ID number not found in localStorage');
-  //     this.router.navigate(['/login']);
-  //   }
-  // }
 
   loadUserData(idNumber: string) {
     this.apiService.Read(`/users/idNumber/${idNumber}`).subscribe(

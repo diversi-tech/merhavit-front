@@ -19,6 +19,8 @@ import { DialogComponent } from '../dialog/dialog.component';
 import {MatRadioModule} from '@angular/material/radio';
 import { QuillModule } from 'ngx-quill';
 import Quill from 'quill'; // Import Quill
+import { transliterate } from 'transliteration';
+
 
 
 
@@ -352,6 +354,22 @@ export class UploadResourceComponent
     });
   }
 
+  sanitizeFileName(originalName:string) {
+    // תעתוק האותיות לשם באנגלית
+    let nameWithoutExtension = originalName.replace(/\.[^/.]+$/, ''); // הסרת הסיומת
+    let extension = originalName.split('.').pop(); // שמירת הסיומת
+    // המרת עברית לאנגלית
+    let transliterated = transliterate(nameWithoutExtension);
+    // הסרת כל התווים שאינם אותיות אנגלית או מספרים
+    let sanitized = transliterated.replace(/[^a-zA-Z0-9]/g, '');
+    // הוספת הסיומת בחזרה
+    return sanitized + '.' + extension;
+  }
+
+  renameFile(file: File): File {
+    return new File([file], this.sanitizeFileName(file.name), { type: file.type });
+  }
+
   onSubmit() :void
   {
     console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
@@ -371,13 +389,19 @@ export class UploadResourceComponent
         console.log("string data: "+str)
         formData.append('metadata',str)
         if(this.file)
-           formData.append('resource',this.file)
+        {
+         const rename=this.renameFile(this.file)
+         console.log(rename);
+         
+          formData.append('resource',rename)
+        }
+           
 
         if(this.coverImage)
         {
           console.log("image "+this.coverImage);
           
-          formData.append('coverImage',this.coverImage)
+          formData.append('coverImage',this.renameFile(this.coverImage))
         }
           
        console.log(" נתונים" +formData.get('metaData'));
