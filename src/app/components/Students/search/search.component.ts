@@ -3,7 +3,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router'; // ייבוא Router
 import { jwtDecode } from 'jwt-decode';
-import { log } from 'console';
 
 @Component({
   selector: 'app-search',
@@ -17,17 +16,36 @@ export class SearchComponent {
   showFilterOptions: boolean = false;
   showDetails: boolean = false;
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
+  public firstName: string = ''; // משתנה לשם פרטי (אות ראשונה)
 
-  constructor(private router: Router) {}
-
+  constructor(private router: Router) {
+    console.log('Token:', localStorage.getItem('access_token'));
+  }
 
   ngOnInit(): void {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      // הקוד יפעל רק בצד הלקוח
-      this.getUserTypeFromToken();
+    this.extractUserDetailsFromToken(); // קריאה לפונקציה בעת טעינת הרכיב
+  }
+
+  // פענוח ה-JWT וקבלת האות הראשונה של השם
+  extractUserDetailsFromToken(): void {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        const firstName = decodedToken.firstName || ''; // שים לב שהשדה הזה צריך להתאים לשם במבנה ה-token
+        this.firstName = firstName.charAt(0).toUpperCase(); // קבלת האות הראשונה
+        console.log('First Name Initial:',firstName);
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
     } else {
-      console.warn('Code is running on the server. Skipping token check.');
+      console.error('Token not found in localStorage');
     }
+  }
+
+  // פונקציה להצגת אפשרויות
+  toggleFilterOptions() {
+    this.showFilterOptions = !this.showFilterOptions;
   }
 
 
@@ -35,6 +53,16 @@ export class SearchComponent {
   onFilterChange(event: any) {
     this.selectedFileType = event.target.value;
     console.log('סוג הקובץ שנבחר:', this.selectedFileType);
+  }
+
+  onSelectFilter(filter: string) {
+    this.selectedFileType = filter;
+    this.showFilterOptions = false; // סגור את הרשימה
+    console.log('סוג הקובץ שנבחר:', filter);
+  }
+
+  toggleDetails() {
+    this.showDetails = !this.showDetails;
   }
 
   getUserTypeFromToken(): void {
@@ -55,20 +83,7 @@ export class SearchComponent {
     localStorage.removeItem('access_token'); // הסרת ה-token
     this.router.navigate(['/welcome']); // ניווט לעמוד welcome
   }
-  toggleFilterOptions() {
     
-    this.showFilterOptions = !this.showFilterOptions;
-  }
-
-  toggleDetails() {
-    this.showDetails = !this.showDetails;
-  }
-
-  onSelectFilter(option: string) {
-    this.selectedFileType = option;
-    this.showFilterOptions = false; // סוגר את התפריט לאחר הבחירה
-  }
-
   @HostListener('document:click', ['$event.target'])
   onDocumentClick(target: HTMLElement) {
     const dropdownContainer = document.querySelector('.dropdown-container') as HTMLElement;

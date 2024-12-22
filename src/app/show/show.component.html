@@ -8,8 +8,12 @@
   <span class="arrow" (click)="nextPage()">❯</span>
 </div>
 <div class="table-container" style="direction: rtl">
-  <div class="row" *ngFor="let item of items" (click)="navigateToItemPage(item.id)">
-    <div class="item-content" >
+  <div
+    class="row"
+    *ngFor="let item of items"
+    (click)="navigateToItemPage(item.id)"
+  >
+    <div class="item-content">
       <img
         [src]="item.coverImage || 'assets/default-image.png'"
         alt="Item Image"
@@ -20,8 +24,8 @@
         <div class="item-title">{{ item.title }}</div>
         <div class="item-description">{{ item.description }}</div>
         <div class="item-meta">
-          <span class="meta-label">מחבר:</span>
-          <span class="meta-value">{{ item.Author }}</span> |
+          <span class="meta-label">מחבר: </span>
+          <span class="meta-value">{{ item.author }}</span> |
           <span class="meta-label">תאריך הוצאה:</span>
           <span class="meta-value">{{
             item.publicationDate | date : "dd/MM/yyyy"
@@ -40,7 +44,10 @@
 
     <!-- הצגת כפתורים לתלמידה -->
     <div class="actions" *ngIf="userType === 'Student'">
-      <button class="action-button favorite" (click)="addToFavorites(item)">
+      <button
+        class="action-button favorite"
+        (click)="addToFavorites(item); $event.stopPropagation()"
+      >
         <i class="far fa-heart"></i>
       </button>
       <!-- כפתורים להורדה עבור Article, Video, Scanned Document -->
@@ -52,13 +59,17 @@
           item.type === 'שיר' ||
           item.type === 'מערך'
         "
-        (click)="downloadResource(item)"
+        (click)="downloadResource(item); $event.stopPropagation()"
       >
         <i class="fas fa-download"></i>
       </button>
 
       <!-- כפתור להזמנה עבור Book -->
-      <button class="action-button order" *ngIf="item.type === 'ספר'">
+      <button
+        class="action-button order"
+        *ngIf="item.type === 'ספר'"
+        (click)="$event.stopPropagation()"
+      >
         להזמנה
       </button>
     </div>
