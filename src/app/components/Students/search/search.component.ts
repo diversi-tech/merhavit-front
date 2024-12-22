@@ -1,9 +1,10 @@
+import { ItemsService } from './../../../items.service';
 import { Component, HostListener } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router'; // ייבוא Router
 import { jwtDecode } from 'jwt-decode';
-import { SearchService } from '../../search.service';
+
 
 @Component({
   selector: 'app-search',
@@ -22,7 +23,7 @@ export class SearchComponent {
   typeFilter = '';
 
 
-  constructor(private router: Router, private searchService: SearchService) { }
+  constructor(private router: Router, private itemsService: ItemsService) { }
 
 
   ngOnInit(): void {
@@ -87,18 +88,53 @@ export class SearchComponent {
     }
   }
 
+  // onsearch(event: Event): void {
+  //   const target = event.target as HTMLInputElement;
+  //   this.searchTerm = target.value; // עדכון המשתנה ללא הצגה ב-HTML
+  //   console.log(this.searchTerm); // להדפיס לקונסול אם את רוצה לראות את הערך
+  //   this.itemsService.getItems(0, 10, this.searchTerm, this.typeFilter).subscribe({
+  //     next: (response) => {
+  //       console.log('Search results:', response);
+  //       this.searchResults = Array.isArray(response) ? response : response.data || [];
+  //     },
+  //     error: (err) => {
+  //       console.error('Error performing search:', err);
+  //     },
+  //   });
+  // }
+
+
   onsearch(event: Event): void {
     const target = event.target as HTMLInputElement;
-    this.searchTerm = target.value; // עדכון המשתנה ללא הצגה ב-HTML
-    console.log(this.searchTerm); // להדפיס לקונסול אם את רוצה לראות את הערך
-    this.searchService.getItems(0, 10, this.searchTerm, this.typeFilter).subscribe({
-      next: (response) => {
-        console.log('Search results:', response);
-        this.searchResults = Array.isArray(response) ? response : response.data || [];
+    this.searchTerm = target.value.trim(); // עדכון המשתנה במילת החיפוש
+
+    // בדוק אם לא הוזן מונח חיפוש
+    if (!this.searchTerm) {
+      console.log('Search term is empty');
+      this.searchResults = [];
+      return;
+    }
+
+    // הדפסת פרמטרים למעקב
+    console.log('Search term:', this.searchTerm);
+    console.log('Type filter:', this.typeFilter);
+
+    // קריאה לשירות החיפוש עם פרמטרי הסינון
+    this.itemsService.getItems(0, 10, this.searchTerm, this.typeFilter).subscribe({
+      next: (response: any) => {
+        console.log('Raw response:', response);
+        // אם התגובה מכילה מערך ב-data
+        const filteredData = response.data.filter((item: any) => 
+          item.title.includes(this.searchTerm) || item.description.includes(this.searchTerm)
+        );
+        this.searchResults = filteredData; // עדכון התוצאות במסך
+        console.log('Filtered results:', this.searchResults);
       },
-      error: (err) => {
-        console.error('Error performing search:', err);
+      error: (err: any) => {
+        console.error('Error performing search:', err.message);
       },
     });
   }
+
+  
 }

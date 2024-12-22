@@ -8,7 +8,7 @@ import { ApiService } from '../api.service';
 import { jwtDecode } from 'jwt-decode';
 import { log } from 'console';
 import { RouterModule, Router } from '@angular/router';
-import { SearchService } from '../components/search.service'
+import { ItemsService } from '../items.service'
 
 interface Item {
   id: string;
@@ -37,7 +37,7 @@ export class ItemsListComponent implements OnInit {
   public items: Item[] = []; //מערך המוצרים של הספריה
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
 
-  constructor(private http: HttpClient, private apiService: ApiService, private router: Router,private searchService: SearchService) {}
+  constructor(private http: HttpClient, private apiService: ApiService, private router: Router,private itemsService: ItemsService) {}
 
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
