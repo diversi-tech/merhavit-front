@@ -79,16 +79,16 @@ export class ItemPageComponent implements OnInit {
     console.log('File URL:', fileUrl);
 
     if (fileType.includes('audio') || fileType.includes('אודיו') || fileType.includes('שיר')) {
-      this.clearPreviewsExcept('audio');
+      this.clearPreviewsExcept('שיר');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
     } else if (fileType.includes('image') || fileType.includes('תמונה')) {
-      this.clearPreviewsExcept('image');
+      this.clearPreviewsExcept('תמונה');
       this.previewUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
     } else if (fileType.includes('video') || fileType.includes('וידאו')) {
-      this.clearPreviewsExcept('video');
+      this.clearPreviewsExcept('סרטון');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
     } else if (fileType.includes('pdf') || fileType.includes('קובץ') || fileType.includes('document')) {
-      this.clearPreviewsExcept('document');
+      this.clearPreviewsExcept('מסמך');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
         
     } else {
@@ -98,11 +98,11 @@ export class ItemPageComponent implements OnInit {
     console.log('Cover image URL:', this.item?.coverImage);
   }
 
-  clearPreviewsExcept(type: 'image' | 'video' | 'document' | 'audio') {
-    this.isImage = type === 'image';
-    this.isAudio = type === 'audio';
-    this.isVideo = type === 'video';
-    this.isPDF = type === 'document';
+  clearPreviewsExcept(type: 'תמונה' | 'סרטון' | 'מסמך' | 'שיר') {
+    this.isImage = type === 'תמונה';
+    this.isAudio = type === 'שיר';
+    this.isVideo = type === 'סרטון';
+    this.isPDF = type === 'מסמך';
   }
 
   navigateToItem(itemId: string) {
