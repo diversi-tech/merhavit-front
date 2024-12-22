@@ -161,7 +161,7 @@
 }
 
 .icon {
-  width: 2vw;  /* הקטנת רוחב האייקון */
+  width: 2vw; /* הקטנת רוחב האייקון */
   height: 4vh; /* הקטנת גובה האייקון */
   cursor: pointer;
 }
@@ -201,110 +201,6 @@
   align-items: center;
 }
 
-.file-type-dropdown {
-  border: 0.1rem solid #000;
-  border-radius: 0.3rem;
-  padding: 0.5rem;
-  background-color: #fff;
-  font-size: 1rem;
-  width: 100%;
-  max-width: 15rem;
-  direction: rtl;
-}
-
-.dropdown-container {
-  position: relative;
-  width: 100%;
-  max-width: 15rem;
-  direction: rtl;
-}
-
-.dropdown-header {
-  background-color: white;
-  font-size: 1rem;
-  border: 0.1rem solid #000;
-  border-radius: 0.3rem;
-  padding: 0.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-
-.dropdown-options {
-  list-style: none;
-  margin: 0;
-  background-color: white;
-  position: absolute;
-  width: 100%;
-  top: 2vh;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-}
-
-.dropdown-options li {
-  padding: 0.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  text-align: right;
-}
-
-.filter-details-container {
-  position: absolute;
-  top: 7vh;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 0.5rem;
-  width: 90%;
-  max-width: 30rem;
-}
-
-.filter-row {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1vh;
-}
-
-.filter-row label {
-  font-size: 1rem;
-  margin-bottom: 0.5vh;
-}
-
-.filter-row input {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.3rem;
-}
-
-.filter-details-box {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1vw;
-}
-
-.filter-column {
-  flex: 1 1 45%;
-  min-width: 20vw;
-}
-
-.upload-button {
-  background-color: #27c95a; /* ירוק */
-  color: white; /* טקסט לבן */
-  border: none;
-  border-radius: 20px;
-  padding: 0.5vh 1vw; /* ריווח פנימי */
-  font-size: 1rem;
-  cursor: pointer;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  margin-right: 1vw; /* רווח קטן מימין */
-}
-/* כאשר עוברים על כפתור היציאה ניהיה כהה */
 
 .top-icons {
   display: flex;
@@ -360,4 +256,141 @@
   border-radius: 50%; /* עיגול */
   text-align: center;
   cursor: pointer;
+}
+.dropdown-container {
+  position: relative;
+  min-width: 11.25rem; /* 180px */
+}
+
+.dropdown-header {   
+  display: flex;   
+  justify-content: space-between;   
+  align-items: center;   
+  padding: 0.625rem 0.9375rem; /* 10px 15px */   
+  background: white;   
+  border: 0.12rem solid #000; /* מסגרת דקה ורכה יותר */   
+  border-radius: 0.25rem; /* 4px */   
+  cursor: pointer;   
+  font-size: 1rem;   
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;   
+  font-weight: 400; /* כתב פחות בולט */   
+  color: #000;
+  direction: rtl; 
+}
+
+
+.dropdown-arrow {
+  margin-right: 0.5rem; /* 8px */
+  font-size: 1.125rem; /* 18px */}
+
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 100%;
+  background: white;
+  border-radius: 0.25rem; /* 4px */
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1); /* 2px 4px */
+  padding: 0.5rem 0; /* 8px */
+  margin: 0.25rem 0 0 0; /* 4px */
+  list-style: none;
+  z-index: 1000;
+  direction: rtl;
+}
+
+.dropdown-options li {
+  padding: 0.625rem 0.9375rem; /* 10px 15px */
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #000;
+}
+
+.dropdown-options li:hover {
+  background-color: #f3f7fd;
+}
+.filter-details-container {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: -35rem; /* מזיז את החלון ימינה */
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  z-index: 1000;
+  width: max-content;
+  min-width: 45rem;
+}
+
+.filter-details-box {
+  display: flex;
+  justify-content: space-between; /* מרווח שווה בין העמודות */
+  gap: 4rem; /* מרווח גדול יותר בין העמודות */
+  direction: rtl;
+}
+
+.filter-column {
+  flex: 0 1 calc(50% - 2rem); /* רוחב קבוע לכל עמודה */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* הפיכת סדר העמודות */
+.filter-column:first-child {
+  order: 2; /* העמודה הראשונה תופיע משמאל */
+}
+
+.filter-column:last-child {
+  order: 1; /* העמודה השנייה תופיע מימין */
+}
+
+.filter-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-row label {
+  font-size: 1rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #000;
+  font-weight: 500;
+}
+
+.filter-row input {
+  padding: 0.75rem;
+  border: 1px solid #000;
+  border-radius: 0.375rem;
+  font-family: 'Assistant', sans-serif;
+  font-size: 1rem;
+  width: 95%; /* הקטנת רוחב שדות הקלט */
+  height: 1.7rem; /* גובה קבוע לשדות הקלט */
+  background: white;
+  direction: rtl;
+}
+
+.filter-row input::placeholder {
+  color: #a0aec0;
+  font-size: 1rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.filter-row input:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 1px #4299e1;
+}
+
+.white-box-icons {
+  position: relative;
+}
+
+/* להוסיף מיקום יחסי לאייקון הפילטר כדי שהחלון יתמקם ביחס אליו */
+.fa-filter {
+  position: relative;
+  font-size: 1.25rem;
+  color: #434343;
+  cursor: pointer;
+  padding: 0.5rem;
 }

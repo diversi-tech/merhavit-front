@@ -21,7 +21,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive,ItemsListComponent,MatDialogModule,ItemsListModule,SearchComponent, ItemPageComponent,FormsModule,EditMediaComponent,ReactiveFormsModule,ItemsListModule ,UploadResourceComponent],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'] 
+  styleUrls: ['./app.component.css'] ,
+
 })
 export class AppComponent {
   title = 'routing-app';
