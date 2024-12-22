@@ -3,6 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router'; // ייבוא Router
 import { jwtDecode } from 'jwt-decode';
+import { log } from 'console';
 
 @Component({
   selector: 'app-search',
@@ -55,6 +56,7 @@ export class SearchComponent {
     this.router.navigate(['/welcome']); // ניווט לעמוד welcome
   }
   toggleFilterOptions() {
+    
     this.showFilterOptions = !this.showFilterOptions;
   }
 
