@@ -1,7 +1,7 @@
 
 <div class="table-container" style="direction: rtl" >
   <div class="row" *ngFor="let item of items">
-    <div class="item-content" (click)="navigateToItemPage(item.id)">
+    <div class="item-content" (click)="navigateToItemPage(item._id)">
       <img
         [src]="item.coverImage || 'assets/default-image.png'"
         alt="Item Image"

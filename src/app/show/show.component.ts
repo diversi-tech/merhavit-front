@@ -84,10 +84,12 @@ export class ItemsListComponent implements OnInit {
         else
           this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
         this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+        
       },
       error: (err) => {
         console.error('Error fetching items', err);
       },
+
     });
   }
 
@@ -231,7 +233,7 @@ export class ItemsListComponent implements OnInit {
       const userId = decodedToken.idNumber; // נניח שה-`id` של המשתמש נמצא בטוקן
       const requestData = {
         userId: userId,
-        itemId: item.id,
+        itemId: item._id,
       };
     
       console.log('Request Data:', requestData);
