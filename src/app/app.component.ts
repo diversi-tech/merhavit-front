@@ -13,19 +13,37 @@ import { SearchComponent } from './components/Students/search/search.component';
 import { ItemPageComponent } from './components/item-page/item-page.component';
 import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NavigationBarComponent } from './navigation-bar/navigation-bar.component'
 
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive,ItemsListComponent,MatDialogModule,ItemsListModule,SearchComponent, ItemPageComponent,FormsModule,EditMediaComponent,ReactiveFormsModule,ItemsListModule ,UploadResourceComponent],
+  imports: [
+    CommonModule, 
+    RouterOutlet, 
+    RouterLink, 
+    RouterLinkActive,
+    ItemsListComponent,
+    MatDialogModule,
+    ItemsListModule,
+    SearchComponent, 
+    ItemPageComponent,
+    FormsModule,
+    EditMediaComponent,
+    ReactiveFormsModule,
+    ItemsListModule,
+    UploadResourceComponent,
+    NavigationBarComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'] 
 })
 export class AppComponent {
   title = 'routing-app';
   showSearchComponent: boolean = true; // ברירת מחדל: להציג את SearchComponent
+  navigationBar: boolean = true;
 
   constructor(private router: Router) {}
 
@@ -35,6 +53,7 @@ export class AppComponent {
         // נתיבים שבהם לא נרצה להציג את הקומפוננטה
         const excludedRoutes = ['/login', '/registration', '/welcome','/','/reset-password','/forgot-password','/success-registration'];
         this.showSearchComponent = !excludedRoutes.includes(this.router.url);
+        this.navigationBar = !excludedRoutes.includes(this.router.url);
       
     });
   }
@@ -48,4 +67,3 @@ toggleSubMenu(menu: string): void {
   }
 }
 }
-//MediaService

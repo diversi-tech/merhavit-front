@@ -1,4 +1,4 @@
-<div class="layout">
+<!-- <div class="layout">
   
   <nav class="sidebar">
     <div class="sidebar-header">
@@ -57,4 +57,21 @@
     </div>
   </div>
 </div>
+<app-upload-resource></app-upload-resource> -->
+
+<div class="layout">
+  <div class="side-bar" *ngIf="navigationBar">
+    <app-navigation-bar></app-navigation-bar>
+  </div>
+  <div class="main-container">
+    <div class="header" *ngIf="showSearchComponent">
+      <app-search></app-search>
+    </div>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
 <app-upload-resource></app-upload-resource>
+
+

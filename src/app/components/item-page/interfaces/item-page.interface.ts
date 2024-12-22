@@ -32,4 +32,3 @@ export interface Item {
   filePath: string;
   specializations: string[];
 }
-
