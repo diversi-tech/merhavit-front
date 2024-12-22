@@ -35,7 +35,9 @@
     </div>
 
     <!-- הצגת כפתורים לספרנית -->
-    <div class="actions" *ngIf="userType === 'Librarian'">
+    <div class="actions" 
+    *ngIf="['Admin', 'Site Manager', 'Librarian'].includes(userType)"
+    >
       <button class="action-button delete" (click)="deleteResource(item)">
         <i class="far fa-trash-alt"></i>
       </button>
