@@ -293,9 +293,6 @@
   min-width: 20vw;
 }
 
-button:hover {
-  background-color: inherit; /* שמירה על הצבע המקורי במעבר עכבר */
-}
 .upload-button {
   background-color: #27c95a; /* ירוק */
   color: white; /* טקסט לבן */
@@ -308,9 +305,7 @@ button:hover {
   margin-right: 1vw; /* רווח קטן מימין */
 }
 /* כאשר עוברים על כפתור היציאה ניהיה כהה */
-.upload-button:hover {
-  background-color: inherit; /* שמירה על הצבע המקורי במעבר עכבר */
-}
+
 .top-icons {
   display: flex;
   align-items: center;
@@ -318,7 +313,7 @@ button:hover {
 }
 
 .upload-button {
-  background-color: #27c95a; /* ירוק */
+  background-color: #0f024b; /* ירוק */
   color: white; /* טקסט לבן */
   border: none;
   border-radius: 20px;
@@ -329,9 +324,9 @@ button:hover {
   margin-right: 1vw; /* רווח קטן מימין */
 }
 
-.upload-button:hover {
-  background-color: #008000; /* ירוק כהה */
-}
+/* .upload-button:hover { */
+  /* background-color: #008000; ירוק כהה */
+/* } */
 .top-icons {
   display: flex;
   align-items: center;
@@ -356,16 +351,13 @@ button:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #27c95a; /* צבע רקע */
+   background-color: #010610; /* צבע רקע */
   color: white; /* צבע טקסט */
-  font-size: 18px;
+  font-size: 25px;
   font-weight: bold;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%; /* עיגול */
   text-align: center;
   cursor: pointer;
-}
-.user-icon:hover {
-  background-color: #008000; /* ירוק כהה */
 }
