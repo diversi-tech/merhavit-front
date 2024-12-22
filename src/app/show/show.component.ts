@@ -15,7 +15,7 @@ interface Item {
   description: string;
   title: string;
   type: string;
-  Author: string;
+  author: string;
   publicationDate: Date;
   Tags: Array<string>;
   createdBy: string;

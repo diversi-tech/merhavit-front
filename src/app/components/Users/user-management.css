@@ -8,14 +8,15 @@
 .user-header, .user-row {
   display: flex;
   align-items: center;
-  padding: 1.5vh 0; /* הקטנתי את ה-padding */
+  padding: 3vh 0; /* הגדלתי את ה-padding להגדיל את הרווח בין השורות */
   border-bottom: 0.1rem solid #dcdcdc;
 }
 
 .user-header {
   margin-top: 0.5rem;
-  font-size: 1.4rem; /* הגדלתי את גודל הכתב */
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;  background-color: #f3f7fd;
+  font-size: 1.4rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f3f7fd;
   font-weight: bold;
 }
 
@@ -26,7 +27,7 @@
 .user-cell {
   flex: 1;
   text-align: center;
-  padding: 0 1.5vw; /* הקטנתי את הפדינג */
+  padding: 0 1.5vw;
   box-sizing: border-box;
 }
 
@@ -35,7 +36,7 @@
 }
 
 .user-row .user-cell {
-  font-size: 1.4rem; /* הגדלתי את גודל הכתב */
+  font-size: 1.4rem;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #2d3748;
 }
@@ -46,21 +47,101 @@
 }
 
 .user-actions {
-  flex: 0.5;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
 .action-button {
-  background-color: #38a169;
-  color: #fff;
-  padding: 0.5vh 2vw; /* הקטנתי את ה-padding */
+  background-color: transparent;
+  color: #2d3748;
   border: none;
-  border-radius: 1.5rem; /* הקטנתי את הרדיוס */
-  font-size: 1.2rem; /* הקטנתי את גודל הפונט */
+  font-size: 1.4rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  padding: 5px 10px; /* הוספתי padding כדי להוסיף רווח סביב האייקון */
 }
 
 .action-button:hover {
-  background-color: #2f855a;
+  background-color: #9f9f9f; /* צבע אפור בהיר יותר עבור הרקע */
+  border-radius: 0.375rem;
+
 }
+
+.role-menu {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.role-menu button {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.role-menu button:hover {
+  background-color: #f0f0f0;
+}
+.confirmation-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #f9f9f9; /* צבע רקע עדין */
+  border: 0.2rem solid #b9cff0; /* גבול כחול בולט */
+  border-radius: 0.5rem; /* פינות מעוגלות */
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3); /* הצללה חזקה יותר */
+  padding: 2rem;
+  z-index: 1000;
+  width: 25rem; /* הגדלת רוחב */
+  max-width: 90%; /* התאמה למסכים קטנים */
+}
+
+.dialog-content {
+  text-align: center;
+  font-family: 'Arial', sans-serif; /* גופן מודרני */
+  color: #333; /* צבע טקסט כהה */
+}
+
+.dialog-content p {
+  font-size: 1.2rem; /* גודל טקסט גדול יותר */
+  font-weight: bold; /* טקסט מודגש */
+  margin-bottom: 2rem; /* ריווח גדול יותר מתחת לטקסט */
+}
+
+.dialog-content button {
+  background: #3a83f1; /* צבע רקע כחול */
+  color: white; /* צבע טקסט לבן */
+  border: none; /* ללא גבול */
+  border-radius: 0.3rem; /* פינות מעוגלות */
+  padding: 0.7rem 1.5rem; /* ריווח פנימי */
+  font-size: 1rem; /* גודל גופן */
+  cursor: pointer; /* מצביע עכבר */
+  margin: 0 0.3rem; /* רווח אופקי בין הכפתורים */
+  transition: background 0.3s ease; /* אפקט מעבר */
+}
+
+.dialog-content button:hover {
+  background: #0056b3; /* צבע כהה יותר בעת ריחוף */
+}
+
+.dialog-content button.cancel {
+  background: #6c757d; /* צבע אפור לכפתור ביטול */
+}
+
+.dialog-content button.cancel:hover {
+  background: #5a6268; /* צבע כהה יותר בעת ריחוף */
+}
+

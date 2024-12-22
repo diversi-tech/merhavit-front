@@ -8,9 +8,6 @@
           <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v80h-80v-80H200v560h560v-80h80v80q0 33-23.5 56.5T760-120H200Zm480-160-56-56 103-104H360v-80h367L624-624l56-56 200 200-200 200Z"/>
         </svg>
       </button>
-    <!-- אייקון המשתמש עם האות הראשונה -->
-    <div class="icon user-icon" [routerLink]="['/personal-details']"></div>
-  
     <!-- אייקון לב ריק (Font Awesome) -->
     <i class="far fa-heart" style="color:#434343; font-size:3vh; width:2vw;" [routerLink]="['/favorites']"></i>
 
@@ -20,6 +17,8 @@
     <button *ngIf="userType!=='Student'" [routerLink]="'/upload-resource'" class="upload-button">
       העלאת קובץ
   </button>
+    <!-- אייקון המשתמש עם האות הראשונה -->
+    <div class="user-icon" [routerLink]="['/personal-details']">{{firstName}} </div>
   </div>
 
   <div class="white-box">
@@ -41,7 +40,9 @@
       </div>
 
       <!-- אייקון פילטר -->
-      <i (click)="toggleDetails()" class="fas fa-filter" style="color:#434343; font-size:4vh; cursor:pointer;"></i>
+       <i (click)="toggleDetails()" class="fas fa-filter" style="color:#434343; font-size:4vh; cursor:pointer;"></i>
+       <!-- <i (click)="toggleDetails()" class="fas fa-sliders-h" style="color:#000; font-size:4vh; cursor:pointer;"></i> -->
+
 
       <div class="filter-details-container" *ngIf="showDetails">
         <div class="filter-details-box">
