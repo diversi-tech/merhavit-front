@@ -83,19 +83,6 @@ export class SearchComponent {
     localStorage.removeItem('access_token'); // הסרת ה-token
     this.router.navigate(['/welcome']); // ניווט לעמוד welcome
   }
-  toggleFilterOptions() {
-    this.showFilterOptions = !this.showFilterOptions;
-  }
-
-  toggleDetails() {
-    this.showDetails = !this.showDetails;
-  }
-
-  onSelectFilter(option: string) {
-    this.selectedFileType = option;
-    this.showFilterOptions = false; // סוגר את התפריט לאחר הבחירה
-  }
-
   @HostListener('document:click', ['$event.target'])
   onDocumentClick(target: HTMLElement) {
     const dropdownContainer = document.querySelector('.dropdown-container') as HTMLElement;
