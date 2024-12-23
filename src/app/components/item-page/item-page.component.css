@@ -172,3 +172,9 @@
   text-align: center;
 }
 
+/* תגיות */
+.example-chip-list {
+  width: 40vw;
+  background-color: white; 
+}
+

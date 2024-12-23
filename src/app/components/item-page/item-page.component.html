@@ -48,7 +48,33 @@
     <p><strong>שנת הוצאה לאור:</strong> {{ item?.releaseYear || '' }}</p>
     <p><strong>מחבר:</strong> {{ item?.author || '' }}</p>
     <p><strong>תיאור:</strong> {{ item?.description || '' }}</p>
-    <p *ngIf="item?.tags?.length"><strong>חוות דעת:</strong> {{ item?.tags?.join(', ') }}</p>
+    <!-- הוספת חוות דעת -->
+    <mat-form-field class="example-chip-list">
+      <mat-chip-grid #chipGrid aria-label="Enter reviews">
+        <input
+          matInput
+          placeholder="הוספת תגית"
+          [matChipInputFor]="chipGrid"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          [matChipInputAddOnBlur]="addOnBlur"
+          (matChipInputTokenEnd)="addTag($event)"
+          type="text"
+          (keyup)="validateLength()"
+          maxlength="10"
+        />
+        <mat-chip-row
+          *ngFor="let tag of item.tags; let i = index"
+          (removed)="removeTag(tag, i)"
+        >
+          {{ tag }}
+          <button matChipRemove [attr.aria-label]="'remove ' + tag">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      </mat-chip-grid>
+    </mat-form-field>
+    
+
   </div>
 
   <!-- פריטים דומים -->
