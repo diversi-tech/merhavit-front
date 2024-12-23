@@ -5,11 +5,11 @@
   aria-labelledby="example-radio-group-label"
   class="example-radio-group"
   [(ngModel)]="formMode">
-    <mat-radio-button class="example-radio-button" [value]="'edit'">עריכת תוכן</mat-radio-button>
-    <mat-radio-button class="example-radio-button" [value]="'add'">העלאת תוכן </mat-radio-button>
-    <mat-radio-button class="example-radio-button" [value]="'addLink'">קישורים</mat-radio-button>
+    <mat-radio-button class="example-radio-button" [value]="'edit'" (click)="handleClick($event,'edit')">עריכת תוכן</mat-radio-button>
+    <mat-radio-button class="example-radio-button" [value]="'add'" (click)="handleClick($event,'add')">העלאת תוכן </mat-radio-button>
+    <mat-radio-button class="example-radio-button" [value]="'addLink'" (click)="handleClick($event,'addLink')">קישורים</mat-radio-button>
 </mat-radio-group>
-
+<div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 <div class="container">
 
 
@@ -40,7 +40,7 @@
     </div>
   </div>
   <div *ngIf="formMode=='edit'">
-    <quill-editor [(ngModel)]="content" theme="snow" [modules]="editorModules"></quill-editor>
+    <!-- <quill-editor [(ngModel)]="content" theme="snow" [modules]="editorModules" (change)="onEditFileSelected"></quill-editor> -->
   </div>
   <div *ngIf="formMode=='addLink'">
     <div class="link-input-container">
@@ -63,7 +63,7 @@
   </div>
 
   <!-- העלאת תמונה -->
-  <div *ngIf="isNotImage" class="image-container" >
+  <div *ngIf="!isImage" class="image-container" >
     <img [src]="displayImage" alt="תמונת שער"/>
     
     <div class="upload-overlay">
@@ -282,7 +282,7 @@
           <textarea class="input_fields" id="description" rows="4" formControlName="description"></textarea>
         </div>
       </div>
-
+       <div *ngIf="formErrorMessage" class="error-message">{{formErrorMessage}}</div>
       <!-- כפתור שליחה -->
       <button type="submit">שלח</button>
   </form>

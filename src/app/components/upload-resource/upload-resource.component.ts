@@ -21,7 +21,8 @@ import { QuillModule } from 'ngx-quill';
 import Quill from 'quill'; // Import Quill
 import { transliterate } from 'transliteration';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { jwtDecode } from 'jwt-decode';
+import Swal from 'sweetalert2';
 
 
 
@@ -33,7 +34,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   selector: 'app-upload-resource',
   standalone: true,
   imports: [CommonModule,FormsModule,ReactiveFormsModule,MatChipsModule, MatAutocompleteModule, 
-    MatFormFieldModule, MatInputModule,MatIconModule,OverlayModule,MatAutocompleteModule,MatDialogModule, 
+    MatFormFieldModule, MatInputModule,MatIconModule,OverlayModule,MatAutocompleteModule, 
     MatButtonModule,MatRadioModule,QuillModule],
   templateUrl: './upload-resource.component.html',
   styleUrls: ['./upload-resource.component.css']
@@ -44,21 +45,29 @@ export class UploadResourceComponent
   fileForm: FormGroup;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
-  formMode: string='edit';
+  formMode: string='edit';//שמירת מצב הטופס לפי סוג הקובץ המוכנס לתוכו
+  errorMessage: string | null = null;//הודעת שגיאה לכפתור רדיו
+  formErrorMessage:string|null=null;
+
+  disabledOptions: Record<string, boolean> = {
+    edit: false,
+    add: false,
+    addLink: false, 
+}
   content = ''; // תוכן העורך
   fileToEdit: File | null = null;
   link: string = ''; // משתנה לשמירת הקישור שהמשתמש מדביק
   isValidLink: boolean = true;
-  previewImage: string | ArrayBuffer |SafeResourceUrl| null ='assets/camera-placeholder.jpg';
-  file:File| null=null;
-  coverImage:File|null=null;
-  displayImage: string|ArrayBuffer|null=null
+  previewImage: string | ArrayBuffer |SafeResourceUrl| null ='assets/camera-placeholder.jpg';//תצוגה מקדימה לקובץ
+  file:File| null=null;//קובץ שנבחר
+  coverImage:File|null=null;//תמונת שער שנבחרה
+  displayImage: string|ArrayBuffer|null=null//שמירת תצוגה מקדימה לתמונת שער
   isVideo: boolean=false;
   isPDF:boolean=false;
   isImage:boolean=true
   isAudio:boolean=false
-  isNotImage:boolean=false
   fileTypes:Array<string>= ["ספר","סרטון","שיר","מערך","תמונה"];
+  userId:string=''
   purchaseLocations:Array<string>=["חנות אונליין"];
   
   levels:Array<string>=["נמוכה","גבוהה"];
@@ -151,7 +160,28 @@ export class UploadResourceComponent
     
   }
 
-  
+  handleClick(event:Event,option: string): void {
+    const modeAble= Object.keys(this.disabledOptions).find(k=>this.disabledOptions[k])
+    if (!this.disabledOptions[option] && modeAble) {
+      event.preventDefault();
+      this.errorMessage = `לא ניתן לבחור באפשרות "${this.getOptionLabel(option)}" כעת.
+      נבחרה כבר אפשרות "${this.getOptionLabel(modeAble)}".
+      נקי את בחירת השדות.`;
+      
+    } else {
+      this.errorMessage = null; // מנקה הודעות שגיאה
+    }
+  }
+
+
+  getOptionLabel(option: string): string {
+    const labels: Record<string, string> = {
+      edit: 'עריכת תוכן',
+      add: 'העלאת תוכן',
+      addLink: 'קישורים',
+    };
+    return labels[option] || option;
+  }
 
   editorModules = {
     toolbar: [
@@ -175,7 +205,8 @@ export class UploadResourceComponent
     const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
     this.isValidLink = urlRegex.test(this.link);
     console.log("link:",this.link);
-    
+    this.disabledOptions['addLink']= this.link && this.isValidLink? true:false;
+    this.errorMessage= this.disabledOptions['addLink']?null:this.errorMessage;
   }
 
 
@@ -200,6 +231,7 @@ export class UploadResourceComponent
   onFileSelected(event: Event): void 
   {
     const input = event.target as HTMLInputElement;
+    this.disabledOptions['add']=this.file? true:false 
     if (input.files && input.files[0]) 
       {
       this.file = input.files[0];
@@ -211,20 +243,17 @@ export class UploadResourceComponent
         {
           this.clearPreviewsExcept('video');
         this.previewImage = URL.createObjectURL(this.file);// שמירת התצוגה המקדימה לוידאו
-        this.isNotImage=true
         }
         else if (fileName.endsWith('.pdf') || fileName.endsWith('.docx') || fileName.endsWith('.doc')) 
           {
             this.clearPreviewsExcept('document');
             const objectUrl = URL.createObjectURL(this.file);
-            this.previewImage = this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl);
-            this.isNotImage=true        
+            this.previewImage = this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl);    
           }
         else if (fileName.endsWith('.mp3') || fileName.endsWith('.wav') ) 
           {
             this.previewImage = URL.createObjectURL(this.file);
             this.clearPreviewsExcept('audio');
-            this.isNotImage=true
           }
         else 
           {
@@ -234,15 +263,14 @@ export class UploadResourceComponent
             this.previewImage = reader.result; //  שמירת התצוגה המקדימה לתמונה 
             };
           reader.readAsDataURL(this.file);
-          this.isNotImage=false
           }
       }
-      
+      this.disabledOptions['add']=this.file? true:false 
   }
 
   onFileTypeChange(event: Event): void {
     const selectedType = (event.target as HTMLSelectElement).value;
-    this.isNotImage = selectedType !== 'תמונה';
+    this.isImage = selectedType == 'תמונה';
   }
 
   onImageSelected(event: Event): void 
@@ -266,6 +294,11 @@ export class UploadResourceComponent
     this.isVideo = type === 'video' ? true : false;
     this.isPDF = type === 'document' ? true : false;
     this.isAudio = type === 'audio' ? true : false;
+  }
+
+  onEditFileSelected()
+  {
+    this.disabledOptions['edit']= this.content? true:false
   }
 
   add(event: MatChipInputEvent,fieldKey:string): void {
@@ -372,10 +405,33 @@ export class UploadResourceComponent
     return new File([file], this.sanitizeFileName(file.name), { type: file.type });
   }
 
+  getContentOption(option:string)
+  {
+     const options :Record<string, string>={
+     edit:'text',
+     add:'file',
+     addLink:'link'
+     }
+     return options[option]
+  }
+
+  getUserIdFromToken(): void {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        this.userId = decodedToken.sub || '';
+        console.log("userId",this.userId);
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+  }
+
   onSubmit() :void
   {
     console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
-
+    this.getUserIdFromToken();
     if (this.fileForm.valid ) 
       {
         const formData= new FormData();
@@ -383,8 +439,9 @@ export class UploadResourceComponent
         
         const metadata={
           ...this.fileForm.value,
-          createdBy:localStorage.getItem('idNumber'),
-          filePath:this.link 
+          createdBy:this.userId,
+          filePath:this.link, 
+          contentOption:this.getContentOption(this.formMode)
         }
          //console.log(" נתונים" +metadata.title);
          let str:string=JSON.stringify(metadata)
@@ -396,6 +453,11 @@ export class UploadResourceComponent
          console.log(rename);
          
           formData.append('resource',rename)
+        }
+
+        if(this.isImage)
+        {
+          this.coverImage=this.file
         }
            
 
@@ -411,17 +473,43 @@ export class UploadResourceComponent
         this.apiService.Post('/EducationalResource',formData).subscribe({
           next: (response) => {
            console.log('טופס נשלח בהצלחה:', this.fileForm.value); 
-           this.showMessage("טופס נשלח בהצלחה")
+           Swal.fire({
+            title: 'טופס נשלח בהצלחה!',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'OK',
+            buttonsStyling: false,
+            
+            customClass: {
+                confirmButton: 'btn btn-primary px-4',
+                cancelButton: 'btn btn-danger ms-2 px-4',
+            
+            },
+            });
           },
           error: (err) =>  
           {
            console.log('תקלה בשליחת טופס',err);
-           this.showMessage('תקלה בשליחת טופס')
+          Swal.fire({
+            title: 'תקלה בשליחת הטופס!',
+            text: ' שגיאה'+err.status ,
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'OK',
+            buttonsStyling: false,
+            
+            customClass: {
+                confirmButton: 'btn btn-primary px-4',
+                cancelButton: 'btn btn-danger ms-2 px-4',
+            
+            },
+            });
           },
         });
+        this.formErrorMessage=null;
   }else{
     console.log("טופס לא תקין");
-    this.showMessage("טופס לא תקין")
+    this.formErrorMessage="טופס לא תקין. אנא וודאי שכל השדות מלאים"
   }
   setTimeout(() => {
     const element = document.querySelector('[id^="cdk-overlay-"]');
@@ -431,23 +519,9 @@ export class UploadResourceComponent
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, 0);
-}
 
-showMessage(message: string, action: string = 'סגור', duration: number = 1000000) {
-  console.log("this.viewContainerRef",this.viewContainerRef);
   
-  // if (!this.viewContainerRef) {
-  //   console.error('viewContainerRef לא מאותחל!');
-  //   return;
-  // }
-  this.snackBar.open(message, action, {
-    duration,
-    horizontalPosition: 'center',
-    verticalPosition: 'top',
-    panelClass: ['custom-snackbar'],
-    viewContainerRef: this.viewContainerRef, // הגדרת הקונטיינר
-  });
-  }
+}
 
 }
 
