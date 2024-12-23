@@ -41,13 +41,12 @@ import Swal from 'sweetalert2';
 })
 export class UploadResourceComponent  
 {
-  @ViewChild('formContainer', { read: ViewContainerRef }) viewContainerRef!: ViewContainerRef;
   fileForm: FormGroup;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   formMode: string='edit';//שמירת מצב הטופס לפי סוג הקובץ המוכנס לתוכו
   errorMessage: string | null = null;//הודעת שגיאה לכפתור רדיו
-  formErrorMessage:string|null=null;
+  formErrorMessage:string|null=null;//הודעת שגיאה לטופס חסר שדות חובה
 
   disabledOptions: Record<string, boolean> = {
     edit: false,
@@ -268,6 +267,15 @@ export class UploadResourceComponent
       this.disabledOptions['add']=this.file? true:false 
   }
 
+  removeSelectedFile()
+  {
+    debugger
+    this.file=null
+    this.previewImage=this.sanitizer.bypassSecurityTrustResourceUrl('assets/camera-placeholder.jpg')
+    this.clearPreviewsExcept('image');
+    this.disabledOptions['add']=this.file? true:false
+  }
+
   onFileTypeChange(event: Event): void {
     const selectedType = (event.target as HTMLSelectElement).value;
     this.isImage = selectedType == 'תמונה';
@@ -299,6 +307,43 @@ export class UploadResourceComponent
   onEditFileSelected()
   {
     this.disabledOptions['edit']= this.content? true:false
+  }
+
+  createTextFile():File
+  {
+    console.log("content",this.content);
+    const tempDiv = document.createElement('div');
+  // הכנסת תוכן ה-HTML לתוך האלמנט
+  tempDiv.innerHTML = this.content;
+  // החזרת התוכן כטקסט רגיל (ללא תגיות)
+   const text=tempDiv.textContent || tempDiv.innerText || '';
+    const lines = text.split('</p>').map(line => line.trim());
+    const firstLine = lines.find(line => this.isValidText(line) && line !== '');
+    console.log("first line",firstLine);
+
+    // הגדרת שם הקובץ
+    const fileName = firstLine ? `${firstLine}.html` : 'default.html';
+    this.fileForm.patchValue({ type: 'טקסט' }); // הגדרת ערך ברירת מחדל
+    this.updateTypeValidator(false); // הסרת הוולידטור
+    
+    return new File([this.content], fileName, { type: 'text/html' });//קובץ HTML שמכיל את התוכן בפורמט HTML 
+  }
+
+  updateTypeValidator(isRequired: boolean): void {
+    const typeControl = this.fileForm.get('type');
+    if (isRequired) {
+      typeControl?.setValidators([Validators.required]);
+    } else {
+      typeControl?.clearValidators();
+    }
+    typeControl?.updateValueAndValidity();
+  }
+
+  // פונקציה לבדיקת האם השורה היא תמונה (למשל תמונה ב-BBCode או Markdown)
+  private isValidText(line: string): boolean {
+    // בודק אם השורה מכילה רק תווים תקינים (אותיות, מספרים, רווחים וסימנים מסוימים)
+    const validTextRegex = /^[a-zA-Zא-ת0-9\s.,!?'"()-]+$/;
+    return validTextRegex.test(line);
   }
 
   add(event: MatChipInputEvent,fieldKey:string): void {
@@ -432,7 +477,11 @@ export class UploadResourceComponent
   {
     console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
     this.getUserIdFromToken();
-    if (this.fileForm.valid ) 
+    if(this.content && !this.file)
+    {
+       this.file=this.createTextFile();
+    }
+    if (this.fileForm.valid && (this.file || this.link ) && ((!this.isImage && this.coverImage) || this.isImage)) 
       {
         const formData= new FormData();
         console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
@@ -492,8 +541,8 @@ export class UploadResourceComponent
            console.log('תקלה בשליחת טופס',err);
           Swal.fire({
             title: 'תקלה בשליחת הטופס!',
-            text: ' שגיאה'+err.status ,
-            icon: 'success',
+            text: 'שגיאה '+err.status ,
+            icon: 'error',
             showCancelButton: true,
             confirmButtonText: 'OK',
             buttonsStyling: false,
@@ -511,15 +560,6 @@ export class UploadResourceComponent
     console.log("טופס לא תקין");
     this.formErrorMessage="טופס לא תקין. אנא וודאי שכל השדות מלאים"
   }
-  setTimeout(() => {
-    const element = document.querySelector('[id^="cdk-overlay-"]');
-    console.log("element",element);
-    
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, 0);
-
   
 }
 

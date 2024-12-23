@@ -16,6 +16,9 @@
   <!-- העלאת קובץ -->
   <div class="image-container">
     <div *ngIf="formMode=='add'">
+      <div *ngIf="file">
+        <button (click)="removeSelectedFile()">X</button>
+      </div>
     <div *ngIf="isVideo">
       <video [src]="previewImage"></video>
     </div>
@@ -40,7 +43,7 @@
     </div>
   </div>
   <div *ngIf="formMode=='edit'">
-    <!-- <quill-editor [(ngModel)]="content" theme="snow" [modules]="editorModules" (change)="onEditFileSelected"></quill-editor> -->
+    <quill-editor [(ngModel)]="content" theme="snow" [modules]="editorModules" (change)="onEditFileSelected"></quill-editor>
   </div>
   <div *ngIf="formMode=='addLink'">
     <div class="link-input-container">
@@ -90,7 +93,7 @@
           <label for="publicationDate">תאריך העלאה</label>
           <input class="input_fields" type="date" id="publicationDate" formControlName="publicationDate" />
         </div>
-        <div class="form-group">
+        <div class="form-group" *ngIf="formMode!='edit'">
           <label for="type">סוג קובץ</label>
           <select class="input_fields" id="type" formControlName="type" (change)="onFileTypeChange($event)">
             <option  *ngFor="let type of fileTypes" [value]="type">{{ type }}</option>
