@@ -38,7 +38,7 @@ export const routes: Routes = [
   { path: 'items/books', component: ItemsListComponent }, // ספרים
   { path: 'items/images/posters', component: ItemsListComponent }, // כרזות
   { path: 'items/images/worksheets', component: ItemsListComponent }, // דפי עבודה
-  { path: 'items/images/illustrations', component: ItemsListComponent }, // איורים
+  { path: 'items/images/paintings', component: ItemsListComponent }, // איורים
   { path: 'items/images/creations', component: ItemsListComponent }, // יצירות
   { path: '**', redirectTo: '' }, // עמוד ברירת מחדל לכל כתובת לא תקינה
 ];

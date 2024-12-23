@@ -17,7 +17,10 @@ export class ItemPageComponent implements OnInit {
   item: Item | null = null;
   similarItems: SimilarItem[] = [];
   previewUrl: SafeResourceUrl | null = null;
-  isImage = false;
+  isPoster = false;
+  isWorksheet = false;
+  isPainting = false;
+  isCreation = false;
   isAudio = false;
   isVideo = false;
   isBook = false;
@@ -81,10 +84,19 @@ export class ItemPageComponent implements OnInit {
     if (fileType.includes('audio') || fileType.includes('אודיו') || fileType.includes('שיר')) {
       this.clearPreviewsExcept('שיר');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
-    } else if (fileType.includes('image') || fileType.includes('תמונה')) {
-      this.clearPreviewsExcept('תמונה');
+    }else if (fileType.includes('poster') || fileType.includes('כרזה')) {
+      this.clearPreviewsExcept('כרזה');
       this.previewUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
-    } else if (fileType.includes('video') || fileType.includes('סרטון')) {
+    }else if (fileType.includes('worksheet') || fileType.includes('דף עבודה')) {
+      this.clearPreviewsExcept('דף עבודה');
+      this.previewUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
+    }else if (fileType.includes('painting') || fileType.includes('איור') || fileType.includes('ציור')) {
+      this.clearPreviewsExcept('איור');
+      this.previewUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
+    } else if (fileType.includes('creation') || fileType.includes('יצירה')) {
+      this.clearPreviewsExcept('יצירה');
+      this.previewUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
+    }else if (fileType.includes('video') || fileType.includes('סרטון')) {
       this.clearPreviewsExcept('סרטון');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
     } else if (fileType.includes('pdf') || fileType.includes('מערך')) {
@@ -102,8 +114,11 @@ export class ItemPageComponent implements OnInit {
     console.log('Cover image URL:', this.item?.coverImage);
   }
 
-  clearPreviewsExcept(type: 'תמונה' | 'סרטון' | 'מערך' | 'ספר' | 'שיר') {
-    this.isImage = type === 'תמונה';
+  clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'ספר' | 'שיר') {
+    this.isPoster = type === 'כרזה';
+    this.isWorksheet = type === 'דף עבודה';
+    this.isPainting = type === 'איור';
+    this.isCreation = type === 'יצירה';
     this.isAudio = type === 'שיר';
     this.isVideo = type === 'סרטון';
     this.isDocument = type === 'מערך';

@@ -25,9 +25,9 @@
         </a>
         <ul class="submenu" *ngIf="activeSubMenu === 'images'">
           <li><a (click)="navigateAndFilter('posters')">כרזות</a></li>
-          <li><a routerLink="/items/images/worksheets">דפי עבודה</a></li>
-          <li><a routerLink="/items/images/illustrations">איורים</a></li>
-          <li><a routerLink="/items/images/creations">יצירות</a></li>
+          <li><a (click)="navigateAndFilter('worksheets')">דפי עבודה</a></li>
+          <li><a (click)="navigateAndFilter('paintings')">איורים</a></li>
+          <li><a (click)="navigateAndFilter('creations')">יצירות</a></li>
         </ul>
       </li>
       

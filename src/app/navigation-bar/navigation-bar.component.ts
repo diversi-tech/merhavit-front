@@ -35,6 +35,14 @@ export class NavigationBarComponent {
       this.router.navigate(['/items/songs'], { queryParams: { type: 'שיר' }}); // עבור כפתור "שירים"
     }else if (type === 'books') {
       this.router.navigate(['/items/books'], { queryParams: { type: 'ספר' }}); // עבור כפתור "ספרים"
+    }else if (type === 'posters') {
+      this.router.navigate(['/items/images/posters'], { queryParams: { type: 'כרזה' }}); // עבור כפתור "כרזות"
+    }else if (type === 'worksheets') {
+      this.router.navigate(['/items/images/worksheets'], { queryParams: { type: 'דף עבודה' }}); // עבור כפתור "דף עבודה"
+    }else if (type === 'paintings') {
+      this.router.navigate(['/items/images/paintings'], { queryParams: { type: 'איור' }}); // עבור כפתור "איורים"
+    }else if (type === 'creations') {
+      this.router.navigate(['/items/images/creations'], { queryParams: { type: 'יצירה' }}); // עבור כפתור "יצירות"
     }else {
       this.router.navigate([`/items/${type}`]); // עבור כל סוג אחר
     }

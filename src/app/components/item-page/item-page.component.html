@@ -2,7 +2,7 @@
   <!-- קובץ הפריט -->
   <div *ngIf="item" class="grid-item item-1">
     <ng-container *ngIf="previewUrl; else noFile">
-      <div *ngIf="isImage">
+      <div *ngIf="isPoster || isWorksheet || isPainting || isCreation">
         <img [src]="previewUrl" [alt]="item?.title || 'Image not found'">
       </div>
       <div *ngIf="isVideo">
@@ -39,7 +39,7 @@
 
   <!-- פרטי הפריט -->
   <div *ngIf="item" class="grid-item item-2 item-details">
-    <h1>{{ item?.title || '' }}</h1>
+    <h2>{{ item?.title || '' }}</h2>
     <p><strong>תאריך פרסום:</strong> {{ item?.publicationDate || '' }}</p>
     <p><strong>נושא:</strong> {{ item?.subjects?.join(', ') || '' }}</p>
     <p><strong>גיל:</strong> {{ item?.ages || '' }}</p>
@@ -53,7 +53,7 @@
 
   <!-- פריטים דומים -->
   <div class="grid-item item-3">
-    <h2>פריטים דומים</h2>
+    <h3>פריטים דומים</h3>
     <div class="similar-items">
       <div *ngFor="let similarItem of similarItems" class="similar-item" (click)="navigateToItem(similarItem._id)">
         <div class="image-container">
@@ -69,7 +69,7 @@
           <ng-container *ngIf="similarItem.type">
             <!-- אייקון תמונה -->
             <svg 
-              *ngIf="similarItem.type === 'תמונה'" 
+              *ngIf="similarItem.type === 'כרזה' || 'דף עבודה' || 'איור' || 'יצירה'" 
               class="overlay-svg" 
               height="6vh" 
               viewBox="0 -960 960 960" 
