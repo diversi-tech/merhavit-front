@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router'; // ייבוא Router
 import { jwtDecode } from 'jwt-decode';
+import { Item } from '../../interfaces/item.model';
 
 
 @Component({
@@ -18,7 +19,8 @@ export class SearchComponent {
   showFilterOptions: boolean = false;
   showDetails: boolean = false;
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
-  searchResults: any[] = [];
+  // searchResults: any[] = [];
+  items:Item[]=[];
   searchTerm = '';
   typeFilter = '';
 
@@ -111,7 +113,7 @@ export class SearchComponent {
     // בדוק אם לא הוזן מונח חיפוש
     if (!this.searchTerm) {
       console.log('Search term is empty');
-      this.searchResults = [];
+      this.items = [];
       return;
     }
 
@@ -125,10 +127,11 @@ export class SearchComponent {
         console.log('Raw response:', response);
         // אם התגובה מכילה מערך ב-data
         const filteredData = response.data.filter((item: any) => 
-          item.title.includes(this.searchTerm) || item.description.includes(this.searchTerm)
+          item.title.includes(this.searchTerm) || item.description.includes(this.searchTerm) || item.author.includes(this.searchTerm)
+        ||  item.level.includes(this.searchTerm) || item.language.includes(this.searchTerm) || item.createdBy.includes(this.searchTerm)  
         );
-        this.searchResults = filteredData; // עדכון התוצאות במסך
-        console.log('Filtered results:', this.searchResults);
+        this.items = filteredData; // עדכון התוצאות במסך
+        console.log('Filtered results:', this.items);
       },
       error: (err: any) => {
         console.error('Error performing search:', err.message);

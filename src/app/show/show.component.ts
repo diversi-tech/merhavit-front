@@ -9,20 +9,11 @@ import { jwtDecode } from 'jwt-decode';
 import { log } from 'console';
 import { RouterModule, Router } from '@angular/router';
 import { ItemsService } from '../items.service'
+import { Item } from '../components/interfaces/item.model';
+import { ChangeDetectorRef } from '@angular/core';
 
-interface Item {
-  id: string;
-  description: string;
-  title: string;
-  type: string;
-  Author: string;
-  publicationDate: Date;
-  Tags: Array<string>;
-  createdBy: string;
-  ApprovedBy: string;
-  coverImage: string;
-  filePath: string;
-}
+
+
 
 @Component({
   selector: 'app-items-list',
@@ -34,20 +25,21 @@ interface Item {
 
 //@Injectable({ providedIn: 'root' })
 export class ItemsListComponent implements OnInit {
-  public items: Item[] = []; //מערך המוצרים של הספריה
+ public items: Item[] =[]; //מערך המוצרים של הספריה
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
 
   constructor(private http: HttpClient, private apiService: ApiService, private router: Router,private itemsService: ItemsService) {}
 
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
-    await this.getItems();
-    console.log('items: ' + this.items);
-
-    // this.getItems().subscribe(items => {
-    //   this.items = items;
-    // });
+    this.itemsService.getItems().subscribe((items) => {
+      this.itemsService.items = items; // שמור את המערך כמו שהוא
+      console.log('items:', this.items); // בדוק אם המערך תקין
+      console.log('Received items:', this.itemsService.items );
+    });
+ 
   }
+
 
   getUserTypeFromToken(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
@@ -119,7 +111,7 @@ export class ItemsListComponent implements OnInit {
               console.log('i this is the response: ', response);
       
               if (Array.isArray(response)) {
-                this.items = response;
+                this.items = response
               } else {
                 this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
               }
@@ -165,32 +157,7 @@ export class ItemsListComponent implements OnInit {
       });
   }
 
-  // downloadResource(item: Item): void {
-  //   if (!item.filePath) {
-  //     console.error('No file path available for this item.');
-  //     alert('לא נמצא קובץ להורדה.');
-  //     return;
-  //   }
 
-  //   this.http.get(item.filePath, { responseType: 'blob' }).subscribe({
-  //     next: (blob) => {
-  //       const fileExtension = this.getFileExtension(item.filePath) || '';
-  //       const downloadLink = document.createElement('a');
-  //       const url = window.URL.createObjectURL(blob);
-
-  //       downloadLink.href = url;
-  //       downloadLink.download = item.title + fileExtension;
-  //       document.body.appendChild(downloadLink);
-  //       downloadLink.click();
-  //       document.body.removeChild(downloadLink);
-  //       window.URL.revokeObjectURL(url);
-  //     },
-  //     error: (err) => {
-  //       console.error('Error downloading file:', err);
-  //       alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
-  //     },
-  //   });
-  // }
 
   downloadResource(item: Item): void {
     if (!item.id) {
@@ -205,15 +172,11 @@ export class ItemsListComponent implements OnInit {
         `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
           item.filePath
         )}`
-        // `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
-        //   item.filePath
-        // )}&download=true` 
+      
       )
-      // .Read(`/EducationalResource/presigned-url?filePath=${item.filePath}`)
 
       .subscribe({
         next: (response) => {
-          // const presignedUrl = response.presignedUrl;
           const presignedUrl = response.url;
           if (presignedUrl) {
             const downloadLink = document.createElement('a');
@@ -239,6 +202,7 @@ export class ItemsListComponent implements OnInit {
   getFileNameFromPath(filePath: string): string {
     return filePath.split('/').pop() || 'downloaded-file';
   }
+
   addToFavorites(item: Item): void {
     const token = localStorage.getItem('access_token');
     if (!token) {
