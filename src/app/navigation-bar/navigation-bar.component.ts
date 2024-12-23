@@ -27,10 +27,17 @@ export class NavigationBarComponent {
     // אם סוג הפריט הוא "הכל", אין צורך להעביר פרמטר, אחרת נשלח את סוג הפריט המתאים
     if (type === 'all') {
       this.router.navigate(['/items/all']); // עבור כפתור "הכל"
-    } else {
+    } else if (type === 'guests') {
+      this.router.navigate(['/items/guests'], { queryParams: { type: 'מערך' }}); // עבור כפתור "מערכים"
+    } else if (type === 'movies') {
+      this.router.navigate(['/items/movies'], { queryParams: { type: 'סרטון' }}); // עבור כפתור "סרטונים"
+    }else if (type === 'songs') {
+      this.router.navigate(['/items/songs'], { queryParams: { type: 'שיר' }}); // עבור כפתור "שירים"
+    }else if (type === 'books') {
+      this.router.navigate(['/items/books'], { queryParams: { type: 'ספר' }}); // עבור כפתור "ספרים"
+    }else {
       this.router.navigate([`/items/${type}`]); // עבור כל סוג אחר
     }
   }  
-
 
 }
