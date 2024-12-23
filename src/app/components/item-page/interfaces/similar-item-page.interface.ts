@@ -3,5 +3,5 @@ export interface SimilarItem { title: string; filePath: string; // הוספת ה
   coverImage: string; 
   type: string; 
   specializations: string[]; 
-  subject: string[]; 
+  subjects: string[]; 
 }

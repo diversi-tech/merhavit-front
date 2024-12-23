@@ -20,8 +20,8 @@ export class ItemPageComponent implements OnInit {
   isImage = false;
   isAudio = false;
   isVideo = false;
-  isPDF = false;
-  showDocument = false; // ניהול הצגת המסמך
+  isBook = false;
+  isDocument = false; // ניהול הצגת המסמך
 
   constructor(
     private route: ActivatedRoute,
@@ -84,25 +84,30 @@ export class ItemPageComponent implements OnInit {
     } else if (fileType.includes('image') || fileType.includes('תמונה')) {
       this.clearPreviewsExcept('תמונה');
       this.previewUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
-    } else if (fileType.includes('video') || fileType.includes('וידאו')) {
+    } else if (fileType.includes('video') || fileType.includes('סרטון')) {
       this.clearPreviewsExcept('סרטון');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
-    } else if (fileType.includes('pdf') || fileType.includes('קובץ') || fileType.includes('document')) {
-      this.clearPreviewsExcept('מסמך');
+    } else if (fileType.includes('pdf') || fileType.includes('מערך')) {
+      this.clearPreviewsExcept('מערך');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
         
-    } else {
+    } else if (fileType.includes('pdf') || fileType.includes('ספר') || fileType.includes('book')) {
+      this.clearPreviewsExcept('ספר');
+      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
+        
+    }else {
       console.error('Unknown file type:', fileType);
       this.previewUrl = null;
     }
     console.log('Cover image URL:', this.item?.coverImage);
   }
 
-  clearPreviewsExcept(type: 'תמונה' | 'סרטון' | 'מסמך' | 'שיר') {
+  clearPreviewsExcept(type: 'תמונה' | 'סרטון' | 'מערך' | 'ספר' | 'שיר') {
     this.isImage = type === 'תמונה';
     this.isAudio = type === 'שיר';
     this.isVideo = type === 'סרטון';
-    this.isPDF = type === 'מסמך';
+    this.isDocument = type === 'מערך';
+    this.isBook = type === 'ספר';
   }
 
   navigateToItem(itemId: string) {

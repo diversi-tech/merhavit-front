@@ -7,7 +7,7 @@ import { ApiService } from '../api.service';
 // import { log } from 'console';
 import { jwtDecode } from 'jwt-decode';
 import { log } from 'console';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 
 
 interface Item {
@@ -37,16 +37,23 @@ export class ItemsListComponent implements OnInit {
   public items: Item[] = []; //מערך המוצרים של הספריה
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
 
-  constructor(private http: HttpClient, private apiService: ApiService, private router: Router) {}
+  constructor(
+    private http: HttpClient, 
+    private apiService: ApiService, 
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
-    await this.getItems();
-    console.log('items: ' + this.items);
-
-    // this.getItems().subscribe(items => {
-    //   this.items = items;
-    // });
+    this.route.queryParams.subscribe(params => {
+      const type = params['type']; // שימו לב לשם הפרמטר שנשלח ב-URL
+      if (type) {
+        this.filterItems(type);  // נקרא לפונקציה של סינון
+      } else {
+       this.getItems();  // אם לא נבחר סוג, נשלוף את כל הפריטים
+      }
+    });
   }
 
   getUserTypeFromToken(): void {
@@ -66,7 +73,7 @@ export class ItemsListComponent implements OnInit {
     }
   }
 
-  async getItems(page: number = 0, limit: number = 2) {
+  async getItems(page: number = 0, limit: number = 100) {
     console.log('hi');
 
     this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}`).subscribe({
@@ -182,6 +189,21 @@ export class ItemsListComponent implements OnInit {
       });
   }
 
+  filterItems(type: string): void {
+    this.apiService.Read(`/EducationalResource/getAll?type=${type}`).subscribe({
+      next: (response) => {
+        if (Array.isArray(response)) {
+          this.items = response;
+        } else {
+          this.items = response.data || [];
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching filtered items', err);
+      }
+    });
+  }
+  
 
   getFileNameFromPath(filePath: string): string {
     return filePath.split('/').pop() || 'downloaded-file';

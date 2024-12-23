@@ -19,7 +19,7 @@ export interface Item {
   title: string;
   publicationDate: string;
   type: string;
-  subject: string[];
+  subjects: string[];
   ages: string;
   level: string;
   language: string;

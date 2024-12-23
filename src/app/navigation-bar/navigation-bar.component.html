@@ -5,12 +5,12 @@
     </div>
     <ul class="sidebar-menu">
       <li>
-        <a routerLink="/items/all">
+        <a (click)="navigateAndFilter('all')">
           <i class="far fa-calendar-alt"></i> הכל
         </a>
       </li>
       <li>
-        <a routerLink="/items/guests">
+        <a (click)="navigateAndFilter('guests')">
           <i class="fas fa-layer-group"></i> מערכים
         </a>
       </li>
@@ -24,7 +24,7 @@
           ></i>
         </a>
         <ul class="submenu" *ngIf="activeSubMenu === 'images'">
-          <li><a routerLink="/items/images/posters">כרזות</a></li>
+          <li><a (click)="navigateAndFilter('posters')">כרזות</a></li>
           <li><a routerLink="/items/images/worksheets">דפי עבודה</a></li>
           <li><a routerLink="/items/images/illustrations">איורים</a></li>
           <li><a routerLink="/items/images/creations">יצירות</a></li>
@@ -32,17 +32,17 @@
       </li>
       
       <li>
-        <a routerLink="/items/movies">
+        <a (click)="navigateAndFilter('movies')">
           <i class="fas fa-play"></i> סרטונים
         </a>
       </li>
       <li>
-        <a routerLink="/items/songs">
+        <a (click)="navigateAndFilter('songs')">
           <i class="fas fa-music"></i> שירים
         </a>
       </li>
       <li>
-        <a routerLink="/items/books">
+        <a (click)="navigateAndFilter('books')">
           <i class="fas fa-book"></i> ספרים
         </a>
       </li>

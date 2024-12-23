@@ -8,7 +8,7 @@
       <div *ngIf="isVideo">
         <video [src]="previewUrl" controls></video>
       </div>
-      <div *ngIf="isPDF">
+      <div *ngIf="isDocument || isBook">
         <!-- הצגת תמונת הכריכה -->
         <a 
           *ngIf="item?.coverImage" 
@@ -18,7 +18,7 @@
         >
           <img 
             [src]="item.coverImage" 
-            [alt]="'Cover image for ' + (item?.title || 'document')" 
+            [alt]="'Cover image for ' + (item?.title || 'מערך')" 
             class="document-cover-image" 
             style="cursor: pointer; max-width: 100%; height: auto;"
           >
@@ -26,11 +26,9 @@
         <p>לחצי 👆 על הכריכה להצגת המסמך*</p>
       </div>
       
-      
-      
       <div *ngIf="isAudio">
         <!-- הצגת תמונת הכריכה מעל השיר -->
-        <img *ngIf="item?.coverImage" [src]="item.coverImage" [alt]="'Cover image for ' + (item?.title || 'audio')" id="audio-cover-image">
+        <img *ngIf="item?.coverImage" [src]="item.coverImage" [alt]="'Cover image for ' + (item?.title || 'שיר')" id="audio-cover-image">
         <audio [src]="previewUrl" controls></audio>
       </div>
     </ng-container>
@@ -43,7 +41,7 @@
   <div *ngIf="item" class="grid-item item-2 item-details">
     <h1>{{ item?.title || '' }}</h1>
     <p><strong>תאריך פרסום:</strong> {{ item?.publicationDate || '' }}</p>
-    <p><strong>נושא:</strong> {{ item?.subject?.join(', ') || '' }}</p>
+    <p><strong>נושא:</strong> {{ item?.subjects?.join(', ') || '' }}</p>
     <p><strong>גיל:</strong> {{ item?.ages || '' }}</p>
     <p><strong>רמה:</strong> {{ item?.level || '' }}</p>
     <p><strong>שפה:</strong> {{ item?.language || '' }}</p>
@@ -65,12 +63,13 @@
             [src]="getCoverImageSimilarItem(similarItem)" 
             [alt]="similarItem?.title || 'Cover image not found'"
           >
+          <p *ngIf="!similarItem?.coverImage" class="file-not-found">הקובץ לא נמצא</p>
 
           <!-- אייקון מבוסס סוג -->
           <ng-container *ngIf="similarItem.type">
             <!-- אייקון תמונה -->
             <svg 
-              *ngIf="similarItem.type === 'image'" 
+              *ngIf="similarItem.type === 'תמונה'" 
               class="overlay-svg" 
               height="6vh" 
               viewBox="0 -960 960 960" 
@@ -81,7 +80,7 @@
             </svg>
             <!-- אייקון שמע -->
             <svg 
-              *ngIf="similarItem.type === 'audio'" 
+              *ngIf="similarItem.type === 'שיר'" 
               class="overlay-svg" 
               height="6vh" 
               viewBox="0 -960 960 960" 
@@ -93,7 +92,7 @@
 
             <!-- אייקון וידאו -->
             <svg 
-              *ngIf="similarItem.type === 'video'" 
+              *ngIf="similarItem.type === 'סרטון'" 
               class="overlay-svg" 
               height="6vh" 
               viewBox="0 0 24 24" 
@@ -105,7 +104,7 @@
 
             <!-- אייקון מסמך -->
             <svg 
-              *ngIf="similarItem.type === 'document'" 
+              *ngIf="similarItem.type === 'מערך' || similarItem.type === 'ספר'" 
               class="overlay-svg" 
               height="6vh" 
               viewBox="0 0 24 24" 
@@ -116,7 +115,7 @@
             </svg>
           </ng-container>
         </div>
-        <p *ngIf="!similarItem?.coverImage">הקובץ לא נמצא</p>
+        
       </div>
     </div>
   </div>
