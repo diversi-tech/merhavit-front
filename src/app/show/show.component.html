@@ -28,8 +28,8 @@
         <div class="item-title">{{ item.title }}</div>
         <div class="item-description">{{ item.description }}</div>
         <div class="item-meta">
-          <span class="meta-label">מחבר:</span>
-          <span class="meta-value">{{ item.Author }}</span> |
+          <span class="meta-label">מחבר: </span>
+          <span class="meta-value">{{ item.author }}</span> |
           <span class="meta-label">תאריך הוצאה:</span>
           <span class="meta-value">
             {{ item.publicationDate | date: 'dd/MM/yyyy' }}
@@ -39,7 +39,9 @@
     </div>
 
     <!-- הצגת כפתורים לספרנית -->
-    <div class="actions" *ngIf="userType === 'Librarian'">
+    <div class="actions" 
+    *ngIf="['Admin', 'Site Manager', 'Librarian'].includes(userType)"
+    >
       <button class="action-button delete" (click)="deleteResource(item)">
         <i class="far fa-trash-alt"></i>
       </button>
