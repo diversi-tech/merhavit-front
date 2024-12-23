@@ -48,4 +48,12 @@ export class ApiService {
       withCredentials: true,
     });
   }
+
+  ReadWithParams(query: string, params: any): Observable<any> {
+    console.log('query', query)
+    console.log('params', params)
+    let fullpath = serverPath + query;
+    return this.http.get(fullpath, { params, withCredentials: true });
+  }
+  
 }

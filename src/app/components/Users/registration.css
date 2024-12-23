@@ -72,6 +72,13 @@ body {
   background-color: #218838;
 }
 
+/* מצב מושבת לכפתור */
+.submit-button:disabled {
+  background-color: #a9d5ab; /* צבע רקע בהיר יותר */
+  color: #e6e6e6; /* צבע טקסט חיוור */
+  cursor: not-allowed; /* מצביע מתאים */
+}
+
 .error-message {
   color: red;
   font-size: 0.85rem; /* טקסט קטן יותר */
@@ -100,4 +107,22 @@ body {
     font-size: 0.9rem; /* גודל טקסט מותאם */
     padding: 0.5rem;
   }
+}
+
+.error-message {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.error-box {
+  background-color: #F8D7DA;
+  color: #721C24;
+  border: 1px solid #F5C6CB;
+  padding: 0.2rem;
+  border-radius: 0.3125rem; /* 5px */
+  width: 100%;
+  max-width: 25rem; /* 400px */
+  box-sizing: border-box;
+  text-align: center;
 }

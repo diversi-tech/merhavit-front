@@ -19,8 +19,8 @@ interface Item {
   description: string;
   title: string;
   type: string;
-  Author: string;
-  pablicationDate: Date; //pablicationDate
+  author: string;
+  publicationDate: Date; //pablicationDate
   Tags: Array<string>;
   createdBy: string;
   ApprovedBy: string;
@@ -54,16 +54,19 @@ export class ItemsListComponent implements OnInit {
   }
 
   getUserTypeFromToken(): void {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      try {
-        const decodedToken: any = jwtDecode(token);
-        this.userType = decodedToken.userType || '';
-        console.log(this.userType);
-
-      } catch (error) {
-        console.error('Error decoding token:', error);
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          this.userType = decodedToken.userType || '';
+          console.log(this.userType);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
       }
+    } else {
+      console.warn('Code is running on the server. Skipping token check.');
     }
   }
 
@@ -105,7 +108,6 @@ export class ItemsListComponent implements OnInit {
 
 
   deleteResource(itemToDelete: Item) {
-    alert('hiii');
     console.log('Delete item: ', itemToDelete);
     // הוסף כאן את הלוגיקה למחיקת משתמש
 
@@ -149,39 +151,20 @@ export class ItemsListComponent implements OnInit {
       }
     })
   }
-      // downloadResource(item: Item): void {
-      //   if (!item.filePath) {
-      //     console.error('No file path available for this item.');
-      //     alert('לא נמצא קובץ להורדה.');
-      //     return;
-      //   }
-
-      //   this.http.get(item.filePath, { responseType: 'blob' }).subscribe({
-      //     next: (blob) => {
-      //       const fileExtension = this.getFileExtension(item.filePath) || '';
-      //       const downloadLink = document.createElement('a');
-      //       const url = window.URL.createObjectURL(blob);
-
-      //       downloadLink.href = url;
-      //       downloadLink.download = item.title + fileExtension;
-      //       document.body.appendChild(downloadLink);
-      //       downloadLink.click();
-      //       document.body.removeChild(downloadLink);
-      //       window.URL.revokeObjectURL(url);
-      //     },
-      //     error: (err) => {
-      //       console.error('Error downloading file:', err);
-      //       alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
-      //     },
-      //   });
-      // }
 
       downloadResource(item: Item): void {
         if(!item._id) {
       console.error('Item ID is missing.');
-      alert('לא ניתן להוריד את הקובץ.');
+      alert('לא ניתן להוריד את הקובץ. חסר ID');
       return;
     }
+
+    if (!item.filePath) {
+      console.error('File path is missing.');
+      alert('לא ניתן להוריד את הקובץ. חסר ניתוב');
+      return;
+    }
+    
     console.log('item.filePath', item.filePath);
 
     this.apiService
@@ -189,26 +172,40 @@ export class ItemsListComponent implements OnInit {
         `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
           item.filePath
         )}`
+        // `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
+        //   item.filePath
+        // )}&download=true` 
       )
       // .Read(`/EducationalResource/presigned-url?filePath=${item.filePath}`)
 
       .subscribe({
         next: (response) => {
-          // const presignedUrl = response.presignedUrl;
           const presignedUrl = response.url;
-          if (presignedUrl) {
+          if (response && response.url) {
             const downloadLink = document.createElement('a');
-            downloadLink.href = presignedUrl;
-            downloadLink.download = this.getFileNameFromPath(item.filePath); // קביעת שם הקובץ להורדה
-            downloadLink.style.display = 'none';
-
+            downloadLink.href = response.url;
+            downloadLink.download = item.title; // אפשר להוסיף כאן סיומת אם יש צורך
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
           } else {
-            alert('שגיאה בקבלת הקישור להורדה.');
+            console.error('Invalid response for download URL.');
+            alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
           }
         },
+        //   if (presignedUrl) {
+        //     const downloadLink = document.createElement('a');
+        //     downloadLink.href = presignedUrl;
+        //     downloadLink.download = this.getFileNameFromPath(item.filePath); // קביעת שם הקובץ להורדה
+        //     downloadLink.style.display = 'none';
+
+        //     document.body.appendChild(downloadLink);
+        //     downloadLink.click();
+        //     document.body.removeChild(downloadLink);
+        //   } else {
+        //     alert('שגיאה בקבלת הקישור להורדה.');
+        //   }
+        // },
         error: (err) => {
           console.error('Error fetching presigned URL:', err);
           alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
