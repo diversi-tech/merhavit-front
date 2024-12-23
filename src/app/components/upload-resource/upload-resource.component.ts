@@ -23,6 +23,7 @@ import { transliterate } from 'transliteration';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
+import { Router, RouterModule } from '@angular/router';
 
 
 
@@ -35,7 +36,7 @@ import Swal from 'sweetalert2';
   standalone: true,
   imports: [CommonModule,FormsModule,ReactiveFormsModule,MatChipsModule, MatAutocompleteModule, 
     MatFormFieldModule, MatInputModule,MatIconModule,OverlayModule,MatAutocompleteModule, 
-    MatButtonModule,MatRadioModule,QuillModule],
+    MatButtonModule,MatRadioModule,QuillModule,RouterModule],
   templateUrl: './upload-resource.component.html',
   styleUrls: ['./upload-resource.component.css']
 })
@@ -71,6 +72,8 @@ export class UploadResourceComponent
   
   levels:Array<string>=["נמוכה","גבוהה"];
   languages:Array<string>=["אנגלית","עברית"];
+  isSubmitting = false;//שמירת המצב האם לחצו על שלח או לא
+
   
   multipleChoiceFields:{ //מפה לשמירת המשתנים לכל שדה שיש בו בחירה מרובה מתוך רשימה
     [key: string]: {
@@ -114,7 +117,7 @@ export class UploadResourceComponent
   
   
 
-  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer,private apiService:ApiService,private dialog: MatDialog,private snackBar: MatSnackBar) {
+  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer,private apiService:ApiService,private dialog: MatDialog,private snackBar: MatSnackBar,private router: Router) {
     // יצירת טופס
     this.fileForm = this.fb.group({
       title: ['', Validators.required],
@@ -475,6 +478,7 @@ export class UploadResourceComponent
 
   onSubmit() :void
   {
+    this.isSubmitting = true;
     console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
     this.getUserIdFromToken();
     if(this.content && !this.file)
@@ -535,6 +539,8 @@ export class UploadResourceComponent
             
             },
             });
+            this.isSubmitting = false;
+            this.router.navigate(['/show-details']);
           },
           error: (err) =>  
           {
@@ -553,11 +559,14 @@ export class UploadResourceComponent
             
             },
             });
+            this.isSubmitting = false;
+
           },
         });
         this.formErrorMessage=null;
   }else{
     console.log("טופס לא תקין");
+    this.isSubmitting = false;
     this.formErrorMessage="טופס לא תקין. אנא וודאי שכל השדות מלאים"
   }
   

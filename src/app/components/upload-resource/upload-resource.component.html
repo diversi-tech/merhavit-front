@@ -43,7 +43,7 @@
     </div>
   </div>
   <div *ngIf="formMode=='edit'">
-    <quill-editor [(ngModel)]="content" theme="snow" [modules]="editorModules" (change)="onEditFileSelected"></quill-editor>
+    <quill-editor [(ngModel)]="content" theme="snow" [modules]="editorModules" (onContentChanged)="onEditFileSelected()"></quill-editor>
   </div>
   <div *ngIf="formMode=='addLink'">
     <div class="link-input-container">
@@ -287,7 +287,9 @@
       </div>
        <div *ngIf="formErrorMessage" class="error-message">{{formErrorMessage}}</div>
       <!-- כפתור שליחה -->
-      <button type="submit">שלח</button>
+      <button type="submit" (click)="onSubmit()" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'שולח...' : 'שלח' }}
+      </button>
   </form>
 
   </div>
