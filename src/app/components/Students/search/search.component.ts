@@ -1,8 +1,10 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router'; // ייבוא Router
+import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router'; // ייבוא Router
 import { jwtDecode } from 'jwt-decode';
+import { filter } from 'rxjs/operators'; // ייבוא filter
+
 
 @Component({
   selector: 'app-search',
@@ -17,11 +19,18 @@ export class SearchComponent {
   showDetails: boolean = false;
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public firstName: string = ''; // משתנה לשם פרטי (אות ראשונה)
+  isUserManagementComponent = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.extractUserDetailsFromToken(); // קריאה לפונקציה בעת טעינת הרכיב
+    this.checkIfUserManagementRoute(); // בדיקה אם הנתיב הוא user-management
+      // האזנה לשינויים בנתיב
+      this.router.events.pipe(filter((event:any) => event instanceof NavigationEnd)).subscribe(() => {
+        this.checkIfUserManagementRoute(); // בדיקה מחדש בכל שינוי ניווט
+      });
+
   }
 
   // פענוח ה-JWT וקבלת האות הראשונה של השם
@@ -44,12 +53,15 @@ export class SearchComponent {
       console.warn('localStorage is not available');
     }
   }
+  private checkIfUserManagementRoute(): void {
+    const currentUrl = this.router.url; // מקבל את ה-URL הנוכחי
+    this.isUserManagementComponent = currentUrl.includes('/user-management');
+  }
 
   // פונקציה להצגת אפשרויות
   toggleFilterOptions() {
     this.showFilterOptions = !this.showFilterOptions;
   }
-
 
   // פונקציה לטיפול בשינוי סוג קובץ
   onFilterChange(event: any) {
@@ -85,20 +97,27 @@ export class SearchComponent {
     localStorage.removeItem('access_token'); // הסרת ה-token
     this.router.navigate(['/welcome']); // ניווט לעמוד welcome
   }
-    
+
   @HostListener('document:click', ['$event.target'])
   onDocumentClick(target: HTMLElement) {
-    const dropdownContainer = document.querySelector('.dropdown-container') as HTMLElement;
-    const filterDetailsBox = document.querySelector('.filter-details-box') as HTMLElement;
+    const dropdownContainer = document.querySelector(
+      '.dropdown-container'
+    ) as HTMLElement;
+    const filterDetailsBox = document.querySelector(
+      '.filter-details-box'
+    ) as HTMLElement;
 
     // בדיקה אם הלחיצה הייתה מחוץ לאזור התפריט או הסינון
     if (dropdownContainer && !dropdownContainer.contains(target)) {
       this.showFilterOptions = false;
     }
 
-    if (filterDetailsBox && !filterDetailsBox.contains(target) && !target.classList.contains('fa-filter')) {
+    if (
+      filterDetailsBox &&
+      !filterDetailsBox.contains(target) &&
+      !target.classList.contains('fa-filter')
+    ) {
       this.showDetails = false;
     }
   }
- 
 }
