@@ -1,9 +1,11 @@
   
+
+<!-- הצגת רשימת הפריטים -->
   <div class="table-container" style="direction: rtl">
     <div class="row" *ngFor="let item of items" (click)="navigateToItemPage(item._id)">
       <div class="item-content" >
         <img
-          [src]="item.coverImage || 'assets/default-image.png'"
+        [src]="item.coverImage || 'image/file-not-found'"
           alt="Item Image"
           class="item-image"
         />
@@ -14,9 +16,9 @@
             <span class="meta-label">מחבר:</span>
             <span class="meta-value">{{ item.author }}</span> |
             <span class="meta-label">תאריך הוצאה:</span>
-            <span class="meta-value">{{
-              item.publicationDate | date : "dd/MM/yyyy"
-            }}</span>
+          <span class="meta-value">
+            {{ item.publicationDate | date: 'dd/MM/yyyy' }}
+          </span>
           </div>
         </div>
       </div>
@@ -40,7 +42,8 @@
       >
         <i class="far fa-heart"></i>
       </button>
-      <!-- כפתורים להורדה עבור Article, Video, Scanned Document -->
+      
+      <!-- כפתורים להורדה עבור סוגי פריטים מסוימים -->
       <button
         class="action-button download"
         *ngIf="
@@ -54,7 +57,7 @@
         <i class="fas fa-download"></i>
       </button>
 
-      <!-- כפתור להזמנה עבור Book -->
+      <!-- כפתור להזמנה עבור ספרים -->
       <button
         class="action-button order"
         *ngIf="item.type === 'ספר'"

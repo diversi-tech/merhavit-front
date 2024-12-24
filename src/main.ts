@@ -8,13 +8,14 @@ import { authInterceptor } from './app/auth.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
+
 bootstrapApplication(AppComponent, {
   providers: [
    // importProvidersFrom(RouterModule.forRoot(routes)) ,
     provideRouter(routes, withHashLocation()), // שימוש ב-HashLocationStrategy
 
     provideHttpClient(withInterceptors([authInterceptor])), // רישום ה-Interceptor
-    provideAnimations(),provideAnimationsAsync(),
+    provideAnimations(), provideAnimationsAsync(),
     // הגדרת הנתיבים
   ],
 })

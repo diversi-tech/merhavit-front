@@ -18,9 +18,7 @@ export class SearchComponent {
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public firstName: string = ''; // משתנה לשם פרטי (אות ראשונה)
 
-  constructor(private router: Router) {
-    console.log('Token:', localStorage.getItem('access_token'));
-  }
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.extractUserDetailsFromToken(); // קריאה לפונקציה בעת טעינת הרכיב
@@ -28,18 +26,22 @@ export class SearchComponent {
 
   // פענוח ה-JWT וקבלת האות הראשונה של השם
   extractUserDetailsFromToken(): void {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      try {
-        const decodedToken: any = jwtDecode(token);
-        const firstName = decodedToken.firstName || ''; // שים לב שהשדה הזה צריך להתאים לשם במבנה ה-token
-        this.firstName = firstName.charAt(0).toUpperCase(); // קבלת האות הראשונה
-        console.log('First Name Initial:',firstName);
-      } catch (error) {
-        console.error('Error decoding token:', error);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          const firstName = decodedToken.firstName || ''; // שים לב שהשדה הזה צריך להתאים לשם במבנה ה-token
+          this.firstName = firstName.charAt(0).toUpperCase(); // קבלת האות הראשונה
+          console.log('First Name Initial:', firstName);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
+      } else {
+        console.error('Token not found in localStorage');
       }
     } else {
-      console.error('Token not found in localStorage');
+      console.warn('localStorage is not available');
     }
   }
 

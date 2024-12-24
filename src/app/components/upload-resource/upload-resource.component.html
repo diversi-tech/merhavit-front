@@ -5,17 +5,20 @@
   aria-labelledby="example-radio-group-label"
   class="example-radio-group"
   [(ngModel)]="formMode">
-    <mat-radio-button class="example-radio-button" [value]="'edit'">עריכת תוכן</mat-radio-button>
-    <mat-radio-button class="example-radio-button" [value]="'add'">העלאת תוכן </mat-radio-button>
-    <mat-radio-button class="example-radio-button" [value]="'addLink'">קישורים</mat-radio-button>
+    <mat-radio-button class="example-radio-button" [value]="'edit'" (click)="handleClick($event,'edit')">עריכת תוכן</mat-radio-button>
+    <mat-radio-button class="example-radio-button" [value]="'add'" (click)="handleClick($event,'add')">העלאת תוכן </mat-radio-button>
+    <mat-radio-button class="example-radio-button" [value]="'addLink'" (click)="handleClick($event,'addLink')">קישורים</mat-radio-button>
 </mat-radio-group>
-
+<div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 <div class="container">
 
 
   <!-- העלאת קובץ -->
   <div class="image-container">
     <div *ngIf="formMode=='add'">
+      <div *ngIf="file">
+        <button (click)="removeSelectedFile()">X</button>
+      </div>
     <div *ngIf="isVideo">
       <video [src]="previewImage"></video>
     </div>
@@ -40,7 +43,7 @@
     </div>
   </div>
   <div *ngIf="formMode=='edit'">
-    <quill-editor [(ngModel)]="content" theme="snow" [modules]="editorModules"></quill-editor>
+    <quill-editor [(ngModel)]="content" theme="snow" [modules]="editorModules" (onContentChanged)="onEditFileSelected()"></quill-editor>
   </div>
   <div *ngIf="formMode=='addLink'">
     <div class="link-input-container">
@@ -63,7 +66,7 @@
   </div>
 
   <!-- העלאת תמונה -->
-  <div *ngIf="isNotImage" class="image-container" >
+  <div *ngIf="!isImage" class="image-container" >
     <img [src]="displayImage" alt="תמונת שער"/>
     
     <div class="upload-overlay">
@@ -92,7 +95,7 @@
           <label for="publicationDate">תאריך העלאה</label>
           <input class="input_fields" type="date" id="publicationDate" formControlName="publicationDate" [placeholder]="formMode === 'edit' ? fileForm.get('publicationDate')?.value : 'הכנס כותרת'"/>
         </div>
-        <div class="form-group">
+        <div class="form-group" *ngIf="formMode!='edit'">
           <label for="type">סוג קובץ</label>
           <select class="input_fields" id="type" formControlName="type" (change)="onFileTypeChange($event)  ">
             <option  *ngFor="let type of fileTypes" [value]="fileForm.get('type')?.value">{{ type }}</option>
@@ -290,9 +293,11 @@
           <textarea class="input_fields" id="description" rows="4" formControlName="description" [placeholder]="formMode === 'edit' ? fileForm.get('description')?.value : 'הכנס כותרת'"></textarea>
         </div>
       </div>
-
+       <div *ngIf="formErrorMessage" class="error-message">{{formErrorMessage}}</div>
       <!-- כפתור שליחה -->
-      <button type="submit">שלח</button>
+      <button type="submit" (click)="onSubmit()" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'שולח...' : 'שלח' }}
+      </button>
   </form>
 
   </div>

@@ -13,15 +13,25 @@
     margin-bottom: 5px;
   }
   
-  .ql-container {
+  /* .ql-container {
     display: none !important;
     min-height: 100px;
     overflow-y: auto;
-  }
+  } */
   
   .ql-editor {
+    width: 100% ;
     min-height: 100px;
     padding: 10px;
+    text-align: start; /* מתאים את הכיוון לפי השפה */
+    direction: auto; /* מזהה אוטומטית את הכיוון */
+
+  }
+
+  quill-editor {
+    width: 100%;
   }
 
   
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

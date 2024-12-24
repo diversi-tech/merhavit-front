@@ -1,10 +1,11 @@
 import { Component, Injectable, OnInit } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+// import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
-import { log } from 'console';
+// import { log } from 'console';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
@@ -12,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar'; // ייבוא MatSnac
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 import { jwtDecode } from 'jwt-decode';
-
+import { RouterModule, Router , ActivatedRoute } from '@angular/router';
 
 interface Item {
   _id: string;
@@ -42,8 +43,9 @@ export class ItemsListComponent implements OnInit {
   public items: Item[] = []; //מערך המוצרים של הספריה 
   public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
+  public allItems: Item[] = []; // מערך המכיל את כל הפריטים
 
-  constructor(public dialog: MatDialog, private ro: Router, private http: HttpClient, private apiService: ApiService, private router: Router, private snackBar: MatSnackBar // הוספת MatSnackBar לקונסטרוקטור
+  constructor( private route: ActivatedRoute,public dialog: MatDialog, private ro: Router, private http: HttpClient, private apiService: ApiService, private router: Router, private snackBar: MatSnackBar // הוספת MatSnackBar לקונסטרוקטור
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -90,7 +92,7 @@ export class ItemsListComponent implements OnInit {
         
       },
       error: (err) => {
-        console.error('Error fetching items', err);
+        console.error('Error fetching all items', err);
       },
 
     });
@@ -167,19 +169,8 @@ export class ItemsListComponent implements OnInit {
       return;
     }
     
-    console.log('item.filePath', item.filePath);
-
     this.apiService
-      .Read(
-        `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
-          item.filePath
-        )}`
-        // `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
-        //   item.filePath
-        // )}&download=true` 
-      )
-      // .Read(`/EducationalResource/presigned-url?filePath=${item.filePath}`)
-
+      .Read(`/EducationalResource/presigned-url?filePath=${encodeURIComponent(item.filePath)}`)
       .subscribe({
         next: (response) => {
           const presignedUrl = response.url;
@@ -195,19 +186,6 @@ export class ItemsListComponent implements OnInit {
             alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
           }
         },
-        //   if (presignedUrl) {
-        //     const downloadLink = document.createElement('a');
-        //     downloadLink.href = presignedUrl;
-        //     downloadLink.download = this.getFileNameFromPath(item.filePath); // קביעת שם הקובץ להורדה
-        //     downloadLink.style.display = 'none';
-
-        //     document.body.appendChild(downloadLink);
-        //     downloadLink.click();
-        //     document.body.removeChild(downloadLink);
-        //   } else {
-        //     alert('שגיאה בקבלת הקישור להורדה.');
-        //   }
-        // },
         error: (err) => {
           console.error('Error fetching presigned URL:', err);
           alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
@@ -216,9 +194,15 @@ export class ItemsListComponent implements OnInit {
 
   }
 
+  filterItemsByType(type: string): void {
+    console.log('Filtering items by type:', type);
+    this.items = this.allItems.filter((item: Item) => item.type === type);
+    console.log('Filtered items:', this.items);
+  }
 
   getFileNameFromPath(filePath: string): string {
     return filePath.split('/').pop() || 'downloaded-file';}
+
     addToFavorites(item: Item): void {
       const token = localStorage.getItem('access_token');
       if(!token) {
@@ -229,35 +213,35 @@ export class ItemsListComponent implements OnInit {
 
     try {
       const decodedToken: any = jwtDecode(token);
-      const userId = decodedToken.idNumber; // נניח שה-`id` של המשתמש נמצא בטוקן
+      const userId = decodedToken.idNumber;
       const requestData = {
         userId: userId,
         itemId: item._id,
       };
     
-      console.log('Request Data:', requestData);
-
-    this.apiService.Post('/favorites/add', requestData).subscribe({
-      next: (response) => {
-        console.log('Item added to favorites:', response);
-        alert('המוצר נוסף למועדפים בהצלחה!');
-      },
-      error: (err) => {
-        console.error('Error adding item to favorites:', err);
-        alert('שגיאה בהוספת המוצר למועדפים. אנא נסה שוב.');
-      },
-    });
-  } catch(error) {
-    console.error('Error decoding token:', error);
-    alert('שגיאה באימות המשתמש.');
+      this.apiService.Post('/favorites/add', requestData).subscribe({
+        next: (response) => {
+          console.log('Item added to favorites:', response);
+          alert('המוצר נוסף למועדפים בהצלחה!');
+        },
+        error: (err) => {
+          console.error('Error adding item to favorites:', err);
+          alert('שגיאה בהוספת המוצר למועדפים. אנא נסה שוב.');
+        },
+      });
+    } catch(error) {
+      console.error('Error decoding token:', error);
+      alert('שגיאה באימות המשתמש.');
+    }
   }
-}
-getFileExtension(filePath: string): string | null {
-  const match = filePath.match(/\.[0-9a-z]+$/i);
-  return match ? match[0] : null;
-}
-//הוספת לוגיקת דפדוף
-currentPage: number = 0;
+
+  getFileExtension(filePath: string): string | null {
+    const match = filePath.match(/\.[0-9a-z]+$/i);
+    return match ? match[0] : null;
+  }
+
+  // הוספת לוגיקת דפדוף
+  currentPage: number = 0;
 
 nextPage() {
   this.currentPage++;
@@ -272,7 +256,7 @@ previousPage() {
 
 }
 
- navigateToItemPage(itemId: string): void {
+  navigateToItemPage(itemId: string): void {
     this.router.navigate([`/item-page/${itemId}`]);
   }
 }

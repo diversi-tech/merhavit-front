@@ -71,29 +71,6 @@
 
 }
 
-.role-menu {
-  position: absolute;
-  background-color: white;
-  border: 1px solid #ccc;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-top: 5px;
-}
-
-.role-menu button {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  padding: 5px 10px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.role-menu button:hover {
-  background-color: #f0f0f0;
-}
 .confirmation-dialog {
   position: fixed;
   top: 50%;
@@ -144,4 +121,48 @@
 .dialog-content button.cancel:hover {
   background: #5a6268; /* צבע כהה יותר בעת ריחוף */
 }
+/* עיצוב התפריט של בחירת התפקידים */
+.role-menu {
+  position: absolute;
+  background-color: #ffffff;
+  border: 0.1rem solid #ccc;
+  border-radius: 0.3rem;
+  box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  margin-top: 0.5rem; /* מרווח קטן מתחת לכפתור */
+  padding: 0;
+  list-style: none;
+  width: 12rem; /* רוחב מותאם */
+  right: 0; /* מיושר לימין */
+}
 
+/* עיצוב הכפתורים בתוך התפריט */
+.role-menu button {
+  display: block;
+  width: 100%;
+  padding: 0.8rem; /* גודל מותאם */
+  text-align: right; /* יישור לימין */
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  transition: background-color 0.2s ease-in-out;
+  direction: rtl;
+}
+
+/* אפקט ריחוף על כפתורים */
+.role-menu button:hover {
+  background-color: #f0f0f0; /* אפור עדין */
+}
+
+/* פס מפריד בין תפקידים */
+.role-menu button:not(:last-child) {
+  border-bottom: 0.1rem solid #ddd;
+}
+
+/* מיקום התפריט מתחת לתפקיד */
+.user-actions {
+  position: relative;
+}
