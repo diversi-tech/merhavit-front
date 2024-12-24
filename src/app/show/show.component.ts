@@ -66,7 +66,7 @@ export class ItemsListComponent implements OnInit {
     }
   }
 
-  async getItems(page: number = 0, limit: number = 2) {
+  async getItems(page: number = 0, limit: number = 100) {
     console.log('hi');
 
     this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}`).subscribe({
