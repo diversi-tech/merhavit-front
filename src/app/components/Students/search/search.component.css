@@ -104,76 +104,6 @@
   text-align: right;
 }
 
-.filter-details-container {
-  position: absolute;
-  top: 7vh;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 0.5rem;
-  width: 90%;
-  max-width: 30rem;
-}
-
-.filter-row {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1vh;
-}
-
-.filter-row label {
-  font-size: 1rem;
-  margin-bottom: 0.5vh;
-}
-
-.filter-row input {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.3rem;
-}
-
-.filter-details-box {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1vw;
-}
-
-.filter-column {
-  flex: 1 1 45%;
-  min-width: 20vw;
-}
-
-.search-bar-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #f3f7fd;
-  padding: 1vh;
-  height: 8vh;
-}
-
-.top-icons {
-  display: flex;
-  gap: 0.5vw; /* הקטנת המרווח בין האייקונים */
-}
-
-.icon {
-  width: 2vw; /* הקטנת רוחב האייקון */
-  height: 4vh; /* הקטנת גובה האייקון */
-  cursor: pointer;
-}
-/* 
-.user-icon {
-  background-color: #27c95a;
-  border-radius: 50%;
-  padding: 0.3vh;
-} */
-
 .white-box {
   display: flex;
   align-items: center;
@@ -223,9 +153,7 @@
   margin-right: 1vw; /* רווח קטן מימין */
 }
 
-/* .upload-button:hover { */
-  /* background-color: #008000; ירוק כהה */
-/* } */
+
 .top-icons {
   display: flex;
   align-items: center;

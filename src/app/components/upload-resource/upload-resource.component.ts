@@ -1,24 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component,ViewEncapsulation, computed, ElementRef, inject, model, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { map, Observable, startWith } from 'rxjs';
 import { ApiService } from '../../api.service';
-import { title } from 'process';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatIconModule } from '@angular/material/icon';
-import { Overlay, OverlayModule, OverlayPositionBuilder } from '@angular/cdk/overlay';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { DialogComponent } from '../dialog/dialog.component';
 import {MatRadioModule} from '@angular/material/radio';
 import { QuillModule } from 'ngx-quill';
-import Quill from 'quill'; // Import Quill
 import { transliterate } from 'transliteration';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { jwtDecode } from 'jwt-decode';
@@ -45,10 +42,11 @@ export class UploadResourceComponent
   fileForm: FormGroup;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
-  formMode: string='edit';//שמירת מצב הטופס לפי סוג הקובץ המוכנס לתוכו
+  formMode:string='add'
+  contentOption: string='';//שמירת מצב הטופס לפי סוג הקובץ המוכנס לתוכו
   errorMessage: string | null = null;//הודעת שגיאה לכפתור רדיו
   formErrorMessage:string|null=null;//הודעת שגיאה לטופס חסר שדות חובה
-
+//שמירה באיזה מצב של הטופס מילאו ערך
   disabledOptions: Record<string, boolean> = {
     edit: false,
     add: false,
@@ -68,7 +66,7 @@ export class UploadResourceComponent
   isAudio:boolean=false
   fileTypes:Array<string>= ["ספר","סרטון","שיר","מערך","תמונה"];
   userId:string=''
-  purchaseLocations:Array<string>=["חנות אונליין"];
+  // purchaseLocations:Array<string>=["חנות אונליין"];
   
   levels:Array<string>=["נמוכה","גבוהה"];
   languages:Array<string>=["אנגלית","עברית"];
@@ -140,8 +138,8 @@ export class UploadResourceComponent
       tags:this.fb.array([[]])
       
     });
-    this.getTags();
-
+    this.getTags(); //יבוא תגיות מטבלת התגיות במסד הנתונים
+//
     Object.entries(this.multipleChoiceFields).forEach(([key, value]) => {
       value.filteredOption$ = value.Ctrl.valueChanges.pipe(
         startWith(''),
@@ -150,6 +148,22 @@ export class UploadResourceComponent
     });
   }
 
+  //פונקציה שמחזירה האם הערך שהתקבל מופיע ברשימה הכוללת
+  private _filter(value: any,fieldKey:string): any[] {
+    const field=this.multipleChoiceFields[fieldKey]  
+    const filterValue = value.toLowerCase();
+
+    return field.allOption.filter(option => {
+    if (typeof option === 'string') {
+      return option.toLowerCase().includes(filterValue);
+    } else if (typeof option === 'object' && option.name) {
+      return option.name.toLowerCase().includes(filterValue);
+    }
+    return false;
+  });
+ }
+
+ //מאתחלת את כל הערכים של בחירה מרובה בטופס לריקים
   ngOnInit(): void {
     Object.keys(this.multipleChoiceFields).forEach((key)=>{
       const Array = this.fileForm.get(key) as FormArray;
@@ -162,6 +176,7 @@ export class UploadResourceComponent
     
   }
 
+  //חסימת אפשרות להעלאת כמה סוגי קבצים
   handleClick(event:Event,option: string): void {
     const modeAble= Object.keys(this.disabledOptions).find(k=>this.disabledOptions[k])
     if (!this.disabledOptions[option] && modeAble) {
@@ -185,6 +200,7 @@ export class UploadResourceComponent
     return labels[option] || option;
   }
 
+  //פונקציה לכפתורי עיצוב בסרגל עיצוב
   editorModules = {
     toolbar: [
       ['bold', 'italic', 'underline'], // עיצוב בסיסי
@@ -202,6 +218,7 @@ export class UploadResourceComponent
     }
   }
 
+//בעת הדבקת קישור
   onLinkChange() {
     // ולידציה בסיסית לקישור
     const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
@@ -211,25 +228,7 @@ export class UploadResourceComponent
     this.errorMessage= this.disabledOptions['addLink']?null:this.errorMessage;
   }
 
-
-
-  private _filter(value: any,fieldKey:string): any[] {
-    const field=this.multipleChoiceFields[fieldKey]  
-    const filterValue = value.toLowerCase();
-
-    return field.allOption.filter(option => {
-    if (typeof option === 'string') {
-      return option.toLowerCase().includes(filterValue);
-    } else if (typeof option === 'object' && option.name) {
-      return option.name.toLowerCase().includes(filterValue);
-    }
-    return false;
-  });
-
-  }
-
-  
-
+  //בעת בחירת קובץ ממחשב
   onFileSelected(event: Event): void 
   {
     const input = event.target as HTMLInputElement;
@@ -270,6 +269,7 @@ export class UploadResourceComponent
       this.disabledOptions['add']=this.file? true:false 
   }
 
+  //מחיקת הקובץ הנבחר
   removeSelectedFile()
   {
     debugger
@@ -279,11 +279,13 @@ export class UploadResourceComponent
     this.disabledOptions['add']=this.file? true:false
   }
 
+  //בעת שינוי סוג קובץ
   onFileTypeChange(event: Event): void {
     const selectedType = (event.target as HTMLSelectElement).value;
-    this.isImage = selectedType == 'תמונה';
+    this.isImage = selectedType == 'תמונה';//עידכון האם מדובר בתמונה כדי לדעת האם נדרש תמונת שער
   }
 
+  //בעת בחירת תמונת שער
   onImageSelected(event: Event): void 
   {
     const input = event.target as HTMLInputElement;
@@ -300,6 +302,7 @@ export class UploadResourceComponent
       }
     }
 
+    //שמירה איזה סוג קובץ נבחר
   clearPreviewsExcept(type: 'image' | 'video' | 'document' | 'audio') {
     this.isImage = type === 'image' ? true : false;
     this.isVideo = type === 'video' ? true : false;
@@ -307,11 +310,13 @@ export class UploadResourceComponent
     this.isAudio = type === 'audio' ? true : false;
   }
 
+  //כאשר מקלידים באפשרות עריכת תוכן
   onEditFileSelected()
   {
-    this.disabledOptions['edit']= this.content? true:false
+    this.disabledOptions['edit']= this.content? true:false//חסימה של שאר האפשרויות
   }
 
+  //יצירת קובץ HTML המכיל את התוכן שהמשתמש הקליד
   createTextFile():File
   {
     console.log("content",this.content);
@@ -320,18 +325,19 @@ export class UploadResourceComponent
   tempDiv.innerHTML = this.content;
   // החזרת התוכן כטקסט רגיל (ללא תגיות)
    const text=tempDiv.textContent || tempDiv.innerText || '';
-    const lines = text.split('</p>').map(line => line.trim());
+    const lines = text.split('</p>').map(line => line.trim());//חלוקה לשורות
     const firstLine = lines.find(line => this.isValidText(line) && line !== '');
     console.log("first line",firstLine);
 
     // הגדרת שם הקובץ
-    const fileName = firstLine ? `${firstLine}.html` : 'default.html';
+    const fileName = firstLine ? `${firstLine}.html` : 'default.html';//שם הקובץ לפי השורה הראשונ
     this.fileForm.patchValue({ type: 'טקסט' }); // הגדרת ערך ברירת מחדל
     this.updateTypeValidator(false); // הסרת הוולידטור
     
     return new File([this.content], fileName, { type: 'text/html' });//קובץ HTML שמכיל את התוכן בפורמט HTML 
   }
 
+  //סוג 'טקסט' כאשר הקלידו ב'עריכת תוכן' ק
   updateTypeValidator(isRequired: boolean): void {
     const typeControl = this.fileForm.get('type');
     if (isRequired) {
@@ -342,13 +348,14 @@ export class UploadResourceComponent
     typeControl?.updateValueAndValidity();
   }
 
-  // פונקציה לבדיקת האם השורה היא תמונה (למשל תמונה ב-BBCode או Markdown)
+  // פונקציה לבדיקת האם השורה היא מילים בלבד 
   private isValidText(line: string): boolean {
     // בודק אם השורה מכילה רק תווים תקינים (אותיות, מספרים, רווחים וסימנים מסוימים)
     const validTextRegex = /^[a-zA-Zא-ת0-9\s.,!?'"()-]+$/;
     return validTextRegex.test(line);
   }
 
+  //הוספת ערך בשדה בחירה מרובה
   add(event: MatChipInputEvent,fieldKey:string): void {
     const value = (event.value || '').trim();
     console.log("val: "+value);
@@ -365,6 +372,7 @@ export class UploadResourceComponent
   field.Ctrl.setValue('');
   }
 
+  //הסרת ערך משדה בחירה מרובה
   remove(option: string,fieldKey:string): void 
   {
     const field=this.multipleChoiceFields[fieldKey]
@@ -377,7 +385,7 @@ export class UploadResourceComponent
   }
   }
 
-
+//בחירת ערך מרשימה לשדה בחירה מרובה
   select(event: MatAutocompleteSelectedEvent,fieldKey:string): void {
     const value = event.option.value.trim(); // השתמשי ב-option.value במקום ב-viewValue
     const field=this.multipleChoiceFields[fieldKey]
@@ -398,6 +406,7 @@ export class UploadResourceComponent
     field.Ctrl.setValue('');    
   }
   
+  //יבוא תגיות מטבלת תגיות
   getTags()
   {
     this.apiService.Read('/Tag').subscribe({
@@ -416,11 +425,13 @@ export class UploadResourceComponent
       });
   }
 
+  //קבלת שם התגית לפי ה_id שלה
   getTagById(tagId:string)
   {
     return this.multipleChoiceFields['tags'].allOption.find(opt=> opt._id===tagId).name
   }
 
+  //חלון דיאלוג להוספת נושא נוסף
   openDialog() {
     const dialogRef = this.dialog.open(DialogComponent, {
       width: '400px',
@@ -437,6 +448,7 @@ export class UploadResourceComponent
     });
   }
 
+  //שינוי לשם טוב באנגלית 
   sanitizeFileName(originalName:string) {
     // תעתוק האותיות לשם באנגלית
     let nameWithoutExtension = originalName.replace(/\.[^/.]+$/, ''); // הסרת הסיומת
@@ -449,10 +461,12 @@ export class UploadResourceComponent
     return sanitized + '.' + extension;
   }
 
+  //שינוי שם לקובץ
   renameFile(file: File): File {
     return new File([file], this.sanitizeFileName(file.name), { type: file.type });
   }
 
+  //החזרת הערך להכנסה למסד נתונים לפי מצב הטופס 
   getContentOption(option:string)
   {
      const options :Record<string, string>={
@@ -463,6 +477,7 @@ export class UploadResourceComponent
      return options[option]
   }
 
+  //קבלת _ID של המשתמש הנוכחי
   getUserIdFromToken(): void {
     const token = localStorage.getItem('access_token');
     if (token) {
@@ -476,45 +491,44 @@ export class UploadResourceComponent
     }
   }
 
+  //שליחת הטופס
   onSubmit() :void
   {
-    this.isSubmitting = true;
-    console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
-    this.getUserIdFromToken();
-    if(this.content && !this.file)
+    this.isSubmitting = true;//לחסימת אפשרות ליותר משליחה אחת
+    this.getUserIdFromToken();//קבלת _ID למשתמש
+    if(this.content && !this.file)//אם הקובץ הוא של העלאת תוכן שמירה שלו במשתנה
     {
        this.file=this.createTextFile();
     }
-    if (this.fileForm.valid && (this.file || this.link ) && ((!this.isImage && this.coverImage) || this.isImage)) 
+    if (this.fileForm.valid && (this.file || this.link ) && ((!this.isImage && this.coverImage) || this.isImage)) //ולידציה של השדות
       {
         const formData= new FormData();
-        console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
         
         const metadata={
           ...this.fileForm.value,
           createdBy:this.userId,
-          filePath:this.link, 
-          contentOption:this.getContentOption(this.formMode)
+          filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
+          contentOption:this.getContentOption(this.contentOption)//מצב הטופס
         }
-         //console.log(" נתונים" +metadata.title);
+         
          let str:string=JSON.stringify(metadata)
         console.log("string data: "+str)
-        formData.append('metadata',str)
+        formData.append('metadata',str) //הכנסת אוביקט של הנתונים לאוביקט שליחה
         if(this.file)
         {
          const rename=this.renameFile(this.file)
          console.log(rename);
          
-          formData.append('resource',rename)
+          formData.append('resource',rename)//הכנסת הקובץ לאוביקט לשליחה
         }
 
         if(this.isImage)
         {
-          this.coverImage=this.file
+          this.coverImage=this.file //אם סוג תמונה תמונת השער היא אותה תמונה
         }
            
 
-        if(this.coverImage)
+        if(this.coverImage)//הכנסת תמונת שער לאוביקט לשליחה
         {
           console.log("image "+this.coverImage);
           
@@ -526,7 +540,7 @@ export class UploadResourceComponent
         this.apiService.Post('/EducationalResource',formData).subscribe({
           next: (response) => {
            console.log('טופס נשלח בהצלחה:', this.fileForm.value); 
-           Swal.fire({
+           Swal.fire({ //הודעה למשתמש
             title: 'טופס נשלח בהצלחה!',
             icon: 'success',
             showCancelButton: true,
@@ -540,12 +554,12 @@ export class UploadResourceComponent
             },
             });
             this.isSubmitting = false;
-            this.router.navigate(['/show-details']);
+            this.router.navigate(['/show-details']);//מעבר למסך הנתונים
           },
           error: (err) =>  
           {
            console.log('תקלה בשליחת טופס',err);
-          Swal.fire({
+          Swal.fire({ //הודעה למשתמש
             title: 'תקלה בשליחת הטופס!',
             text: 'שגיאה '+err.status ,
             icon: 'error',
@@ -567,7 +581,7 @@ export class UploadResourceComponent
   }else{
     console.log("טופס לא תקין");
     this.isSubmitting = false;
-    this.formErrorMessage="טופס לא תקין. אנא וודאי שכל השדות מלאים"
+    this.formErrorMessage="טופס לא תקין. אנא וודאי שכל השדות מלאים" //הצגת מסר למשתמש אם השדות לא תקינים
   }
   
 }
