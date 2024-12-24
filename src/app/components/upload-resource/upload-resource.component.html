@@ -14,7 +14,7 @@
 
 
   <!-- העלאת קובץ -->
-  <div class="image-container">
+  <div class="image-container" >
     <div *ngIf="formMode=='add'">
       <div *ngIf="file">
         <button (click)="removeSelectedFile()">X</button>
@@ -64,6 +64,7 @@
     </div>
   </div>
   </div>
+  
 
   <!-- העלאת תמונה -->
   <div *ngIf="!isImage" class="image-container" >
@@ -86,21 +87,22 @@
       <div class="form-section">
         <h2>פרטי קובץ</h2>
         <div class="form-group">
-          <label for="title">כותרת </label>
+          <label for="title">כותרת*</label>
           <input class="input_fields" type="text" id="title" formControlName="title" />
+          <div *ngIf="fileForm."></div>
         </div>
         <div class="form-group">
-          <label for="publicationDate">תאריך העלאה</label>
+          <label for="publicationDate">תאריך העלאה*</label>
           <input class="input_fields" type="date" id="publicationDate" formControlName="publicationDate" />
         </div>
         <div class="form-group" *ngIf="formMode!='edit'">
-          <label for="type">סוג קובץ</label>
+          <label for="type">סוג קובץ*</label>
           <select class="input_fields" id="type" formControlName="type" (change)="onFileTypeChange($event)">
             <option  *ngFor="let type of fileTypes" [value]="type">{{ type }}</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="subject">נושא</label>
+          <label for="subject">נושא*</label>
           <mat-form-field class="autocomplete-container">
             <mat-chip-grid #subjectChipList  aria-label="רשימת התמחות">
               <mat-chip-row *ngFor="let subject of multipleChoiceFields['subjects'].optionSelected" [removable]="true" (removed)="remove(subject,'subjects')">
@@ -131,7 +133,7 @@
         <h2>למי מיועד</h2>
         
         <div class="form-group">
-        <label for="specializations">התמחות</label>
+        <label for="specializations">התמחות*</label>
          <mat-form-field class="autocomplete-container">
           <mat-chip-grid #specializationsChipList  aria-label="רשימת התמחות">
             <mat-chip-row *ngFor="let specialization of multipleChoiceFields['specializations'].optionSelected" [removable]="true" (removed)="remove(specialization,'specializations')">
@@ -158,7 +160,7 @@
       </div>
 
       <div class="form-group">
-        <label for="ages">לאיזה גיל מיועד הקובץ</label>
+        <label for="ages">לאיזה גיל מיועד הקובץ*</label>
          <mat-form-field class="autocomplete-container">
           <mat-chip-grid #agesChipList  aria-label="רשימת גילאים">
             <mat-chip-row *ngFor="let age of multipleChoiceFields['ages'].optionSelected" [removable]="true" (removed)="remove(age,'ages')">
@@ -185,14 +187,14 @@
       </div>  
       
         <div class="form-group">
-          <label for="level">איזה רמה מיועד</label>
+          <label for="level">איזה רמה מיועד*</label>
           <select class="input_fields" id="level" formControlName="level">
             <option *ngFor="let level of levels" [value]="level">{{ level }}</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label for="language">שפה</label>
+          <label for="language">שפה*</label>
           <select class="input_fields" id="language" formControlName="language">
             <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
           </select>
@@ -209,30 +211,30 @@
         <div class="form-section">
           <h2>אודות הקובץ</h2>
           <!-- <div class="form-group">
-          <label for="purchaseLocation">איפה נקנה</label>
+          <label for="purchaseLocation">איפה נקנה*</label>
           <select class="input_fields" id="purchaseLocation" formControlName="purchaseLocation">
             <option *ngFor="let location of purchaseLocations" [value]="location">{{ location }}</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="price">כמה עלה</label>
+          <label for="price">*כמה עלה</label>
           <input class="input_fields" type="number" id="price" formControlName="price" />
         </div>
         <div class="form-group">
-          <label for="catalogNumber">מק"ט</label>
+          <label for="catalogNumber">*מק"ט</label>
           <input class="input_fields" type="text" id="catalogNumber" formControlName="catalogNumber" />
         </div>
         <div class="form-group">
-          <label for="copies">מס עותקים</label>
+          <label for="copies">*מס עותקים</label>
           <input class="input_fields" type="number" id="copies" formControlName="copies" />
         </div> -->
         
           <div class="form-group">
-            <label for="releaseYear">שנת הוצאה</label>
+            <label for="releaseYear">שנת הוצאה*</label>
             <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" />
           </div>
           <div class="form-group">
-            <label for="author">מחבר/זמר</label>
+            <label for="author">מחבר/זמר*</label>
             <input class="input_fields" type="text" id="author" formControlName="author" />
           </div>
         </div>
@@ -240,14 +242,14 @@
       <!-- <div class="form-section">
         <h2>סטטוס</h2>
         <div class="form-group">
-          <label for="approved">מאושר להשאלה</label>
+          <label for="approved">*מאושר להשאלה</label>
           <select class="input_fields" id="approved" formControlName="approved" >
             <option value="כן">כן</option>
             <option value="לא">לא</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="loanValidity">תוקף השאלה</label>
+          <label for="loanValidity">*תוקף השאלה</label>
           <input class="input_fields" type="text" id="loanValidity" formControlName="loanValidity" />
         </div>
       </div> -->
