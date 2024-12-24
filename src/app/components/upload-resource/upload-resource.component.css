@@ -315,3 +315,37 @@ padding: 8px;
     box-sizing: border-box;
 }
 
+::ng-deep.custom-snackbar {
+  color: #1f1c1c; /* צבע טקסט לבן */
+  font-size: 16px;
+  text-align: center;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+::ng-deep.custom-snackbar .mat-button-wrapper {
+  color: #fff; /* צבע הכפתור לבן */
+  font-weight: bold;
+}
+
+::ng-deep.custom-snackbar button {
+  color: #28a745 !important; /* ירוק */
+}
+
+::ng-deep.custom-snackbar button:hover {
+  background-color: transparent !important; /* ביטול רקע על ריחוף */
+  color: #aee3b4 !important; /* גוון כהה יותר של ירוק */
+}
+.inline-notification {
+  margin-left: 10px;
+  color: #3c763d;
+  font-weight: bold;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+  text-align: center;
+  font-size: medium;
+}

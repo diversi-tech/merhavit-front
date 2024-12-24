@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; 
+import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import {
   FormBuilder,
@@ -18,22 +18,30 @@ import { ApiService } from '../../api.service';
 })
 export class RegistrationComponent {
   registrationForm: FormGroup;
+  seminaries: any[] = [];
+  errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router ) {
-    this.registrationForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      idNumber: ['', Validators.required],
-      address: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.pattern(/^05\d{8}$/)]],
-      email: ['', [Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required], 
-      class: ['', [Validators.required]],
-      specialization: ['', Validators.required],
-      seminar: ['', Validators.required],
-
-    }, { validator: this.passwordMatchValidator }); // הוספת הולידציה של התאמת סיסמאות
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiService,
+    private router: Router
+  ) {
+    this.registrationForm = this.fb.group(
+      {
+        firstName: ['', Validators.required],
+        lastName: ['', Validators.required],
+        idNumber: ['',[ Validators.required, Validators.minLength(9), Validators.maxLength(9),],],
+        address: ['', Validators.required],
+        phone: ['', [Validators.required, Validators.pattern(/^05\d{8}$/)]],
+        email: ['', [Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', Validators.required],
+        class: ['', [Validators.required]],
+        specialization: ['', Validators.required],
+        seminar: ['', Validators.required],
+      },
+      { validator: this.passwordMatchValidator }
+    ); // הוספת הולידציה של התאמת סיסמאות
   }
 
   passwordMatchValidator(formGroup: FormGroup) {
@@ -42,25 +50,40 @@ export class RegistrationComponent {
     return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
-  
-  onSubmit() {
-    if (this.registrationForm.valid) {
-      console.log("this.registrationForm.value",this.registrationForm.value)
-      this.apiService
-        .Post('/users/register', this.registrationForm.value)
-        .subscribe({
-          next: (response) => {
-            this.registrationForm.reset();
-            this.router.navigate(['/success-registration']);
-          },
-          error: (error) => {
-            alert( error.error.message);
-          },
-          complete: () => {
-            console.log('בקשה הושלמה בהצלחה');
-          },
-        });
-    }
+  ngOnInit(): void {
+    // קריאה לשרת כדי לקבל את רשימת הסמינרים
+    this.apiService.Read('/seminaries').subscribe((data: any[]) => {
+   
+      this.seminaries = data; // שמירה של הרשימה המלאה כפי שהתקבלה מהשרת
+    });
   }
+
+  onSubmit() {
+
+    if (this.registrationForm.invalid) {
+      console.log('הרשמה נכשלה. אנא בדוק את כל השדות ונסה שוב.');
+      this.errorMessage = 'הרשמה נכשלה. אנא בדוק את כל השדות ונסה שוב.';
+      return;
+    }
+    this.errorMessage = null;
+    console.log('this.registrationForm.value', this.registrationForm.value);
+    this.apiService
+      .Post('/users/register', this.registrationForm.value)
+      .subscribe({
+        next: (response) => {
+          this.registrationForm.reset();
+          this.router.navigate(['/success-registration']);
+        },
+        error: (error) => {
+          console.error('Registration failed', error.error.message);
+          console.log('Registration failed', error.error.message);
+          this.errorMessage = error.error?.message || 'הרשמה נכשלה.';
+        },
+        complete: () => {
+          console.log('בקשה הושלמה בהצלחה');
+        },
+      });
+  }
+
 
 }

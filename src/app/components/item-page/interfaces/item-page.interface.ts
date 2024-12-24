@@ -16,10 +16,11 @@
 
 
 export interface Item {
+  _id: string;
   title: string;
   publicationDate: string;
   type: string;
-  subject: string[];
+  subjects: string[];
   ages: string;
   level: string;
   language: string;
@@ -32,4 +33,3 @@ export interface Item {
   filePath: string;
   specializations: string[];
 }
-
