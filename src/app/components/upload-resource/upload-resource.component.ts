@@ -42,7 +42,8 @@ export class UploadResourceComponent
   fileForm: FormGroup;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
-  formMode: string='edit';//שמירת מצב הטופס לפי סוג הקובץ המוכנס לתוכו
+  formMode:string='add'
+  contentOption: string='';//שמירת מצב הטופס לפי סוג הקובץ המוכנס לתוכו
   errorMessage: string | null = null;//הודעת שגיאה לכפתור רדיו
   formErrorMessage:string|null=null;//הודעת שגיאה לטופס חסר שדות חובה
 //שמירה באיזה מצב של הטופס מילאו ערך
@@ -507,7 +508,7 @@ export class UploadResourceComponent
           ...this.fileForm.value,
           createdBy:this.userId,
           filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
-          contentOption:this.getContentOption(this.formMode)//מצב הטופס
+          contentOption:this.getContentOption(this.contentOption)//מצב הטופס
         }
          
          let str:string=JSON.stringify(metadata)

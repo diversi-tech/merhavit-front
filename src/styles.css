@@ -27,7 +27,7 @@
     direction: auto; /* מזהה אוטומטית את הכיוון */
 
   }
-
+  
   quill-editor {
     width: 100%;
   }
