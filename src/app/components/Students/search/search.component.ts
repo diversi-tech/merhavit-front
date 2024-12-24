@@ -5,10 +5,12 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router'; // ייבוא Router
 import { jwtDecode } from 'jwt-decode';
 import { Item } from '../../interfaces/item.model';
-//import { Component, EventEmitter, Output, OnInit } from '@angular/core'; // ייבוא מחלקות ליצירת קומפוננטה ולשליחת אירועים
-//import { FormControl } from '@angular/forms'; // ייבוא FormControl לניהול תיבות קלט
 import { debounceTime, distinctUntilChanged } from 'rxjs'; // אופרטורים לצמצום כמות הקריאות לשירות
-
+import { ChangeDetectorRef } from '@angular/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
@@ -16,7 +18,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs'; // אופרטורים
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule,
+    MatFormFieldModule,MatInputModule,MatIconModule,MatButtonModule,],
 })
 export class SearchComponent implements OnInit {
   @Output() search: EventEmitter<string | null> = new EventEmitter<string | null>(); 
@@ -33,36 +36,55 @@ export class SearchComponent implements OnInit {
   typeFilter = '';
 
 
-  constructor(private router: Router, private itemsService: ItemsService) { }
-
-
-  // ngOnInit(): void {
-  //   if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-  //     // הקוד יפעל רק בצד הלקוח
-  //     this.getUserTypeFromToken();
-  //   } else {
-  //     console.warn('Code is running on the server. Skipping token check.');
-  //   }
-  // }
+  constructor(private router: Router, private itemsService: ItemsService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    this.searchControl.valueChanges // מאזין לשינויים בתיבת הקלט
-      .pipe(
-        debounceTime(300), // המתנה של 300ms לפני ביצוע פעולה, למניעת קריאות מיותרות
-        distinctUntilChanged() // מבצע פעולה רק אם הערך השתנה מהערך הקודם
-      )
-      .subscribe((query) => {
-        if (query.trim()) { // בדיקה אם השאילתה אינה ריקה
-          this.search.emit(query); // שליחת הערך באירוע `search`
-        } else {
-          this.search.emit(null); // שליחת null אם השדה ריק
-        }
-      });
+    this.searchControl.valueChanges
   }
+  
+  onSearch(): void {
+    const searchTerm = this.searchControl.value;  // לוקח את הערך שנכנס בשדה הקלט
+     console.log("searchTerm",searchTerm)
+    if (searchTerm) {
+      this.itemsService.searchItems(searchTerm).subscribe(
+        (response) => {
+          console.log('התקבלו התוצאות:', response);
+          // כאן תוכל לעבד את התשובה ולבצע פעולה בהתאם (כמו עדכון רשימה)
+        },
+        (error) => {
+          console.error('שגיאה בשרת:', error);
+        }
+      );
+    } else {
+      console.log('לא הוזנה מילה לחיפוש');
+    }
+  }
+// performSearch(query: string): void {
+//   console.log("enter to performSearch in service")
+//   console.log('Search term:', query);
+//   console.log('Type filter:', this.typeFilter);
+
+//   this.itemsService.getItems(0, 10, query, this.typeFilter).subscribe({
+//     next: (response: any) => {
+//       console.log('Raw response:', response);
+//       const filteredData = response.data.filter((item: any) => 
+//         item.title.includes(query) || item.description.includes(query) || item.author.includes(query)
+//         || item.level.includes(query) || item.language.includes(query) || item.createdBy.includes(query)
+//       );
+//       this.items = filteredData;
+//       console.log('Filtered results:', this.items);
+//       this.cdr.detectChanges(); // הוספת רענון
+//     }, 
+//     error: (err: any) => {
+//       console.error('Error performing search:', err.message);
+//     },
+//   });}
 
 
+  
   // פונקציה לטיפול בשינוי סוג קובץ
   onFilterChange(event: any) {
+    console.log("enter to onFilterChange in service")
     this.selectedFileType = event.target.value;
     console.log('סוג הקובץ שנבחר:', this.selectedFileType);
   }
@@ -94,6 +116,7 @@ export class SearchComponent implements OnInit {
   }
 
   onSelectFilter(option: string) {
+    console.log("enter to onSelectFilter in service")
     this.selectedFileType = option;
     this.showFilterOptions = false; // סוגר את התפריט לאחר הבחירה
   }
@@ -113,54 +136,4 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  // onsearch(event: Event): void {
-  //   const target = event.target as HTMLInputElement;
-  //   this.searchTerm = target.value; // עדכון המשתנה ללא הצגה ב-HTML
-  //   console.log(this.searchTerm); // להדפיס לקונסול אם את רוצה לראות את הערך
-  //   this.itemsService.getItems(0, 10, this.searchTerm, this.typeFilter).subscribe({
-  //     next: (response) => {
-  //       console.log('Search results:', response);
-  //       this.searchResults = Array.isArray(response) ? response : response.data || [];
-  //     },
-  //     error: (err) => {
-  //       console.error('Error performing search:', err);
-  //     },
-  //   });
-  // }
-
-
-  onsearch(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.searchTerm = target.value.trim(); // עדכון המשתנה במילת החיפוש
-
-    // בדוק אם לא הוזן מונח חיפוש
-    if (!this.searchTerm) {
-      console.log('Search term is empty');
-      this.items = [];
-      return;
-    }
-
-    // הדפסת פרמטרים למעקב
-    console.log('Search term:', this.searchTerm);
-    console.log('Type filter:', this.typeFilter);
-
-    // קריאה לשירות החיפוש עם פרמטרי הסינון
-    this.itemsService.getItems(0, 10, this.searchTerm, this.typeFilter).subscribe({
-      next: (response: any) => {
-        console.log('Raw response:', response);
-        // אם התגובה מכילה מערך ב-data
-        const filteredData = response.data.filter((item: any) => 
-          item.title.includes(this.searchTerm) || item.description.includes(this.searchTerm) || item.author.includes(this.searchTerm)
-        ||  item.level.includes(this.searchTerm) || item.language.includes(this.searchTerm) || item.createdBy.includes(this.searchTerm)  
-        );
-        this.items = filteredData; // עדכון התוצאות במסך
-        console.log('Filtered results:', this.items);
-      },
-      error: (err: any) => {
-        console.error('Error performing search:', err.message);
-      },
-    });
-  }
-
-  
 }

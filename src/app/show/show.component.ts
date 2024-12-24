@@ -46,19 +46,19 @@ export class ItemsListComponent implements OnInit {
     });
   }
 
-  onSearch(query: string | null): void {
-    if (query) {
-      // קריאה לפונקציה שמחזירה Observable
-      this.itemsService.searchItems(query).subscribe((data) => {
-        this.items = data; // עדכון הרשימה עם תוצאות החיפוש
-      });
-    } else {
-      // קריאה לפונקציה שמחזירה Observable
-      this.itemsService.getAllItems().subscribe((data) => {
-        this.items = data; // עדכון הרשימה עם כל הפריטים
-      });
-    }
-  }
+  // onSearch(query: string | null): void {
+  //   if (query) {
+  //     // קריאה לפונקציה שמחזירה Observable
+  //     this.itemsService.searchItems(query).subscribe((data) => {
+  //       this.items = data; // עדכון הרשימה עם תוצאות החיפוש
+  //     });
+  //   } else {
+  //     // קריאה לפונקציה שמחזירה Observable
+  //     this.itemsService.getAllItems().subscribe((data) => {
+  //       this.items = data; // עדכון הרשימה עם כל הפריטים
+  //     });
+  //   }
+  // }
   
 
   getUserTypeFromToken(): void {
