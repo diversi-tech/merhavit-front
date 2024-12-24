@@ -1,12 +1,16 @@
+<!-- דף ניווט (Pagination) -->
 <div class="pagination-container">
   <span
     class="arrow"
     (click)="previousPage()"
     [class.disabled]="currentPage === 0"
-    >❮</span
   >
+    ❮
+  </span>
   <span class="arrow" (click)="nextPage()">❯</span>
 </div>
+
+<!-- הצגת רשימת הפריטים -->
 <div class="table-container" style="direction: rtl">
   <div
     class="row"
@@ -15,7 +19,7 @@
   >
     <div class="item-content">
       <img
-        [src]="item.coverImage || 'assets/default-image.png'"
+        [src]="item.coverImage || 'image/file-not-found'"
         alt="Item Image"
         class="item-image"
       />
@@ -24,18 +28,20 @@
         <div class="item-title">{{ item.title }}</div>
         <div class="item-description">{{ item.description }}</div>
         <div class="item-meta">
-          <span class="meta-label">מחבר:</span>
-          <span class="meta-value">{{ item.Author }}</span> |
+          <span class="meta-label">מחבר: </span>
+          <span class="meta-value">{{ item.author }}</span> |
           <span class="meta-label">תאריך הוצאה:</span>
-          <span class="meta-value">{{
-            item.publicationDate | date : "dd/MM/yyyy"
-          }}</span>
+          <span class="meta-value">
+            {{ item.publicationDate | date: 'dd/MM/yyyy' }}
+          </span>
         </div>
       </div>
     </div>
 
     <!-- הצגת כפתורים לספרנית -->
-    <div class="actions" *ngIf="userType === 'Librarian'">
+    <div class="actions" 
+    *ngIf="['Admin', 'Site Manager', 'Librarian'].includes(userType)"
+    >
       <button class="action-button delete" (click)="deleteResource(item)">
         <i class="far fa-trash-alt"></i>
       </button>
@@ -50,7 +56,8 @@
       >
         <i class="far fa-heart"></i>
       </button>
-      <!-- כפתורים להורדה עבור Article, Video, Scanned Document -->
+      
+      <!-- כפתורים להורדה עבור סוגי פריטים מסוימים -->
       <button
         class="action-button download"
         *ngIf="
@@ -64,7 +71,7 @@
         <i class="fas fa-download"></i>
       </button>
 
-      <!-- כפתור להזמנה עבור Book -->
+      <!-- כפתור להזמנה עבור ספרים -->
       <button
         class="action-button order"
         *ngIf="item.type === 'ספר'"

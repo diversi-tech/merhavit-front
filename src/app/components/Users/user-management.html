@@ -1,7 +1,15 @@
+<div class="confirmation-dialog" *ngIf="confirmUser">
+  <div class="dialog-content">
+  <p>האם אתה בטוח שברצונך למחוק את {{ confirmUser.fullName }}? </p>
+    <button (click)="confirmDeleteUser()">אישור</button>
+    <button (click)="closeConfirmation()">ביטול</button>
+  </div>
+</div>
 <div class="user-management-container">
   <!-- שורת הכותרת -->
   <div class="user-header">
-    <div class="user-cell">שם מלא</div>
+    <div class="user-cell">שם פרטי</div>
+    <div class="user-cell">שם משפחה</div>
     <div class="user-cell">ת.ז.</div>
     <div class="user-cell">כתובת</div>
     <div class="user-cell">מספר טלפון</div>
@@ -12,7 +20,8 @@
   </div>
 
   <div class="user-row" *ngFor="let user of users">
-    <div class="user-cell">{{ user.fullName || 'N/A' }}</div>
+    <div class="user-cell">{{ user.firstName || 'N/A' }}</div>
+    <div class="user-cell">{{ user.lastName || 'N/A' }}</div>
     <div class="user-cell">{{ user.idNumber || 'N/A' }}</div>
     <div class="user-cell">{{ user.address || 'N/A' }}</div>
     <div class="user-cell">{{ user.phoneNumber || 'N/A' }}</div>
@@ -20,8 +29,22 @@
     <div class="user-cell">{{ user.class || 'N/A' }}</div>
     <div class="user-cell">{{ user.specialization || 'N/A' }}</div>
     <div class="user-cell user-actions">
-      <button class="action-button" (click)="deleteUser(user)">מחק</button>
-      <button class="action-button" (click)="navigateToPersonalArea(user)">לאזור האישי</button>
+      <!-- אייקון מחיקה -->
+      <button class="action-button" (click)="showConfirmation(user)">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+
+      <!-- כפתור שמציג את התפקיד הנוכחי -->
+      <button class="action-button" (click)="toggleRoleMenu(user)">
+        {{ user.userType || 'לא הוקצה תפקיד' }}
+      </button>
+
+      <!-- תפריט הבחירה של התפקיד -->
+      <div *ngIf="selectedUser === user" class="role-menu">
+        <button (click)="changeRole(user, 'Site Manager')">מנהל סמינר</button>
+        <button (click)="changeRole(user, 'Librarian')">ספרנית</button>
+        <button (click)="changeRole(user, 'Student')">סטודנט</button>
+      </div>
     </div>
   </div>
 </div>
