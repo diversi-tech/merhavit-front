@@ -1,10 +1,14 @@
 import { ItemsService } from './../../../items.service';
-import { Component, HostListener } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router'; // ייבוא Router
 import { jwtDecode } from 'jwt-decode';
 import { Item } from '../../interfaces/item.model';
+//import { Component, EventEmitter, Output, OnInit } from '@angular/core'; // ייבוא מחלקות ליצירת קומפוננטה ולשליחת אירועים
+//import { FormControl } from '@angular/forms'; // ייבוא FormControl לניהול תיבות קלט
+import { debounceTime, distinctUntilChanged } from 'rxjs'; // אופרטורים לצמצום כמות הקריאות לשירות
+
 
 
 @Component({
@@ -14,7 +18,11 @@ import { Item } from '../../interfaces/item.model';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
 })
-export class SearchComponent {
+export class SearchComponent implements OnInit {
+  @Output() search: EventEmitter<string | null> = new EventEmitter<string | null>(); 
+  searchControl: FormControl = new FormControl(''); 
+  // יצירת תיבת קלט עם ערך התחלתי ריק
+
   selectedFileType: string = 'all';
   showFilterOptions: boolean = false;
   showDetails: boolean = false;
@@ -28,13 +36,28 @@ export class SearchComponent {
   constructor(private router: Router, private itemsService: ItemsService) { }
 
 
+  // ngOnInit(): void {
+  //   if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+  //     // הקוד יפעל רק בצד הלקוח
+  //     this.getUserTypeFromToken();
+  //   } else {
+  //     console.warn('Code is running on the server. Skipping token check.');
+  //   }
+  // }
+
   ngOnInit(): void {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      // הקוד יפעל רק בצד הלקוח
-      this.getUserTypeFromToken();
-    } else {
-      console.warn('Code is running on the server. Skipping token check.');
-    }
+    this.searchControl.valueChanges // מאזין לשינויים בתיבת הקלט
+      .pipe(
+        debounceTime(300), // המתנה של 300ms לפני ביצוע פעולה, למניעת קריאות מיותרות
+        distinctUntilChanged() // מבצע פעולה רק אם הערך השתנה מהערך הקודם
+      )
+      .subscribe((query) => {
+        if (query.trim()) { // בדיקה אם השאילתה אינה ריקה
+          this.search.emit(query); // שליחת הערך באירוע `search`
+        } else {
+          this.search.emit(null); // שליחת null אם השדה ריק
+        }
+      });
   }
 
 

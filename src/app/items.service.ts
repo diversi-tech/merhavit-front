@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { Item } from './components/interfaces/item.model';
 
@@ -30,7 +30,23 @@ export class ItemsService {
     return this.apiService.Read(`/EducationalResource/getAll?${params.toString()}`);
   }
   
+
+  getAllItems() {
+    return this.apiService.Read(`/EducationalResource/getAll?page=${this.page}&limit=${this.limit}`).pipe(
+      map((response: any) => {
+        // אם יש מפתח `data`, משתמשים בו, אחרת מערך ריק
+        return response.data || [];
+      })
+    );
+  }
   
+
+
+
+  searchItems(query: string){
+    console.log("(`/EducationalResource/getAll?" , query)
+    return this.apiService.Read(`/EducationalResource/getAll?${query}`);
+  }
 }
 
 

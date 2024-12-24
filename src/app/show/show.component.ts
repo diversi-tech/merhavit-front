@@ -30,16 +30,36 @@ export class ItemsListComponent implements OnInit {
 
   constructor(private http: HttpClient, private apiService: ApiService, private router: Router,private itemsService: ItemsService) {}
 
-  async ngOnInit(): Promise<void> {
-    this.getUserTypeFromToken();
-    this.itemsService.getItems().subscribe((items) => {
-      this.itemsService.items = items; // שמור את המערך כמו שהוא
-      console.log('items:', this.items); // בדוק אם המערך תקין
-      console.log('Received items:', this.itemsService.items );
+  // async ngOnInit(): Promise<void> {
+  //   this.getUserTypeFromToken();
+  //   this.itemsService.getItems().subscribe((items) => {
+  //     this.itemsService.items = items; // שמור את המערך כמו שהוא
+  //     console.log('items:', this.items); // בדוק אם המערך תקין
+  //     console.log('Received items:', this.itemsService.items );
+  //   });
+  // }
+
+
+  ngOnInit(): void {
+    this.itemsService.getAllItems().subscribe((data) => {
+      this.items = data; // שמירת כל הפריטים שהתקבלו מהשרת
     });
- 
   }
 
+  onSearch(query: string | null): void {
+    if (query) {
+      // קריאה לפונקציה שמחזירה Observable
+      this.itemsService.searchItems(query).subscribe((data) => {
+        this.items = data; // עדכון הרשימה עם תוצאות החיפוש
+      });
+    } else {
+      // קריאה לפונקציה שמחזירה Observable
+      this.itemsService.getAllItems().subscribe((data) => {
+        this.items = data; // עדכון הרשימה עם כל הפריטים
+      });
+    }
+  }
+  
 
   getUserTypeFromToken(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {

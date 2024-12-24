@@ -102,6 +102,6 @@
         </div>
       </div>
     </div>
-    <input type="text" class="search-input" (input)="onsearch($event)" placeholder="הקלד מילת חיפוש..." />
+    <input type="text" class="search-input"  [formControl]="searchControl"  placeholder="הקלד מילת חיפוש..." />
   </div>
 </div>
