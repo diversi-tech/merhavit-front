@@ -12,18 +12,9 @@
 
 <!-- הצגת רשימת הפריטים -->
 <div class="table-container" style="direction: rtl">
-  <div
-    class="row"
-    *ngFor="let item of items"
-    (click)="navigateToItemPage(item.id)"
-  >
+  <div class="row" *ngFor="let item of items" (click)="navigateToItemPage(item)">
     <div class="item-content">
-      <img
-        [src]="item.coverImage || 'image/file-not-found'"
-        alt="Item Image"
-        class="item-image"
-      />
-
+      <img [src]="item.coverImage || 'image/file-not-found'" alt="Item Image" class="item-image" />
       <div class="item-details">
         <div class="item-title">{{ item.title }}</div>
         <div class="item-description">{{ item.description }}</div>
@@ -31,52 +22,32 @@
           <span class="meta-label">מחבר: </span>
           <span class="meta-value">{{ item.author }}</span> |
           <span class="meta-label">תאריך הוצאה:</span>
-          <span class="meta-value">
-            {{ item.publicationDate | date: 'dd/MM/yyyy' }}
-          </span>
+          <span class="meta-value">{{ item.publicationDate | date: 'dd/MM/yyyy' }}</span>
         </div>
       </div>
     </div>
-
-    <!-- הצגת כפתורים לספרנית -->
-    <div class="actions" 
-    *ngIf="['Admin', 'Site Manager', 'Librarian'].includes(userType)"
-    >
-      <button class="action-button delete" (click)="deleteResource(item)">
+    <div class="actions" *ngIf="['Admin', 'Site Manager', 'Librarian'].includes(userType)">
+      <button class="action-button delete" (click)="deleteResource(item); $event.stopPropagation()">
         <i class="far fa-trash-alt"></i>
       </button>
       <button class="action-button edit">עריכה</button>
     </div>
-
-    <!-- הצגת כפתורים לתלמידה -->
     <div class="actions" *ngIf="userType === 'Student'">
-      <button
-        class="action-button favorite"
-        (click)="addToFavorites(item); $event.stopPropagation()"
-      >
+      <button class="action-button favorite" (click)="addToFavorites(item); $event.stopPropagation()">
         <i class="far fa-heart"></i>
       </button>
-      
-      <!-- כפתורים להורדה עבור סוגי פריטים מסוימים -->
-      <button
-        class="action-button download"
-        *ngIf="
-          item.type === 'תמונה' ||
-          item.type === 'סרטון' ||
-          item.type === 'שיר' ||
-          item.type === 'מערך'
-        "
-        (click)="downloadResource(item); $event.stopPropagation()"
-      >
+      <button class="action-button download" *ngIf="
+        item.type === 'כרזה' ||
+        item.type === 'דף עבודה' ||
+        item.type === 'איור' ||
+        item.type === 'יצירה' ||
+        item.type === 'סרטון' ||
+        item.type === 'שיר' ||
+        item.type === 'מערך'
+      " (click)="downloadResource(item); $event.stopPropagation()">
         <i class="fas fa-download"></i>
       </button>
-
-      <!-- כפתור להזמנה עבור ספרים -->
-      <button
-        class="action-button order"
-        *ngIf="item.type === 'ספר'"
-        (click)="$event.stopPropagation()"
-      >
+      <button class="action-button order" *ngIf="item.type === 'ספר'" (click)="$event.stopPropagation()">
         להזמנה
       </button>
     </div>
