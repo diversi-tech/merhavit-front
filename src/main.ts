@@ -6,6 +6,7 @@ import { routes } from './app/app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './app/auth.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 
 bootstrapApplication(AppComponent, {
@@ -14,7 +15,7 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes, withHashLocation()), // שימוש ב-HashLocationStrategy
 
     provideHttpClient(withInterceptors([authInterceptor])), // רישום ה-Interceptor
-    provideAnimations(),
+    provideAnimations(), provideAnimationsAsync(),
     // הגדרת הנתיבים
   ],
 })

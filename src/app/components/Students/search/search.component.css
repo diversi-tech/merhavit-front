@@ -3,8 +3,10 @@
   align-items: center;
   justify-content: space-between;
   background-color: #f3f7fd;
-  padding: 1vh;
-  height: 8vh;
+  padding: 2vh;
+  height: 10vh;
+  max-width: 85vw;
+  z-index: -1;
 }
 
 .top-icons {
@@ -181,6 +183,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 40vw;
+  margin-right: 0vw;
   height: 6vh;
   justify-content: space-between;
 }
