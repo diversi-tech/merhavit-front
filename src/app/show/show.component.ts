@@ -102,7 +102,9 @@ export class ItemsListComponent implements OnInit {
     // this.router.navigate(['/edit-media'], {
     //   state: { id: item.id } 
     // })
-    this.router.navigate(['/edit-media', item1._id]);
+    
+    this.router.navigate(['/upload-resource', item1._id]);
+    
   }
 
 

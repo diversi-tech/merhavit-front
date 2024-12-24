@@ -20,6 +20,9 @@ import {MatRadioModule} from '@angular/material/radio';
 import { QuillModule } from 'ngx-quill';
 import Quill from 'quill'; // Import Quill
 import { transliterate } from 'transliteration';
+import {Location} from '@angular/common'  // i added
+import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -38,6 +41,8 @@ import { transliterate } from 'transliteration';
 })
 export class UploadResourceComponent  
 {
+  itemID:string='' //i added
+  resourceItem: any; // משתנה חדש לשמירת האובייקט שהתקבל
   fileForm: FormGroup;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
@@ -99,11 +104,7 @@ export class UploadResourceComponent
 
   readonly addOnBlur = true;
 
-  
-  
-  
-
-  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer,private apiService:ApiService,private dialog: MatDialog) {
+  constructor(private location:Location,private me:ActivatedRoute,private fb: FormBuilder, private sanitizer: DomSanitizer,private apiService:ApiService,private dialog: MatDialog,private snackBar: MatSnackBar) {
     // יצירת טופס
     this.fileForm = this.fb.group({
       title: ['', Validators.required],
@@ -134,9 +135,14 @@ export class UploadResourceComponent
         map((value: string |any| null) => this._filter(value?.trim() ?? '',key))
       );
     });
+
   }
 
   ngOnInit(): void {
+    this.me.params.subscribe(p=>{this.itemID=p['_id']
+      console.log("Received resource ID: ", this.itemID);
+    } ) 
+   
     Object.keys(this.multipleChoiceFields).forEach((key)=>{
       const Array = this.fileForm.get(key) as FormArray;
       //console.log("Array:",Array);
@@ -146,10 +152,43 @@ export class UploadResourceComponent
     }
     })
     
+    //i added 
+    this.apiService.Read(`/EducationalResource/${this.itemID}`).subscribe({
+      next: (response: any) => {
+          console.log("This is the response: ", response);
+          // שמירת האובייקט במשתנה חדש
+          this.resourceItem = response; // resourceItem הוא משתנה חדש בקומפוננטה שלך
+          
+          this.fileForm.patchValue({
+            title: this.resourceItem.title||"",
+            tags: this.resourceItem.tags||"",
+            description: this.resourceItem.description||"",
+            author: this.resourceItem.author||"",
+            releaseYear: this.resourceItem.releaseYear||"",
+            language: this.resourceItem.language||"",
+            level: this.resourceItem.level||"",
+            ages: this.resourceItem.ages||"",
+            type: this.resourceItem.type||"",
+            specializations: this.resourceItem.specializations||"",
+            subjects: this.resourceItem.subjects||"",
+            publicationDate: this.resourceItem.publicationDate||"",
+          });
+
+          // עדכון optionSelected
+         this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
+        //  this.multipleChoiceFields['tags'].optionSelected = this.resourceItem.tags;
+         this.multipleChoiceFields['specializations'].optionSelected = this.resourceItem.specializations;
+         this.multipleChoiceFields['ages'].optionSelected = this.resourceItem.ages;
+
+      },
+      error: (err) => {
+          console.error('Error fetching resource by ID', err);
+      },
+  });
+
   }
-
   
-
+  
   editorModules = {
     toolbar: [
       ['bold', 'italic', 'underline'], // עיצוב בסיסי
@@ -289,8 +328,20 @@ export class UploadResourceComponent
 
   if (index >= 0) {
     Array.removeAt(index);
-    field.optionSelected.splice(index, 1);     
+    field.optionSelected.splice(index, 1);   
+    this.updateFormattedFields(fieldKey);
   }
+
+  const updatedValues = field.optionSelected.join(', ');
+  this.fileForm.get(fieldKey)?.setValue(updatedValues);
+  }
+
+  updateFormattedFields(fieldKey: string): void {
+    // עדכן את formattedTags או שדות אחרים לפי הצורך
+    if (fieldKey === 'tags') {
+      this.formattedTags = this.multipleChoiceFields['tags'].optionSelected.map(tagId => this.getTagById(tagId)).join(', ');
+    }
+    // הוסף כאן לוגיקה לשדות אחרים במידת הצורך
   }
 
 
@@ -332,6 +383,23 @@ export class UploadResourceComponent
       });
   }
 
+private _formattedTags: string = '';
+
+get formattedTags(): string {
+  return this._formattedTags;
+}
+
+set formattedTags(value: string) {
+  this._formattedTags = value;
+}
+
+  // get formattedTags() {
+  //   if (this.formMode === 'edit') {
+  //     return this.multipleChoiceFields['tags'].optionSelected.map(tagId => this.getTagById(tagId)).join(', ');
+  //   }
+  //   return '';
+  // }
+  
   getTagById(tagId:string)
   {
     return this.multipleChoiceFields['tags'].allOption.find(opt=> opt._id===tagId).name
@@ -418,5 +486,56 @@ export class UploadResourceComponent
     console.log("טופס לא תקין");
      
   }
+}
+
+onSubmitEdit() :void
+{
+  console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
+  if (this.fileForm.valid && this.file)
+    {
+      const formData= new FormData();
+      console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
+      const metadata={
+        ...this.fileForm.value,
+        createdBy:localStorage.getItem('idNumber')
+      }
+       //console.log(" נתונים" +metadata.title);
+       let str:string=JSON.stringify(metadata)
+      console.log("string data: "+str)
+      formData.append('metadata',str)
+      formData.append('resource',this.file)
+      if(this.coverImage)
+      {
+        console.log("image "+this.coverImage);
+        formData.append('coverImage',this.coverImage)
+      }
+     console.log(" נתונים" +formData.get('metaData'));
+     const query = `/EducationalResource/${this.itemID}`;
+      this.apiService.Put(query,formData).subscribe({ // put 
+        next: (response) => {
+         console.log('טופס נשלח בהצלחה:', this.fileForm.value);
+         this.snackBar.open('הפריט נערך בהצלחה', 'Close', {
+          duration: 3000,
+          panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
+        });  
+        },
+        error: (err) =>
+        {
+         console.log('תקלה בשליחת טופס',err);
+         this.snackBar.open('בעיה בעריכת הפריט, נסה שוב', 'Close', {
+          duration: 3000,
+          panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
+        });   
+        },
+      });
+}else{
+  console.log("טופס לא תקין");
+  this.snackBar.open('בעיה בעריכת הפריט, נסה שוב', 'Close', {
+    duration: 3000,
+    panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
+  });   
+}
+this.location.back()
+
 }
 }

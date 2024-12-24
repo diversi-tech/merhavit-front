@@ -77,23 +77,25 @@
 
   <!-- טופס -->
 
-  <form [formGroup]="fileForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="fileForm" (ngSubmit)="formMode === 'edit' ? onSubmitEdit() : onSubmit()">
     <div class="form-section-container">
       <!-- כותרת: פרטי קובץ -->
       <div class="form-section">
         <h2>פרטי קובץ</h2>
         <div class="form-group">
+          <!-- <label for="title">כותרת </label>
+          <input class="input_fields" type="text" id="title" formControlName="title" > -->
           <label for="title">כותרת </label>
-          <input class="input_fields" type="text" id="title" formControlName="title" />
-        </div>
+          <input class="input_fields" type="text" id="title" formControlName="title" [placeholder]="formMode === 'edit' ? fileForm.get('title')?.value : 'הכנס כותרת'">          
+          </div>
         <div class="form-group">
           <label for="publicationDate">תאריך העלאה</label>
-          <input class="input_fields" type="date" id="publicationDate" formControlName="publicationDate" />
+          <input class="input_fields" type="date" id="publicationDate" formControlName="publicationDate" [placeholder]="formMode === 'edit' ? fileForm.get('publicationDate')?.value : 'הכנס כותרת'"/>
         </div>
         <div class="form-group">
           <label for="type">סוג קובץ</label>
-          <select class="input_fields" id="type" formControlName="type" (change)="onFileTypeChange($event)">
-            <option  *ngFor="let type of fileTypes" [value]="type">{{ type }}</option>
+          <select class="input_fields" id="type" formControlName="type" (change)="onFileTypeChange($event)  ">
+            <option  *ngFor="let type of fileTypes" [value]="fileForm.get('type')?.value">{{ type }}</option>
           </select>
         </div>
         <div class="form-group">
@@ -112,8 +114,9 @@
                 [matChipInputAddOnBlur]="true"
                 (matChipInputTokenEnd)="add($event,'subjects')"
                 [matAutocomplete]="subjectsAuto"
-                
-              />
+                [value]="formMode === 'edit' ? multipleChoiceFields['subjects'].optionSelected.join(', ') : ''"
+                [placeholder]="formMode === 'edit' ? '' : 'הכנס נושא'"
+                />
             </mat-chip-grid>
             <mat-autocomplete #subjectsAuto="matAutocomplete" (optionSelected)="select($event,'subjects')" [disableRipple]="true">
               <mat-option *ngFor="let subject of (multipleChoiceFields['subjects'].filteredOption$ | async)" [value]="subject">
@@ -143,7 +146,8 @@
               [matChipInputAddOnBlur]="true"
               (matChipInputTokenEnd)="add($event,'specializations')"
               [matAutocomplete]="specializationsAuto"
-              
+              [value]="formMode === 'edit' ? multipleChoiceFields['specializations'].optionSelected.join(', ') : ''"
+              [placeholder]="formMode === 'edit' ? '' : 'הכנס התמחות'"
             />
           </mat-chip-grid>
           <mat-autocomplete #specializationsAuto="matAutocomplete" (optionSelected)="select($event,'specializations')" [disableRipple]="true">
@@ -170,7 +174,8 @@
               [matChipInputAddOnBlur]="true"
               (matChipInputTokenEnd)="add($event,'ages')"
               [matAutocomplete]="agesAuto"
-              
+              [value]="formMode === 'edit' ? multipleChoiceFields['ages'].optionSelected.join(', ') : ''"
+              [placeholder]="formMode === 'edit' ? '' : ''"
             />
           </mat-chip-grid>
           <mat-autocomplete #agesAuto="matAutocomplete" (optionSelected)="select($event,'ages')" [disableRipple]="true">
@@ -226,11 +231,11 @@
         
           <div class="form-group">
             <label for="releaseYear">שנת הוצאה</label>
-            <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" />
+            <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" [placeholder]="formMode === 'edit' ? fileForm.get('releaseYear')?.value : 'הכנס שנת הוצאה'"/>
           </div>
           <div class="form-group">
             <label for="author">מחבר/זמר</label>
-            <input class="input_fields" type="text" id="author" formControlName="author" />
+            <input class="input_fields" type="text" id="author" formControlName="author" [placeholder]="formMode === 'edit' ? fileForm.get('author')?.value : 'הכנס מחבר/זמר'"/>
           </div>
         </div>
         <!-- כותרת: סטטוס -->
@@ -267,7 +272,10 @@
                 [matChipInputAddOnBlur]="true"
                 (matChipInputTokenEnd)="add($event,'tags')"
                 [matAutocomplete]="tagsAuto"
-                
+                [value]="formattedTags"
+                [placeholder]="formMode === 'edit' ? '' : 'הכנס תגים'"                
+                [formControlName]="'tags'"
+
               />
             </mat-chip-grid>
             <mat-autocomplete #tagsAuto="matAutocomplete" (optionSelected)="select($event,'tags')" [disableRipple]="true">
@@ -279,7 +287,7 @@
         </div>
         <div class="form-group">
           <label for="description">מה עוד כדאי לדעת?</label>
-          <textarea class="input_fields" id="description" rows="4" formControlName="description"></textarea>
+          <textarea class="input_fields" id="description" rows="4" formControlName="description" [placeholder]="formMode === 'edit' ? fileForm.get('description')?.value : 'הכנס כותרת'"></textarea>
         </div>
       </div>
 
