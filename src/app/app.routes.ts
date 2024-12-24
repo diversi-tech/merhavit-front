@@ -13,7 +13,7 @@ import { SuccessRegistrationComponent } from './components/Users/success-registr
 import { ItemPageComponent } from './components/item-page/item-page.component';
 import { EditMediaComponent } from './edit-media/edit-media.component';
 import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
-
+import { FavoritesComponent } from './components/Favorites/favorites';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -29,6 +29,17 @@ export const routes: Routes = [
   { path: 'success-registration', component: SuccessRegistrationComponent },
   { path: 'edit-media', component: EditMediaComponent },
   { path: 'item-page/:id', component: ItemPageComponent },
-  {path:'upload-resource',component:UploadResourceComponent},
+  { path: 'upload-resource', component: UploadResourceComponent },
+  { path: 'favorites', component: FavoritesComponent },
+  { path: 'items/all', component: ItemsListComponent }, // הכל
+  { path: 'items/guests', component: ItemsListComponent }, // מערכים
+  { path: 'items/movies', component: ItemsListComponent }, // סרטונים
+  { path: 'items/songs', component: ItemsListComponent }, // שירים
+  { path: 'items/books', component: ItemsListComponent }, // ספרים
+  { path: 'items/images/posters', component: ItemsListComponent }, // כרזות
+  { path: 'items/images/worksheets', component: ItemsListComponent }, // דפי עבודה
+  { path: 'items/images/paintings', component: ItemsListComponent }, // איורים
+  { path: 'items/images/creations', component: ItemsListComponent }, // יצירות
   { path: '**', redirectTo: '' }, // עמוד ברירת מחדל לכל כתובת לא תקינה
 ];
+

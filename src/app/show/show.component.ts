@@ -2,16 +2,13 @@ import { Component, Injectable, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
-// import { Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
-// import { log } from 'console';
 import { jwtDecode } from 'jwt-decode';
-import { log } from 'console';
-import { RouterModule, Router } from '@angular/router';
+import { Router, ActivatedRoute, ActivatedRoute } from '@angular/router';
 import { ItemsService } from '../items.service'
 import { Item } from '../components/interfaces/item.model';
 import { ChangeDetectorRef } from '@angular/core';
-
 
 
 
@@ -22,21 +19,33 @@ import { ChangeDetectorRef } from '@angular/core';
   standalone: true,
   imports: [CommonModule, MatTableModule],
 })
-
-//@Injectable({ providedIn: 'root' })
 export class ItemsListComponent implements OnInit {
- public items: Item[] =[]; //מערך המוצרים של הספריה
+  public items: Item[] = []; //מערך המוצרים של הספריה
+  public allItems: Item[] = []; // מערך המכיל את כל הפריטים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
 
   constructor(private http: HttpClient, private apiService: ApiService, private router: Router,private itemsService: ItemsService) {}
+    private http: HttpClient, 
+    private apiService: ApiService, 
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   // async ngOnInit(): Promise<void> {
   //   this.getUserTypeFromToken();
-  //   this.itemsService.getItems().subscribe((items) => {
-  //     this.itemsService.items = items; // שמור את המערך כמו שהוא
+   // this.getAllItems(); // שליפת כל הפריטים מהשרת בהתחלה
+    //this.route.queryParams.subscribe(params => {
+      //const type = params['type'];
+      //if (type) {
+        //this.filterItemsByType(type);  
+      //} else {
+        //this.items = this.allItems; // הצגת כל הפריטים אם אין סוג נבחר
+      //}
+    // this.getItems().subscribe(items => {
+    //   this.items = items;
   //     console.log('items:', this.items); // בדוק אם המערך תקין
   //     console.log('Received items:', this.itemsService.items );
-  //   });
+   // });
   // }
 
 
@@ -78,21 +87,27 @@ export class ItemsListComponent implements OnInit {
     }
   }
 
-  async getItems(page: number = 0, limit: number = 2,searchTerm:string = '', typeFilter: string = '') {
-    console.log('hi');
+  async getItems(page: number = 0, limit: number = 1000,searchTerm:string = '', typeFilter: string = '') {
     if(searchTerm!==''&&typeFilter==='')
       {this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&searchTerm=${searchTerm}`).subscribe({
         next: (response) => {
-          console.log('i this is the response: ', response);
+        console.log('All items response: ', response);
   
           if (Array.isArray(response)) {
-            this.items = response;
+        
           } else {
-            this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+          this.allItems = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
           }
+        // אם יש סוג בפרמטרים של ה-URL, נסנן מיד
+        const type = this.route.snapshot.queryParamMap.get('type');
+        if (type) {
+          this.filterItemsByType(type);
+        } else {
+          this.items = this.allItems; // הצגת כל הפריטים בהתחלה
+        }
         },
         error: (err) => {
-          console.error('Error fetching items', err);
+        console.error('Error fetching all items', err);
         },
       });}
       if(searchTerm===''&&typeFilter!=='')
@@ -143,10 +158,9 @@ export class ItemsListComponent implements OnInit {
   }
 
   editItem(item: Item) {
-    // ניווט לדף edit-media
     this.router.navigate(['/edit-media'], {
       state: { id: item.id }
-    })
+    });
   }
 
   deleteResource(itemToDelete: Item) {
@@ -159,56 +173,46 @@ export class ItemsListComponent implements OnInit {
       .Delete(`/EducationalResource/${itemToDelete.id}`, {})
       .subscribe({
         next: (response) => {
-          // פעולה במידה והמחיקה הצליחה
           console.log('Item deleted successfully:', response);
-          alert(response.message); // הצגת הודעת הצלחה למשתמש
-          // ניתן לעדכן את ה-UI או להוריד את הפריט מהרשימה המקומית
-          this.items = this.items.filter((item) => item.id !== itemToDelete.id);
+          alert(response.message);
+          this.allItems = this.allItems.filter((item) => item.id !== itemToDelete.id);
+          this.items = this.allItems; // עדכון הפריטים המוצגים
         },
         error: (err) => {
-          // טיפול במקרה של שגיאה
           console.error('Error deleting item:', err);
           alert(err.error.message || 'Failed to delete item. Please try again.');
-        },
-        complete: () => {
-          // פעולה כאשר הקריאה הסתיימה (אופציונלי)
-          console.log('Delete request completed.');
         },
       });
   }
 
-
-
   downloadResource(item: Item): void {
     if (!item.id) {
       console.error('Item ID is missing.');
-      alert('לא ניתן להוריד את הקובץ.');
+      alert('לא ניתן להוריד את הקובץ. חסר ID');
       return;
     }
-    console.log('item.filePath', item.filePath);
 
+    if (!item.filePath) {
+      console.error('File path is missing.');
+      alert('לא ניתן להוריד את הקובץ. חסר ניתוב');
+      return;
+    }
+    
     this.apiService
-      .Read(
-        `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
-          item.filePath
-        )}`
+      .Read(`/EducationalResource/presigned-url?filePath=${encodeURIComponent(item.filePath)}`)
       
-      )
-
       .subscribe({
         next: (response) => {
-          const presignedUrl = response.url;
-          if (presignedUrl) {
+          if (response && response.url) {
             const downloadLink = document.createElement('a');
-            downloadLink.href = presignedUrl;
-            downloadLink.download = this.getFileNameFromPath(item.filePath); // קביעת שם הקובץ להורדה
-            downloadLink.style.display = 'none';
-
+            downloadLink.href = response.url;
+            downloadLink.download = item.title; // אפשר להוסיף כאן סיומת אם יש צורך
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
           } else {
-            alert('שגיאה בקבלת הקישור להורדה.');
+            console.error('Invalid response for download URL.');
+            alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
           }
         },
         error: (err) => {
@@ -218,6 +222,11 @@ export class ItemsListComponent implements OnInit {
       });
   }
 
+  filterItemsByType(type: string): void {
+    console.log('Filtering items by type:', type);
+    this.items = this.allItems.filter((item: Item) => item.type === type);
+    console.log('Filtered items:', this.items);
+  }
 
   getFileNameFromPath(filePath: string): string {
     return filePath.split('/').pop() || 'downloaded-file';
@@ -233,50 +242,49 @@ export class ItemsListComponent implements OnInit {
 
     try {
       const decodedToken: any = jwtDecode(token);
-      const userId = decodedToken.idNumber; // נניח שה-`id` של המשתמש נמצא בטוקן
+      const userId = decodedToken.idNumber;
       const requestData = {
         userId: userId,
         itemId: item.id,
       };
     
-      console.log('Request Data:', requestData);
-
-    this.apiService.Post('/favorites/add', requestData).subscribe({
-      next: (response) => {
-        console.log('Item added to favorites:', response);
-        alert('המוצר נוסף למועדפים בהצלחה!');
-      },
-      error: (err) => {
-        console.error('Error adding item to favorites:', err);
-        alert('שגיאה בהוספת המוצר למועדפים. אנא נסה שוב.');
-      },
-    });
-  } catch(error) {
-    console.error('Error decoding token:', error);
-    alert('שגיאה באימות המשתמש.');
-  }
-}
-getFileExtension(filePath: string): string | null {
-  const match = filePath.match(/\.[0-9a-z]+$/i);
-  return match ? match[0] : null;
-}
-//הוספת לוגיקת דפדוף
-currentPage: number = 0;
-
-nextPage() {
-  this.currentPage++;
-  this.getItems(this.currentPage);
-}
-
-previousPage() {
-  if (this.currentPage > 0) {
-    this.currentPage--;
-    this.getItems(this.currentPage);
+      this.apiService.Post('/favorites/add', requestData).subscribe({
+        next: (response) => {
+          console.log('Item added to favorites:', response);
+          alert('המוצר נוסף למועדפים בהצלחה!');
+        },
+        error: (err) => {
+          console.error('Error adding item to favorites:', err);
+          alert('שגיאה בהוספת המוצר למועדפים. אנא נסה שוב.');
+        },
+      });
+    } catch(error) {
+      console.error('Error decoding token:', error);
+      alert('שגיאה באימות המשתמש.');
+    }
   }
 
-}
+  getFileExtension(filePath: string): string | null {
+    const match = filePath.match(/\.[0-9a-z]+$/i);
+    return match ? match[0] : null;
+  }
 
- navigateToItemPage(itemId: string): void {
+  // הוספת לוגיקת דפדוף
+  currentPage: number = 0;
+
+  nextPage() {
+    this.currentPage++;
+    this.getAllItems(this.currentPage);
+  }
+
+  previousPage() {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.getAllItems(this.currentPage);
+    }
+  }
+
+  navigateToItemPage(itemId: string): void {
     this.router.navigate([`/item-page/${itemId}`]);
   }
 }
