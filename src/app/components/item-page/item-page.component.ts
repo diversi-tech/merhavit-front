@@ -181,8 +181,12 @@ export class ItemPageComponent implements OnInit {
   readonly addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   announcer = inject(LiveAnnouncer); // שימוש ב-inject להזרקת ה-LiveAnnouncer
-  formControl = new FormControl();
+  // formControl = new FormControl();
   tags = signal<string[]>([]);
+
+  readonly reactiveKeywords = signal(['']);
+  readonly formControl = new FormControl(['angular']);
+
 
 
   constructor(
@@ -256,6 +260,8 @@ fetchItemDetails(itemId: string) {
         response.tags = [];
       }
       this.item = response;
+      // כאן נעדכן את ה-tags מתוך פרטי הפריט
+      this.tags.set(response.tags || []);
       this.setPreviewUrl(response);
     },
     error: (err) => {
@@ -342,6 +348,104 @@ fetchSimilarItems(itemId: string) {
   getCoverImageSimilarItem(item: SimilarItem): string {
     return item.coverImage || 'נתיב ברירת מחדל לתמונה';
   }
+
+  // removeReactiveKeyword(keyword: string) {
+  //   this.reactiveKeywords.update(keywords => {
+  //     const index = keywords.indexOf(keyword);
+  //     if (index < 0) {
+  //       return keywords;
+  //     }
+
+  //     keywords.splice(index, 1);
+  //     this.announcer.announce(`removed ${keyword} from reactive form`);
+  //     return [...keywords];
+  //   });
+  // }
+
+  // addReactiveKeyword(event: MatChipInputEvent): void {
+  //   const value = (event.value || '').trim();
+
+  //   // Add our keyword
+  //   if (value) {
+  //     this.reactiveKeywords.update(keywords => [...keywords, value]);
+  //     this.announcer.announce(`added ${value} to reactive form`);
+  //   }
+
+  //   // Clear the input value
+  //   event.chipInput!.clear();
+  // }
+
+  removeReactiveKeyword(keyword: string) {
+    this.reactiveKeywords.update(keywords => {
+      const index = keywords.indexOf(keyword);
+      if (index < 0) {
+        return keywords;
+      }
+  
+      // מחיקה מהמערך
+      keywords.splice(index, 1);
+      this.announcer.announce(`removed ${keyword} from reactive form`);
+  
+      // שליחה לשרת לאחר מחיקה
+      this.updateTagsOnServer(keywords);
+  
+      return [...keywords];
+    });
+  }
+  
+  addReactiveKeyword(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+  
+    // הוספת תגית
+    if (value) {
+      this.reactiveKeywords.update(keywords => {
+        const updatedKeywords = [...keywords, value];
+  
+        // שליחה לשרת לאחר הוספה
+        this.updateTagsOnServer(updatedKeywords);
+  
+        this.announcer.announce(`added ${value} to reactive form`);
+        return updatedKeywords;
+      });
+    }
+  
+    // ניקוי הערך בשדה
+    event.chipInput!.clear();
+  }
+  
+  updateTagsOnServer(updatedTags: string[]): void {
+    if (!this.item?._id) {
+      console.error('Item ID is missing. Cannot update tags.');
+      return;
+    }
+  
+    const url = `/item-page/${this.item._id}/tags`;
+    this.apiService.Put(url, { tags: updatedTags }).subscribe({
+      next: () => {
+        console.log('Tags updated successfully on the server');
+      },
+      error: (err) => {
+        console.error('Error updating tags on the server', err);
+      },
+    });
+  }
+  
+
+  //  removeTag(index: number): void {
+  //   const currentTags = this.tags();
+  //   currentTags.splice(index, 1);
+  //   this.tags.set([...currentTags]);
+  // }
+
+  // addTag(event: MatChipInputEvent): void {
+  //   const value = (event.value || '').trim();
+
+  //   if (value) {
+  //     this.tags.update(tags => [...tags, value]);
+  //   }
+
+  //   event.chipInput!.clear();
+  // }
 
   // פונקציות חדשות להוספה, עריכה והסרה של חוות דעת
   // addTag(event: MatChipInputEvent): void {

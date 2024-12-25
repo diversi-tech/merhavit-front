@@ -68,7 +68,46 @@
         (matChipInputTokenEnd)="addTag($event)"
       />
     </mat-form-field> -->
+
+    <!-- הצגת התגיות -->
+<!-- <p *ngIf="item?.tags?.length">
+  <strong>תגיות:</strong>
+  <mat-chip-grid #chipGrid aria-label="Enter tags" [formControl]="formControl">
+    <mat-chip-row *ngFor="let tag of item?.tags; let i = index" (removed)="removeTag(i)">
+      {{ tag }}
+      <button matChipRemove aria-label="'remove ' + tag">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip-row>
+  </mat-chip-grid>
+
+  <input
+    placeholder="New tag..."
+    [matChipInputFor]="chipGrid"
+    (matChipInputTokenEnd)="addTag($event)"
+  />
+</p> -->
+
     
+<section>
+  <mat-form-field class="example-form-field">
+    <mat-chip-grid #reactiveChipGrid aria-label="Enter reactive form keywords" [formControl]="formControl">
+    @for (keyword of reactiveKeywords(); track keyword) {
+      <mat-chip-row (removed)="removeReactiveKeyword(keyword)">
+        {{keyword}}
+      <button matChipRemove aria-label="'remove reactive form' + keyword">
+        <mat-icon>cancel</mat-icon>
+      </button>
+      </mat-chip-row>
+    }
+    </mat-chip-grid>
+    <input
+      placeholder="הוסיפי פידבק על התוכן"
+      [matChipInputFor]="reactiveChipGrid"
+      (matChipInputTokenEnd)="addReactiveKeyword($event)"
+    />
+  </mat-form-field>
+</section>
     
   </div>
 
