@@ -52,7 +52,7 @@ export class AppComponent {
     this.router.events.subscribe(() => {
   
         // נתיבים שבהם לא נרצה להציג את הקומפוננטה
-        const excludedRoutes = ['/login', '/registration', '/welcome','/','/reset-password','/forgot-password','/success-registration','/upload-resource'];
+        const excludedRoutes = ['/login', '/registration', '/welcome','/','/reset-password','/forgot-password','/success-registration'];
         this.showSearchComponent = !excludedRoutes.includes(this.router.url);
         this.navigationBar = !excludedRoutes.includes(this.router.url);
       

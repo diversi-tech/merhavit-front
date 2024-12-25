@@ -13,14 +13,20 @@
 <!-- הצגת רשימת הפריטים -->
 <div class="table-container" >
   <!-- <div class="no-data-message" *ngIf="items.length === 0">אין נתונים להצגה</div>   --> 
-  <mat-card appearance="outlined" class="no-data-message" *ngIf="items.length === 0">
-    <mat-card-header>
-      <mat-icon mat-card-avatar color="primary" fontSize="large">info</mat-icon>
-      <mat-card-content>
-        <p>אין נתונים להצגה</p>
-      </mat-card-content>
-    </mat-card-header>
-  </mat-card>
+  <mat-card
+  appearance="outlined"
+  class="no-data-message"
+  *ngIf="showNoDataMessage"
+>
+  <mat-card-header>
+    <mat-icon mat-card-avatar color="primary" fontSize="large">info</mat-icon>
+    <mat-card-content>
+      <p>אין נתונים להצגה</p>
+    </mat-card-content>
+  </mat-card-header>
+</mat-card>
+
+
   
   
    

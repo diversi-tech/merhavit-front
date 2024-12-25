@@ -303,6 +303,7 @@ interface Item {
 export class ItemsListComponent implements OnInit {
   public items: Item[] = []; // מערך המוצרים של הספריה
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
+  public showNoDataMessage: boolean = false; // משתנה לשליטה בהצגת ההודעה
 
   constructor(
     private http: HttpClient, 
@@ -351,8 +352,12 @@ export class ItemsListComponent implements OnInit {
     }
   }
   
-  async getItems(page: number = 0, limit: number = 1000, searchTerm:string = '', typeFilter: string = '') {
-    if(searchTerm!==''&&typeFilter===''){
+  async getItems(page: number = 0, limit: number = 1000, searchTerm: string = '', typeFilter: string = '') {
+    // איפוס ההודעה בתחילת הבדיקה
+    this.showNoDataMessage = false;
+  
+    // שליפת נתונים
+    if (searchTerm !== '' && typeFilter === '') {
       this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&searchTerm=${searchTerm}`).subscribe({
         next: (response) => {
           console.log('All items response: ', response);
@@ -362,6 +367,14 @@ export class ItemsListComponent implements OnInit {
           } else {
             this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
           }
+  
+          // מחכים 2 שניות לפני הצגת ההודעה אם אין נתונים
+          setTimeout(() => {
+            if (this.items.length === 0) {
+              this.showNoDataMessage = true;
+            }
+          }, 2000);
+          
           // אם יש סוג בפרמטרים של ה-URL, נסנן מיד
           const type = this.route.snapshot.queryParamMap.get('type');
           if (type) {
@@ -374,71 +387,75 @@ export class ItemsListComponent implements OnInit {
           console.error('Error fetching all items', err);
         },
       });
-    }
-    if(searchTerm===''&&typeFilter!=='')
-      {this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&typeFilter=${typeFilter}`).subscribe({
+    } else if (searchTerm === '' && typeFilter !== '') {
+      this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&typeFilter=${typeFilter}`).subscribe({
         next: (response) => {
-          console.log('i this is the response: ', response);
+          console.log('Filtered by type response: ', response);
   
           if (Array.isArray(response)) {
             this.items = response;
           } else {
-            this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+            this.items = response.data || [];
           }
+  
+          // מחכים 2 שניות לפני הצגת ההודעה אם אין נתונים
+          setTimeout(() => {
+            if (this.items.length === 0) {
+              this.showNoDataMessage = true;
+            }
+          }, 100);
         },
         error: (err) => {
           console.error('Error fetching items', err);
         },
-      });}
-      if(searchTerm!==''&&typeFilter!=='')
-        {this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&searchTerm=${searchTerm}&typeFilter=${typeFilter}`).subscribe({
-          next: (response) => {
-            console.log('i this is the response: ', response);
-    
-            if (Array.isArray(response)) {
-              this.items = response;
-            } else {
-              this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+      });
+    } else if (searchTerm !== '' && typeFilter !== '') {
+      this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&searchTerm=${searchTerm}&typeFilter=${typeFilter}`).subscribe({
+        next: (response) => {
+          console.log('Filtered by search and type response: ', response);
+  
+          if (Array.isArray(response)) {
+            this.items = response;
+          } else {
+            this.items = response.data || [];
+          }
+  
+          // מחכים 2 שניות לפני הצגת ההודעה אם אין נתונים
+          setTimeout(() => {
+            if (this.items.length === 0) {
+              this.showNoDataMessage = true;
             }
-          },
-          error: (err) => {
-            console.error('Error fetching items', err);
-          },
-        });}
-        else
-        { this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}`).subscribe({
-          next: (response) => {
-            console.log('i this is the response: ', response);
-    
-            if (Array.isArray(response)) {
-              this.items = response
-            } else {
-              this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+          }, 2000);
+        },
+        error: (err) => {
+          console.error('Error fetching items', err);
+        },
+      });
+    } else {
+      this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}`).subscribe({
+        next: (response) => {
+          console.log('All items response: ', response);
+  
+          if (Array.isArray(response)) {
+            this.items = response;
+          } else {
+            this.items = response.data || [];
+          }
+  
+          // מחכים 2 שניות לפני הצגת ההודעה אם אין נתונים
+          setTimeout(() => {
+            if (this.items.length === 0) {
+              this.showNoDataMessage = true;
             }
-          },
-          error: (err) => {
-            console.error('Error fetching items', err);
-          },
-    });}
-    var apiUrl = `/EducationalResource/getAll?page=${page}&limit=${limit}`;
-    if (searchTerm) { 
-      apiUrl += `&searchTerm=${searchTerm}`; 
-    } 
-    if (typeFilter) { 
-      apiUrl += `&typeFilter=${typeFilter}`; 
-    } 
-    this.apiService.Read(apiUrl).subscribe({ 
-      next: (response) => { 
-        console.log('All items response: ', response); 
-        if (Array.isArray(response)) { 
-          this.items = response; 
-        } else { 
-          this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים 
-        } }, error: (err) => { 
-          console.error('Error fetching items', err); 
-        }, });
-    
+          }, 2000);
+        },
+        error: (err) => {
+          console.error('Error fetching items', err);
+        },
+      });
+    }
   }
+  
 
   editItem(item: Item) {
     this.router.navigate(['/edit-media'], {
