@@ -98,18 +98,19 @@
         <div class="form-group" *ngIf="formMode!='edit'">
           <label for="type">סוג קובץ</label>
           <select class="input_fields" id="type" formControlName="type" (change)="onFileTypeChange($event)  ">
-            <option  *ngFor="let type of fileTypes" [value]="fileForm.get('type')?.value">{{ type }}</option>
+            <option  *ngFor="let type of fileTypes" [value]="type">{{ type }}</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="subject">נושא</label>
-          <mat-form-field class="autocomplete-container">
+          <label for="subjectInput">נושא</label>
+          <mat-form-field  class="autocomplete-container">
             <mat-chip-grid #subjectChipList  aria-label="רשימת התמחות">
               <mat-chip-row *ngFor="let subject of multipleChoiceFields['subjects'].optionSelected" [removable]="true" (removed)="remove(subject,'subjects')">
                 {{subject}}
                 <button matChipRemove>×</button>
               </mat-chip-row>
               <input
+              id="subjectInput"
               class="input_fields"
               matInput
                 [matChipInputFor]="subjectChipList "
@@ -134,14 +135,15 @@
         <h2>למי מיועד</h2>
         
         <div class="form-group">
-        <label for="specializations">התמחות</label>
-         <mat-form-field class="autocomplete-container">
+        <label for="specializationsInput">התמחות</label>
+         <mat-form-field  class="autocomplete-container">
           <mat-chip-grid #specializationsChipList  aria-label="רשימת התמחות">
             <mat-chip-row *ngFor="let specialization of multipleChoiceFields['specializations'].optionSelected" [removable]="true" (removed)="remove(specialization,'specializations')">
               {{specialization}}
               <button matChipRemove>×</button>
             </mat-chip-row>
             <input
+            id="specializationsInput"
             class="input_fields"
             matInput
               [matChipInputFor]="specializationsChipList "
@@ -162,14 +164,15 @@
       </div>
 
       <div class="form-group">
-        <label for="ages">לאיזה גיל מיועד הקובץ</label>
-         <mat-form-field class="autocomplete-container">
+        <label for="agesInput">לאיזה גיל מיועד הקובץ</label>
+         <mat-form-field  class="autocomplete-container">
           <mat-chip-grid #agesChipList  aria-label="רשימת גילאים">
             <mat-chip-row *ngFor="let age of multipleChoiceFields['ages'].optionSelected" [removable]="true" (removed)="remove(age,'ages')">
               {{age}}
               <button matChipRemove>×</button>
             </mat-chip-row>
             <input
+            id="agesInput"
             class="input_fields"
             matInput
               [matChipInputFor]="agesChipList"
@@ -260,14 +263,15 @@
 
       <div class="form-section">
         <div class="form-group">
-          <label for="tags">תגיות</label>
-          <mat-form-field class="autocomplete-container">
+          <label for="tagsInput">תגיות</label>
+          <mat-form-field  class="autocomplete-container">
             <mat-chip-grid #tagsChipList  aria-label="רשימת תגיות">
               <mat-chip-row *ngFor="let tag of multipleChoiceFields['tags'].optionSelected" [removable]="true" (removed)="remove(tag,'tags')">
                 {{getTagById(tag)}}
                 <button matChipRemove>×</button>
               </mat-chip-row>
               <input
+              id="tagsInput"
               class="input_fields"
               matInput
                 [matChipInputFor]="tagsChipList"
@@ -275,9 +279,9 @@
                 [matChipInputAddOnBlur]="true"
                 (matChipInputTokenEnd)="add($event,'tags')"
                 [matAutocomplete]="tagsAuto"
-                [value]="formattedTags"
+               
                 [placeholder]="formMode === 'edit' ? '' : 'הכנס תגים'"                
-                [formControlName]="'tags'"
+                [formArrayName]="'tags'"
 
               />
             </mat-chip-grid>
@@ -295,7 +299,7 @@
       </div>
        <div *ngIf="formErrorMessage" class="error-message">{{formErrorMessage}}</div>
       <!-- כפתור שליחה -->
-      <button type="submit" (click)="onSubmit()" [disabled]="isSubmitting">
+      <button type="submit" [disabled]="isSubmitting">
         {{ isSubmitting ? 'שולח...' : 'שלח' }}
       </button>
   </form>

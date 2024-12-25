@@ -28,6 +28,7 @@ export const routes: Routes = [
   { path: 'success-registration', component: SuccessRegistrationComponent },
   { path: 'item-page/:id', component: ItemPageComponent },
   { path: 'upload-resource/:_id', component: UploadResourceComponent },
+  { path: 'upload-resource', component: UploadResourceComponent },
   { path: 'favorites', component: FavoritesComponent },
   { path: 'items/all', component: ItemsListComponent }, // הכל
   { path: 'items/guests', component: ItemsListComponent }, // מערכים

@@ -7,7 +7,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
-import { map, Observable, startWith } from 'rxjs';
+import { map, Observable, startWith,tap } from 'rxjs';
 import { ApiService } from '../../api.service';
 import { title } from 'process';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -26,6 +26,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 import { Router, RouterModule } from '@angular/router';
+import { HttpResponse } from '@angular/common/http';
 
 
 
@@ -48,7 +49,7 @@ export class UploadResourceComponent
   fileForm: FormGroup;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
-  formMode: string='edit';//שמירת מצב הטופס לפי סוג הקובץ המוכנס לתוכו
+  formMode: string='add';//שמירת מצב הטופס לפי סוג הקובץ המוכנס לתוכו
   errorMessage: string | null = null;//הודעת שגיאה לכפתור רדיו
   formErrorMessage:string|null=null;//הודעת שגיאה לטופס חסר שדות חובה
 
@@ -116,7 +117,7 @@ export class UploadResourceComponent
 
   readonly addOnBlur = true;
 
-  constructor(private location:Location,private me:ActivatedRoute,private fb: FormBuilder, private sanitizer: DomSanitizer,private apiService:ApiService,private dialog: MatDialog,private snackBar: MatSnackBar,private router: Router) {
+  constructor(private pr:ActivatedRoute, private location:Location,private me:ActivatedRoute,private fb: FormBuilder, private sanitizer: DomSanitizer,private apiService:ApiService,private dialog: MatDialog,private snackBar: MatSnackBar,private router: Router) {
     // יצירת טופס
     this.fileForm = this.fb.group({
       title: ['', Validators.required],
@@ -151,10 +152,18 @@ export class UploadResourceComponent
   }
 
   ngOnInit(): void {
+
+    this.pr.queryParamMap.subscribe(queryParams => {
+      const additionalParam = queryParams.get('additionalParam');
+      this.formMode = additionalParam !== null ? additionalParam : this.formMode; // הצבת הערך לתוך formMode או שמירה על ברירת המחדל
+    });
+
+    if(this.formMode=='edit'){
     this.me.params.subscribe(p=>{this.itemID=p['_id']
       console.log("Received resource ID: ", this.itemID);
-    } ) 
-   
+    } ) }
+
+
     Object.keys(this.multipleChoiceFields).forEach((key)=>{
       const Array = this.fileForm.get(key) as FormArray;
       //console.log("Array:",Array);
@@ -164,6 +173,7 @@ export class UploadResourceComponent
     }
     })
     
+    if(this.formMode=='edit'){
     //i added 
     this.apiService.Read(`/EducationalResource/${this.itemID}`).subscribe({
       next: (response: any) => {
@@ -185,19 +195,22 @@ export class UploadResourceComponent
             subjects: this.resourceItem.subjects||"",
             publicationDate: this.resourceItem.publicationDate||"",
           });
+         
+          this.downloadFile(this.resourceItem.filePath)
+          
 
           // עדכון optionSelected
-         this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
+        //  this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
         //  this.multipleChoiceFields['tags'].optionSelected = this.resourceItem.tags;
-         this.multipleChoiceFields['specializations'].optionSelected = this.resourceItem.specializations;
-         this.multipleChoiceFields['ages'].optionSelected = this.resourceItem.ages;
+        //  this.multipleChoiceFields['specializations'].optionSelected = this.resourceItem.specializations;
+        //  this.multipleChoiceFields['ages'].optionSelected = this.resourceItem.ages;
 
       },
       error: (err) => {
           console.error('Error fetching resource by ID', err);
       },
   });
-
+}
   }
   
 
@@ -267,15 +280,88 @@ export class UploadResourceComponent
 
   }
 
+  // downloadFile(query: string): Observable<void> {
+  //   console.log('Query URL:', query); // לוג של ה-URL
+  
+  //   return this.apiService.ReadFiles(query).pipe(
+  //     tap((response) => {
+  //       const contentDisposition = response.headers.get('Content-Disposition');
+  //       let filename = 'default-filename.ext'; // שם ברירת מחדל
+  
+  //       if (contentDisposition) {
+  //         const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+  //         if (matches != null && matches[1]) {
+  //           filename = matches[1].replace(/['"]/g, ''); // הסרת גרשיים אם יש
+  //         }
+  //       }
+  
+  //       if (response.body) {
+  //         this.file = new File([response.body], filename, { type: response.body.type });
+  //       } else {
+  //         // טיפול במקרה שבו response.body הוא null
+  //         console.error('Response body is null');
+  //       }        console.log("**************" + this.file);
+  //     }),
+  //     map(() => { }) // מחזירים Observable<void>
+  //   );
+  // }
+  downloadFile(filePath:string)
+ {
+    console.log('Query URL:', filePath); 
+
+    this.apiService
+  .Read(`/EducationalResource/presigned-url?filePath=${encodeURIComponent(filePath)}`)
+  .subscribe({
+    next: async (response) => {
+      const presignedUrl = response.url;
+      if (response && response.url) {
+        try {
+          const fileResponse = await fetch(presignedUrl);
+          if (!fileResponse.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const blob = await fileResponse.blob();
+          const file = new File([blob], this.resourceItem.title, { type: blob.type });
+          this.file=file
+          
+          // כאן תוכל להשתמש במשתנה file כפי שצריך
+          console.log('File received:',file, this.file);
+          this.onFileSelected();
+
+        } catch (error) {
+          console.error('Error fetching the file:', error);
+          alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
+        }
+      } else {
+        console.error('Invalid response for download URL.');
+        alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
+      }
+    },
+    error: (err) => {
+      console.error('Error fetching presigned URL:', err);
+      alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
+    },
+  });
+
+  }
+  
   
 
-  onFileSelected(event: Event): void 
+  onFileSelected(event?: Event, filePath?:string): void 
   {
+    
+    if(this.formMode!='edit') {
+      if(event)
+      {
     const input = event.target as HTMLInputElement;
     this.disabledOptions['add']=this.file? true:false 
     if (input.files && input.files[0]) 
       {
       this.file = input.files[0];
+      }}
+    }   
+    if (this.file) 
+    {
       const fileType = this.file.type;
       const fileName = this.file.name.toLowerCase();
 
@@ -311,7 +397,6 @@ export class UploadResourceComponent
 
   removeSelectedFile()
   {
-    debugger
     this.file=null
     this.previewImage=this.sanitizer.bypassSecurityTrustResourceUrl('assets/camera-placeholder.jpg')
     this.clearPreviewsExcept('image');
@@ -413,20 +498,20 @@ export class UploadResourceComponent
   if (index >= 0) {
     Array.removeAt(index);
     field.optionSelected.splice(index, 1);   
-    this.updateFormattedFields(fieldKey);
+    // this.updateFormattedFields(fieldKey);
   }
 
-  const updatedValues = field.optionSelected.join(', ');
-  this.fileForm.get(fieldKey)?.setValue(updatedValues);
+  // const updatedValues = field.optionSelected.join(', ');
+  // this.fileForm.get(fieldKey)?.setValue(updatedValues);
   }
 
-  updateFormattedFields(fieldKey: string): void {
-    // עדכן את formattedTags או שדות אחרים לפי הצורך
-    if (fieldKey === 'tags') {
-      this.formattedTags = this.multipleChoiceFields['tags'].optionSelected.map(tagId => this.getTagById(tagId)).join(', ');
-    }
-    // הוסף כאן לוגיקה לשדות אחרים במידת הצורך
-  }
+  // updateFormattedFields(fieldKey: string): void {
+  //   // עדכן את formattedTags או שדות אחרים לפי הצורך
+  //   if (fieldKey === 'tags') {
+  //     this.formattedTags = this.multipleChoiceFields['tags'].optionSelected.map(tagId => this.getTagById(tagId)).join(', ');
+  //   }
+  //   // הוסף כאן לוגיקה לשדות אחרים במידת הצורך
+  // }
 
 
   select(event: MatAutocompleteSelectedEvent,fieldKey:string): void {
@@ -467,15 +552,15 @@ export class UploadResourceComponent
       });
   }
 
-private _formattedTags: string = '';
+// private _formattedTags: string = '';
 
-get formattedTags(): string {
-  return this._formattedTags;
-}
+// get formattedTags(): string {
+//   return this._formattedTags;
+// }
 
-set formattedTags(value: string) {
-  this._formattedTags = value;
-}
+// set formattedTags(value: string) {
+//   this._formattedTags = value;
+// }
 
   // get formattedTags() {
   //   if (this.formMode === 'edit') {
@@ -546,6 +631,7 @@ set formattedTags(value: string) {
 
   onSubmit() :void
   {
+
     this.isSubmitting = true;
     console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
     this.getUserIdFromToken();
@@ -553,6 +639,7 @@ set formattedTags(value: string) {
     {
        this.file=this.createTextFile();
     }
+
     if (this.fileForm.valid && (this.file || this.link ) && ((!this.isImage && this.coverImage) || this.isImage)) 
       {
         const formData= new FormData();
@@ -642,20 +729,43 @@ set formattedTags(value: string) {
 
 onSubmitEdit() :void
 {
+  alert("on submit edit")
+  console.log("**************subject "+JSON.stringify(this.fileForm.value.subjects));
+  console.log("*************title "+JSON.stringify(this.fileForm.value.title));
+  console.log("*************author  "+JSON.stringify(this.fileForm.value.author));
+  console.log("*************tags "+JSON.stringify(this.fileForm.value.tags));
+  console.log("*************spec: "+JSON.stringify(this.fileForm.value.specializations));
+  console.log("*************age: "+JSON.stringify(this.fileForm.value.ages));
+  console.log("*************level: "+JSON.stringify(this.fileForm.value.level));
+  console.log("*************description: "+JSON.stringify(this.fileForm.value.description));
+  console.log("*************releaseYear: "+JSON.stringify(this.fileForm.value.releaseYear));
+  console.log("*************language: "+JSON.stringify(this.fileForm.value.language));
+  console.log("*************publicationDate: "+JSON.stringify(this.fileForm.value.publicationDate));
+  console.log("*************file "+this.file);
+  console.log("*************link "+this.link);
+  console.log("*************image "+this.isImage);
+
+     
+if(!this.fileForm.valid)
+  console.log("===============not valid=============");
+  console.log("file "+this.file);
+  
   console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
-  if (this.fileForm.valid && this.file)
+  if (this.fileForm.valid  && this.file)
     {
+      console.log("iiiiiiiiiiiiiiiiiii mmmm");
+      
       const formData= new FormData();
       console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
       const metadata={
         ...this.fileForm.value,
         createdBy:localStorage.getItem('idNumber')
       }
-       //console.log(" נתונים" +metadata.title);
+       console.log(" נתונים" +metadata.title);
        let str:string=JSON.stringify(metadata)
       console.log("string data: "+str)
       formData.append('metadata',str)
-      formData.append('resource',this.file)
+       formData.append('resource',this.file)
       if(this.coverImage)
       {
         console.log("image "+this.coverImage);
@@ -663,6 +773,8 @@ onSubmitEdit() :void
       }
      console.log(" נתונים" +formData.get('metaData'));
      const query = `/EducationalResource/${this.itemID}`;
+     console.log("********qeury*** "+query);
+     
       this.apiService.Put(query,formData).subscribe({ // put 
         next: (response) => {
          console.log('טופס נשלח בהצלחה:', this.fileForm.value);
@@ -674,7 +786,7 @@ onSubmitEdit() :void
         error: (err) =>
         {
          console.log('תקלה בשליחת טופס',err);
-         this.snackBar.open('בעיה בעריכת הפריט, נסה שוב', 'Close', {
+         this.snackBar.open('בעיה בעריכת הפריט, נסה שוב', 'סגור', {
           duration: 3000,
           panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
         });   
@@ -682,7 +794,7 @@ onSubmitEdit() :void
       });
 }else{
   console.log("טופס לא תקין");
-  this.snackBar.open('בעיה בעריכת הפריט, נסה שוב', 'Close', {
+  this.snackBar.open('בעיה בעריכת הפריט, נסה שוב', 'סגור', {
     duration: 3000,
     panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
   });   

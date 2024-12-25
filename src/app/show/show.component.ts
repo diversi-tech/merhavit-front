@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar'; // ייבוא MatSnac
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 import { jwtDecode } from 'jwt-decode';
-import { RouterModule, Router , ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 
 interface Item {
   _id: string;
@@ -76,9 +76,10 @@ export class ItemsListComponent implements OnInit {
     this.getItems(event.pageIndex, event.pageSize);
   }
 
-  async getItems(page: number = 0, limit: number = 2) {
+  async getItems(page: number = 0, limit: number = 2):Promise<void> {
     console.log("hi");
-
+   
+    return new Promise((resolve,reject)=>{
     this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}`).subscribe({
       next: (response: { data: any[], totalCount: number }) => {
         console.log("i this is the response: ", response);
@@ -90,12 +91,15 @@ export class ItemsListComponent implements OnInit {
           this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
         this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
         
+        resolve();
       },
       error: (err) => {
         console.error('Error fetching all items', err);
+        reject(err);
       },
 
     });
+  });
   }
 
 
@@ -105,8 +109,9 @@ export class ItemsListComponent implements OnInit {
     //   state: { id: item.id } 
     // })
     
-    this.router.navigate(['/upload-resource', item1._id]);
-    
+    // this.router.navigate(['/upload-resource', item1._id]);
+    this.router.navigate(['/upload-resource', item1._id], { queryParams: { additionalParam: 'edit' } });
+
   }
 
 
