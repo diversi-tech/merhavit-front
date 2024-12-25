@@ -12,9 +12,17 @@
 
 <!-- הצגת רשימת הפריטים -->
 <div class="table-container" style="direction: rtl">
-  <div class="row" *ngFor="let item of items" (click)="navigateToItemPage(item)">
+  <div
+    class="row"
+    *ngFor="let item of items"
+    (click)="navigateToItemPage(item)"
+  >
     <div class="item-content">
-      <img [src]="item.coverImage || 'image/file-not-found'" alt="Item Image" class="item-image" />
+      <img
+        [src]="item.coverImage || 'image/file-not-found'"
+        alt="Item Image"
+        class="item-image"
+      />
       <div class="item-details">
         <div class="item-title">{{ item.title }}</div>
         <div class="item-description">{{ item.description }}</div>
@@ -22,47 +30,63 @@
           <span class="meta-label">מחבר: </span>
           <span class="meta-value">{{ item.author }}</span> |
           <span class="meta-label">תאריך העלאה:</span>
-          <span class="meta-value">{{ item.publicationDate | date: 'dd/MM/yyyy' }}</span>
+          <span class="meta-value">{{
+            item.publicationDate | date : "dd/MM/yyyy"
+          }}</span>
         </div>
       </div>
     </div>
-   <!-- הצגת כפתורים לספרנית -->
-   
-    <div class="actions" *ngIf="['Admin', 'Site Manager', 'Librarian'].includes(userType)">
-      <button class="action-button delete" (click)="deleteResource(item); $event.stopPropagation()">
+    <!-- הצגת כפתורים לספרנית -->
+
+    <div
+      class="actions"
+      *ngIf="['Admin', 'Site Manager', 'Librarian'].includes(userType)"
+    >
+      <button
+        class="action-button delete"
+        (click)="deleteResource(item); $event.stopPropagation()"
+      >
         <i class="far fa-trash-alt"></i>
       </button>
       <button class="action-button edit">עריכה</button>
     </div>
- <!-- הצגת כפתורים לתלמידה -->
+    <!-- הצגת כפתורים לתלמידה -->
     <div class="actions" *ngIf="userType === 'Student'">
- <button
+      <button
         class="action-button favorite"
         [ngClass]="{
           favorite: item.isFavorite,
           'not-favorite': !item.isFavorite
         }"
         (click)="toggleFavorite(item); $event.stopPropagation()"
+      >
         <i class="far fa-heart"></i>
       </button>
-
       <button (click)="toggleFavorite(item); $event.stopPropagation()">
         {{ item.isFavorite ? "הסר מהמועדפים" : "הוסף למועדפים" }}
       </button>
 
-      <button class="action-button download" *ngIf="
-        item.type === 'כרזה' ||
-        item.type === 'דף עבודה' ||
-        item.type === 'איור' ||
-        item.type === 'יצירה' ||
-        item.type === 'סרטון' ||
-        item.type === 'שיר' ||
+      <button
+        class="action-button download"
+        *ngIf="
+          item.type === 'כרזה' ||
+          item.type === 'דף עבודה' ||
+          item.type === 'איור' ||
+          item.type === 'יצירה' ||
+          item.type === 'סרטון' ||
+          item.type === 'שיר' ||
           item.type === 'מערך' ||
           item.type === 'טקסט'
-      " (click)="downloadResource(item); $event.stopPropagation()">
+        "
+        (click)="downloadResource(item); $event.stopPropagation()"
+      >
         <i class="fas fa-download"></i>
       </button>
-      <button class="action-button order" *ngIf="item.type === 'ספר'" (click)="$event.stopPropagation()">
+      <button
+        class="action-button order"
+        *ngIf="item.type === 'ספר'"
+        (click)="$event.stopPropagation()"
+      >
         להזמנה
       </button>
     </div>
