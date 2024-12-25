@@ -14,7 +14,6 @@ import { ApiService } from '../../api.service';
 export class FavoritesComponent implements OnInit {
   favorites: any[] = [];
   userId: string = '';
-  // userType: string = '';
 
   constructor(private apiService: ApiService, private router: Router) {}
 
@@ -46,9 +45,9 @@ export class FavoritesComponent implements OnInit {
   async fetchFavorites(): Promise<void> {
     if (this.userId) {
       return new Promise<void>((resolve, reject) => {
-        this.apiService.Read(`/favorites/${this.userId}`).subscribe({
+        this.apiService.Read(`/favorites/user/${this.userId}`).subscribe({
           next: (data) => {
-            this.favorites = data;
+            this.favorites = data.favorites;
             console.log('favorites', this.favorites);
             this.fetchFavoriteItemsDetails();
             resolve(); // מסיים את ההמתנה

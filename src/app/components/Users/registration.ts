@@ -71,6 +71,8 @@ export class RegistrationComponent {
       .Post('/users/register', this.registrationForm.value)
       .subscribe({
         next: (response) => {
+          console.log(response);
+          localStorage.setItem('access_token', response.access_token);
           this.registrationForm.reset();
           this.router.navigate(['/success-registration']);
         },
