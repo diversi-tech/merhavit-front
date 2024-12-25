@@ -49,32 +49,26 @@
     <p><strong>מחבר:</strong> {{ item?.author || '' }}</p>
     <p><strong>תיאור:</strong> {{ item?.description || '' }}</p>
     <!-- הוספת חוות דעת -->
-    <mat-form-field class="example-chip-list">
-      <mat-chip-grid #chipGrid aria-label="Enter reviews">
-        <input
-          matInput
-          placeholder="הוספת תגית"
-          [matChipInputFor]="chipGrid"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          [matChipInputAddOnBlur]="addOnBlur"
-          (matChipInputTokenEnd)="addTag($event)"
-          type="text"
-          (keyup)="validateLength()"
-          maxlength="10"
-        />
-        <mat-chip-row
-          *ngFor="let tag of item.tags; let i = index"
-          (removed)="removeTag(tag, i)"
-        >
-          {{ tag }}
-          <button matChipRemove [attr.aria-label]="'remove ' + tag">
+    <!-- <mat-form-field class="example-form-field">
+      <mat-label>Tags</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Enter tags">
+        <mat-chip-row *ngFor="let tag of tags.controls; let i = index" (removed)="removeTag(i)" (matChipEdited)="editTag(i, $event)">
+          {{ tag.value }}
+          <button matChipRemove aria-label="'remove ' + tag.value">
             <mat-icon>cancel</mat-icon>
           </button>
         </mat-chip-row>
       </mat-chip-grid>
-    </mat-form-field>
+      <input
+        placeholder="New tag..."
+        [matChipInputFor]="chipGrid"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        [matChipInputAddOnBlur]="addOnBlur"
+        (matChipInputTokenEnd)="addTag($event)"
+      />
+    </mat-form-field> -->
     
-
+    
   </div>
 
   <!-- פריטים דומים -->

@@ -8,7 +8,8 @@
 <div class="user-management-container">
   <!-- שורת הכותרת -->
   <div class="user-header">
-    <div class="user-cell">שם מלא</div>
+    <div class="user-cell">שם פרטי</div>
+    <div class="user-cell">שם משפחה</div>
     <div class="user-cell">ת.ז.</div>
     <div class="user-cell">כתובת</div>
     <div class="user-cell">מספר טלפון</div>
@@ -19,7 +20,8 @@
   </div>
 
   <div class="user-row" *ngFor="let user of users">
-    <div class="user-cell">{{ user.fullName || 'N/A' }}</div>
+    <div class="user-cell">{{ user.firstName || 'N/A' }}</div>
+    <div class="user-cell">{{ user.lastName || 'N/A' }}</div>
     <div class="user-cell">{{ user.idNumber || 'N/A' }}</div>
     <div class="user-cell">{{ user.address || 'N/A' }}</div>
     <div class="user-cell">{{ user.phoneNumber || 'N/A' }}</div>

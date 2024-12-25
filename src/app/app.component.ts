@@ -6,11 +6,11 @@ import { ItemsListModule } from './show/items-list.module';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { materialize } from 'rxjs';
+// import { materialize } from 'rxjs';
 import { SearchComponent } from './components/Students/search/search.component';
 import { ItemPageComponent } from './components/item-page/item-page.component';
 import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component'
 
 

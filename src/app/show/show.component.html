@@ -2,62 +2,99 @@
 
 <!-- הצגת רשימת הפריטים -->
   <div class="table-container" style="direction: rtl">
-    <div class="row" *ngFor="let item of items" (click)="navigateToItemPage(item._id)">
+    (click)="navigateToItemPage(item.id)"
       <div class="item-content" >
-        <img
+      <div class="item-container">
+
+      <!-- אם יש תמונה, הצג אותה -->
+  <ng-container *ngIf="item.coverImage; else fileExtensionTemplate">
+      <img
+      [src]="item.coverImage"
+        alt="Item Image"
+        class="item-image"
+      />
+  </ng-container>
+  <!-- אם אין תמונה, הצג את סיומת הקובץ -->
+  <ng-template #fileExtensionTemplate>
+    <div class="file-extension-container">
+      <ng-container [ngSwitch]="getFileExtension(item.filePath)">
+        <i *ngSwitchCase="'.pdf'" class="file-icon pdf-icon">PDF</i>
+        <i *ngSwitchCase="'.doc'" class="file-icon doc-icon">DOC</i>
+        <i *ngSwitchCase="'.jpg'" class="file-icon jpg-icon">JPG</i>
+        <i *ngSwitchCase="'.png'" class="file-icon png-icon">PNG</i>
+        <i *ngSwitchDefault class="file-icon default-icon">
+          {{ getFileExtension(item.filePath) || 'Unknown' }}
+        </i>
+      </ng-container>
+    </div>
+  </ng-template>
+</div>
+
+      <!-- <img
         [src]="item.coverImage || 'image/file-not-found'"
-          alt="Item Image"
-          class="item-image"
-        />
+        alt="Item Image"
+        class="item-image"
+      /> -->
         <div class="item-details">
           <div class="item-title">{{ item.title }}</div>
           <div class="item-description">{{ item.description }}</div>
           <div class="item-meta">
             <span class="meta-label">מחבר:</span>
             <span class="meta-value">{{ item.author }}</span> |
-            <span class="meta-label">תאריך הוצאה:</span>
-          <span class="meta-value">
-            {{ item.publicationDate | date: 'dd/MM/yyyy' }}
-          </span>
+          <span class="meta-label">תאריך העלאה:</span>
+          <span class="meta-value">{{
+            item.publicationDate | date : "dd/MM/yyyy"
+          }}</span>
           </div>
         </div>
       </div>
 
-
     <!-- הצגת כפתורים לספרנית -->
-    <div class="actions" 
-    *ngIf="['Admin', 'Site Manager', 'Librarian'].includes(userType)"
+
+    <div
+      class="actions"
+      *ngIf="['Admin', 'Site Manager', 'Librarian'].includes(userType)"
     >
-      <button class="action-button delete" (click)="deleteResource(item)">
+      <button
+        class="action-button delete"
+        (click)="deleteResource(item); $event.stopPropagation()"
+      >
         <i class="far fa-trash-alt"></i>
       </button>
     <button class="action-button edit" (click)="editItem(item)">עריכה</button>
     </div>
-
     <!-- הצגת כפתורים לתלמידה -->
     <div class="actions" *ngIf="userType === 'Student'">
       <button
         class="action-button favorite"
-        (click)="addToFavorites(item); $event.stopPropagation()"
+        [ngClass]="{
+          favorite: item.isFavorite,
+          'not-favorite': !item.isFavorite
+        }"
+        (click)="toggleFavorite(item); $event.stopPropagation()"
       >
         <i class="far fa-heart"></i>
       </button>
-      
-      <!-- כפתורים להורדה עבור סוגי פריטים מסוימים -->
+      <button (click)="toggleFavorite(item); $event.stopPropagation()">
+        {{ item.isFavorite ? "הסר מהמועדפים" : "הוסף למועדפים" }}
+      </button>
+
       <button
         class="action-button download"
         *ngIf="
-          item.type === 'תמונה' ||
+          item.type === 'כרזה' ||
+          item.type === 'דף עבודה' ||
+          item.type === 'איור' ||
+          item.type === 'יצירה' ||
           item.type === 'סרטון' ||
           item.type === 'שיר' ||
-          item.type === 'מערך'
+          item.type === 'מערך' ||
+          item.type === 'טקסט'
         "
         (click)="downloadResource(item); $event.stopPropagation()"
       >
         <i class="fas fa-download"></i>
       </button>
-
-      <!-- כפתור להזמנה עבור ספרים -->
       <button
         class="action-button order"
         *ngIf="item.type === 'ספר'"
