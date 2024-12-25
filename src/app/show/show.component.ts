@@ -274,6 +274,9 @@ import { ApiService } from '../api.service';
 import { jwtDecode } from 'jwt-decode';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import {log} from 'console';
+import {ChangeDetectionStrategy} from '@angular/core';
+import {MatCardModule} from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 
 
 interface Item {
@@ -295,7 +298,7 @@ interface Item {
   templateUrl: './show.component.html',
   styleUrls: ['./show.component.css'],
   standalone: true,
-  imports: [CommonModule, MatTableModule],
+  imports: [CommonModule, MatTableModule, MatCardModule, MatIconModule],
 })
 export class ItemsListComponent implements OnInit {
   public items: Item[] = []; // מערך המוצרים של הספריה
