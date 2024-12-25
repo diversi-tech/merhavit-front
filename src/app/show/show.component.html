@@ -18,11 +18,38 @@
     (click)="navigateToItemPage(item)"
   >
     <div class="item-content">
-      <img
+      <div class="item-container">
+
+      <!-- אם יש תמונה, הצג אותה -->
+  <ng-container *ngIf="item.coverImage; else fileExtensionTemplate">
+    <img
+      [src]="item.coverImage"
+      alt="Item Image"
+      class="item-image"
+    />
+  </ng-container>
+
+  <!-- אם אין תמונה, הצג את סיומת הקובץ -->
+  <ng-template #fileExtensionTemplate>
+    <div class="file-extension-container">
+      <ng-container [ngSwitch]="getFileExtension(item.filePath)">
+        <i *ngSwitchCase="'.pdf'" class="file-icon pdf-icon">PDF</i>
+        <i *ngSwitchCase="'.doc'" class="file-icon doc-icon">DOC</i>
+        <i *ngSwitchCase="'.jpg'" class="file-icon jpg-icon">JPG</i>
+        <i *ngSwitchCase="'.png'" class="file-icon png-icon">PNG</i>
+        <i *ngSwitchDefault class="file-icon default-icon">
+          {{ getFileExtension(item.filePath) || 'Unknown' }}
+        </i>
+      </ng-container>
+    </div>
+  </ng-template>
+</div>
+
+      <!-- <img
         [src]="item.coverImage || 'image/file-not-found'"
         alt="Item Image"
         class="item-image"
-      />
+      /> -->
       <div class="item-details">
         <div class="item-title">{{ item.title }}</div>
         <div class="item-description">{{ item.description }}</div>

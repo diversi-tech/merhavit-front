@@ -248,3 +248,39 @@
     color: gray;
   }
 }
+
+.file-extension-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 5vw; /* תואם לגובה התמונה */
+  width: 5vw;  /* תואם לרוחב התמונה */
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  font-size: 1.2rem; /* גודל טקסט יותר ברור */
+  font-weight: bold; /* טקסט בולט יותר */
+  color: #555;
+  border-radius: 0.5rem; /* מתאים לעיגול הפינות של התמונה */
+  object-fit: cover; /* שומר על מיקום בתוך הריבוע */
+}
+
+.file-icon {
+  font-size: 1rem; /* מתאים לפרופורציה */
+}
+
+.pdf-icon {
+  color: red;
+}
+
+.doc-icon {
+  color: blue;
+}
+
+.jpg-icon,
+.png-icon {
+  color: green;
+}
+
+.default-icon {
+  color: gray;
+}

@@ -270,7 +270,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../api.service';
 import { jwtDecode } from 'jwt-decode';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
-import { log } from 'console';
+// import { log } from 'console';
 
 interface Item {
   _id: string;
