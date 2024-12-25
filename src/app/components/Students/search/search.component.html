@@ -1,29 +1,48 @@
-
 <div class="search-bar-container">
   <div class="top-icons">
-       <!-- כפתור ההתנתקות -->
-       <button class="logout-button" (click)="logout()">
-        <span>Logout</span>
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#434343">
-          <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v80h-80v-80H200v560h560v-80h80v80q0 33-23.5 56.5T760-120H200Zm480-160-56-56 103-104H360v-80h367L624-624l56-56 200 200-200 200Z"/>
-        </svg>
-      </button>
+    <!-- כפתור ההתנתקות -->
+    <button class="logout-button" (click)="logout()">
+      <span>Logout</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="24px"
+        viewBox="0 -960 960 960"
+        width="24px"
+        fill="#434343"
+      >
+        <path
+          d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v80h-80v-80H200v560h560v-80h80v80q0 33-23.5 56.5T760-120H200Zm480-160-56-56 103-104H360v-80h367L624-624l56-56 200 200-200 200Z"
+        />
+      </svg>
+    </button>
     <!-- אייקון לב ריק (Font Awesome) -->
-    <i class="far fa-heart" style="color:#434343; font-size:3vh; width:2vw;" [routerLink]="['/favorites']"></i>
+    <i
+      class="far fa-heart"
+      style="color: #434343; font-size: 3vh; width: 2vw"
+      [routerLink]="['/favorites']"
+    ></i>
 
-  
     <!-- אייקון פעמון ריק (Font Awesome) -->
-    <i class="far fa-bell" style="color:#434343; font-size:3vh; width:2vw;"></i>
-    <button *ngIf="userType!=='Student'" [routerLink]="'/upload-resource'" class="upload-button">
+    <i
+      class="far fa-bell"
+      style="color: #434343; font-size: 3vh; width: 2vw"
+    ></i>
+    <button
+      *ngIf="userType !== 'Student'"
+      [routerLink]="'/upload-resource'"
+      class="upload-button"
+    >
       העלאת קובץ
-  </button>
+    </button>
     <!-- אייקון המשתמש עם האות הראשונה -->
-    <div class="user-icon" [routerLink]="['/personal-details']">{{firstName}} </div>
+    <div class="user-icon" [routerLink]="['/personal-details']">
+      {{ firstName }}
+    </div>
   </div>
 
   <div class="white-box">
     <div class="white-box-icons">
-      <div class="dropdown-container">
+      <div *ngIf="!isUserManagementComponent" class="dropdown-container">
         <div class="dropdown-header" (click)="toggleFilterOptions()">
           {{ selectedFileType === "all" ? "כל סוגי הקבצים" : selectedFileType }}
           <span class="dropdown-arrow">&#9662;</span>
@@ -40,64 +59,121 @@
       </div>
 
       <!-- אייקון פילטר -->
-      <i (click)="toggleDetails()" class="fas fa-filter" style="color:#434343; font-size:4vh; cursor:pointer;"></i>
+      <i
+        (click)="toggleDetails()"
+        class="fas fa-filter"
+        style="color: #434343; font-size: 4vh; cursor: pointer"
+      ></i>
+      <!-- <i (click)="toggleDetails()" class="fas fa-sliders-h" style="color:#000; font-size:4vh; cursor:pointer;"></i> -->
 
       <div class="filter-details-container" *ngIf="showDetails">
-        <div class="filter-details-box">
+        <div *ngIf="!isUserManagementComponent" class="filter-details-box">
           <!-- עמודה שנייה - צד שמאל -->
           <div class="filter-column">
             <div class="filter-row">
               <label for="file-type">סוג קובץ</label>
-              <input id="file-type" type="text" placeholder="סוג קובץ">
+              <input id="file-type" type="text" placeholder="סוג קובץ" />
             </div>
             <div class="filter-row">
               <label for="borrowable">ניתן להשאלה</label>
-              <input id="borrowable" type="text" placeholder="ניתן להשאלה">
+              <input id="borrowable" type="text" placeholder="ניתן להשאלה" />
             </div>
             <div class="filter-row">
               <label for="language">שפה:</label>
-              <input id="language" type="text" placeholder="שפה">
+              <input id="language" type="text" placeholder="שפה" />
             </div>
             <div class="filter-row">
               <label for="subjects">נושאים</label>
-              <input id="subjects" type="text" placeholder="נושאים">
+              <input id="subjects" type="text" placeholder="נושאים" />
             </div>
             <div class="filter-row">
               <label for="sku">מק"ט</label>
-              <input id="sku" type="text" placeholder="מקט">
+              <input id="sku" type="text" placeholder="מקט" />
             </div>
             <div class="filter-row">
               <label for="borrow-time">משך השאלה</label>
-              <input id="borrow-time" type="text" placeholder="משך השאלה">
+              <input id="borrow-time" type="text" placeholder="משך השאלה" />
             </div>
           </div>
           <!-- עמודה ראשונה - צד ימין -->
           <div class="filter-column">
             <div class="filter-row">
               <label for="title">כותר</label>
-              <input id="title" type="text" placeholder="כותר">
+              <input id="title" type="text" placeholder="כותר" />
             </div>
             <div class="filter-row">
               <label for="publisher">מו"ל</label>
-              <input id="publisher" type="text" placeholder="מול">
+              <input id="publisher" type="text" placeholder="מול" />
             </div>
             <div class="filter-row">
               <label for="hebrew-year">שנת הוצאה עברי</label>
-              <input id="hebrew-year" type="text" placeholder="שנת הוצאה עברי">
+              <input
+                id="hebrew-year"
+                type="text"
+                placeholder="שנת הוצאה עברי"
+              />
             </div>
             <div class="filter-row">
               <label for="latin-year">שנת הוצאה לועזי</label>
-              <input id="latin-year" type="text" placeholder="שנת הוצאה לועזי">
+              <input
+                id="latin-year"
+                type="text"
+                placeholder="שנת הוצאה לועזי"
+              />
             </div>
             <div class="filter-row">
               <label for="level">גיל/רמה</label>
-              <input id="level" type="text" placeholder="גיל/רמה">
+              <input id="level" type="text" placeholder="גיל/רמה" />
             </div>
             <div class="filter-row">
               <label for="new-in-database">חדש במאגר</label>
-              <input id="new-in-database" type="text" placeholder="חדש במאגר">
+              <input id="new-in-database" type="text" placeholder="חדש במאגר" />
             </div>
           </div>
+        </div>
+        <!-- הצגת תיבת פילטר מותאמת -->
+        <div *ngIf="isUserManagementComponent" class="filter-details-box">
+          <div class="filter-column">
+            <div class="filter-row">
+              <label for="email">מייל</label>
+              <input id="email" type="text" placeholder="מייל" />
+            </div>
+            <div class="filter-row">
+              <label for="class">כיתה</label>
+              <input id="class" type="text" placeholder="כיתה" />
+            </div>
+            <div class="filter-row">
+              <label for="specialization">התמחות</label>
+              <input id="specialization" type="text" placeholder="התמחות" />
+            </div>
+            <div class="filter-row">
+              <label for="role">תפקיד</label>
+              <input id="role" type="text" placeholder="תפקיד" />
+            </div>
+          </div>
+          <div class="filter-column">
+            <div class="filter-row">
+              <label for="first-name">שם פרטי</label>
+              <input id="first-name" type="text" placeholder="שם פרטי" />
+            </div>
+            <div class="filter-row">
+              <label for="last-name">שם משפחה</label>
+              <input id="last-name" type="text" placeholder="שם משפחה" />
+            </div>
+            <div class="filter-row">
+              <label for="id-number">תעודת זהות</label>
+              <input id="id-number" type="text" placeholder="תעודת זהות" />
+            </div>
+            <div class="filter-row">
+              <label for="address">כתובת</label>
+              <input id="address" type="text" placeholder="כתובת" />
+            </div>
+            <div class="filter-row">
+              <label for="phone">טלפון</label>
+              <input id="phone" type="text" placeholder="טלפון" />
+            </div>
+          </div>
+          
         </div>
       </div>
     </div>
