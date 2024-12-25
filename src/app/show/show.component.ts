@@ -16,7 +16,7 @@ import { MatSnackBar } from '@angular/material/snack-bar'; // ייבוא MatSnac
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 import { jwtDecode } from 'jwt-decode';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 // import { log } from 'console';
 
 interface Item {
@@ -489,7 +489,7 @@ onPageChange(event: PageEvent) {
 
 nextPage() {
   this.currentPage++;
-    this.getAllItems(this.currentPage);
+    this.getItems(this.currentPage);
     // this.updateFavoriteStatus();
     this.getItems(this.currentPage).then(() => this.updateFavoriteStatus());
 }
@@ -541,7 +541,7 @@ previousPage() {
               next: (response) => {
                 this.favorites = response.favorites || [];
                 resolve();
-      this.getAllItems(this.currentPage);
+      this.getItems(this.currentPage);
               },
 
               error: (err) => {
