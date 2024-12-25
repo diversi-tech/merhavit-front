@@ -14,66 +14,6 @@
   overflow: hidden; 
 }
 
-.sidebar {
-  width: 14vw; /* הצמצום של הרוחב ל-20% */
-  background-color: #f3f7fd;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 2vh 1.5vw; /* פדינג גמיש */
-  height: 100vh;
-  box-sizing: border-box;
-  direction: rtl;
-}
-
-.sidebar-header {
-  display: flex;
-  align-items: center; 
-  justify-content: flex-start;
-  margin-bottom: 2vh;
-  font-size: 1rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-}
-
-.sidebar-icon {
-  width: 4vw;
-  height: auto;
-}
-
-.sidebar-title {
-  font-weight: normal; 
-  font-size: 2rem; /* גודל גמיש */
-  margin: 0; 
-  padding-left: 0; 
-}
-
-.sidebar-menu {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  direction: rtl;
-}
-
-.sidebar-menu li {
-  margin: 1.5vh 0; 
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-}
-
-.sidebar-menu li a {
-  display: block;
-  text-decoration: none;
-  color: #333;
-  font-size: 1rem;
-  padding: 1.5vh 0;
-  border-radius: 0.5rem;
-  transition: background-color 0.3s ease;
-}
-
-.sidebar-menu li a:hover {
-  background-color: #d5dff4;
-}
-
 .content {
   flex: 1;
   padding: 0; 
@@ -94,6 +34,8 @@
 .header {
   padding: 0; 
   margin: 0; 
+
+  z-index: 1;
 }
 
 .content {
@@ -104,36 +46,7 @@
   margin: 0; 
 }
 
-/* סגנון כללי של תת-תפריט */
-.submenu {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  background-color: #c7d8f0; /* רקע כחול כהה יותר */
-  border-radius: 1rem;
-}
 
-.submenu li a {
-  display: block;
-  padding: 1.2vh 2.5vw;
-  color: #333;
-  font-size: 1rem;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-}
 
-.submenu li a:hover {
-  background-color: #a9c1e5; /* רקע כחול כהה עוד יותר */
-  color: #000;
-}
 
-/* אייקון החץ */
-.submenu-icon {
-  margin-right: auto; /* מצמיד את החץ לצד שמאל */
-  transition: transform 0.3s ease;
-}
 
-.submenu-icon.open {
-  transform: rotate(180deg); /* סיבוב החץ */
-}
