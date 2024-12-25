@@ -347,79 +347,7 @@ export class ItemsListComponent implements OnInit {
       console.warn('Code is running on the server. Skipping token check.');
     }
   }
-
-  // async getItems(page: number = 0, limit: number = 1000, searchTerm:string = '', typeFilter: string = '') {
-  //   if(searchTerm!==''&&typeFilter===''){
-  //     this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&searchTerm=${searchTerm}`).subscribe({
-  //       next: (response) => {
-  //         console.log('All items response: ', response);
   
-  //         if (Array.isArray(response)) {
-  //           this.items = response;
-  //         } else {
-  //           this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
-  //         }
-  //         // אם יש סוג בפרמטרים של ה-URL, נסנן מיד
-  //         const type = this.route.snapshot.queryParamMap.get('type');
-  //         if (type) {
-  //           this.filterItemsByType(type);
-  //         } else {
-  //           this.items = this.items; // הצגת כל הפריטים בהתחלה
-  //         }
-  //       },
-  //       error: (err) => {
-  //         console.error('Error fetching all items', err);
-  //       },
-  //     });
-  //   }
-  //   if(searchTerm===''&&typeFilter!=='')
-  //     {this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&typeFilter=${typeFilter}`).subscribe({
-  //       next: (response) => {
-  //         console.log('i this is the response: ', response);
-  
-  //         if (Array.isArray(response)) {
-  //           this.items = response;
-  //         } else {
-  //           this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
-  //         }
-  //       },
-  //       error: (err) => {
-  //         console.error('Error fetching items', err);
-  //       },
-  //     });}
-  //     if(searchTerm!==''&&typeFilter!=='')
-  //       {this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&searchTerm=${searchTerm}&typeFilter=${typeFilter}`).subscribe({
-  //         next: (response) => {
-  //           console.log('i this is the response: ', response);
-    
-  //           if (Array.isArray(response)) {
-  //             this.items = response;
-  //           } else {
-  //             this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
-  //           }
-  //         },
-  //         error: (err) => {
-  //           console.error('Error fetching items', err);
-  //         },
-  //       });}
-  //       else
-  //       { this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}`).subscribe({
-  //         next: (response) => {
-  //           console.log('i this is the response: ', response);
-    
-  //           if (Array.isArray(response)) {
-  //             this.items = response
-  //           } else {
-  //             this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
-  //           }
-  //         },
-  //         error: (err) => {
-  //           console.error('Error fetching items', err);
-  //         },
-  //   });}
-    
-  // }
-
   async getItems(page: number = 0, limit: number = 1000, searchTerm:string = '', typeFilter: string = '') {
     if(searchTerm!==''&&typeFilter===''){
       this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&searchTerm=${searchTerm}`).subscribe({
@@ -571,6 +499,14 @@ export class ItemsListComponent implements OnInit {
         },
       });
   }
+
+  
+  updateItems(items: Item[]): void {
+    this.items = items;
+
+  }
+  
+  
 
 
   // filterItemsByType(type: string): void {

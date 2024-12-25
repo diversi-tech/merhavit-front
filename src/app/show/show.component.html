@@ -12,6 +12,7 @@
 
 <!-- הצגת רשימת הפריטים -->
 <div class="table-container" style="direction: rtl">
+  <div class="no-data-message" *ngIf="items.length === 0">אין נתונים להצגה</div>  
   <div class="row" *ngFor="let item of items" (click)="navigateToItemPage(item)">
     <div class="item-content">
       <img [src]="item.coverImage || 'image/file-not-found'" alt="Item Image" class="item-image" />
