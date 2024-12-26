@@ -57,17 +57,20 @@
           [(ngModel)]="link"
           (input)="onLinkChange()"
         />
+        <button *ngIf="link" (click)="removeLink()">X</button>
       </div>
       <div *ngIf="link && !isValidLink" class="error-message">
         הקישור אינו חוקי. יש לוודא שמדובר ב-URL תקין.
       </div>
     </div>
   </div>
+  <div *ngIf="fileErrorMessage" class="error-message">{{fileErrorMessage}}</div>
   </div>
   
 
   <!-- העלאת תמונה -->
-  <div *ngIf="!isImage" class="image-container" >
+  <div *ngIf="!isImage && contentOption!=='edit'" class="image-container" >
+    <button *ngIf="coverImage" (click)="removeCoverImage()">X</button>
     <img [src]="displayImage" alt="תמונת שער"/>
     
     <div class="upload-overlay">
@@ -75,6 +78,7 @@
       <input type="file" #imageInput (change)="onImageSelected($event)" accept=".jpg, .jpeg, .png"
         style="display: none;" />
     </div>
+    <div *ngIf="coverImageErrorMessage" class="error-message" id="coverImageErrorMessage">{{coverImageErrorMessage}}</div>
   </div>
 </div>
     
@@ -87,49 +91,66 @@
       <div class="form-section">
         <h2>פרטי קובץ</h2>
         <div class="form-group">
-          <!-- <label for="title">כותרת </label>
-          <input class="input_fields" type="text" id="title" formControlName="title" > -->
+          
           <label for="title">כותרת </label>
           <input class="input_fields" type="text" id="title" formControlName="title" [placeholder]="formMode === 'edit' ? fileForm.get('title')?.value : 'הכנס כותרת'">          
           </div>
         <div class="form-group">
           <label for="publicationDate">תאריך העלאה*</label>
           <input class="input_fields" type="date" id="publicationDate" formControlName="publicationDate" [placeholder]="formMode === 'edit' ? fileForm.get('publicationDate')?.value : 'הכנס כותרת'"/>
+          <div class="error-fields" *ngIf="fileForm.get('publicationDate')?.invalid && fileForm.get('publicationDate')?.touched">
+            <small *ngIf="fileForm.get('publicationDate')?.errors?.['required']">יש להזין תאריך </small>
+          </div>
         </div>
-        <div class="form-group" *ngIf="formMode!='edit'">
+        <div class="form-group" *ngIf="contentOption!='edit'">
           <label for="type">סוג קובץ*</label>
           <select class="input_fields" id="type" formControlName="type" (change)="onFileTypeChange($event)  ">
             <option  *ngFor="let type of fileTypes" [value]="type">{{ type }}</option>
           </select>
+          <div class="error-fields" *ngIf="fileForm.get('type')?.invalid && fileForm.get('type')?.touched">
+            <small *ngIf="fileForm.get('type')?.errors?.['required']">יש לבחור סוג קובץ</small>
+          </div>
         </div>
         <div class="form-group">
           <label for="subjectInput">נושא*</label>
           <mat-form-field  class="autocomplete-container">
-            <mat-chip-grid #subjectChipList  aria-label="רשימת התמחות">
-              <mat-chip-row *ngFor="let subject of multipleChoiceFields['subjects'].optionSelected" [removable]="true" (removed)="remove(subject,'subjects')">
-                {{subject}}
-                <button matChipRemove>×</button>
-              </mat-chip-row>
+            <mat-chip-grid #subjectChipList  >
+              <div class="input-container">
+              <mat-icon matPrefix class="dropdown-icon">expand_more</mat-icon>
               <input
               id="subjectInput"
               class="input_fields"
               matInput
+                
                 [matChipInputFor]="subjectChipList "
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                 [matChipInputAddOnBlur]="true"
                 (matChipInputTokenEnd)="add($event,'subjects')"
                 [matAutocomplete]="subjectsAuto"
+                (focusout)="markFieldAsTouched('subjects')"
                 [value]="formMode === 'edit' ? multipleChoiceFields['subjects'].optionSelected.join(', ') : ''"
                 [placeholder]="formMode === 'edit' ? '' : 'הכנס נושא'"
-                />
+              />
+            </div>
+              <mat-chip-row *ngFor="let subject of multipleChoiceFields['subjects'].optionSelected" [removable]="true" (removed)="remove(subject,'subjects')">
+                {{subject}}
+                <button matChipRemove>×</button>
+              </mat-chip-row>
             </mat-chip-grid>
-            <mat-autocomplete #subjectsAuto="matAutocomplete" (optionSelected)="select($event,'subjects')" [disableRipple]="true">
-              <mat-option *ngFor="let subject of (multipleChoiceFields['subjects'].filteredOption$ | async)" [value]="subject">
+            <mat-autocomplete #subjectsAuto="matAutocomplete" (optionSelected)="select($event,'subjects')" [displayWith]="displayFn" [autoActiveFirstOption]="false" >
+              <mat-option *ngFor="let subject of (multipleChoiceFields['subjects'].filteredOption$ | async)" [value]="subject" (change)="toggleSelection( subject, 'subjects')" (click)="$event.stopPropagation()" >
+                <div (click)="optionClicked($event, subject,'subjects')">
+                  <mat-checkbox [checked]="multipleChoiceFields['subjects'].optionSelected.includes(subject)">
                 {{ subject }}
+              </mat-checkbox>
+            </div>
               </mat-option>
               <button mat-raised-button color="primary" class="custom-button" (click)="openDialog()" >+ נושא חדש</button>
             </mat-autocomplete>
           </mat-form-field>
+          <div class="error-fields" *ngIf="fileForm.get('subjects')?.invalid && fileForm.get('subjects')?.touched">
+            <small *ngIf="fileForm.get('subjects')?.errors?.['required']">יש לבחור לפחות נושא אחד</small>
+          </div>
         </div>
       </div>
       <div class="form-section">
@@ -139,10 +160,8 @@
         <label for="specializationsInput">התמחות*</label>
          <mat-form-field  class="autocomplete-container">
           <mat-chip-grid #specializationsChipList  aria-label="רשימת התמחות">
-            <mat-chip-row *ngFor="let specialization of multipleChoiceFields['specializations'].optionSelected" [removable]="true" (removed)="remove(specialization,'specializations')">
-              {{specialization}}
-              <button matChipRemove>×</button>
-            </mat-chip-row>
+            <div class="input-container"> 
+            <mat-icon matPrefix class="dropdown-icon">expand_more</mat-icon>
             <input
             id="specializationsInput"
             class="input_fields"
@@ -152,26 +171,37 @@
               [matChipInputAddOnBlur]="true"
               (matChipInputTokenEnd)="add($event,'specializations')"
               [matAutocomplete]="specializationsAuto"
+              (focusout)="markFieldAsTouched('specializations')"
               [value]="formMode === 'edit' ? multipleChoiceFields['specializations'].optionSelected.join(', ') : ''"
               [placeholder]="formMode === 'edit' ? '' : 'הכנס התמחות'"
             />
+          </div>
+            <mat-chip-row *ngFor="let specialization of multipleChoiceFields['specializations'].optionSelected" [removable]="true" (removed)="remove(specialization,'specializations')">
+              {{specialization}}
+              <button matChipRemove>×</button>
+            </mat-chip-row>
           </mat-chip-grid>
-          <mat-autocomplete #specializationsAuto="matAutocomplete" (optionSelected)="select($event,'specializations')" [disableRipple]="true">
-            <mat-option *ngFor="let specialization of (multipleChoiceFields['specializations'].filteredOption$ | async)" [value]="specialization">
+          <mat-autocomplete #specializationsAuto="matAutocomplete" (optionSelected)="select($event,'specializations')" [displayWith]="displayFn" [autoActiveFirstOption]="false" >
+            <mat-option *ngFor="let specialization of (multipleChoiceFields['specializations'].filteredOption$ | async)" [value]="specialization" (change)="toggleSelection( specialization, 'specializations')" (click)="$event.stopPropagation()" >
+              <div (click)="optionClicked($event, specialization,'specializations')">
+                <mat-checkbox [checked]="multipleChoiceFields['specializations'].optionSelected.includes(specialization)">
               {{ specialization }}
+            </mat-checkbox>
+          </div>
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
+        <div class="error-fields" *ngIf="fileForm.get('specializations')?.invalid && fileForm.get('specializations')?.touched">
+          <small *ngIf="fileForm.get('specializations')?.errors?.['required']">יש לבחור לפחות התמחות אחת</small>
+        </div>
       </div>
 
       <div class="form-group">
         <label for="agesInput">לאיזה גיל מיועד הקובץ*</label>
          <mat-form-field  class="autocomplete-container">
           <mat-chip-grid #agesChipList  aria-label="רשימת גילאים">
-            <mat-chip-row *ngFor="let age of multipleChoiceFields['ages'].optionSelected" [removable]="true" (removed)="remove(age,'ages')">
-              {{age}}
-              <button matChipRemove>×</button>
-            </mat-chip-row>
+            <div class="input-container">
+            <mat-icon matPrefix class="dropdown-icon">expand_more</mat-icon>
             <input
             id="agesInput"
             class="input_fields"
@@ -181,16 +211,30 @@
               [matChipInputAddOnBlur]="true"
               (matChipInputTokenEnd)="add($event,'ages')"
               [matAutocomplete]="agesAuto"
+              (focusout)="markFieldAsTouched('ages')"
               [value]="formMode === 'edit' ? multipleChoiceFields['ages'].optionSelected.join(', ') : ''"
               [placeholder]="formMode === 'edit' ? '' : ''"
             />
+            />
+          </div>
+            <mat-chip-row *ngFor="let age of multipleChoiceFields['ages'].optionSelected" [removable]="true" (removed)="remove(age,'ages')">
+              {{age}}
+              <button matChipRemove>×</button>
+            </mat-chip-row>
           </mat-chip-grid>
-          <mat-autocomplete #agesAuto="matAutocomplete" (optionSelected)="select($event,'ages')" [disableRipple]="true">
-            <mat-option *ngFor="let age of (multipleChoiceFields['ages'].filteredOption$ | async)" [value]="age">
+          <mat-autocomplete #agesAuto="matAutocomplete" (optionSelected)="select($event,'ages')"  [displayWith]="displayFn" [autoActiveFirstOption]="false" >
+            <mat-option *ngFor="let age of (multipleChoiceFields['ages'].filteredOption$ | async)" [value]="age" (change)="toggleSelection( age, 'ages')" (click)="$event.stopPropagation()" >
+              <div (click)="optionClicked($event, age,'ages')">
+              <mat-checkbox [checked]="multipleChoiceFields['ages'].optionSelected.includes(age)">
               {{ age }}
+            </mat-checkbox>
+            </div>
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
+        <div class="error-fields" *ngIf="fileForm.get('ages')?.invalid && fileForm.get('ages')?.touched">
+          <small *ngIf="fileForm.get('ages')?.errors?.['required']">יש לבחור לפחות גיל אחד</small>
+        </div>
       </div>  
       
         <div class="form-group">
@@ -198,6 +242,9 @@
           <select class="input_fields" id="level" formControlName="level">
             <option *ngFor="let level of levels" [value]="level">{{ level }}</option>
           </select>
+          <div class="error-fields" *ngIf="fileForm.get('level')?.invalid && fileForm.get('level')?.touched">
+            <small *ngIf="fileForm.get('level')?.errors?.['required']">יש לבחור רמה</small>
+          </div>
         </div>
 
         <div class="form-group">
@@ -205,6 +252,9 @@
           <select class="input_fields" id="language" formControlName="language">
             <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
           </select>
+          <div class="error-fields" *ngIf="fileForm.get('language')?.invalid && fileForm.get('language')?.touched">
+            <small *ngIf="fileForm.get('language')?.errors?.['required']">יש לבחור שפה</small>
+          </div>
         </div>
       </div>
       
@@ -222,27 +272,45 @@
           <select class="input_fields" id="purchaseLocation" formControlName="purchaseLocation">
             <option *ngFor="let location of purchaseLocations" [value]="location">{{ location }}</option>
           </select>
+          <div class="error-fields" *ngIf="fileForm.get('purchaseLocation')?.invalid && fileForm.get('purchaseLocation')?.touched">
+            <small *ngIf="fileForm.get('purchaseLocation')?.errors?.['required']">יש לבחור מקום קניה</small>
+          </div>
         </div>
         <div class="form-group">
           <label for="price">*כמה עלה</label>
           <input class="input_fields" type="number" id="price" formControlName="price" />
+        <div class="error-fields" *ngIf="fileForm.get('price')?.invalid && fileForm.get('price')?.touched">
+            <small *ngIf="fileForm.get('price')?.errors?.['required']">יש להזין מחיר</small>
+          </div>
         </div>
         <div class="form-group">
           <label for="catalogNumber">*מק"ט</label>
           <input class="input_fields" type="text" id="catalogNumber" formControlName="catalogNumber" />
+       <div class="error-fields" *ngIf="fileForm.get('catalogNumber')?.invalid && fileForm.get('catalogNumber')?.touched">
+            <small *ngIf="fileForm.get('titcatalogNumberle')?.errors?.['required']">יש להזין מק"ט</small>
+          </div>
         </div>
         <div class="form-group">
           <label for="copies">*מס עותקים</label>
           <input class="input_fields" type="number" id="copies" formControlName="copies" />
+        <div class="error-fields" *ngIf="fileForm.get('copies')?.invalid && fileForm.get('copies')?.touched">
+            <small *ngIf="fileForm.get('copies')?.errors?.['required']">יש להזין מס עותקים</small>
+          </div>
         </div> -->
         
           <div class="form-group">
             <label for="releaseYear">שנת הוצאה*</label>
-            <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" [placeholder]="formMode === 'edit' ? fileForm.get('releaseYear')?.value : 'הכנס שנת הוצאה'"/>
+            <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" [placeholder]="formMode === 'edit' ? fileForm.get('releaseYear')?.value : 'הכנס שנת הוצאה'" />
+            <div class="error-fields" *ngIf="fileForm.get('releaseYear')?.invalid && fileForm.get('releaseYear')?.touched">
+              <small *ngIf="fileForm.get('releaseYear')?.errors?.['required']">יש להזין שנת הוצאה</small>
+            </div>
           </div>
           <div class="form-group">
             <label for="author">מחבר/זמר*</label>
             <input class="input_fields" type="text" id="author" formControlName="author" [placeholder]="formMode === 'edit' ? fileForm.get('author')?.value : 'הכנס מחבר/זמר'"/>
+            <div class="error-fields" *ngIf="fileForm.get('author')?.invalid && fileForm.get('author')?.touched">
+              <small *ngIf="fileForm.get('author')?.errors?.['required']">יש להזין מחבר/זמר</small>
+            </div>
           </div>
         </div>
         <!-- כותרת: סטטוס -->
@@ -258,6 +326,9 @@
         <div class="form-group">
           <label for="loanValidity">*תוקף השאלה</label>
           <input class="input_fields" type="text" id="loanValidity" formControlName="loanValidity" />
+        <div class="error-fields" *ngIf="fileForm.get('loanValidity')?.invalid && fileForm.get('loanValidity')?.touched">
+            <small *ngIf="fileForm.get('loanValidity')?.errors?.['required']">יש להזין תוקף</small>
+          </div>
         </div>
       </div> -->
       </div>
@@ -267,10 +338,8 @@
           <label for="tagsInput">תגיות</label>
           <mat-form-field  class="autocomplete-container">
             <mat-chip-grid #tagsChipList  aria-label="רשימת תגיות">
-              <mat-chip-row *ngFor="let tag of multipleChoiceFields['tags'].optionSelected" [removable]="true" (removed)="remove(tag,'tags')">
-                {{getTagById(tag)}}
-                <button matChipRemove>×</button>
-              </mat-chip-row>
+              <div class="input-container">
+              <mat-icon matPrefix class="dropdown-icon">expand_more</mat-icon>
               <input
               id="tagsInput"
               class="input_fields"
@@ -280,18 +349,27 @@
                 [matChipInputAddOnBlur]="true"
                 (matChipInputTokenEnd)="add($event,'tags')"
                 [matAutocomplete]="tagsAuto"
-               
+                
                 [placeholder]="formMode === 'edit' ? '' : 'הכנס תגים'"                
                 [formArrayName]="'tags'"
-
               />
+              </div>
+              <mat-chip-row *ngFor="let tag of multipleChoiceFields['tags'].optionSelected" [removable]="true" (removed)="remove(tag,'tags')">
+                {{getTagById(tag)}}
+                <button matChipRemove>×</button>
+              </mat-chip-row>
             </mat-chip-grid>
-            <mat-autocomplete #tagsAuto="matAutocomplete" (optionSelected)="select($event,'tags')" [disableRipple]="true">
-              <mat-option *ngFor="let tag of (multipleChoiceFields['tags'].filteredOption$ | async)" [value]="tag._id">
+            <mat-autocomplete #tagsAuto="matAutocomplete" (optionSelected)="select($event,'tags')" [displayWith]="displayFn" [autoActiveFirstOption]="false" >
+              <mat-option *ngFor="let tag of (multipleChoiceFields['tags'].filteredOption$ | async)" [value]="tag._id" (change)="toggleSelection( tag, 'tags')" (click)="$event.stopPropagation()" >
+                <div (click)="optionClicked($event, tag,'tags')">
+                  <mat-checkbox [checked]="multipleChoiceFields['tags'].optionSelected.includes(tag._id)">
                 {{ tag.name }}
+              </mat-checkbox>
+            </div>
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
+          
         </div>
         <div class="form-group">
           <label for="description">מה עוד כדאי לדעת?</label>
@@ -304,5 +382,4 @@
         {{ isSubmitting ? 'שולח...' : 'שלח' }}
       </button>
   </form>
-
   </div>
