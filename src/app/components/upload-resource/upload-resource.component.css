@@ -355,14 +355,14 @@ padding: 8px;
 }
 
 .input-container {
-  /* display: flex;
-  align-items: center; */
+  display: flex;
+  align-items: center;
   position: relative;
   width: 100%; 
 }
 
 .input-container input {
-  /* flex: 1; */
+  flex: 1;
   padding-right: 30px; /* מרחב לאייקון */
   box-sizing: border-box; /* וודאי שה-padding לא ישנה את הגודל */
   width: 100%;
@@ -370,7 +370,7 @@ padding: 8px;
 
 .dropdown-icon {
   position: absolute;
-  left: 55%; /* מיקום בצד שמאל */
+  margin-right: 283px; /* מיקום בצד שמאל */
   top: 50%; /* מרכזי אנכית */
   transform: translateY(-50%);
   pointer-events: none; /* מניעת לחיצה על האייקון */
