@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { map, Observable, startWith } from 'rxjs';
 import { ApiService } from '../../api.service';
@@ -21,6 +21,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 import { Router, RouterModule } from '@angular/router';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 
 
@@ -33,7 +34,7 @@ import { Router, RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule,FormsModule,ReactiveFormsModule,MatChipsModule, MatAutocompleteModule, 
     MatFormFieldModule, MatInputModule,MatIconModule,OverlayModule,MatAutocompleteModule, 
-    MatButtonModule,MatRadioModule,QuillModule,RouterModule],
+    MatButtonModule,MatRadioModule,QuillModule,RouterModule,MatCheckboxModule],
   templateUrl: './upload-resource.component.html',
   styleUrls: ['./upload-resource.component.css']
 })
@@ -43,9 +44,11 @@ export class UploadResourceComponent
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   formMode:string='add'
-  contentOption: string='';//שמירת מצב הטופס לפי סוג הקובץ המוכנס לתוכו
+  contentOption: string='edit';//שמירת מצב הטופס לפי סוג הקובץ המוכנס לתוכו
   errorMessage: string | null = null;//הודעת שגיאה לכפתור רדיו
   formErrorMessage:string|null=null;//הודעת שגיאה לטופס חסר שדות חובה
+  fileErrorMessage: string|null=null //הודעת שגיאה חסר קובץ
+  coverImageErrorMessage:string |null=null //הודעת שגיאה חסר תמונת שער
 //שמירה באיזה מצב של הטופס מילאו ערך
   disabledOptions: Record<string, boolean> = {
     edit: false,
@@ -119,13 +122,13 @@ export class UploadResourceComponent
     // יצירת טופס
     this.fileForm = this.fb.group({
       title: ['', Validators.required],
-      publicationDate: ['', Validators.required],
+      publicationDate: ['', Validators.required],  
       type: ['', Validators.required],
-      subjects: this.fb.array([[], Validators.required]),
+      subjects: this.fb.array([], [Validators.required]),
       //approved: ['', Validators.required],
       //loanValidity: ['', Validators.required],
-      specializations:this.fb.array([[], Validators.required]),
-      ages: this.fb.array([[], Validators.required]),
+      specializations:this.fb.array([],[ Validators.required]),
+      ages: this.fb.array([], [Validators.required]),
       level: ['', Validators.required],
       language: ['', Validators.required],
       //purchaseLocation: ['', Validators.required],
@@ -174,6 +177,11 @@ export class UploadResourceComponent
     }
     })
     
+    this.fileForm.statusChanges.subscribe((status) => {
+      if (status === 'VALID') {
+        this.formErrorMessage = null; // הסתרת ההודעה כאשר הטופס תקין
+      }
+    });
   }
 
   //חסימת אפשרות להעלאת כמה סוגי קבצים
@@ -226,6 +234,12 @@ export class UploadResourceComponent
     console.log("link:",this.link);
     this.disabledOptions['addLink']= this.link && this.isValidLink? true:false;
     this.errorMessage= this.disabledOptions['addLink']?null:this.errorMessage;
+    if(this.link){
+            this.fileErrorMessage=null
+            this.formErrorMessage=null
+    }
+    else
+      this.fileErrorMessage="חסר קובץ / קישור / תוכן. אנא מלאי אחת מהאפשרויות"
   }
 
   //בעת בחירת קובץ ממחשב
@@ -267,16 +281,36 @@ export class UploadResourceComponent
           }
       }
       this.disabledOptions['add']=this.file? true:false 
+      if(this.file)
+      {
+                this.fileErrorMessage=null
+                this.formErrorMessage=null
+      }
   }
 
   //מחיקת הקובץ הנבחר
   removeSelectedFile()
   {
-    debugger
     this.file=null
     this.previewImage=this.sanitizer.bypassSecurityTrustResourceUrl('assets/camera-placeholder.jpg')
     this.clearPreviewsExcept('image');
     this.disabledOptions['add']=this.file? true:false
+
+    
+      this.fileErrorMessage="חסר קובץ / קישור / תוכן. אנא מלאי אחת מהאפשרויות"
+  }
+
+  removeCoverImage()
+  {
+    this.coverImage=null
+    this.displayImage=null
+    this.coverImageErrorMessage="חסר תמונת תצוגה מקדימה לקובץ"
+  }
+
+  removeLink()
+  {
+    this.link='';
+    this.onLinkChange()
   }
 
   //בעת שינוי סוג קובץ
@@ -300,6 +334,12 @@ export class UploadResourceComponent
 
 
       }
+      if(this.coverImage){
+                this.coverImageErrorMessage=null
+                this.formErrorMessage=null
+      }
+      else
+       this.coverImageErrorMessage="חסר תמונת תצוגה מקדימה לקובץ"
     }
 
     //שמירה איזה סוג קובץ נבחר
@@ -313,7 +353,15 @@ export class UploadResourceComponent
   //כאשר מקלידים באפשרות עריכת תוכן
   onEditFileSelected()
   {
+    console.log("content",this.content);
     this.disabledOptions['edit']= this.content? true:false//חסימה של שאר האפשרויות
+    if(this.content){
+            this.fileErrorMessage=null
+            this.formErrorMessage=null
+    }
+    else
+    this.fileErrorMessage="חסר קובץ / קישור / תוכן. אנא מלאי אחת מהאפשרויות"
+
   }
 
   //יצירת קובץ HTML המכיל את התוכן שהמשתמש הקליד
@@ -356,54 +404,78 @@ export class UploadResourceComponent
   }
 
   //הוספת ערך בשדה בחירה מרובה
-  add(event: MatChipInputEvent,fieldKey:string): void {
+  add(event: any, fieldKey: string): void {
     const value = (event.value || '').trim();
-    console.log("val: "+value);
-    const field=this.multipleChoiceFields[fieldKey]
-    
-    if (value && field.allOption.includes(value) /*&& !this.specializations.includes(value)*/) {
-      field.optionSelected.push(value);
-      const Array = this.fileForm.get(fieldKey) as FormArray;
-      Array.push(new FormControl(value));
-  
+    const field = this.multipleChoiceFields[fieldKey];
+
+    const option = field.allOption.find(opt => opt.name === value);
+    const optionId = option ? option._id : value;
+
+    if (value && field.allOption.includes(optionId) && !field.optionSelected.includes(optionId)) {
+      field.optionSelected.push(optionId);
+      const array = this.fileForm.get(fieldKey) as FormArray;
+      array.push(new FormControl(optionId));
     }
-  
+
     event.chipInput!.clear();
-  field.Ctrl.setValue('');
+    field.Ctrl.setValue('');
+    if (this.fileForm.valid) {
+      this.formErrorMessage = null; 
+    }
   }
+
 
   //הסרת ערך משדה בחירה מרובה
-  remove(option: string,fieldKey:string): void 
-  {
-    const field=this.multipleChoiceFields[fieldKey]
-    const Array = this.fileForm.get(fieldKey) as FormArray;
-  const index = Array.controls.findIndex(ctrl => ctrl.value === option);
+  remove(option: string, fieldKey: string): void {
+    const field = this.multipleChoiceFields[fieldKey];
+    const array = this.fileForm.get(fieldKey) as FormArray;
+    const index = field.optionSelected.indexOf(option);
 
-  if (index >= 0) {
-    Array.removeAt(index);
-    field.optionSelected.splice(index, 1);     
-  }
-  }
-
-//בחירת ערך מרשימה לשדה בחירה מרובה
-  select(event: MatAutocompleteSelectedEvent,fieldKey:string): void {
-    const value = event.option.value.trim(); // השתמשי ב-option.value במקום ב-viewValue
-    const field=this.multipleChoiceFields[fieldKey]
-
-    if (value && value !== null && value !== undefined) {
-      const Array = this.fileForm.get(fieldKey) as FormArray;
-      console.log("Array: ",Array);
-
-    if (!field.optionSelected.includes(value)) {
-      console.log("value: ",value);
-      
-      field.optionSelected.push(value);
-    
-    // הוספת ההתמחות שנבחרה למערך ההתמחויות שבטופס
-    Array.push(new FormControl(value));
+    if (index >= 0) {
+      field.optionSelected.splice(index, 1);
+      array.removeAt(index);
     }
   }
-    field.Ctrl.setValue('');    
+
+  //טיפול בהכנסת הערך הנבחר למערכים
+   toggleSelection(option:any,fieldKey:string) {
+    const field = this.multipleChoiceFields[fieldKey];
+    const optionId = typeof option === 'object' ? option._id : option;
+
+    if (!field.optionSelected.includes(optionId)) {
+          field.optionSelected.push(optionId);
+          const array = this.fileForm.get(fieldKey) as FormArray;
+          array.push(new FormControl(optionId));
+        }
+     else {
+      this.remove(optionId, fieldKey);
+    }
+    
+    field.Ctrl.setValue('');
+      
+  }
+
+//בחירת ערך מרשימה עי סימון לשדה בחירה מרובה
+   optionClicked(event: Event, option:any,fieldKey:string) {
+    event.stopPropagation();
+    this.toggleSelection(option,fieldKey);
+  }
+
+  displayFn(value: string): string {
+    return value;
+  }
+
+//בחירת ערך מרשימה  ע"י לחיצה לשדה בחירה מרובה
+  select(event: MatAutocompleteSelectedEvent,fieldKey:string): void {
+    const value = event.option.value.trim(); // השתמשי ב-option.value במקום ב-viewValue
+     this.toggleSelection(value, fieldKey);   
+  }
+  
+  markFieldAsTouched(fieldName: string): void {
+    const field = this.fileForm.get(fieldName);
+    if (field && !field.touched) {
+      field.markAsTouched();
+    }
   }
   
   //יבוא תגיות מטבלת תגיות
@@ -528,7 +600,7 @@ export class UploadResourceComponent
         }
            
 
-        if(this.coverImage)//הכנסת תמונת שער לאוביקט לשליחה
+        if(this.coverImage && this.contentOption!=='edit')//הכנסת תמונת שער לאוביקט לשליחה
         {
           console.log("image "+this.coverImage);
           
@@ -543,9 +615,9 @@ export class UploadResourceComponent
            Swal.fire({ //הודעה למשתמש
             title: 'טופס נשלח בהצלחה!',
             icon: 'success',
-            showCancelButton: true,
+            showCancelButton: false,
             confirmButtonText: 'OK',
-            buttonsStyling: false,
+            buttonsStyling: true,
             
             customClass: {
                 confirmButton: 'btn btn-primary px-4',
@@ -563,9 +635,9 @@ export class UploadResourceComponent
             title: 'תקלה בשליחת הטופס!',
             text: 'שגיאה '+err.status ,
             icon: 'error',
-            showCancelButton: true,
+            showCancelButton: false,
             confirmButtonText: 'OK',
-            buttonsStyling: false,
+            buttonsStyling: true,
             
             customClass: {
                 confirmButton: 'btn btn-primary px-4',
@@ -581,7 +653,21 @@ export class UploadResourceComponent
   }else{
     console.log("טופס לא תקין");
     this.isSubmitting = false;
-    this.formErrorMessage="טופס לא תקין. אנא וודאי שכל השדות מלאים" //הצגת מסר למשתמש אם השדות לא תקינים
+
+    if(this.file || this.link || this.content){
+      this.fileErrorMessage=null
+    }
+    else{
+      this.fileErrorMessage="חסר קובץ / קישור / תוכן. אנא מלאי אחת מהאפשרויות"
+    }
+
+    if(this.coverImage)
+      this.coverImageErrorMessage=null
+    else
+     this.coverImageErrorMessage="חסר תמונת תצוגה מקדימה לקובץ"
+    
+    this.formErrorMessage="טופס לא תקין. אנא וודאי שכל השדות הנדרשים מלאים" //הצגת מסר למשתמש אם השדות לא תקינים
+    this.fileForm.markAllAsTouched();
   }
   
 }
