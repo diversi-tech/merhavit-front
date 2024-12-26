@@ -16,7 +16,7 @@ import { MatSnackBar } from '@angular/material/snack-bar'; // ייבוא MatSnac
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 import { jwtDecode } from 'jwt-decode';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 // import { log } from 'console';
 
 interface Item {
@@ -187,9 +187,11 @@ onPageChange(event: PageEvent) {
 
               if (Array.isArray(response.data)) {
                 this.items = response.data;
+                this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+
               } else {
                 this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
-		 this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+		            this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
               }
               // אם יש סוג בפרמטרים של ה-URL, נסנן מיד
               const type = this.route.snapshot.queryParamMap.get('type');
@@ -220,6 +222,9 @@ onPageChange(event: PageEvent) {
               if (Array.isArray(response.data)) {
                 this.items = response.data;
                 console.log('this.items***************', this.items);
+                this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+                console.log('this.totalItems***************', this.totalItems);
+
               } else {
                 this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
                 console.log('this.items***************', this.items);
@@ -246,6 +251,8 @@ onPageChange(event: PageEvent) {
 
               if (Array.isArray(response.data)) {
                 this.items = response.data;
+                this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+
               } else {
                 this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
 		 this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
@@ -268,6 +275,8 @@ onPageChange(event: PageEvent) {
 
               if (Array.isArray(response.data)) {
                 this.items = response.data;
+                this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+
               } else {
                 this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
 		 this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
@@ -293,6 +302,8 @@ onPageChange(event: PageEvent) {
         console.log('All items response: ', response);
         if (Array.isArray(response.data)) {
           this.items = response.data;
+          this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+
         } else {
           this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
 	   this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
@@ -489,7 +500,7 @@ onPageChange(event: PageEvent) {
 
 nextPage() {
   this.currentPage++;
-    this.getAllItems(this.currentPage);
+    this.getItems(this.currentPage);
     // this.updateFavoriteStatus();
     this.getItems(this.currentPage).then(() => this.updateFavoriteStatus());
 }
@@ -541,7 +552,7 @@ previousPage() {
               next: (response) => {
                 this.favorites = response.favorites || [];
                 resolve();
-      this.getAllItems(this.currentPage);
+      this.getItems(this.currentPage);
               },
 
               error: (err) => {

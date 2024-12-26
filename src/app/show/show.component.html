@@ -1,11 +1,15 @@
   
 
 <!-- הצגת רשימת הפריטים -->
-  <div class="table-container" style="direction: rtl">
-    (click)="navigateToItemPage(item.id)"
-      <div class="item-content" >
+  
+<div class="table-container" style="direction: rtl">
+  <div
+    class="row"
+    *ngFor="let item of items"
+    (click)="navigateToItemPage(item)"
+  >
+    <div class="item-content">
       <div class="item-container">
-
       <!-- אם יש תמונה, הצג אותה -->
   <ng-container *ngIf="item.coverImage; else fileExtensionTemplate">
       <img
