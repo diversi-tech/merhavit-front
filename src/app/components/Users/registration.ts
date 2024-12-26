@@ -54,7 +54,10 @@ export class RegistrationComponent {
     // קריאה לשרת כדי לקבל את רשימת הסמינרים
     this.apiService.Read('/seminaries').subscribe((data: any[]) => {
    
+      console.log('data', data)
       this.seminaries = data; // שמירה של הרשימה המלאה כפי שהתקבלה מהשרת
+      console.log('this.seminaries', this.seminaries)
+
     });
   }
 
@@ -71,6 +74,8 @@ export class RegistrationComponent {
       .Post('/users/register', this.registrationForm.value)
       .subscribe({
         next: (response) => {
+          console.log(response);
+          localStorage.setItem('access_token', response.access_token);
           this.registrationForm.reset();
           this.router.navigate(['/success-registration']);
         },
