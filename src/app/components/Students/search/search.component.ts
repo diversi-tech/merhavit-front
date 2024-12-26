@@ -1,9 +1,10 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router'; // ייבוא Router
 import { jwtDecode } from 'jwt-decode';
 import { filter } from 'rxjs/operators'; // ייבוא filter
+import { SearchService } from '../../../shared/search.service';
 
 
 @Component({
@@ -20,8 +21,20 @@ export class SearchComponent {
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public firstName: string = ''; // משתנה לשם פרטי (אות ראשונה)
   isUserManagementComponent = false;
-
-  constructor(private router: Router,private route: ActivatedRoute) {}
+  searchTerm: string = '';
+  // filterOption: string = 'all';
+  filters = {
+    email: '',
+    class: '',
+    specialization: '',
+    userType: '',
+    firstName: '',
+    lastName: '',
+    idNumber: '',
+    address: '',
+    phone: '',
+  };
+  constructor(private router: Router,private route: ActivatedRoute,private searchService: SearchService) {}
 
   ngOnInit(): void {
     this.extractUserDetailsFromToken(); // קריאה לפונקציה בעת טעינת הרכיב
@@ -99,25 +112,71 @@ export class SearchComponent {
   }
 
   @HostListener('document:click', ['$event.target'])
-  onDocumentClick(target: HTMLElement) {
-    const dropdownContainer = document.querySelector(
-      '.dropdown-container'
-    ) as HTMLElement;
-    const filterDetailsBox = document.querySelector(
-      '.filter-details-box'
-    ) as HTMLElement;
+onDocumentClick(target: HTMLElement) {
+  const dropdownContainer = document.querySelector(
+    '.dropdown-container'
+  ) as HTMLElement;
+  const filterDetailsBox = document.querySelector(
+    '.filter-details-box'
+  ) as HTMLElement;
 
-    // בדיקה אם הלחיצה הייתה מחוץ לאזור התפריט או הסינון
-    if (dropdownContainer && !dropdownContainer.contains(target)) {
-      this.showFilterOptions = false;
+  // בדיקה אם הלחיצה הייתה מחוץ לאזור התפריט
+  if (dropdownContainer && !dropdownContainer.contains(target)) {
+    this.showFilterOptions = false;
+
+    // איפוס השדות באובייקט filters
+    this.resetFilters();
+  }
+
+  // בדיקה אם הלחיצה הייתה מחוץ לאזור הסינון
+  if (
+    filterDetailsBox &&
+    !filterDetailsBox.contains(target) &&
+    !target.classList.contains('fa-filter')
+  ) {
+    this.showDetails = false;
+    this.resetFilters()
+  }
+}
+
+// פונקציה לאיפוס השדות באובייקט filters
+resetFilters() {
+  this.filters = {
+    email: '',
+    class: '',
+    specialization: '',
+    userType: '',
+    firstName: '',
+    lastName: '',
+    idNumber: '',
+    address: '',
+    phone: '',
+  };
+  this.onFilterChangeUsers();
+}
+
+
+  onFilterChangeUsers() {
+    console.log('onSearchChange', this.filters);
+  
+    // צור את מילת החיפוש מתוך כל השדות (אם הם מלאים)
+    const filterText = Object.keys(this.filters) // מקבל את שמות השדות
+      .filter((key) => this.filters[key as keyof typeof this.filters] !== '') // מסנן את השדות שאינם ריקים
+      .map((key) => `${key}:${this.filters[key as keyof typeof this.filters]}`) // מצרף את שם השדה ואת הערך
+      .join(' '); // מצרף את כל השדות לשורת חיפוש אחת
+  
+    // שולח את מילת החיפוש לשירות החיפוש
+    this.searchService.setFilterOption(filterText);
+  }
+  onSearchChange(){
+    if(this.isUserManagementComponent){
+      this.onSearchChangeUsers()
     }
 
-    if (
-      filterDetailsBox &&
-      !filterDetailsBox.contains(target) &&
-      !target.classList.contains('fa-filter')
-    ) {
-      this.showDetails = false;
-    }
+  }
+  
+
+  onSearchChangeUsers() {
+    this.searchService.setSearchTerm(this.searchTerm);
   }
 }
