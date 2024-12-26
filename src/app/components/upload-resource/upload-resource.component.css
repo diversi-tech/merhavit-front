@@ -133,6 +133,7 @@ border: solid;
   }
   
   .form-section {
+    width:50%;
     flex: 1 1 45%; /* שתי כותרות בשורה */
     margin-bottom: 20px;
     padding-bottom: 0 !important;
@@ -205,6 +206,7 @@ mat-form-field .mat-form-field-flex {
     min-width: 200px;
     direction: rtl;
     text-align: right;
+    
   }
 
   .custom-button {
@@ -313,6 +315,8 @@ padding: 8px;
     vertical-align: top; /* יישור אנכי אחיד */
     margin: 0.5rem 0; /* ריווח אחיד */
     box-sizing: border-box;
+    padding-left: 36px; /* מספיק מקום לחץ בתוך השדה */
+  box-sizing: border-box;
 }
 
 ::ng-deep.custom-snackbar {
@@ -348,6 +352,43 @@ padding: 8px;
   margin-top: 10px;
   text-align: center;
   font-size: medium;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%; 
+}
+
+.input-container input {
+  flex: 1;
+  padding-right: 30px; /* מרחב לאייקון */
+  box-sizing: border-box; /* וודאי שה-padding לא ישנה את הגודל */
+  width: 100%;
+}
+
+.dropdown-icon {
+  position: absolute;
+  margin-right: 283px; /* מיקום בצד שמאל */
+  top: 50%; /* מרכזי אנכית */
+  transform: translateY(-50%);
+  pointer-events: none; /* מניעת לחיצה על האייקון */
+  color: #151515; /* צבע האייקון */
+  font-size: 17px; /* גודל האייקון */
+  direction: ltr; /* מנטרל את השפעת ה-RTL */
+}
+
+
+.error-fields {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+#coverImageErrorMessage{
+  position: absolute;
+  bottom: 0%;
 }
 
 

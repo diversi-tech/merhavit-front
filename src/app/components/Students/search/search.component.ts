@@ -44,6 +44,7 @@ export class SearchComponent {
         this.checkIfUserManagementRoute(); // בדיקה מחדש בכל שינוי ניווט
       });
 
+      this.getUserTypeFromToken()
   }
 
   // פענוח ה-JWT וקבלת האות הראשונה של השם
@@ -103,6 +104,7 @@ export class SearchComponent {
         console.error('Error decoding token:', error);
       }
     }
+    
   }
 
   // פונקציה לניווט לעמוד הראשי
