@@ -8,11 +8,11 @@ import { FormsModule } from '@angular/forms';
 import { EditMediaComponent } from './edit-media/edit-media.component';
 import { MediaService } from './edit-media/media.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { materialize } from 'rxjs';
+// import { materialize } from 'rxjs';
 import { SearchComponent } from './components/Students/search/search.component';
 import { ItemPageComponent } from './components/item-page/item-page.component';
 import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component'
 
 
@@ -52,8 +52,9 @@ export class AppComponent {
     this.router.events.subscribe(() => {
   
         // נתיבים שבהם לא נרצה להציג את הקומפוננטה
-        const excludedRoutes = ['/login', '/registration', '/welcome','/','/reset-password','/forgot-password','/success-registration','/upload-resource'];
-        this.showSearchComponent = !excludedRoutes.includes(this.router.url);
+        const excludedRoutes = ['/login', '/registration', '/welcome','/','/reset-password','/forgot-password','/success-registration'];
+        const excludedRoutesForSeaech=['/upload-resource']
+        this.showSearchComponent = !excludedRoutes.includes(this.router.url) && !excludedRoutesForSeaech.includes(this.router.url);
         this.navigationBar = !excludedRoutes.includes(this.router.url);
       
     });

@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';  // יש לייבא את המודול הזה
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+type ItemType = 'all' | 'guests' | 'movies' | 'songs' | 'books' | 'posters' | 'worksheets' | 'paintings' | 'creations';
+
 
 @Component({
   selector: 'app-navigation-bar',
@@ -48,4 +50,8 @@ export class NavigationBarComponent {
     }
   }  
 
+  // navigateAndFilter(type: string): void {
+  //   this.router.navigate(['/items'], { queryParams: { type: type === 'all' ? '' : type } });
+  // }
+  
 }
