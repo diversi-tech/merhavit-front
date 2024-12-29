@@ -420,7 +420,7 @@ fetchSimilarItems(itemId: string) {
     this.reactiveKeywords.update((keywords) => {
       const updatedKeywords = keywords.filter((tag) => tag !== keyword);
   
-      // שליחת התגיות המעודכנות לשרת
+      // עדכון התגיות בשרת
       this.updateTagsOnServer(updatedKeywords);
   
       return updatedKeywords;
@@ -428,6 +428,7 @@ fetchSimilarItems(itemId: string) {
   
     this.announcer.announce(`Removed tag: ${keyword}`);
   }
+  
   
   
   updateTagsOnServer(tags: string[]): void {

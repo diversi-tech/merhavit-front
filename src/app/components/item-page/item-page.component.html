@@ -94,7 +94,8 @@
     <mat-chip-grid #reactiveChipGrid aria-label="Enter reactive form keywords" [formControl]="formControl">
       <mat-chip-row *ngFor="let keyword of reactiveKeywords()">
         {{ keyword }}
-        <button matChipRemove aria-label="'remove reactive form ' + keyword">
+        <!-- <button matChipRemove aria-label="'remove reactive form ' + keyword"> -->
+        <button matChipRemove (click)="removeReactiveKeyword(keyword)" aria-label="'remove reactive form ' + keyword">
           <mat-icon>cancel</mat-icon>
         </button>
       </mat-chip-row>
