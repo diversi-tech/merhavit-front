@@ -1,13 +1,10 @@
 .search-bar-container {
   display: flex;
   align-items: center;
-  width: 100%; /* או גודל קבוע כמו 400px */
-  max-width: 600px; /* קובע גודל מקסימלי */
   justify-content: space-between;
   background-color: #f3f7fd;
   padding: 2vh;
   height: 10vh;
-  max-width: 85vw;
   z-index: -1;
 
 }
@@ -163,14 +160,13 @@
   position: absolute;
   top: 100%;
   left: 0;
-  width: 100%; 
+  width: 98%; 
   background-color: white;
   border: 1px solid #ddd;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 8px; /* מעגל את הקצוות */
   overflow: hidden; /* מוודא שהתוכן לא יחרוג מהפינות המעוגלות */
   padding: 0; /* הסרת ריווח פנימי מיותר */
-  border-top: none; /* הסרת הקו בין השורה להיסטוריה */
   z-index: 10;
   height: auto;
   overflow-y: auto;
@@ -199,9 +195,7 @@
   background-color: #f3f7fd; /* רקע ב-hover */
 }
 
-.search-container {
-  position: relative; /* לוודא שהיסטוריית החיפוש תהיה מתואמת */
-}
+
 
 .search-bar-container {
   display: flex;
@@ -535,10 +529,10 @@
 .search-input-container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  /* gap: 8px;
   width: 100%;
   max-width: 400px; 
-  position: relative;
+  position: relative; */
 }
 
 
