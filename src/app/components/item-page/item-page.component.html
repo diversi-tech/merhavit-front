@@ -3,7 +3,7 @@
   <div *ngIf="item" class="grid-item item-1">
     <ng-container *ngIf="previewUrl; else noFile">
       <div *ngIf="isPoster || isWorksheet || isPainting || isCreation">
-        <img [src]="previewUrl" [alt]="item?.title || 'Image not found'">
+        <img [src]="previewUrl" [alt]="item.title || 'Image not found'">
       </div>
       <div *ngIf="isVideo">
         <video [src]="previewUrl" controls></video>
@@ -11,14 +11,14 @@
       <div *ngIf="isDocument || isBook">
         <!-- הצגת תמונת הכריכה -->
         <a 
-          *ngIf="item?.coverImage" 
+          *ngIf="item.coverImage" 
           [href]="previewUrl" 
           target="_blank" 
           rel="noopener noreferrer"
         >
           <img 
             [src]="item.coverImage" 
-            [alt]="'Cover image for ' + (item?.title || 'מערך')" 
+            [alt]="'Cover image for ' + (item.title || 'מערך')" 
             class="document-cover-image" 
             style="cursor: pointer; max-width: 100%; height: auto;"
           >
@@ -28,7 +28,7 @@
       
       <div *ngIf="isAudio">
         <!-- הצגת תמונת הכריכה מעל השיר -->
-        <img *ngIf="item?.coverImage" [src]="item.coverImage" [alt]="'Cover image for ' + (item?.title || 'שיר')" id="audio-cover-image">
+        <img *ngIf="item.coverImage" [src]="item.coverImage" [alt]="'Cover image for ' + (item.title || 'שיר')" id="audio-cover-image">
         <audio [src]="previewUrl" controls></audio>
       </div>
     </ng-container>
@@ -39,15 +39,15 @@
 
   <!-- פרטי הפריט -->
   <div *ngIf="item" class="grid-item item-2 item-details">
-    <h2>{{ item?.title || '' }}</h2>
-    <p><strong>תאריך פרסום:</strong> {{ item?.publicationDate || '' }}</p>
-    <p><strong>נושא:</strong> {{ item?.subjects?.join(', ') || '' }}</p>
-    <p><strong>גיל:</strong> {{ item?.ages || '' }}</p>
-    <p><strong>רמה:</strong> {{ item?.level || '' }}</p>
-    <p><strong>שפה:</strong> {{ item?.language || '' }}</p>
-    <p><strong>שנת הוצאה לאור:</strong> {{ item?.releaseYear || '' }}</p>
-    <p><strong>מחבר:</strong> {{ item?.author || '' }}</p>
-    <p><strong>תיאור:</strong> {{ item?.description || '' }}</p>
+    <h2>{{ item.title || '' }}</h2>
+    <p><strong>תאריך פרסום:</strong> {{ item.publicationDate || '' }}</p>
+    <p><strong>נושא:</strong> {{ item.subjects.join(', ') || '' }}</p>
+    <p><strong>גיל:</strong> {{ item.ages || '' }}</p>
+    <p><strong>רמה:</strong> {{ item.level || '' }}</p>
+    <p><strong>שפה:</strong> {{ item.language || '' }}</p>
+    <p><strong>שנת הוצאה לאור:</strong> {{ item.releaseYear || '' }}</p>
+    <p><strong>מחבר:</strong> {{ item.author || '' }}</p>
+    <p><strong>תיאור:</strong> {{ item.description || '' }}</p>
     <!-- <p *ngIf="item?.tags?.length"><strong>חוות דעת:</strong>{{item?.tags?.join(', ')}}</p> -->
     <!-- הוספת חוות דעת -->
     <!-- <mat-form-field class="example-form-field">
@@ -92,22 +92,22 @@
 <section>
   <mat-form-field class="example-form-field">
     <mat-chip-grid #reactiveChipGrid aria-label="Enter reactive form keywords" [formControl]="formControl">
-    @for (keyword of reactiveKeywords(); track keyword) {
-      <mat-chip-row (removed)="removeReactiveKeyword(keyword)">
-        {{keyword}}
-      <button matChipRemove aria-label="'remove reactive form' + keyword">
-        <mat-icon>cancel</mat-icon>
-      </button>
+      <mat-chip-row *ngFor="let keyword of reactiveKeywords()">
+        {{ keyword }}
+        <button matChipRemove aria-label="'remove reactive form ' + keyword">
+          <mat-icon>cancel</mat-icon>
+        </button>
       </mat-chip-row>
-    }
     </mat-chip-grid>
     <input
+      maxlength="10"
       placeholder="הוסיפי פידבק על התוכן"
       [matChipInputFor]="reactiveChipGrid"
       (matChipInputTokenEnd)="addReactiveKeyword($event)"
     />
   </mat-form-field>
 </section>
+
     
   </div>
 
@@ -119,11 +119,11 @@
         <div class="image-container">
           <!-- התמונה -->
           <img 
-            *ngIf="similarItem?.coverImage" 
+            *ngIf="similarItem.coverImage" 
             [src]="getCoverImageSimilarItem(similarItem)" 
-            [alt]="similarItem?.title || 'Cover image not found'"
+            [alt]="similarItem.title || 'Cover image not found'"
           >
-          <p *ngIf="!similarItem?.coverImage" class="file-not-found">הקובץ לא נמצא</p>
+          <p *ngIf="!similarItem.coverImage" class="file-not-found">הקובץ לא נמצא</p>
 
           <!-- אייקון מבוסס סוג -->
           <ng-container *ngIf="similarItem.type">
