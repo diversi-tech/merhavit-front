@@ -241,6 +241,7 @@ export class ItemPageComponent implements OnInit {
   if (itemId) {
     this.fetchItemDetails(itemId);
     this.fetchSimilarItems(itemId);
+    this.fetchTagsFromServer(itemId); // טעינת התגיות מהשרת
   } else {
     console.error('Item ID not found in route');
   }
@@ -375,60 +376,77 @@ fetchSimilarItems(itemId: string) {
   //   event.chipInput!.clear();
   // }
 
-  removeReactiveKeyword(keyword: string) {
-    this.reactiveKeywords.update(keywords => {
-      const index = keywords.indexOf(keyword);
-      if (index < 0) {
-        return keywords;
-      }
-  
-      // מחיקה מהמערך
-      keywords.splice(index, 1);
-      this.announcer.announce(`removed ${keyword} from reactive form`);
-  
-      // שליחה לשרת לאחר מחיקה
-      this.updateTagsOnServer(keywords);
-  
-      return [...keywords];
+  fetchTagsFromServer(itemId: string): void {
+    const url = `/item-page/${itemId}/tags`;
+    this.apiService.Read(url).subscribe({
+      next: (response: any) => {
+        console.log('Raw response fetched from server:', response);
+        if (response && Array.isArray(response.tags)) {
+          this.reactiveKeywords.set(response.tags);  // הגישה למערך מתוך המאפיין 'tags'
+        } else {
+          console.error('Unexpected response format:', response);
+          this.reactiveKeywords.set([]); // מוודא שאין שגיאה בקונסול
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching tags from server:', err);
+        this.reactiveKeywords.set([]); // הגדרת תגיות ריקות במקרה של שגיאה
+      },
     });
   }
   
+  
+
   addReactiveKeyword(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
   
-    // הוספת תגית
     if (value) {
-      this.reactiveKeywords.update(keywords => {
+      this.reactiveKeywords.update((keywords) => {
         const updatedKeywords = [...keywords, value];
   
-        // שליחה לשרת לאחר הוספה
+        // שליחת התגיות המעודכנות לשרת
         this.updateTagsOnServer(updatedKeywords);
   
-        this.announcer.announce(`added ${value} to reactive form`);
         return updatedKeywords;
       });
-    }
   
-    // ניקוי הערך בשדה
-    event.chipInput!.clear();
+      // ניקוי שדה הקלט
+      event.chipInput!.clear();
+    }
   }
   
-  updateTagsOnServer(updatedTags: string[]): void {
+  
+  removeReactiveKeyword(keyword: string): void {
+    this.reactiveKeywords.update((keywords) => {
+      const updatedKeywords = keywords.filter((tag) => tag !== keyword);
+  
+      // שליחת התגיות המעודכנות לשרת
+      this.updateTagsOnServer(updatedKeywords);
+  
+      return updatedKeywords;
+    });
+  
+    this.announcer.announce(`Removed tag: ${keyword}`);
+  }
+  
+  
+  updateTagsOnServer(tags: string[]): void {
     if (!this.item?._id) {
       console.error('Item ID is missing. Cannot update tags.');
       return;
     }
   
     const url = `/item-page/${this.item._id}/tags`;
-    this.apiService.Put(url, { tags: updatedTags }).subscribe({
+    this.apiService.Put(url, { tags }).subscribe({
       next: () => {
         console.log('Tags updated successfully on the server');
       },
       error: (err) => {
-        console.error('Error updating tags on the server', err);
+        console.error('Error updating tags on the server:', err);
       },
     });
   }
+  
   
 
   //  removeTag(index: number): void {
