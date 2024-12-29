@@ -6,7 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators'; // ייבוא filter
 import { SearchService } from '../../../shared/search.service';
 import { Item } from '../../../item.inteface';
-import { ItemsService } from '../../service/items.service';
+import { ItemsService } from  '../../service/items.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
