@@ -235,15 +235,6 @@
   justify-content: space-between;
 }
 
-.search-input {
-  border: none;
-  outline: none;
-  font-size: 1.2rem;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  flex-grow: 1;
-  direction: rtl;
-  padding-right: 0.5rem;
-}
 
 .white-box-icons {
   display: flex;
@@ -313,15 +304,7 @@
   justify-content: space-between;
 }
 
-.search-input {
-  border: none;
-  outline: none;
-  font-size: 1.2rem;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  flex-grow: 1;
-  direction: rtl;
-  padding-right: 0.5rem;
-}
+
 
 .white-box-icons {
   display: flex;
@@ -520,6 +503,32 @@
   color: #434343;
   cursor: pointer;
   padding: 0.5rem;
+}
+
+
+
+/* להוסיף מיקום יחסי לאייקון הפילטר כדי שהחלון יתמקם ביחס אליו */
+.fa-filter {
+  position: relative;
+  font-size: 1.25rem;
+  color: #434343;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+
+.search-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px; /* ניתן לשנות בהתאם לצרכים */
+  margin: auto;
+}
+
+.search-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
 }
 
 
