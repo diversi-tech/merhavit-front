@@ -45,7 +45,7 @@ export class LoginComponent {
 
     this.apiService.Post('/users/login', loginData).subscribe({
       next: (response) => {
-        console.log(response);
+        // console.log(response);
         localStorage.setItem('access_token', response.access_token);
         const decodedToken: any = jwtDecode(response.access_token);
         const userRole = decodedToken.userType;

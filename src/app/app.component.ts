@@ -53,7 +53,8 @@ export class AppComponent {
   
         // נתיבים שבהם לא נרצה להציג את הקומפוננטה
         const excludedRoutes = ['/login', '/registration', '/welcome','/','/reset-password','/forgot-password','/success-registration'];
-        this.showSearchComponent = !excludedRoutes.includes(this.router.url);
+        const excludedRoutesForSeaech=['/upload-resource']
+        this.showSearchComponent = !excludedRoutes.includes(this.router.url) && !excludedRoutesForSeaech.includes(this.router.url);
         this.navigationBar = !excludedRoutes.includes(this.router.url);
       
     });

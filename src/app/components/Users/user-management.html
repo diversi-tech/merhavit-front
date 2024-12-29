@@ -19,7 +19,7 @@
     <div class="user-cell">פעולות</div>
   </div>
 
-  <div class="user-row" *ngFor="let user of users">
+  <div class="user-row" *ngFor="let user of filteredUsers">
     <div class="user-cell">{{ user.firstName || 'N/A' }}</div>
     <div class="user-cell">{{ user.lastName || 'N/A' }}</div>
     <div class="user-cell">{{ user.idNumber || 'N/A' }}</div>
