@@ -75,7 +75,9 @@
       >
         <i class="far fa-trash-alt"></i>
       </button>
-      <button class="action-button edit">עריכה</button>
+      <button class="action-button edit"
+      (click)=" $event.stopPropagation()"
+      >עריכה</button>
     </div>
     <!-- הצגת כפתורים לתלמידה -->
     <div class="actions" *ngIf="userType === 'Student'">

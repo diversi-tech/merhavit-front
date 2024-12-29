@@ -144,6 +144,7 @@
   padding: 0.5em 1em;
   font-size: 1rem;
   cursor: pointer;
+  border-radius: 2em;
   transition: all 0.3s;
   background-color: transparent;
 }
@@ -240,6 +241,7 @@
 }
 
 .file-extension-container {
+  direction: ltr;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -273,4 +275,14 @@
 
 .default-icon {
   color: gray;
+}
+
+.my-custom-snackbar {
+  background-color: green;
+  color: white;
+}
+
+.error-snackbar {
+  background-color: red;
+  color: white;
 }
