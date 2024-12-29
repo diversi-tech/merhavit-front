@@ -577,19 +577,11 @@ export class ItemsListComponent implements OnInit {
         const type = params['type'];
         this.getItems(0, 1000, '', type);
      });
-     
-
       await this.loadFavorites();
       this.updateFavoriteStatus();
     } catch (error) {
       console.error('Error initializing data:', error);
     }
-
-    console.log('items after favorites:', this.items);
-    this.route.queryParams.subscribe((params) => {
-      const type = params['type'];
-      this.getItems(0, 1000, '', type); // קריאה לפונקציה getItems עם סוג הפריט המתאים
-    });
   }
 
   getUserTypeFromToken(): void {
