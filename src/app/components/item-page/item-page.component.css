@@ -173,8 +173,9 @@
 }
 
 /* תגיות */
-.example-chip-list {
-  width: 40vw;
+.example-form-field {
+  width: 50vw;
   background-color: white; 
 }
+
 
