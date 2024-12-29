@@ -1,11 +1,11 @@
 import { ItemsService } from './../../../items.service';
-import { Component, HostListener, Input } from '@angular/core';
+//import { Component, HostListener, Input } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router'; // ייבוא Router
 import { filter } from 'rxjs/operators'; // ייבוא filter
 import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router'; // ייבוא Router
+//import { Router, RouterModule } from '@angular/router'; // ייבוא Router
 import { jwtDecode } from 'jwt-decode';
 import { Item } from '../../interfaces/item.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs'; // אופרטורים לצמצום כמות הקריאות לשירות
@@ -33,10 +33,10 @@ export class SearchComponent implements OnInit {
   showFilterOptions: boolean = false;
   showDetails: boolean = false;
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
-    public firstName: string = ''; // משתנה לשם פרטי (אות ראשונה)
+  public firstName: string = ''; // משתנה לשם פרטי (אות ראשונה)
   isUserManagementComponent = false;
   // searchResults: any[] = [];
-  items:Item[]=[];
+ public items:Item[]=[];
   searchTerm = '';
   typeFilter = '';
 
@@ -80,6 +80,7 @@ export class SearchComponent implements OnInit {
     if (searchTerm) {
       this.itemsService.searchItems(searchTerm).subscribe(
         (response) => {
+          this.items=response;
           console.log('התקבלו התוצאות:', response);
           // כאן תוכל לעבד את התשובה ולבצע פעולה בהתאם (כמו עדכון רשימה)
         },
@@ -91,7 +92,7 @@ export class SearchComponent implements OnInit {
       console.log('לא הוזנה מילה לחיפוש');
     }
   }
-    const currentUrl = this.router.url; // מקבל את ה-URL הנוכחי
+   // const currentUrl = this.router.url; // מקבל את ה-URL הנוכחי
 //   console.log('Type filter:', this.typeFilter);
 
 //       const filteredData = response.data.filter((item: any) => 
@@ -125,7 +126,7 @@ export class SearchComponent implements OnInit {
     this.showFilterOptions = !this.showFilterOptions;
 
 
-
+  }
   onSelectFilter(filter: string) {
     this.selectedFileType = filter;
     this.showFilterOptions = false; // סגור את הרשימה
@@ -153,9 +154,9 @@ export class SearchComponent implements OnInit {
   logout(): void {
     localStorage.removeItem('access_token'); // הסרת ה-token
     this.router.navigate(['/welcome']); // ניווט לעמוד welcome
+    console.log("enter to onSelectFilter in service")
   }
 
-    console.log("enter to onSelectFilter in service")
   @HostListener('document:click', ['$event.target'])
   onDocumentClick(target: HTMLElement) {
     const dropdownContainer = document.querySelector(

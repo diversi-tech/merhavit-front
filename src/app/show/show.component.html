@@ -2,15 +2,15 @@
 <div class="pagination-container">
   <span
     class="arrow"
-    (click)="previousPage()"
+  
     [class.disabled]="currentPage === 0"
   >
     ❮
   </span>
-  <span class="arrow" (click)="nextPage()">❯</span>
+  <span class="arrow">❯</span>
 </div>
 
-<!-- הצגת רשימת הפריטים -->
+<!-- הצגת רשימת הפריטים  (click)="previousPage()" (click)="nextPage()"-->
 <div class="table-container" style="direction: rtl">
   <div
     class="row"
@@ -29,7 +29,7 @@
         <div class="item-description">{{ item.description }}</div>
         <div class="item-meta">
           <span class="meta-label">מחבר: </span>
-          <span class="meta-value">{{ item.author }}</span> |
+          <span class="meta-value">{{ item.Author }}</span> |
           <span class="meta-label">תאריך הוצאה:</span>
           <span class="meta-value">
             {{ item.publicationDate | date: 'dd/MM/yyyy' }}
