@@ -46,6 +46,11 @@
           <i class="fas fa-book"></i> ספרים
         </a>
       </li>
+      <li *ngIf="userType !== 'Student'">
+        <a (click)="navigateAndFilter('management')">
+          <i class="fas fa-user-cog"></i> ניהול
+        </a>
+      </li>
     </ul>
   </nav>
   

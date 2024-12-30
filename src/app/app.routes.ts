@@ -14,6 +14,8 @@ import { ItemPageComponent } from './components/item-page/item-page.component';
 import { EditMediaComponent } from './edit-media/edit-media.component';
 import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
 import { FavoritesComponent } from './components/Favorites/favorites';
+import { ManagementComponent } from './components/management/management.component';
+import { SeminaryComponent } from './components/seminary/seminary.component';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -40,6 +42,14 @@ export const routes: Routes = [
   { path: 'items/images/worksheets', component: ItemsListComponent }, // דפי עבודה
   { path: 'items/images/paintings', component: ItemsListComponent }, // איורים
   { path: 'items/images/creations', component: ItemsListComponent }, // יצירות
+  { path: 'management', component: ManagementComponent,
+    children: [
+      { path: 'seminaries', component: SeminaryComponent },
+      { path: 'tags', component: UploadResourceComponent },
+      { path: '', redirectTo: 'tags', pathMatch: 'full' }, // ניתוב ברירת מחדל
+    ],
+  },//ניהול לספרנית ואדמין בלבד
+  
   { path: '**', redirectTo: '' }, // עמוד ברירת מחדל לכל כתובת לא תקינה
 ];
 

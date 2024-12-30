@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';  // יש לייבא את המודול הזה
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-type ItemType = 'all' | 'guests' | 'movies' | 'songs' | 'books' | 'posters' | 'worksheets' | 'paintings' | 'creations';
+import { jwtDecode } from 'jwt-decode';
+type ItemType = 'all' | 'guests' | 'movies' | 'songs' | 'books' | 'posters' | 'worksheets' | 'paintings' | 'creations'|'management';
 
 
 @Component({
@@ -13,8 +14,13 @@ type ItemType = 'all' | 'guests' | 'movies' | 'songs' | 'books' | 'posters' | 'w
 })
 export class NavigationBarComponent {
 
-  constructor(private router: Router) {}
+ 
+
+  constructor(private router: Router) {
+    this.getUserTypeFromToken()
+  }
   activeSubMenu: string | null = null;
+  userType:string=''
 
   // פונקציה לפתיחת/סגירת תתי-תפריטים
   toggleSubMenu(menu: string): void {
@@ -45,6 +51,8 @@ export class NavigationBarComponent {
       this.router.navigate(['/items/images/paintings'], { queryParams: { type: 'איור' }}); // עבור כפתור "איורים"
     }else if (type === 'creations') {
       this.router.navigate(['/items/images/creations'], { queryParams: { type: 'יצירה' }}); // עבור כפתור "יצירות"
+    }else if(type=== 'management'){
+      this.router.navigate(['/management'])//ניהול 
     }else {
       this.router.navigate([`/items/${type}`]); // עבור כל סוג אחר
     }
@@ -53,5 +61,26 @@ export class NavigationBarComponent {
   // navigateAndFilter(type: string): void {
   //   this.router.navigate(['/items'], { queryParams: { type: type === 'all' ? '' : type } });
   // }
+  getUserTypeFromToken(): void {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+    
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          this.userType = decodedToken.userType || '';
+          console.log(this.userType);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
+      } 
+    }else {
+        console.error('localStorage is not available on the server.');
+      }
+    
+    }
+    
+  }
+
   
-}
+
