@@ -89,3 +89,14 @@ input {
   border-radius: 1.5625rem; /* 25px -> 1.5625rem */
   cursor: pointer;
 }
+
+/* עיצוב כפתור הבחירה */
+select {
+  font-size: 1.125rem; /* גודל טקסט */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* גופן */
+  padding: 0.75rem; /* ריווח פנימי */
+  border: 0.0625rem solid #ccc; /* גבול */
+  border-radius: 0.3125rem; /* פינות מעוגלות */
+  width: 100%; /* רוחב */
+  box-sizing: border-box; /* כולל את הגבולות ברוחב */
+}
