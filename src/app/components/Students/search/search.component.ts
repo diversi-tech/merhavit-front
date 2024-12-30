@@ -1,7 +1,12 @@
 import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router'; // ייבוא Router
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterModule,
+} from '@angular/router'; // ייבוא Router
 import { jwtDecode } from 'jwt-decode';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators'; // ייבוא filter
 import { SearchService } from '../../../shared/search.service';
@@ -12,7 +17,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-
 
 @Component({
   selector: 'app-search',
@@ -51,7 +55,8 @@ export class SearchComponent {
   };
  
 
-  constructor(private router: Router,private route: ActivatedRoute, private itemsService: ItemsService , private searchService: SearchService,private cdr: ChangeDetectorRef) {}
+  constructor(private router: Router,private route: ActivatedRoute,private searchService: SearchService,private itemsService:ItemsService){}
+    // private router: Router,private route: ActivatedRoute,private searchService: SearchService) {}
 
 
   onSearch(searchTerm:string = this.searchControl.value): void {
@@ -109,17 +114,21 @@ export class SearchComponent {
   }
 
   loadSearchHistory(): void {
-    const storedHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-    const searchTerm = this.searchControl.value.toLowerCase(); // האותיות שנכתבו בשורת החיפוש
-  
-    if (searchTerm) {
-      // סינון לפי הערך בשורת החיפוש
-      this.searchResults = storedHistory.filter((term: string) =>
-        term.toLowerCase().includes(searchTerm)
-      );
-    } else {
-      // הצגת כל ההיסטוריה אם אין ערך בשורת החיפוש
-      this.searchResults = storedHistory; }
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const storedHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+      const searchTerm = this.searchControl.value.toLowerCase(); // האותיות שנכתבו בשורת החיפוש
+    
+      if (searchTerm) {
+        // סינון לפי הערך בשורת החיפוש
+        this.searchResults = storedHistory.filter((term: string) =>
+          term.toLowerCase().includes(searchTerm)
+        );
+      } else {
+        // הצגת כל ההיסטוריה אם אין ערך בשורת החיפוש
+        this.searchResults = storedHistory; }    } else {
+      console.error('localStorage is not available on the server.');
+    }
+    
   }
 
 
@@ -128,12 +137,14 @@ export class SearchComponent {
     
     this.extractUserDetailsFromToken(); // קריאה לפונקציה בעת טעינת הרכיב
     this.checkIfUserManagementRoute(); // בדיקה אם הנתיב הוא user-management
-      // האזנה לשינויים בנתיב
-      this.router.events.pipe(filter((event:any) => event instanceof NavigationEnd)).subscribe(() => {
+    // האזנה לשינויים בנתיב
+    this.router.events
+      .pipe(filter((event: any) => event instanceof NavigationEnd))
+      .subscribe(() => {
         this.checkIfUserManagementRoute(); // בדיקה מחדש בכל שינוי ניווט
       });
 
-      this.getUserTypeFromToken()
+    this.getUserTypeFromToken();
 
       this.loadSearchHistory(); // טוען את היסטוריית החיפושים
   
@@ -192,93 +203,95 @@ export class SearchComponent {
   }
 
   getUserTypeFromToken(): void {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      try {
-        const decodedToken: any = jwtDecode(token);
-        this.userType = decodedToken.userType || '';
-        console.log(this.userType);
-      } catch (error) {
-        console.error('Error decoding token:', error);
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          this.userType = decodedToken.userType || '';
+          console.log(this.userType);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
       }
+    } else {
+      console.error('localStorage is not available on the server.');
     }
-    
   }
 
   // פונקציה לניווט לעמוד הראשי
   logout(): void {
-    localStorage.removeItem('access_token'); // הסרת ה-token
-    this.router.navigate(['/welcome']); // ניווט לעמוד welcome
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.removeItem('access_token'); // הסרת ה-token
+      this.router.navigate(['/welcome']); // ניווט לעמוד welcome
+    } else {
+      console.error('localStorage is not available on the server.');
+    }
   }
 
   @HostListener('document:click', ['$event.target'])
-onDocumentClick(target: HTMLElement) {
-  const dropdownContainer = document.querySelector(
-    '.dropdown-container'
-  ) as HTMLElement;
-  const filterDetailsBox = document.querySelector(
-    '.filter-details-box'
-  ) as HTMLElement;
+  onDocumentClick(target: HTMLElement) {
+    const dropdownContainer = document.querySelector(
+      '.dropdown-container'
+    ) as HTMLElement;
+    const filterDetailsBox = document.querySelector(
+      '.filter-details-box'
+    ) as HTMLElement;
 
-  // בדיקה אם הלחיצה הייתה מחוץ לאזור התפריט
-  if (dropdownContainer && !dropdownContainer.contains(target)) {
-    this.showFilterOptions = false;
+    // בדיקה אם הלחיצה הייתה מחוץ לאזור התפריט
+    if (dropdownContainer && !dropdownContainer.contains(target)) {
+      this.showFilterOptions = false;
 
 
   if (filterDetailsBox && !filterDetailsBox.contains(target) && !target.classList.contains('fa-filter')) {
     this.showDetails = false;
   }
-    // איפוס השדות באובייקט filters
-    this.resetFilters();
+      // איפוס השדות באובייקט filters
+      this.resetFilters();
+    }
+
+    // בדיקה אם הלחיצה הייתה מחוץ לאזור הסינון
+    if (
+      filterDetailsBox &&
+      !filterDetailsBox.contains(target) &&
+      !target.classList.contains('fa-filter')
+    ) {
+      this.showDetails = false;
+      this.resetFilters();
+    }
   }
 
-  // בדיקה אם הלחיצה הייתה מחוץ לאזור הסינון
-  if (
-    filterDetailsBox &&
-    !filterDetailsBox.contains(target) &&
-    !target.classList.contains('fa-filter')
-  ) {
-    this.showDetails = false;
-    this.resetFilters()
+  // פונקציה לאיפוס השדות באובייקט filters
+  resetFilters() {
+    this.filters = {
+      email: '',
+      class: '',
+      specialization: '',
+      userType: '',
+      firstName: '',
+      lastName: '',
+      idNumber: '',
+      address: '',
+      phone: '',
+    };
+    this.onFilterChangeUsers();
   }
-}
-
-// פונקציה לאיפוס השדות באובייקט filters
-resetFilters() {
-  this.filters = {
-    email: '',
-    class: '',
-    specialization: '',
-    userType: '',
-    firstName: '',
-    lastName: '',
-    idNumber: '',
-    address: '',
-    phone: '',
-  };
-  this.onFilterChangeUsers();
-}
-
 
   onFilterChangeUsers() {
-    console.log('onSearchChange', this.filters);
-  
     // צור את מילת החיפוש מתוך כל השדות (אם הם מלאים)
     const filterText = Object.keys(this.filters) // מקבל את שמות השדות
       .filter((key) => this.filters[key as keyof typeof this.filters] !== '') // מסנן את השדות שאינם ריקים
       .map((key) => `${key}:${this.filters[key as keyof typeof this.filters]}`) // מצרף את שם השדה ואת הערך
       .join(' '); // מצרף את כל השדות לשורת חיפוש אחת
-  
+
     // שולח את מילת החיפוש לשירות החיפוש
     this.searchService.setFilterOption(filterText);
   }
-  onSearchChange(){
-    if(this.isUserManagementComponent){
-      this.onSearchChangeUsers()
+  onSearchChange() {
+    if (this.isUserManagementComponent) {
+      this.onSearchChangeUsers();
     }
-
   }
-  
 
   onSearchChangeUsers() {
     this.searchService.setSearchTerm(this.searchTerm);

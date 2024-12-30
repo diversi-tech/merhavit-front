@@ -14,6 +14,7 @@ import { ItemPageComponent } from './components/item-page/item-page.component';
 import { EditMediaComponent } from './edit-media/edit-media.component';
 import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
 import { FavoritesComponent } from './components/Favorites/favorites';
+import { TagManagementComponent } from './components/Librarian/tag-management';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -40,6 +41,7 @@ export const routes: Routes = [
   { path: 'items/images/worksheets', component: ItemsListComponent }, // דפי עבודה
   { path: 'items/images/paintings', component: ItemsListComponent }, // איורים
   { path: 'items/images/creations', component: ItemsListComponent }, // יצירות
+  { path: 'tag-management', component: TagManagementComponent },
   { path: '**', redirectTo: '' }, // עמוד ברירת מחדל לכל כתובת לא תקינה
 ];
 
