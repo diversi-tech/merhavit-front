@@ -1,0 +1,59 @@
+<div class="tag-management-container">
+  <div class="tag-header">
+    <div class="tag-cell">שם התגית</div>
+    <div class="tag-cell">תיאור</div>
+    <div class="tag-cell">פעולות</div>
+  </div>
+  
+  <!-- כפתור הוספת תגית חדשה -->
+  <div class="tag-row add-tag-row">
+    <div class="tag-cell">
+      <button class="action-button" (click)="addNewTag()">
+        <i class="fas" [class.fa-plus]="!isAddingTag" [class.fa-minus]="isAddingTag"></i>
+        הוספת תגית
+      </button>
+    </div>
+
+    <!-- תיבות למילוי כשמוסיפים תגית חדשה -->
+    <div class="tag-cell tag-input-cell" *ngIf="isAddingTag">
+      <input [(ngModel)]="newTagName" type="text" class="tag-input" placeholder="שם התגית" />
+    </div>
+    <div class="tag-cell tag-input-cell" *ngIf="isAddingTag">
+      <textarea [(ngModel)]="newTagDescription" class="tag-input" placeholder="תיאור"></textarea>
+    </div>
+    <div class="tag-cell tag-actions" *ngIf="isAddingTag">
+      <button class="action-button" (click)="saveNewTag()">
+        <i class="fas fa-check"></i> שמירה
+      </button>
+    </div>
+  </div>
+
+  <div class="tag-row" *ngFor="let tag of tags">
+    <div class="tag-cell">
+      <div *ngIf="!tag.isEditing">{{ tag.name }}</div>
+      <input *ngIf="tag.isEditing" [(ngModel)]="tag.name" type="text" class="tag-input" />
+    </div>
+    <div class="tag-cell">
+      <div *ngIf="!tag.isEditing">{{ tag.description }}</div>
+      <textarea *ngIf="tag.isEditing" [(ngModel)]="tag.description" class="tag-input"></textarea>
+    </div>
+    <div class="tag-cell tag-actions">
+      <button class="action-button" (click)="editTag(tag)">
+        <i *ngIf="!tag.isEditing" class="fas fa-edit"></i>
+        <i *ngIf="tag.isEditing" class="fas fa-check"></i>
+      </button>
+      <button class="action-button" (click)="showConfirmation(tag)">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- דיאלוג אישור מחיקה -->
+<div class="confirmation-dialog" *ngIf="confirmTag">
+  <div class="dialog-content">
+    <p>האם אתה בטוח שברצונך למחוק את התגית {{ confirmTag.name }}?</p>
+    <button (click)="confirmDeleteTag()">אישור</button>
+    <button (click)="closeConfirmation()">ביטול</button>
+  </div>
+</div>

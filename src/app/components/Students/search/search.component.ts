@@ -1,11 +1,15 @@
 import { Component, HostListener } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router'; // ייבוא Router
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterModule,
+} from '@angular/router'; // ייבוא Router
 import { jwtDecode } from 'jwt-decode';
 import { filter } from 'rxjs/operators'; // ייבוא filter
 import { SearchService } from '../../../shared/search.service';
-
 
 @Component({
   selector: 'app-search',
@@ -34,17 +38,23 @@ export class SearchComponent {
     address: '',
     phone: '',
   };
-  constructor(private router: Router,private route: ActivatedRoute,private searchService: SearchService) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private searchService: SearchService
+  ) {}
 
   ngOnInit(): void {
     this.extractUserDetailsFromToken(); // קריאה לפונקציה בעת טעינת הרכיב
     this.checkIfUserManagementRoute(); // בדיקה אם הנתיב הוא user-management
-      // האזנה לשינויים בנתיב
-      this.router.events.pipe(filter((event:any) => event instanceof NavigationEnd)).subscribe(() => {
+    // האזנה לשינויים בנתיב
+    this.router.events
+      .pipe(filter((event: any) => event instanceof NavigationEnd))
+      .subscribe(() => {
         this.checkIfUserManagementRoute(); // בדיקה מחדש בכל שינוי ניווט
       });
 
-      this.getUserTypeFromToken()
+    this.getUserTypeFromToken();
   }
 
   // פענוח ה-JWT וקבלת האות הראשונה של השם
@@ -94,89 +104,91 @@ export class SearchComponent {
   }
 
   getUserTypeFromToken(): void {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      try {
-        const decodedToken: any = jwtDecode(token);
-        this.userType = decodedToken.userType || '';
-        console.log(this.userType);
-      } catch (error) {
-        console.error('Error decoding token:', error);
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          this.userType = decodedToken.userType || '';
+          console.log(this.userType);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
       }
+    } else {
+      console.error('localStorage is not available on the server.');
     }
-    
   }
 
   // פונקציה לניווט לעמוד הראשי
   logout(): void {
-    localStorage.removeItem('access_token'); // הסרת ה-token
-    this.router.navigate(['/welcome']); // ניווט לעמוד welcome
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.removeItem('access_token'); // הסרת ה-token
+      this.router.navigate(['/welcome']); // ניווט לעמוד welcome
+    } else {
+      console.error('localStorage is not available on the server.');
+    }
   }
 
   @HostListener('document:click', ['$event.target'])
-onDocumentClick(target: HTMLElement) {
-  const dropdownContainer = document.querySelector(
-    '.dropdown-container'
-  ) as HTMLElement;
-  const filterDetailsBox = document.querySelector(
-    '.filter-details-box'
-  ) as HTMLElement;
+  onDocumentClick(target: HTMLElement) {
+    const dropdownContainer = document.querySelector(
+      '.dropdown-container'
+    ) as HTMLElement;
+    const filterDetailsBox = document.querySelector(
+      '.filter-details-box'
+    ) as HTMLElement;
 
-  // בדיקה אם הלחיצה הייתה מחוץ לאזור התפריט
-  if (dropdownContainer && !dropdownContainer.contains(target)) {
-    this.showFilterOptions = false;
+    // בדיקה אם הלחיצה הייתה מחוץ לאזור התפריט
+    if (dropdownContainer && !dropdownContainer.contains(target)) {
+      this.showFilterOptions = false;
 
-    // איפוס השדות באובייקט filters
-    this.resetFilters();
+      // איפוס השדות באובייקט filters
+      this.resetFilters();
+    }
+
+    // בדיקה אם הלחיצה הייתה מחוץ לאזור הסינון
+    if (
+      filterDetailsBox &&
+      !filterDetailsBox.contains(target) &&
+      !target.classList.contains('fa-filter')
+    ) {
+      this.showDetails = false;
+      this.resetFilters();
+    }
   }
 
-  // בדיקה אם הלחיצה הייתה מחוץ לאזור הסינון
-  if (
-    filterDetailsBox &&
-    !filterDetailsBox.contains(target) &&
-    !target.classList.contains('fa-filter')
-  ) {
-    this.showDetails = false;
-    this.resetFilters()
+  // פונקציה לאיפוס השדות באובייקט filters
+  resetFilters() {
+    this.filters = {
+      email: '',
+      class: '',
+      specialization: '',
+      userType: '',
+      firstName: '',
+      lastName: '',
+      idNumber: '',
+      address: '',
+      phone: '',
+    };
+    this.onFilterChangeUsers();
   }
-}
-
-// פונקציה לאיפוס השדות באובייקט filters
-resetFilters() {
-  this.filters = {
-    email: '',
-    class: '',
-    specialization: '',
-    userType: '',
-    firstName: '',
-    lastName: '',
-    idNumber: '',
-    address: '',
-    phone: '',
-  };
-  this.onFilterChangeUsers();
-}
-
 
   onFilterChangeUsers() {
-    console.log('onSearchChange', this.filters);
-  
     // צור את מילת החיפוש מתוך כל השדות (אם הם מלאים)
     const filterText = Object.keys(this.filters) // מקבל את שמות השדות
       .filter((key) => this.filters[key as keyof typeof this.filters] !== '') // מסנן את השדות שאינם ריקים
       .map((key) => `${key}:${this.filters[key as keyof typeof this.filters]}`) // מצרף את שם השדה ואת הערך
       .join(' '); // מצרף את כל השדות לשורת חיפוש אחת
-  
+
     // שולח את מילת החיפוש לשירות החיפוש
     this.searchService.setFilterOption(filterText);
   }
-  onSearchChange(){
-    if(this.isUserManagementComponent){
-      this.onSearchChangeUsers()
+  onSearchChange() {
+    if (this.isUserManagementComponent) {
+      this.onSearchChangeUsers();
     }
-
   }
-  
 
   onSearchChangeUsers() {
     this.searchService.setSearchTerm(this.searchTerm);
