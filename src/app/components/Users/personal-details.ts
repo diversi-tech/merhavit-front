@@ -7,8 +7,6 @@ import { jwtDecode } from 'jwt-decode';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
-
-
 @Component({
   selector: 'app-personal-details',
   standalone: true,
@@ -29,14 +27,13 @@ export class PersonalDetailsComponent implements OnInit {
     assignedSeminaryId: '',
   };
   activeTab: string = 'personal-details';
-
+  seminaries: any[] = [];
 
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
     private router: Router,
-        private _snackBar: MatSnackBar,
-    
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -46,7 +43,7 @@ export class PersonalDetailsComponent implements OnInit {
       if (token) {
         try {
           const decodedToken: any = jwtDecode(token);
-          const idNumber = decodedToken.idNumber; 
+          const idNumber = decodedToken.idNumber;
           console.log('idNumber', idNumber);
           if (idNumber) {
             this.loadUserData(idNumber);
@@ -67,23 +64,51 @@ export class PersonalDetailsComponent implements OnInit {
     }
   }
 
+
   loadUserData(idNumber: string) {
-    this.apiService.Read(`/users/idNumber/${idNumber}`).subscribe(
-      (data) => {
-        console.log('User data from server:', data);
-        this.user = data; 
+    this.apiService.Read('/seminaries').subscribe((data: any[]) => {
+
+        this.seminaries = data; // טוען סמינרים
+
+        // עכשיו טוען את פרטי המשתמש
+        this.apiService.Read(`/users/idNumber/${idNumber}`).subscribe(
+          (data) => {
+            console.log('User data from server:', data);
+            this.user = data;
+
+            console.log('this.seminaries', this.seminaries);
+            console.log(
+              'this.user.assignedSeminaryId',
+              this.user.assignedSeminaryId
+            );
+          },
+          (error) => {
+            console.error('Error fetching user data:', error);
+          }
+        );
       },
       (error) => {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching seminaries:', error);
+      }
+    );
+  }
+
+  loadSeminaries() {
+    this.apiService.Read('/seminaries').subscribe(
+      (data: { id: string; name: string }[]) => {
+        this.seminaries = data;
+      },
+      (error) => {
+        console.error('Error fetching seminaries:', error);
       }
     );
   }
 
   onSubmit() {
-    console.log('this.user', this.user);
+
+    console.log('this.user before submit', this.user);
     this.apiService.Put('/users/update-user', this.user).subscribe(
       (response) => {
-        // alert('Details updated successfully');
         this._snackBar.open('הפרטים האישיים עודכנו בהצלחה!', 'סגור', {
           duration: 2000,
           panelClass: ['my-custom-snackbar'],
@@ -97,17 +122,16 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   cancel() {
-    const idNumber = localStorage.getItem('idNumber'); 
+    const idNumber = localStorage.getItem('idNumber');
     if (idNumber) {
-      this.loadUserData(idNumber); 
-    }
-    else {
+      this.loadUserData(idNumber);
+    } else {
       console.error('ID number not found in localStorage');
     }
   }
 
   goToChangePassword() {
-    this.router.navigate(['/change-password']); 
+    this.router.navigate(['/change-password']);
   }
   navigateTo(tab: string) {
     this.activeTab = tab;

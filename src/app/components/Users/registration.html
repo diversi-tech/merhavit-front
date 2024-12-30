@@ -177,7 +177,7 @@
         <option *ngIf="seminaries.length === 0" disabled>
           אין סמינרים זמינים
         </option>
-        <option *ngFor="let seminary of seminaries" [value]="seminary.name">
+        <option *ngFor="let seminary of seminaries" [value]="seminary._id">
           {{ seminary.name }}
         </option>
       </select>
