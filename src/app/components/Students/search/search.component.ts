@@ -54,13 +54,23 @@ export class SearchComponent implements OnInit {
       this.router.events.pipe(filter((event:any) => event instanceof NavigationEnd)).subscribe(() => {
         this.checkIfUserManagementRoute(); // בדיקה מחדש בכל שינוי ניווט
       });
+
+      this.searchControl.valueChanges.subscribe(value => {
+        if (!value?.trim()) {
+          console.log('The searchControl is empty or contains only whitespace');
+        } else {
+          console.log('The searchControl has a value:', value);
+        }
+      });
+    
   }
 
 
 
   onSearchChange(): void {
     console.log('onSearchChange called with searchTerm:', this.searchTerm);
-    if (this.searchTerm === '') {
+    if (this.searchControl.value === '' || this.searchControl.value === null) {
+    //if (this.searchTerm === '') {
       console.log('Search term is empty, fetching all items...');
       this.itemsService.getItems().subscribe((items) => {
         this.items = items;

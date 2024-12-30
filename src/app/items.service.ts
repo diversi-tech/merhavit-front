@@ -109,7 +109,12 @@ export class ItemsService {
       params = params.set('filterType', typeFilter);
     }
   
-    return this.apiService.Read(`/EducationalResource/getAll?${params.toString()}`);
+    return this.apiService.Read(`/EducationalResource/getAll?${params.toString()}`).pipe(
+      map((response: any) => {
+        this.items = response.data || [];
+        return this.items;
+      })
+    );
   }
 
   searchItems(searchTerm: string = this.searchTerm): Observable<Item[]> {
