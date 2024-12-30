@@ -4,13 +4,15 @@ import { ApiService } from '../../api.service';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 
 @Component({
   selector: 'app-personal-details',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatSnackBarModule],
   templateUrl: './personal-details.html',
   styleUrls: ['./personal-details.css'],
 })
@@ -32,7 +34,9 @@ export class PersonalDetailsComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+        private _snackBar: MatSnackBar,
+    
   ) {}
 
   ngOnInit() {
@@ -79,7 +83,12 @@ export class PersonalDetailsComponent implements OnInit {
     console.log('this.user', this.user);
     this.apiService.Put('/users/update-user', this.user).subscribe(
       (response) => {
-        alert('Details updated successfully');
+        // alert('Details updated successfully');
+        this._snackBar.open('הפרטים האישיים עודכנו בהצלחה!', 'סגור', {
+          duration: 2000,
+          panelClass: ['my-custom-snackbar'],
+          direction: 'rtl',
+        });
       },
       (error) => {
         console.error('Error updating data:', error);
