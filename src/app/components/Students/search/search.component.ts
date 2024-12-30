@@ -55,11 +55,8 @@ export class SearchComponent {
   };
  
 
-  constructor(private router: Router,private route: ActivatedRoute,private searchService: SearchService) {}
-    private router: Router,
-    private route: ActivatedRoute,
-    private searchService: SearchService
-  ) {}
+  constructor(private router: Router,private route: ActivatedRoute,private searchService: SearchService,private itemsService:ItemsService){}
+    // private router: Router,private route: ActivatedRoute,private searchService: SearchService) {}
 
 
   onSearch(searchTerm:string = this.searchControl.value): void {
@@ -117,17 +114,21 @@ export class SearchComponent {
   }
 
   loadSearchHistory(): void {
-    const storedHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-    const searchTerm = this.searchControl.value.toLowerCase(); // האותיות שנכתבו בשורת החיפוש
-  
-    if (searchTerm) {
-      // סינון לפי הערך בשורת החיפוש
-      this.searchResults = storedHistory.filter((term: string) =>
-        term.toLowerCase().includes(searchTerm)
-      );
-    } else {
-      // הצגת כל ההיסטוריה אם אין ערך בשורת החיפוש
-      this.searchResults = storedHistory; }
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const storedHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+      const searchTerm = this.searchControl.value.toLowerCase(); // האותיות שנכתבו בשורת החיפוש
+    
+      if (searchTerm) {
+        // סינון לפי הערך בשורת החיפוש
+        this.searchResults = storedHistory.filter((term: string) =>
+          term.toLowerCase().includes(searchTerm)
+        );
+      } else {
+        // הצגת כל ההיסטוריה אם אין ערך בשורת החיפוש
+        this.searchResults = storedHistory; }    } else {
+      console.error('localStorage is not available on the server.');
+    }
+    
   }
 
 
