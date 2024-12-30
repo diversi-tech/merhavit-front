@@ -49,12 +49,15 @@
         </div>
         <ul *ngIf="showFilterOptions" class="dropdown-options">
           <li (click)="onSelectFilter('all')">כל סוגי הקבצים</li>
-          <li (click)="onSelectFilter('pictures')">תמונות</li>
-          <li (click)="onSelectFilter('videos')">סרטונים</li>
-          <li (click)="onSelectFilter('presentations')">מצגות</li>
-          <li (click)="onSelectFilter('songs')">שירים</li>
-          <li (click)="onSelectFilter('books')">ספרים</li>
-          <li (click)="onSelectFilter('equipment')">ציוד</li>
+          <li (click)="onSelectFilter('כרזה')">כרזות</li>
+          <li (click)="onSelectFilter('דף עבודה')">דפי עבודה</li>
+          <li (click)="onSelectFilter('איור')">איורים</li>
+          <li (click)="onSelectFilter('יצירה')">יצירות</li>
+          <li (click)="onSelectFilter('סרטון')">סרטונים</li>
+          <li (click)="onSelectFilter('מצגת')">מצגות</li>
+          <li (click)="onSelectFilter('שיר')">שירים</li>
+          <li (click)="onSelectFilter('ספר')">ספרים</li>
+          <li (click)="onSelectFilter('ציוד')">ציוד</li>
         </ul>
       </div>
 
@@ -179,7 +182,9 @@
     </div>
 
     
- <input type="text" class="search-input"  [formControl]="searchControl"  placeholder="הקלד מילת חיפוש..." />
+ <input type="text"  type="text" 
+ [(ngModel)]="searchTerm" 
+ (input)="onSearchChange()"  class="search-input"  [formControl]="searchControl"  placeholder="הקלד מילת חיפוש..." />
  <button mat-icon-button (click)="onSearch()">
   <mat-icon>search</mat-icon>
 </button>

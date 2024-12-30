@@ -37,8 +37,11 @@ export class SearchComponent implements OnInit {
   isUserManagementComponent = false;
   // searchResults: any[] = [];
  public items:Item[]=[];
+// showFilterOptions: boolean = true; // מוודא שהרשימה מוצגת
+ selectedFilter: string = ''; 
   searchTerm = '';
   typeFilter = '';
+
 
 
   constructor(private router: Router, private itemsService: ItemsService, private cdr: ChangeDetectorRef,private route: ActivatedRoute) { }
@@ -52,6 +55,19 @@ export class SearchComponent implements OnInit {
         this.checkIfUserManagementRoute(); // בדיקה מחדש בכל שינוי ניווט
       });
   }
+
+
+
+  onSearchChange(): void {
+    console.log('onSearchChange called with searchTerm:', this.searchTerm);
+    if (this.searchTerm === '') {
+      console.log('Search term is empty, fetching all items...');
+      this.itemsService.getItems().subscribe((items) => {
+        this.items = items;
+        console.log('Items fetched:', items);
+      });
+    }}
+
   
   // פענוח ה-JWT וקבלת האות הראשונה של השם
   extractUserDetailsFromToken(): void {
@@ -75,20 +91,20 @@ export class SearchComponent implements OnInit {
   }
   
   onSearch(): void {
-    const searchTerm = this.searchControl.value;  // לוקח את הערך שנכנס בשדה הקלט
+    const searchTerm = this.searchControl.value;  
      console.log("searchTerm",searchTerm)
     if (searchTerm) {
       this.itemsService.searchItems(searchTerm).subscribe(
         (response) => {
           this.items=response;
           console.log('התקבלו התוצאות:', response);
-          // כאן תוכל לעבד את התשובה ולבצע פעולה בהתאם (כמו עדכון רשימה)
         },
         (error) => {
           console.error('שגיאה בשרת:', error);
         }
       );
     } else {
+      alert('לא הוזנה מילה לחיפוש')
       console.log('לא הוזנה מילה לחיפוש');
     }
   }
@@ -110,11 +126,11 @@ export class SearchComponent implements OnInit {
 
   
   // פונקציה לטיפול בשינוי סוג קובץ
-  onFilterChange(event: any) {
-    console.log("enter to onFilterChange in service")
-    this.selectedFileType = event.target.value;
-    console.log('סוג הקובץ שנבחר:', this.selectedFileType);
-  }
+  // onFilterChange(event: any) {
+  //   console.log("enter to onFilterChange in service")
+  //   this.selectedFileType = event.target.value;
+  //   console.log('סוג הקובץ שנבחר:', this.selectedFileType);
+  // }
 
  private checkIfUserManagementRoute(): void {
     const currentUrl = this.router.url; // מקבל את ה-URL הנוכחי
@@ -124,14 +140,23 @@ export class SearchComponent implements OnInit {
   // פונקציה להצגת אפשרויות
   toggleFilterOptions() {
     this.showFilterOptions = !this.showFilterOptions;
+  }
 
 
+  onSelectFilter(filterType: string): void {
+    this.selectedFilter = filterType;
+    this.selectedFileType = filterType;
+    this.showFilterOptions = false;
+    console.log('סוג הקובץ שנבחר:', filterType);
+    this.itemsService.typeFilter = filterType; // מעדכן את הסינון ב-service
+    this.itemsService.fetchItems(); // שולח את הבקשה לשרת עם הסינון החדש
   }
-  onSelectFilter(filter: string) {
-    this.selectedFileType = filter;
-    this.showFilterOptions = false; // סגור את הרשימה
-    console.log('סוג הקובץ שנבחר:', filter);
-  }
+
+  // onSelectFilter(filter: string) {
+  //   this.selectedFileType = filter;
+  //   this.showFilterOptions = false; // סגור את הרשימה
+  //   console.log('סוג הקובץ שנבחר:', filter);
+  // }
 
   toggleDetails() {
     this.showDetails = !this.showDetails;

@@ -24,6 +24,7 @@ export class ItemsListComponent implements OnInit {
   public allItems: Item[] = []; // מערך המכיל את כל הפריטים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   private itemsInterval: any;
+  public searchTerm: string = '';
   constructor(private http: HttpClient, private apiService: ApiService, private router: Router,private itemsService: ItemsService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
 
@@ -33,17 +34,18 @@ export class ItemsListComponent implements OnInit {
     // this.itemsService.getAllItems().subscribe((data) => {
     //   this.items = data; // שמירת כל הפריטים שהתקבלו מהשרת
     // });
+    this.itemsService.fetchItems();
     this.items = this.itemsService.items;
     console.log("items in show component",this.items)
     this.itemsInterval = setInterval(() => {
+
       if (this.itemsService.items !== this.items) {
         this.items = [...this.itemsService.items];
         this.cdr.detectChanges(); // עדכון ה-UI
       }
-    }, 2000); // כל 2 שניות
+    }, 1000);
   
   }
-
 
 
 

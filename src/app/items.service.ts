@@ -128,4 +128,28 @@ export class ItemsService {
       })
     );
   }
+
+  fetchItems(): void {
+    let params = new HttpParams()
+      .set('page', this.page.toString())
+      .set('limit', this.limit.toString());
+  
+    if (this.searchTerm) {
+      params = params.set('searchTerm', this.searchTerm);
+    }
+  
+    if (this.typeFilter && this.typeFilter !== 'all') { // אם נבחר סוג סינון
+      params = params.set('filterType', this.typeFilter);
+    }
+  
+    this.apiService.Read(`/EducationalResource/getAll?${params.toString()}`).subscribe(
+      (response: any) => {
+        this.items = response.data || []; // מבטיח שהמערך יתעדכן רק אם יש נתונים
+      },
+      (error) => {
+        console.error('Error fetching items:', error); // לוג טעות אם יש בעיה בהבאת הנתונים
+      }
+    );
+  }
+  
 }
