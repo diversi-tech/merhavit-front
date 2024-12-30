@@ -4,16 +4,10 @@
     (ngSubmit)="onSubmit()"
     class="registration-form"
   >
+  <div class="icon-wrapper">
+    <img src="assets/books-icon.png" alt="ספרים" class="books-image" />
+  </div>
     <h1>הרשמה</h1>
-
-    <!-- <label for="firstName">שם פרטי</label>
-    <input formControlName="firstName" type="text" placeholder="רבקה" />
-    <div
-      *ngIf="registrationForm.get('firstName')?.touched && registrationForm.get('firstName')?.invalid"
-      class="error-message"
-    >
-      <small>שדה חובה</small>
-    </div> -->
 
     <label for="firstName">שם פרטי</label>
     <input formControlName="firstName" type="text" placeholder="רבקה" />
@@ -134,26 +128,35 @@
 
     <div>
       <label for="class">כיתה</label>
-      <select
+      <select id="class" formControlName="class">
+        <option *ngIf="classes.length === 0" disabled>אין כיתה זמינה</option>
+        <option *ngFor="let class of classes" [value]="class._id">
+          {{ class.name }}
+        </option>
+      </select>
+      <!-- <select
         id="class"
         formControlName="class"
         [disabled]="classes.length === 0"
       >
-        <option *ngIf="classes.length === 0" disabled>
-          אין כיתה זמינה
-        </option>
-        <option
-          *ngFor="let class of classes"
-          [value]="class._id"
-        >
+        <option *ngIf="classes.length === 0" disabled>אין כיתה זמינה</option>
+        <option *ngFor="let class of classes" [value]="class._id">
           {{ class.name }}
         </option>
-      </select>
+      </select> -->
     </div>
 
     <div>
       <label for="specialization">התמחות</label>
-      <select
+      <select id="specialization" formControlName="specialization">
+        <option *ngIf="specializations.length === 0" disabled>
+          אין התמחות זמינה
+        </option>
+        <option *ngFor="let specialization of specializations" [value]="specialization._id">
+          {{ specialization.name }}
+        </option>
+      </select>
+      <!-- <select
         id="specialization"
         formControlName="specialization"
         [disabled]="specializations.length === 0"
@@ -167,22 +170,32 @@
         >
           {{ specialization.name }}
         </option>
-      </select>
+      </select> -->
     </div>
-    
 
     <div>
       <label for="seminar">סמינר</label>
-      <select id="seminar" formControlName="seminar" [disabled]="seminaries.length === 0">
+      <!-- <select
+        id="seminar"
+        formControlName="seminar"
+        [disabled]="seminaries.length === 0"
+      >
         <option *ngIf="seminaries.length === 0" disabled>
-          אין סמינרים זמינים
+          אין סמינר זמין
+        </option>
+        <option *ngFor="let seminary of seminaries" [value]="seminary._id">
+          {{ seminary.name }}
+        </option>
+      </select> -->
+      <select id="seminar" formControlName="seminar">
+        <option *ngIf="seminaries.length === 0" disabled>
+          אין סמינר זמין
         </option>
         <option *ngFor="let seminary of seminaries" [value]="seminary._id">
           {{ seminary.name }}
         </option>
       </select>
     </div>
-    
 
     <div *ngIf="errorMessage" class="error-message">
       <div class="error-box">{{ errorMessage }}</div>
