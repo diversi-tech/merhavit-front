@@ -92,6 +92,8 @@ export class NavigationBarComponent {
       this.router.navigate(['/tag-management']);
     }else if (type === 'user-management') {
       this.router.navigate(['/user-management']);
+    }else if (type === 'specialization-management') {
+      this.router.navigate(['/specialization-management']);
     } else {
       this.router.navigate([`/items/${type}`]); // עבור כל סוג אחר
     }
