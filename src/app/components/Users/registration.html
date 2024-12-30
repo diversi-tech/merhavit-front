@@ -144,7 +144,7 @@
         </option>
         <option
           *ngFor="let class of classes"
-          [value]="class.name"
+          [value]="class._id"
         >
           {{ class.name }}
         </option>
@@ -163,7 +163,7 @@
         </option>
         <option
           *ngFor="let specialization of specializations"
-          [value]="specialization.name"
+          [value]="specialization._id"
         >
           {{ specialization.name }}
         </option>

@@ -27,6 +27,7 @@ export class PersonalDetailsComponent implements OnInit {
     assignedSeminaryId: '',
   };
   activeTab: string = 'personal-details';
+  originalUser: any = {};
   seminaries: any[] = [];
   specializations: any[] = [];
   classes: any[] = [];
@@ -66,26 +67,26 @@ export class PersonalDetailsComponent implements OnInit {
     }
   }
 
-
   loadUserData(idNumber: string) {
     // טוען סמינרים, התמחויות וכיתות תחילה
     this.apiService.Read('/seminaries').subscribe(
       (seminariesData: any[]) => {
         this.seminaries = seminariesData;
-  
+
         this.apiService.Read('/specializations').subscribe(
           (specializationsData: any[]) => {
             this.specializations = specializationsData;
-  
+
             this.apiService.Read('/classes').subscribe(
               (classesData: any[]) => {
                 this.classes = classesData;
-  
+
                 // כעת טוען את פרטי המשתמש
                 this.apiService.Read(`/users/idNumber/${idNumber}`).subscribe(
                   (userData) => {
                     console.log('User data from server:', userData);
                     this.user = userData; // עדכון כל הנתונים של המשתמש
+                    this.originalUser = userData;
                   },
                   (error) => {
                     console.error('Error fetching user data:', error);
@@ -107,53 +108,6 @@ export class PersonalDetailsComponent implements OnInit {
       }
     );
   }
-  
-
-  // loadUserData(idNumber: string) {
-  //   this.apiService.Read('/seminaries').subscribe(
-  //     (seminariesData: any[]) => {
-  //       this.seminaries = seminariesData; // טוען סמינרים
-
-  //       this.apiService.Read('/specializations').subscribe((specializationsData: any[]) => {
-  //         this.specializations = specializationsData; // שמירה של הרשימה המלאה כפי שהתקבלה מהשרת
-  //       });
-
-  //       this.apiService.Read('/classes').subscribe((classesData: any[]) => {
-  //         this.classes = classesData; // שמירה של הרשימה המלאה כפי שהתקבלה מהשרת
-  //   //     });
-    //     // עכשיו טוען את פרטי המשתמש
-    //     this.apiService.Read(`/users/idNumber/${idNumber}`).subscribe(
-    //       (userData) => {
-    //         console.log('User data from server:', userData);
-    //         this.user = userData;
-
-    //         console.log('this.seminaries', this.seminaries);
-    //         console.log(
-    //           'this.user.assignedSeminaryId',
-    //           this.user.assignedSeminaryId
-    //         );
-    //       },
-    //       (error) => {
-    //         console.error('Error fetching user data:', error);
-    //       }
-    //     );
-    //   },
-    //   (error) => {
-    //     console.error('Error fetching seminaries:', error);
-    //   }
-    // );
-  // }
-
-  // loadSeminaries() {
-  //   this.apiService.Read('/seminaries').subscribe(
-  //     (data: { id: string; name: string }[]) => {
-  //       this.seminaries = data;
-  //     },
-  //     (error) => {
-  //       console.error('Error fetching seminaries:', error);
-  //     }
-  //   );
-  // }
 
   onSubmit() {
     console.log('this.user before submit', this.user);
@@ -172,12 +126,8 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   cancel() {
-    const idNumber = localStorage.getItem('idNumber');
-    if (idNumber) {
-      this.loadUserData(idNumber);
-    } else {
-      console.error('ID number not found in localStorage');
-    }
+    this.user = { ...this.originalUser }; // שחזור נתוני המשתמש המקוריים
+    console.log('this.user', this.user);
   }
 
   goToChangePassword() {
