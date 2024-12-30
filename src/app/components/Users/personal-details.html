@@ -93,22 +93,23 @@
 
       <div class="form-group">
         <label>כיתה</label>
-        <input
-          type="text"
-          placeholder="ה'"
-          [(ngModel)]="user.class"
-          name="class"
-        />
+        <select [(ngModel)]="user.class" name="class">
+          <option *ngFor="let class of classes" [value]="class._id">
+            {{ class.name }}
+          </option>
+        </select>
       </div>
 
       <div class="form-group">
         <label>התמחות</label>
-        <input
-          type="text"
-          placeholder="מתמטיקה"
-          [(ngModel)]="user.specialization"
-          name="specialization"
-        />
+        <select [(ngModel)]="user.specialization" name="specialization">
+          <option
+            *ngFor="let specialization of specializations"
+            [value]="specialization._id"
+          >
+            {{ specialization.name }}
+          </option>
+        </select>
       </div>
 
       <div class="form-group">

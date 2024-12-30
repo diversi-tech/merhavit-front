@@ -28,6 +28,8 @@ export class PersonalDetailsComponent implements OnInit {
   };
   activeTab: string = 'personal-details';
   seminaries: any[] = [];
+  specializations: any[] = [];
+  classes: any[] = [];
 
   constructor(
     private apiService: ApiService,
@@ -66,24 +68,37 @@ export class PersonalDetailsComponent implements OnInit {
 
 
   loadUserData(idNumber: string) {
-    this.apiService.Read('/seminaries').subscribe((data: any[]) => {
-
-        this.seminaries = data; // טוען סמינרים
-
-        // עכשיו טוען את פרטי המשתמש
-        this.apiService.Read(`/users/idNumber/${idNumber}`).subscribe(
-          (data) => {
-            console.log('User data from server:', data);
-            this.user = data;
-
-            console.log('this.seminaries', this.seminaries);
-            console.log(
-              'this.user.assignedSeminaryId',
-              this.user.assignedSeminaryId
+    // טוען סמינרים, התמחויות וכיתות תחילה
+    this.apiService.Read('/seminaries').subscribe(
+      (seminariesData: any[]) => {
+        this.seminaries = seminariesData;
+  
+        this.apiService.Read('/specializations').subscribe(
+          (specializationsData: any[]) => {
+            this.specializations = specializationsData;
+  
+            this.apiService.Read('/classes').subscribe(
+              (classesData: any[]) => {
+                this.classes = classesData;
+  
+                // כעת טוען את פרטי המשתמש
+                this.apiService.Read(`/users/idNumber/${idNumber}`).subscribe(
+                  (userData) => {
+                    console.log('User data from server:', userData);
+                    this.user = userData; // עדכון כל הנתונים של המשתמש
+                  },
+                  (error) => {
+                    console.error('Error fetching user data:', error);
+                  }
+                );
+              },
+              (error) => {
+                console.error('Error fetching classes:', error);
+              }
             );
           },
           (error) => {
-            console.error('Error fetching user data:', error);
+            console.error('Error fetching specializations:', error);
           }
         );
       },
@@ -92,20 +107,55 @@ export class PersonalDetailsComponent implements OnInit {
       }
     );
   }
+  
 
-  loadSeminaries() {
-    this.apiService.Read('/seminaries').subscribe(
-      (data: { id: string; name: string }[]) => {
-        this.seminaries = data;
-      },
-      (error) => {
-        console.error('Error fetching seminaries:', error);
-      }
-    );
-  }
+  // loadUserData(idNumber: string) {
+  //   this.apiService.Read('/seminaries').subscribe(
+  //     (seminariesData: any[]) => {
+  //       this.seminaries = seminariesData; // טוען סמינרים
+
+  //       this.apiService.Read('/specializations').subscribe((specializationsData: any[]) => {
+  //         this.specializations = specializationsData; // שמירה של הרשימה המלאה כפי שהתקבלה מהשרת
+  //       });
+
+  //       this.apiService.Read('/classes').subscribe((classesData: any[]) => {
+  //         this.classes = classesData; // שמירה של הרשימה המלאה כפי שהתקבלה מהשרת
+  //   //     });
+    //     // עכשיו טוען את פרטי המשתמש
+    //     this.apiService.Read(`/users/idNumber/${idNumber}`).subscribe(
+    //       (userData) => {
+    //         console.log('User data from server:', userData);
+    //         this.user = userData;
+
+    //         console.log('this.seminaries', this.seminaries);
+    //         console.log(
+    //           'this.user.assignedSeminaryId',
+    //           this.user.assignedSeminaryId
+    //         );
+    //       },
+    //       (error) => {
+    //         console.error('Error fetching user data:', error);
+    //       }
+    //     );
+    //   },
+    //   (error) => {
+    //     console.error('Error fetching seminaries:', error);
+    //   }
+    // );
+  // }
+
+  // loadSeminaries() {
+  //   this.apiService.Read('/seminaries').subscribe(
+  //     (data: { id: string; name: string }[]) => {
+  //       this.seminaries = data;
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching seminaries:', error);
+  //     }
+  //   );
+  // }
 
   onSubmit() {
-
     console.log('this.user before submit', this.user);
     this.apiService.Put('/users/update-user', this.user).subscribe(
       (response) => {
