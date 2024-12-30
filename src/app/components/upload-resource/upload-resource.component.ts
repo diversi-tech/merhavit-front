@@ -482,7 +482,7 @@ export class UploadResourceComponent
   //יבוא תגיות מטבלת תגיות
   getTags()
   {
-    this.apiService.Read('/Tag').subscribe({
+    this.apiService.Read('/tags/getAll').subscribe({
       next: (response) => {
         if (Array.isArray(response)) {
           this.multipleChoiceFields['tags'].allOption = response;
