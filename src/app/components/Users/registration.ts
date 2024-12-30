@@ -19,6 +19,7 @@ import { ApiService } from '../../api.service';
 export class RegistrationComponent {
   registrationForm: FormGroup;
   seminaries: any[] = [];
+  specializations: any[] = [];
   errorMessage: string | null = null;
 
   constructor(
@@ -59,6 +60,16 @@ export class RegistrationComponent {
       console.log('this.seminaries', this.seminaries)
 
     });
+
+    this.apiService.Read('/specializations').subscribe((data: any[]) => {
+   
+      console.log('data', data)
+      this.specializations = data; // שמירה של הרשימה המלאה כפי שהתקבלה מהשרת
+      console.log('this.specializations', this.specializations)
+
+    });
+
+
   }
 
   onSubmit() {

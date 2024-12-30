@@ -1,5 +1,5 @@
-import { Component, HostListener } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, EventEmitter, HostListener, Output } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
   ActivatedRoute,
@@ -8,17 +8,28 @@ import {
   RouterModule,
 } from '@angular/router'; // ייבוא Router
 import { jwtDecode } from 'jwt-decode';
-import { filter } from 'rxjs/operators'; // ייבוא filter
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators'; // ייבוא filter
 import { SearchService } from '../../../shared/search.service';
+import { Item } from '../../../item.inteface';
+import { ItemsService } from  '../../service/items.service';
+import { ChangeDetectorRef } from '@angular/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, FormsModule,   ReactiveFormsModule, RouterModule,
+    MatFormFieldModule,MatInputModule,MatIconModule,MatButtonModule,],
 })
 export class SearchComponent {
+  @Output() search: EventEmitter<string | null> = new EventEmitter<string | null>(); 
+  searchControl: FormControl = new FormControl('');
+  
   selectedFileType: string = 'all';
   showFilterOptions: boolean = false;
   showDetails: boolean = false;
@@ -26,6 +37,10 @@ export class SearchComponent {
   public firstName: string = ''; // משתנה לשם פרטי (אות ראשונה)
   isUserManagementComponent = false;
   searchTerm: string = '';
+  isSearchHistoryVisible: boolean = false;
+  searchResults: any[] = [];
+  items:Item[]=[];
+
   // filterOption: string = 'all';
   filters = {
     email: '',
@@ -38,13 +53,87 @@ export class SearchComponent {
     address: '',
     phone: '',
   };
-  constructor(
+ 
+
+  constructor(private router: Router,private route: ActivatedRoute,private searchService: SearchService) {}
     private router: Router,
     private route: ActivatedRoute,
     private searchService: SearchService
   ) {}
 
+
+  onSearch(searchTerm:string = this.searchControl.value): void {
+    this.searchControl.setValue(searchTerm);
+    // לוקח את הערך שנכנס בשדה הקלט
+    console.log("searchTerm", searchTerm);
+    if (searchTerm) {
+      this.updateSearchHistory(searchTerm); // עדכון היסטוריית חיפושים
+      this.itemsService.searchItems(searchTerm).subscribe(
+        (response) => {
+          console.log('התקבלו התוצאות:', response);
+          // כאן תוכל לעבד את התשובה ולבצע פעולה בהתאם (כמו עדכון רשימה)
+        },
+        (error) => {
+          console.error('שגיאה בשרת:', error);
+        }
+      );
+    } else {
+      console.log('לא הוזנה מילה לחיפוש');
+    }
+  }
+
+  updateSearchHistory(searchTerm: string): void {
+    // טוען את ההיסטוריה הקיימת מה-localStorage
+    const storedHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+      // מסיר חיפושים כפולים
+    const updatedHistory = storedHistory.filter((term: string) => term !== searchTerm);
+      // מוסיף את החיפוש הנוכחי לראש הרשימה
+    updatedHistory.unshift(searchTerm);
+      // שומר רק עד 7 חיפושים
+    if (updatedHistory.length > 7) {
+      updatedHistory.pop();   }
+      // מעדכן את ה-localStorage
+    localStorage.setItem('searchHistory', JSON.stringify(updatedHistory));
+      // מעדכן את הרשימה המקומית
+    this.searchResults = updatedHistory;
+  }  
+
+
+
+
+
+
+
+  // הצגת תיבת ההיסטוריה
+  showSearchHistory() {
+    this.isSearchHistoryVisible = true;
+  }
+
+  // הסתרת תיבת ההיסטוריה
+  hideSearchHistory() {
+    setTimeout(() => {
+      this.isSearchHistoryVisible = false;
+    }, 600); // השהיה קטנה כדי לאפשר לחיצה על פריטים
+  }
+
+  loadSearchHistory(): void {
+    const storedHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+    const searchTerm = this.searchControl.value.toLowerCase(); // האותיות שנכתבו בשורת החיפוש
+  
+    if (searchTerm) {
+      // סינון לפי הערך בשורת החיפוש
+      this.searchResults = storedHistory.filter((term: string) =>
+        term.toLowerCase().includes(searchTerm)
+      );
+    } else {
+      // הצגת כל ההיסטוריה אם אין ערך בשורת החיפוש
+      this.searchResults = storedHistory; }
+  }
+
+
+
   ngOnInit(): void {
+    
     this.extractUserDetailsFromToken(); // קריאה לפונקציה בעת טעינת הרכיב
     this.checkIfUserManagementRoute(); // בדיקה אם הנתיב הוא user-management
     // האזנה לשינויים בנתיב
@@ -55,6 +144,15 @@ export class SearchComponent {
       });
 
     this.getUserTypeFromToken();
+
+      this.loadSearchHistory(); // טוען את היסטוריית החיפושים
+  
+      // מאזין לשינויים בערך של searchControl
+      this.searchControl.valueChanges
+        .pipe(debounceTime(300), distinctUntilChanged()) // מצמצם קריאות
+        .subscribe(() => {
+          this.loadSearchHistory(); // עדכון תיבת ההיסטוריה לפי הערך החדש
+        }); 
   }
 
   // פענוח ה-JWT וקבלת האות הראשונה של השם
@@ -143,6 +241,10 @@ export class SearchComponent {
     if (dropdownContainer && !dropdownContainer.contains(target)) {
       this.showFilterOptions = false;
 
+
+  if (filterDetailsBox && !filterDetailsBox.contains(target) && !target.classList.contains('fa-filter')) {
+    this.showDetails = false;
+  }
       // איפוס השדות באובייקט filters
       this.resetFilters();
     }
@@ -193,4 +295,9 @@ export class SearchComponent {
   onSearchChangeUsers() {
     this.searchService.setSearchTerm(this.searchTerm);
   }
+
+
+
 }
+
+

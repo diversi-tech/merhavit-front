@@ -141,23 +141,38 @@
       <small>שדה חובה</small>
     </div>
 
-    <label for="specialization">התמחות</label>
-    <input formControlName="specialization" type="text" placeholder="התמחות" />
-    <div
-      *ngIf="registrationForm.get('specialization')?.touched && registrationForm.get('specialization')?.invalid"
-      class="error-message"
-    >
-      <small>שדה חובה</small>
+    <div>
+      <label for="specialization">התמחות</label>
+      <select
+        id="specialization"
+        formControlName="specialization"
+        [disabled]="specializations.length === 0"
+      >
+        <option *ngIf="specializations.length === 0" disabled>
+          אין התמחות זמינה
+        </option>
+        <option
+          *ngFor="let specialization of specializations"
+          [value]="specialization.name"
+        >
+          {{ specialization.name }}
+        </option>
+      </select>
     </div>
+    
 
     <div>
       <label for="seminar">סמינר</label>
-      <select id="seminar" formControlName="seminar">
+      <select id="seminar" formControlName="seminar" [disabled]="seminaries.length === 0">
+        <option *ngIf="seminaries.length === 0" disabled>
+          אין סמינרים זמינים
+        </option>
         <option *ngFor="let seminary of seminaries" [value]="seminary.name">
           {{ seminary.name }}
         </option>
       </select>
     </div>
+    
 
     <div *ngIf="errorMessage" class="error-message">
       <div class="error-box">{{ errorMessage }}</div>
