@@ -67,7 +67,7 @@ export class UploadResourceComponent
   isPDF:boolean=false;
   isImage:boolean=true
   isAudio:boolean=false
-  fileTypes:Array<string>= ["ספר","סרטון","שיר","מערך","תמונה"];
+  fileTypes:Array<string>= ["ספר","סרטון","שיר","מערך","כרזה","דף עבודה","איור","יצירה"];
   userId:string=''
   // purchaseLocations:Array<string>=["חנות אונליין"];
   
@@ -316,7 +316,8 @@ export class UploadResourceComponent
   //בעת שינוי סוג קובץ
   onFileTypeChange(event: Event): void {
     const selectedType = (event.target as HTMLSelectElement).value;
-    this.isImage = selectedType == 'תמונה';//עידכון האם מדובר בתמונה כדי לדעת האם נדרש תמונת שער
+    const imagesType:Array<string>=["כרזה","דף עבודה","איור","יצירה"]
+    this.isImage =imagesType.includes(selectedType)  ;//עידכון האם מדובר בתמונה כדי לדעת האם נדרש תמונת שער
   }
 
   //בעת בחירת תמונת שער
