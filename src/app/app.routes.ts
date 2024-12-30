@@ -14,6 +14,8 @@ import { ItemPageComponent } from './components/item-page/item-page.component';
 import { EditMediaComponent } from './edit-media/edit-media.component';
 import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
 import { FavoritesComponent } from './components/Favorites/favorites';
+import { TagManagementComponent } from './components/Librarian/tag-management';
+import { SpecializationManagementComponent } from './components/Librarian/specialization-management';
 import { ManagementComponent } from './components/management/management.component';
 import { SeminaryComponent } from './components/seminary/seminary.component';
 
@@ -45,7 +47,8 @@ export const routes: Routes = [
   { path: 'management', component: ManagementComponent,
     children: [
       { path: 'seminaries', component: SeminaryComponent },
-      { path: 'tags', component: UploadResourceComponent },
+      { path: 'tags', component: TagManagementComponent },
+      { path: 'specializations', component: SpecializationManagementComponent },
       { path: '', redirectTo: 'tags', pathMatch: 'full' }, // ניתוב ברירת מחדל
     ],
   },//ניהול לספרנית ואדמין בלבד

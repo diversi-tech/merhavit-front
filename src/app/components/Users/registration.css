@@ -27,6 +27,18 @@ body {
   direction: rtl; /* כיוון לימין */
 }
 
+.registration-form select {
+  width: 100%; /* כדי להתאים לשדות ה-input */
+  padding: 0.5rem; /* ריפוד כמו ב-input */
+  font-size: 1rem; /* גודל טקסט זהה */
+  border: 1px solid #ccc; /* מסגרת כמו ב-input */
+  border-radius: 0.25rem; /* פינות מעוגלות כמו ב-input */
+  box-sizing: border-box; /* מבטיח שהרוחב כולל את המסגרת */
+  margin-bottom: 1rem; /* רווח תחתון כמו ב-input */
+  background-color: white; /* צבע רקע */
+  appearance: none; /* מבטל עיצוב דפדפן ברוב המקרים */
+}
+
 .registration-form h1 {
   font-size: 1.5rem; /* גודל יחסי */
   margin-bottom: 1rem; /* רווח כותרת */
@@ -125,4 +137,16 @@ body {
   max-width: 25rem; /* 400px */
   box-sizing: border-box;
   text-align: center;
+}
+
+.icon-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem; /* רווח בין התמונה לטקסט */
+}
+
+.books-image {
+  width: 4rem; /* גודל התמונה - 100px */
+  height: auto; /* שמירת פרופורציות */
 }
