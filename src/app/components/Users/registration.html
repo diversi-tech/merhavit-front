@@ -132,13 +132,23 @@
       <small>הסיסמאות לא תואמות</small>
     </div>
 
-    <label for="class">כיתה</label>
-    <input formControlName="class" type="text" placeholder="כיתה" />
-    <div
-      *ngIf="registrationForm.get('class')?.touched && registrationForm.get('class')?.invalid"
-      class="error-message"
-    >
-      <small>שדה חובה</small>
+    <div>
+      <label for="class">כיתה</label>
+      <select
+        id="class"
+        formControlName="class"
+        [disabled]="classes.length === 0"
+      >
+        <option *ngIf="classes.length === 0" disabled>
+          אין כיתה זמינה
+        </option>
+        <option
+          *ngFor="let class of classes"
+          [value]="class.name"
+        >
+          {{ class.name }}
+        </option>
+      </select>
     </div>
 
     <div>

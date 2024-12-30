@@ -20,6 +20,7 @@ export class RegistrationComponent {
   registrationForm: FormGroup;
   seminaries: any[] = [];
   specializations: any[] = [];
+  classes: any[] = [];
   errorMessage: string | null = null;
 
   constructor(
@@ -66,6 +67,14 @@ export class RegistrationComponent {
       console.log('data', data)
       this.specializations = data; // שמירה של הרשימה המלאה כפי שהתקבלה מהשרת
       console.log('this.specializations', this.specializations)
+
+    });
+
+    this.apiService.Read('/classes').subscribe((data: any[]) => {
+   
+      console.log('data', data)
+      this.classes = data; // שמירה של הרשימה המלאה כפי שהתקבלה מהשרת
+      console.log('this.classes', this.classes)
 
     });
 
