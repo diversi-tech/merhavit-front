@@ -16,6 +16,7 @@ import { UploadResourceComponent } from './components/upload-resource/upload-res
 import { FavoritesComponent } from './components/Favorites/favorites';
 import { TagManagementComponent } from './components/Librarian/tag-management';
 import { SpecializationManagementComponent } from './components/Librarian/specialization-management';
+import { SubjectManagementComponent } from './components/Librarian/subject-management';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -44,6 +45,7 @@ export const routes: Routes = [
   { path: 'items/images/creations', component: ItemsListComponent }, // יצירות
   { path: 'tag-management', component: TagManagementComponent },
   { path: 'specialization-management', component: SpecializationManagementComponent },
+  { path: 'subject-management', component:SubjectManagementComponent },
   { path: '**', redirectTo: '' }, // עמוד ברירת מחדל לכל כתובת לא תקינה
 ];
 

@@ -90,6 +90,8 @@ export class NavigationBarComponent {
       }); // עבור כפתור "יצירות"
     } else if (type === 'tag-management') {
       this.router.navigate(['/tag-management']);
+    }else if (type === 'subject-management') {
+      this.router.navigate(['/subject-management']);
     }else if (type === 'user-management') {
       this.router.navigate(['/user-management']);
     }else if (type === 'specialization-management') {

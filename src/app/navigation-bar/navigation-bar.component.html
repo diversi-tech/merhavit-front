@@ -53,10 +53,16 @@
       </a>
     </li>
     <li *ngIf="userRole !== 'Student'">
+      <a (click)="navigateAndFilter('subject-management')">
+        <i class="fas fa-tags"></i> ניהול נושאים
+      </a>
+    </li>
+    <li *ngIf="userRole !== 'Student'">
       <a (click)="navigateAndFilter('specialization-management')">
         <i class="fas fa-tags"></i> ניהול התמחויות
       </a>
     </li>
+  
     <li *ngIf="userRole == 'Admin'">
       <a (click)="navigateAndFilter('user-management')">
         <i class="fas fa-users"></i> ניהול משתמשים

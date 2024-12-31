@@ -1,0 +1,59 @@
+<div class="subject-management-container">
+  <div class="subject-header">
+    <div class="subject-cell">שם הנושא</div>
+    <div class="subject-cell">תיאור</div>
+    <div class="subject-cell">פעולות</div>
+  </div>
+  
+  <!--כפתור הוספת נושא חדש -->
+  <div class="subject-row add-subject-row">
+    <div class="subject-cell">
+      <button class="action-button" (click)="addNewSubject()">
+        <i class="fas" [class.fa-plus]="!isAddingSubject" [class.fa-minus]="isAddingSubject"></i>
+        הוספת נושא
+      </button>
+    </div>
+
+    <!-- תיבות למילוי כשמוסיפים נושא חדש -->
+    <div class="subject-cell subject-input-cell" *ngIf="isAddingSubject">
+      <input [(ngModel)]="newSubjectName" type="text" class="subject-input" placeholder="שם הנושא" />
+    </div>
+    <div class="subject-cell subject-input-cell" *ngIf="isAddingSubject">
+      <textarea [(ngModel)]="newSubjectDescription" class="subject-input" placeholder="תיאור"></textarea>
+    </div>
+    <div class="subject-cell subject-actions" *ngIf="isAddingSubject">
+      <button class="action-button" (click)="saveNewSubject()">
+        <i class="fas fa-check"></i> שמירה
+      </button>
+    </div>
+  </div>
+
+  <div class="subject-row" *ngFor="let subject of subjects">
+    <div class="subject-cell">
+      <div *ngIf="!subject.isEditing">{{ subject.name }}</div>
+      <input *ngIf="subject.isEditing" [(ngModel)]="subject.name" type="text" class="subject-input" />
+    </div>
+    <div class="subject-cell">
+      <div *ngIf="!subject.isEditing">{{ subject.description }}</div>
+      <textarea *ngIf="subject.isEditing" [(ngModel)]="subject.description" class="subject-input"></textarea>
+    </div>
+    <div class="subject-cell subject-actions">
+      <button class="action-button" (click)="editSubject(subject)">
+        <i *ngIf="!subject.isEditing" class="fas fa-edit"></i>
+        <i *ngIf="subject.isEditing" class="fas fa-check"></i>
+      </button>
+      <button class="action-button" (click)="showConfirmation(subject)">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- דיאלוג אישור מחיקה -->
+<div class="confirmation-dialog" *ngIf="confirmSubject">
+  <div class="dialog-content">
+    <p>האם אתה בטוח שברצונך למחוק את הנושא {{ confirmSubject.name }}?</p>
+    <button (click)="confirmDeleteSubject()">אישור</button>
+    <button (click)="closeConfirmation()">ביטול</button>
+  </div>
+</div>
