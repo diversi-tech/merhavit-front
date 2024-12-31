@@ -8,12 +8,12 @@
 .tag-header, .tag-row {
   display: flex;
   align-items: center;
-  padding: 3vh 0;
+  padding: 1.5rem 0; /* 3vh to rem */
   border-bottom: 0.1rem solid #dcdcdc;
 }
 
 .tag-header {
-  margin-top: 0.5rem;
+  margin-top: 0.3rem; /* 0.5rem */
   font-size: 1.4rem;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f3f7fd;
@@ -27,7 +27,7 @@
 .tag-cell {
   flex: 1;
   text-align: center;
-  padding: 0 1.5vw;
+  padding: 0 1.5rem; /* 1.5vw to rem */
   box-sizing: border-box;
 }
 
@@ -48,7 +48,7 @@
 
 .tag-actions {
   display: flex;
-  gap: 10px;
+  gap: 0.625rem; /* 10px to rem */
   justify-content: center;
   align-items: center;
 }
@@ -62,7 +62,7 @@
   transition: background-color 0.3s ease;
   display: flex;
   align-items: center;
-  padding: 5px 10px;
+  padding: 0.3125rem 0.625rem; /* 5px 10px to rem */
 }
 
 .action-button:hover {
@@ -79,7 +79,7 @@
   border: 0.2rem solid #b9cff0;
   border-radius: 0.5rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
-  padding: 2rem;
+  padding: 1.25rem; /* 2rem to rem */
   z-index: 1000;
   width: 25rem;
   max-width: 90%;
@@ -94,7 +94,7 @@
 .dialog-content p {
   font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem; /* 2rem to rem */
 }
 
 .dialog-content button {
@@ -102,10 +102,10 @@
   color: white;
   border: none;
   border-radius: 0.3rem;
-  padding: 0.7rem 1.5rem;
+  padding: 0.4375rem 0.9375rem; /* 0.7rem 1.5rem to rem */
   font-size: 1rem;
   cursor: pointer;
-  margin: 0 0.3rem;
+  margin: 0 0.1875rem; /* 0.3rem to rem */
   transition: background 0.3s ease;
 }
 
@@ -123,9 +123,9 @@
 
 .tag-input {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.3125rem; /* 5px to rem */
   font-size: 1.4rem;
-  border: 1px solid #ccc;
+  border: 0.0625rem solid #ccc; /* 1px to rem */
   border-radius: 0.375rem;
 }
 
@@ -134,11 +134,11 @@
   border-color: #007bff;
 }
 
-/* עדכון: סידור כפתור הוספת תגית ותיבת הקלט באותה שורה */
+/* עדכון: סידור כפתור הוספת תגית ושדות הקלט באותה שורה */
 .add-tag-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem; /* 10px to rem */
 }
 
 .add-tag-row .tag-cell {
@@ -151,7 +151,7 @@
 
 .tag-row.add-tag-row .tag-cell {
   text-align: left;
-  padding: 0 10px;
+  padding: 0 0.625rem; /* 10px to rem */
 }
 
 /* עדכון לתצוגת התיבה המוספת */
@@ -163,5 +163,5 @@
 
 .tag-row.add-tag-row .tag-input,
 .tag-row.add-tag-row .action-button {
-  margin-left: 10px;
+  margin-left: 0.625rem; /* 10px to rem */
 }
