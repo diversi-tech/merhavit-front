@@ -26,19 +26,14 @@ export class LoginComponent {
     this.showPassword = !this.showPassword; // שינוי מצג הסיסמה
   }
 
-  validateId() {
+  validateId(id: string): boolean {
     // פונקציה לבדוק תעודת זהות באופן בסיסי (יש להרחיב בהתאם לצורך)
-    this.isIdValid = this.id.length === 9 && /^[0-9]+$/.test(this.id);
-    if (!this.isIdValid) {
-      this.errorMessage = 'תעודת זהות אינה תקינה. יש להזין מספר בן 9 ספרות.';
-    } else {
-      this.errorMessage = '';
-    }
+    return id.length === 9 && /^[0-9]+$/.test(id);
   }
 
   onSubmit() {
-    if (!this.isIdValid) {
-      this.errorMessage = 'אנא מלא תעודת זהות תקינה לפני הזנת סיסמה.';
+    if (!this.validateId(this.id)) {
+      this.errorMessage = 'תעודת זהות אינה תקינה. יש להזין מספר בן 9 ספרות.';
       return;
     }
     const loginData = { idNumber: this.id, password: this.password };
@@ -50,17 +45,15 @@ export class LoginComponent {
         const decodedToken: any = jwtDecode(response.access_token);
         const userRole = decodedToken.userType;
         if (userRole === 'Admin') {
-          console.log('Redirecting to user management');
           this.router.navigate(['/personal-details']);
         } else {
-          console.log('Login successful');
           localStorage.setItem('idNumber', this.id);
           this.router.navigate(['/show-details']);
         }
       },
       error: (err) => {
         console.error('Login failed', err);
-        this.errorMessage = err?.error?.message || 'Invalid credentials. Please try again.'; 
+        this.errorMessage = err?.error?.message || 'שם משתמש או סיסמה אינם נכונים. אנא נסה שוב.'; 
       },
     });
   }
