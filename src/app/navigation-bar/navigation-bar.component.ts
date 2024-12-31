@@ -63,12 +63,6 @@ export class NavigationBarComponent {
       this.router.navigate(['/items/images/creations'], {
         queryParams: { type: 'יצירה' },
       }); // עבור כפתור "יצירות"
-    } else if (type === 'tag-management') {
-      this.router.navigate(['/tag-management']);
-    }else if (type === 'user-management') {
-      this.router.navigate(['/user-management']);
-    }else if (type === 'specialization-management') {
-      this.router.navigate(['/specialization-management']);
     }else if(type=== 'management'){
       this.router.navigate(['/management'])//ניהול 
     } else {

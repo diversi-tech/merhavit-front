@@ -46,8 +46,8 @@ export const routes: Routes = [
   { path: 'items/images/creations', component: ItemsListComponent }, // יצירות
   { path: 'management', component: ManagementComponent,
     children: [
-      { path: 'seminaries', component: SeminaryComponent },
       { path: 'tags', component: TagManagementComponent },
+      { path: 'seminaries', component: SeminaryComponent },
       { path: 'specializations', component: SpecializationManagementComponent },
       { path: '', redirectTo: 'tags', pathMatch: 'full' }, // ניתוב ברירת מחדל
     ],
