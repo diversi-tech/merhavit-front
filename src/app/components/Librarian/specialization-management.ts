@@ -6,10 +6,10 @@ import { FormsModule } from '@angular/forms';
 interface Specialization {
   _id: string;
   name: string;
-//   description: string;
+  //   description: string;
   isEditing: boolean;
   originalName: string;
-//   originalDescription: string;
+  //   originalDescription: string;
 }
 
 @Component({
@@ -24,7 +24,7 @@ export class SpecializationManagementComponent implements OnInit {
   confirmSpecialization: any = null;
   isAddingSpecialization: boolean = false; // משתנה לצורך הוספת תגית חדשה
   newSpecializationName: string = ''; // שם התגית החדשה
-//   newTagDescription: string = ''; // תיאור התגית החדשה
+  //   newTagDescription: string = ''; // תיאור התגית החדשה
 
   constructor(private apiService: ApiService) {}
 
@@ -40,7 +40,7 @@ export class SpecializationManagementComponent implements OnInit {
         this.specializations = data.map((specialization) => ({
           ...specialization,
           originalName: specialization.name,
-        //   originalDescription: tag.description,
+          //   originalDescription: tag.description,
         }));
       },
       error: (err) => console.error('Error loading specializations:', err),
@@ -57,15 +57,21 @@ export class SpecializationManagementComponent implements OnInit {
 
   confirmDeleteSpecialization(): void {
     if (this.confirmSpecialization) {
-      console.log(`Deleting specialization with ID: ${this.confirmSpecialization._id}`);
+      console.log(
+        `Deleting specialization with ID: ${this.confirmSpecialization._id}`
+      );
       const specializationToDelete = this.confirmSpecialization._id;
 
       this.apiService
-        .Delete('/specializations/deleteSpecialization', { id: this.confirmSpecialization._id })
+        .Delete('/specializations/deleteSpecialization', {
+          id: this.confirmSpecialization._id,
+        })
         .subscribe({
           next: () => {
             // עדכון הרשימה המקומית לאחר המחיקה
-            this.specializations = this.specializations.filter((specialization) => specialization._id !== specializationToDelete);
+            this.specializations = this.specializations.filter(
+              (specialization) => specialization._id !== specializationToDelete
+            );
             this.confirmSpecialization = null; // איפוס ה-confirmTag לאחר המחיקה
           },
           error: (err) => console.error('Error deleting specialization:', err),
@@ -80,22 +86,22 @@ export class SpecializationManagementComponent implements OnInit {
     if (specialization.isEditing) {
       this.saveSpecialization(specialization);
     } else {
-        specialization.isEditing = true;
+      specialization.isEditing = true;
     }
   }
 
   saveSpecialization(specialization: Specialization): void {
     if (
-        specialization.name !== specialization.originalName 
-    //     ||
-    //   tag.description !== tag.originalDescription
+      specialization.name !== specialization.originalName
+      //     ||
+      //   tag.description !== tag.originalDescription
     ) {
       // שינוי: שליחה דרך BODY במקום PARAM
       this.apiService
         .Put('/specializations/updateSpecialization', {
           id: specialization._id,
           name: specialization.name,
-        //   description: tag.description,
+          //   description: tag.description,
         })
         .subscribe({
           next: () => {
@@ -106,7 +112,7 @@ export class SpecializationManagementComponent implements OnInit {
           error: (err) => console.error('Error updating specialization:', err),
         });
     } else {
-        specialization.isEditing = false;
+      specialization.isEditing = false;
     }
   }
 
@@ -116,38 +122,44 @@ export class SpecializationManagementComponent implements OnInit {
 
   saveNewSpecialization(): void {
     if (this.newSpecializationName) {
-      const createdByIdNumber = localStorage.getItem('idNumber'); // קריאה ל-ID מה-LocalStorage
+      if (
+        typeof window !== 'undefined' &&
+        typeof localStorage !== 'undefined'
+      ) {
+        const createdByIdNumber = localStorage.getItem('idNumber'); // קריאה ל-ID מה-LocalStorage
 
-      if (createdByIdNumber) {
-        const newSpecialization = {
-          name: this.newSpecializationName,
-        //   description: this.newTagDescription,
-          createdByIdNumber: createdByIdNumber, // מוסיף את ה-ID שנמצא ב-LocalStorage
-        };
-
-        // שליחה דרך BODY במקום PARAM
-        this.apiService.Post('/Specializations/addSpecialization', newSpecialization).subscribe({
-          next: (response) => {
-            // לאחר ההוספה, הוספת התגית החדשה לא רק למחסנית אלא גם למערך ה-tags
-            this.specializations.push({
-              _id: response.insertedId, // מוודא שאתה מקבל את ה-ID שהשרת מחזיר
-              name: this.newSpecializationName,
+        if (createdByIdNumber) {
+          const newSpecialization = {
+            name: this.newSpecializationName,
             //   description: this.newTagDescription,
-              isEditing: false, // אפשר להוסיף גם ערכים נוספים אם נדרשים
-              originalName: this.newSpecializationName,
-            //   originalDescription: this.newTagDescription,
-            });
+            createdByIdNumber: createdByIdNumber, // מוסיף את ה-ID שנמצא ב-LocalStorage
+          };
 
-            // איפוס השדות
-            this.isAddingSpecialization = false; // מסתיר את שורת הוספת תגית חדשה
-            this.newSpecializationName = '';
-            // this.newTagDescription = '';
-          },
-          error: (err) => console.error('Error adding specialization:', err),
-        });
-      } else {
-        console.error('User ID not found in localStorage');
+          // שליחה דרך BODY במקום PARAM
+          this.apiService
+            .Post('/Specializations/addSpecialization', newSpecialization)
+            .subscribe({
+              next: (response) => {
+                this.specializations.push({
+                  _id: response.insertedId,
+                  name: this.newSpecializationName,
+                  isEditing: false,
+                  originalName: this.newSpecializationName,
+                });
+
+                // איפוס השדות
+                this.isAddingSpecialization = false; // מסתיר את שורת הוספת תגית חדשה
+                this.newSpecializationName = '';
+              },
+              error: (err) =>
+                console.error('Error adding specialization:', err),
+            });
+        } else {
+          console.error('User ID not found in localStorage');
+        }
       }
+    } else {
+      console.error('Access token not found in localStorage');
     }
   }
 }
