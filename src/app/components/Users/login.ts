@@ -37,7 +37,8 @@ export class LoginComponent {
       return;
     }
     const loginData = { idNumber: this.id, password: this.password };
-
+     console.log("login data",loginData);
+     
     this.apiService.Post('/users/login', loginData).subscribe({
       next: (response) => {
         // console.log(response);

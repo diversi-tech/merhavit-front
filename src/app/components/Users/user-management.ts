@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchService } from '../../shared/search.service';
 import { jwtDecode } from 'jwt-decode';
 
+
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.html',
@@ -17,8 +18,10 @@ export class UserManagementComponent implements OnInit {
   selectedUser: any = null; // המשתמש שתפריט התפקיד שלו פתוח
   confirmUser: any = null;
   filteredUsers = [...this.users];
+  seminaries: any[] = [];
+  specializations: any[] = [];
+  classes: any[] = [];
   loggedInUserRole: any = null; // המשתמש שתפריט התפקיד שלו פתוח
-
   searchTerm: string = 'all';
   filterOption: string = '';
 
@@ -28,7 +31,7 @@ export class UserManagementComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getUsers();
+   this.loadData();
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       this.setUserRole();
     } else {
@@ -61,6 +64,42 @@ export class UserManagementComponent implements OnInit {
       }
     }
   }
+
+  loadData() {
+    // טוען סמינרים, התמחויות וכיתות תחילה
+    this.apiService.Read('/seminaries').subscribe(
+      (seminariesData: any[]) => {
+        this.seminaries = seminariesData;
+
+        this.apiService.Read('/specializations').subscribe(
+          (specializationsData: any[]) => {
+            this.specializations = specializationsData;
+
+            this.apiService.Read('/classes').subscribe(
+              (classesData: any[]) => {
+                this.classes = classesData;
+
+                // כעת טוען את פרטי המשתמש
+                this.getUsers();
+
+              },
+              (error) => {
+                console.error('Error fetching classes:', error);
+              }
+            );
+          },
+          (error) => {
+            console.error('Error fetching specializations:', error);
+          }
+        );
+      },
+      (error) => {
+        console.error('Error fetching seminaries:', error);
+      }
+    );
+  }
+
+
   getUsers() {
     this.apiService.Read('/users/all').subscribe({
       next: (response) => {
@@ -206,4 +245,11 @@ export class UserManagementComponent implements OnInit {
     // עדכון רשימת המשתמשים המסוננים
     this.filteredUsers = tempUsers;
   }
+
+  getEntityName(entityId: string, entities: any[]): string {
+    const entity = entities.find(ent => ent._id === entityId);
+    return entity ? entity.name : 'N/A';
+  }
+  
+  
 }

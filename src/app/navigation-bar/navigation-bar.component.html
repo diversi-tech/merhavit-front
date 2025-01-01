@@ -48,31 +48,11 @@
         <i class="fas fa-book"></i> ספרים
       </a>
     </li>
-
     <!-- כפתור ניהול תגיות - מוצג לכל תפקיד שאינו STUDENT -->
-    <li *ngIf="userRole !== 'Student'">
-      <a (click)="navigateAndFilter('tag-management')">
-        <i class="fas fa-tags"></i> ניהול תגיות
-      </a>
-    </li>
-
-    <li *ngIf="userRole !== 'Student'">
-      <a (click)="navigateAndFilter('subject-management')">
-        <i class="fas fa-tags"></i> ניהול נושאים
-      </a>
-    </li>
-
-    <li *ngIf="userRole !== 'Student'">
-      <a (click)="navigateAndFilter('specialization-management')">
-        <i class="fas fa-tags"></i> ניהול התמחויות
-      </a>
-    </li>
-
-    <li *ngIf="userRole === 'Admin' || userRole === 'Site Manager'">
-      <a (click)="navigateAndFilter('user-management')">
-        <i class="fas fa-users"></i> ניהול משתמשים
-      </a>
-    </li>    
-
+      <li *ngIf="userType !== 'Student'">
+        <a (click)="navigateAndFilter('management')">
+          <i class="fas fa-user-cog"></i> ניהול
+        </a>
+      </li>
   </ul>
 </nav>

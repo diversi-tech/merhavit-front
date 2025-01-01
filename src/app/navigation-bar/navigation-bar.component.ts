@@ -2,16 +2,8 @@ import { CommonModule } from '@angular/common'; // יש לייבא את המוד
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
-type ItemType =
-  | 'all'
-  | 'guests'
-  | 'movies'
-  | 'songs'
-  | 'books'
-  | 'posters'
-  | 'worksheets'
-  | 'paintings'
-  | 'creations';
+type ItemType = 'all' | 'guests' | 'movies' | 'songs' | 'books' | 'posters' | 'worksheets' | 'paintings' | 'creations'|'management';
+
 
 @Component({
   selector: 'app-navigation-bar',
@@ -21,32 +13,15 @@ type ItemType =
   styleUrls: ['./navigation-bar.component.css'],
 })
 export class NavigationBarComponent {
-  constructor(private router: Router) {}
+
+ 
+
+  constructor(private router: Router) {
+    this.getUserTypeFromToken()
+  }
   activeSubMenu: string | null = null;
-  userRole: string | null = null;
+  userType:string=''
 
-  // מתודה שתופעל בעת טעינת הדף
-  ngOnInit() {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      this.setUserRole();
-    } else {
-      console.error('localStorage is not available on the server.');
-    }
-  }
-
-  // פונקציה לקבלת התפקיד מתוך ה-Token
-  private setUserRole(): void {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      try {
-        const decodedToken: any = jwtDecode(token);
-        this.userRole = decodedToken.userType || null;
-      } catch (error) {
-        console.error('Failed to decode token', error);
-        this.userRole = null;
-      }
-    }
-  }
   // פונקציה לפתיחת/סגירת תתי-תפריטים
   toggleSubMenu(menu: string): void {
     if (this.activeSubMenu === menu) {
@@ -88,20 +63,36 @@ export class NavigationBarComponent {
       this.router.navigate(['/items/images/creations'], {
         queryParams: { type: 'יצירה' },
       }); // עבור כפתור "יצירות"
-    } else if (type === 'tag-management') {
-      this.router.navigate(['/tag-management']);
-    }else if (type === 'subject-management') {
-      this.router.navigate(['/subject-management']);
-    }else if (type === 'user-management') {
-      this.router.navigate(['/user-management']);
-    }else if (type === 'specialization-management') {
-      this.router.navigate(['/specialization-management']);
+    }else if(type=== 'management'){
+      this.router.navigate(['/management'])//ניהול 
     } else {
       this.router.navigate([`/items/${type}`]); // עבור כל סוג אחר
     }
-  }
+  }  
 
   // navigateAndFilter(type: string): void {
   //   this.router.navigate(['/items'], { queryParams: { type: type === 'all' ? '' : type } });
   // }
-}
+  getUserTypeFromToken(): void {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+    
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          this.userType = decodedToken.userType || '';
+          console.log(this.userType);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
+      } 
+    }else {
+        console.error('localStorage is not available on the server.');
+      }
+    
+    }
+    
+  }
+
+  
+
