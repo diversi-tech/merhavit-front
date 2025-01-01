@@ -5,8 +5,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ItemsListModule } from './show/items-list.module';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { EditMediaComponent } from './edit-media/edit-media.component';
-import { MediaService } from './edit-media/media.service';
 import { ReactiveFormsModule } from '@angular/forms';
 // import { materialize } from 'rxjs';
 import { SearchComponent } from './components/Students/search/search.component';
@@ -30,7 +28,6 @@ import { NavigationBarComponent } from './navigation-bar/navigation-bar.componen
     SearchComponent, 
     ItemPageComponent,
     FormsModule,
-    EditMediaComponent,
     ReactiveFormsModule,
     ItemsListModule,
     UploadResourceComponent,

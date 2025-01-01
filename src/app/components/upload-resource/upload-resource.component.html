@@ -37,7 +37,7 @@
 
     
     <div class="upload-overlay">
-      <button (click)="fileInput.click()">העלי קובץ PDF/ תמונה/וידאו/אודיו</button>
+      <button (click)="fileInput.click()">העלה קובץ PDF/ תמונה/וידאו/אודיו</button>
       <input type="file" #fileInput (change)="onFileSelected($event)" accept=".jpg, .jpeg, .png, .pdf, video/*,.mp3,.wav"
         style="display: none;" />
     </div>
@@ -85,29 +85,26 @@
 
   <!-- טופס -->
 
-  <form [formGroup]="fileForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="fileForm" (ngSubmit)="formMode === 'edit' ? onSubmitEdit() : onSubmit()">
     <div class="form-section-container">
       <!-- כותרת: פרטי קובץ -->
       <div class="form-section">
         <h2>פרטי קובץ</h2>
         <div class="form-group">
-          <label for="title">כותרת*</label>
-          <input class="input_fields" type="text" id="title" formControlName="title" />
-
-          <div class="error-fields" *ngIf="fileForm.get('title')?.invalid && fileForm.get('title')?.touched">
-            <small *ngIf="fileForm.get('title')?.errors?.['required']">יש להזין כותרת</small>
+          
+          <label for="title">כותרת </label>
+          <input class="input_fields" type="text" id="title" formControlName="title" [placeholder]="formMode === 'edit' ? fileForm.get('title')?.value : 'הכנס כותרת'">          
           </div>
-        </div>
         <div class="form-group">
           <label for="publicationDate">תאריך העלאה*</label>
-          <input class="input_fields" type="date" id="publicationDate" formControlName="publicationDate" />
+          <input class="input_fields" type="date" id="publicationDate" formControlName="publicationDate" [placeholder]="formMode === 'edit' ? fileForm.get('publicationDate')?.value : 'הכנס כותרת'"/>
           <div class="error-fields" *ngIf="fileForm.get('publicationDate')?.invalid && fileForm.get('publicationDate')?.touched">
             <small *ngIf="fileForm.get('publicationDate')?.errors?.['required']">יש להזין תאריך </small>
           </div>
         </div>
         <div class="form-group" *ngIf="contentOption!='edit'">
           <label for="type">סוג קובץ*</label>
-          <select class="input_fields" id="type" formControlName="type" (change)="onFileTypeChange($event)">
+          <select class="input_fields" id="type" formControlName="type" (change)="onFileTypeChange($event)  ">
             <option  *ngFor="let type of fileTypes" [value]="type">{{ type }}</option>
           </select>
           <div class="error-fields" *ngIf="fileForm.get('type')?.invalid && fileForm.get('type')?.touched">
@@ -115,12 +112,13 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="subject">נושא*</label>
-          <mat-form-field class="autocomplete-container">
+          <label for="subjectInput">נושא*</label>
+          <mat-form-field  class="autocomplete-container">
             <mat-chip-grid #subjectChipList  >
               <div class="input-container">
               <mat-icon matPrefix class="dropdown-icon">expand_more</mat-icon>
               <input
+              id="subjectInput"
               class="input_fields"
               matInput
                 
@@ -130,6 +128,8 @@
                 (matChipInputTokenEnd)="add($event,'subjects')"
                 [matAutocomplete]="subjectsAuto"
                 (focusout)="markFieldAsTouched('subjects')"
+                [value]="formMode === 'edit' ? multipleChoiceFields['subjects'].optionSelected.join(', ') : ''"
+                [placeholder]="formMode === 'edit' ? '' : 'הכנס נושא'"
               />
             </div>
               <mat-chip-row *ngFor="let subject of multipleChoiceFields['subjects'].optionSelected" [removable]="true" (removed)="remove(subject,'subjects')">
@@ -157,12 +157,13 @@
         <h2>למי מיועד</h2>
         
         <div class="form-group">
-        <label for="specializations">התמחות*</label>
-         <mat-form-field class="autocomplete-container">
+        <label for="specializationsInput">התמחות*</label>
+         <mat-form-field  class="autocomplete-container">
           <mat-chip-grid #specializationsChipList  aria-label="רשימת התמחות">
             <div class="input-container"> 
             <mat-icon matPrefix class="dropdown-icon">expand_more</mat-icon>
             <input
+            id="specializationsInput"
             class="input_fields"
             matInput
               [matChipInputFor]="specializationsChipList "
@@ -171,6 +172,8 @@
               (matChipInputTokenEnd)="add($event,'specializations')"
               [matAutocomplete]="specializationsAuto"
               (focusout)="markFieldAsTouched('specializations')"
+              [value]="formMode === 'edit' ? multipleChoiceFields['specializations'].optionSelected.join(', ') : ''"
+              [placeholder]="formMode === 'edit' ? '' : 'הכנס התמחות'"
             />
           </div>
             <mat-chip-row *ngFor="let specialization of multipleChoiceFields['specializations'].optionSelected" [removable]="true" (removed)="remove(specialization,'specializations')">
@@ -195,12 +198,13 @@
       </div>
 
       <div class="form-group">
-        <label for="ages">לאיזה גיל מיועד הקובץ*</label>
-         <mat-form-field class="autocomplete-container">
+        <label for="agesInput">לאיזה גיל מיועד הקובץ*</label>
+         <mat-form-field  class="autocomplete-container">
           <mat-chip-grid #agesChipList  aria-label="רשימת גילאים">
             <div class="input-container">
             <mat-icon matPrefix class="dropdown-icon">expand_more</mat-icon>
             <input
+            id="agesInput"
             class="input_fields"
             matInput
               [matChipInputFor]="agesChipList"
@@ -209,6 +213,9 @@
               (matChipInputTokenEnd)="add($event,'ages')"
               [matAutocomplete]="agesAuto"
               (focusout)="markFieldAsTouched('ages')"
+              [value]="formMode === 'edit' ? multipleChoiceFields['ages'].optionSelected.join(', ') : ''"
+              [placeholder]="formMode === 'edit' ? '' : ''"
+            />
             />
           </div>
             <mat-chip-row *ngFor="let age of multipleChoiceFields['ages'].optionSelected" [removable]="true" (removed)="remove(age,'ages')">
@@ -294,14 +301,14 @@
         
           <div class="form-group">
             <label for="releaseYear">שנת הוצאה*</label>
-            <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" />
+            <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" [placeholder]="formMode === 'edit' ? fileForm.get('releaseYear')?.value : 'הכנס שנת הוצאה'" />
             <div class="error-fields" *ngIf="fileForm.get('releaseYear')?.invalid && fileForm.get('releaseYear')?.touched">
               <small *ngIf="fileForm.get('releaseYear')?.errors?.['required']">יש להזין שנת הוצאה</small>
             </div>
           </div>
           <div class="form-group">
             <label for="author">מחבר/זמר*</label>
-            <input class="input_fields" type="text" id="author" formControlName="author" />
+            <input class="input_fields" type="text" id="author" formControlName="author" [placeholder]="formMode === 'edit' ? fileForm.get('author')?.value : 'הכנס מחבר/זמר'"/>
             <div class="error-fields" *ngIf="fileForm.get('author')?.invalid && fileForm.get('author')?.touched">
               <small *ngIf="fileForm.get('author')?.errors?.['required']">יש להזין מחבר/זמר</small>
             </div>
@@ -329,12 +336,13 @@
 
       <div class="form-section">
         <div class="form-group">
-          <label for="tags">תגיות</label>
-          <mat-form-field class="autocomplete-container">
+          <label for="tagsInput">תגיות</label>
+          <mat-form-field  class="autocomplete-container">
             <mat-chip-grid #tagsChipList  aria-label="רשימת תגיות">
               <div class="input-container">
               <mat-icon matPrefix class="dropdown-icon">expand_more</mat-icon>
               <input
+              id="tagsInput"
               class="input_fields"
               matInput
                 [matChipInputFor]="tagsChipList"
@@ -343,6 +351,8 @@
                 (matChipInputTokenEnd)="add($event,'tags')"
                 [matAutocomplete]="tagsAuto"
                 
+                [placeholder]="formMode === 'edit' ? '' : 'הכנס תגים'"                
+                [formArrayName]="'tags'"
               />
               </div>
               <mat-chip-row *ngFor="let tag of multipleChoiceFields['tags'].optionSelected" [removable]="true" (removed)="remove(tag,'tags')">
@@ -365,12 +375,12 @@
         </div>
         <div class="form-group">
           <label for="description">מה עוד כדאי לדעת?</label>
-          <textarea class="input_fields" id="description" rows="4" formControlName="description"></textarea>
+          <textarea class="input_fields" id="description" rows="4" formControlName="description" [placeholder]="formMode === 'edit' ? fileForm.get('description')?.value : 'הכנס תיאור'"></textarea>
         </div>
       </div>
        <div *ngIf="formErrorMessage" class="error-message">{{formErrorMessage}}</div>
       <!-- כפתור שליחה -->
-      <button type="submit" (click)="onSubmit()" [disabled]="isSubmitting">
+      <button type="submit" [disabled]="isSubmitting">
         {{ isSubmitting ? 'שולח...' : 'שלח' }}
       </button>
   </form>
