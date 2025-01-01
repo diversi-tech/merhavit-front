@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component,ViewEncapsulation, computed, ElementRef, inject, model, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component,AfterViewInit,ViewEncapsulation, computed, ElementRef, inject, model, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MatChipEditedEvent,MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
@@ -29,9 +29,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HttpResponse } from '@angular/common/http';
 
 
-
-
-//import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -75,7 +72,7 @@ export class UploadResourceComponent
   isPDF:boolean=false;
   isImage:boolean=true
   isAudio:boolean=false
-  fileTypes:Array<string>= ["ספר","סרטון","שיר","מערך","תמונה"];
+  fileTypes:Array<string>= ["ספר","סרטון","שיר","מערך","כרזה","דף עבודה","איור","יצירה"];
   userId:string=''
   // purchaseLocations:Array<string>=["חנות אונליין"];
   
@@ -95,7 +92,7 @@ export class UploadResourceComponent
     'specializations':{
       Ctrl : new FormControl(''),
       optionSelected: [] as string[],
-      allOption: ['מדעים', 'מחשבים', 'היסטוריה', 'ספרות'],
+      allOption: [],
       filteredOption$: null as Observable<string[]> | null
     },
     'ages':{
@@ -107,9 +104,10 @@ export class UploadResourceComponent
     'subjects':{
       Ctrl : new FormControl(''),
       optionSelected: [] as string[],
-      allOption: ["סבלנות","מרחביות","סטודיו","מקצועי","הר געש","פסח","מדעים","עונות השנה","מעבדות לחרות"
-        ,"גיל ההתבגרות","ואהבת לרעך כמוך","עבודת המידות","חסד","נתינה","הפרפר והגולם","מתמטיקה","גאוגרפיה",
-      "גשם","חורף","צונאמי","גדולי ישראל"],
+      allOption: [],
+      // ["סבלנות","מרחביות","סטודיו","מקצועי","הר געש","פסח","מדעים","עונות השנה","מעבדות לחרות"
+      //   ,"גיל ההתבגרות","ואהבת לרעך כמוך","עבודת המידות","חסד","נתינה","הפרפר והגולם","מתמטיקה","גאוגרפיה",
+      // "גשם","חורף","צונאמי","גדולי ישראל"],
       filteredOption$: null as Observable<string[]> | null
     },
     'tags':{
@@ -145,7 +143,7 @@ export class UploadResourceComponent
       tags:this.fb.array([[]])
       
     });
-    this.getTags(); //יבוא תגיות מטבלת התגיות במסד הנתונים
+    //this.getTags(); //יבוא תגיות מטבלת התגיות במסד הנתונים
 //
     Object.entries(this.multipleChoiceFields).forEach(([key, value]) => {
       value.filteredOption$ = value.Ctrl.valueChanges.pipe(
@@ -153,7 +151,6 @@ export class UploadResourceComponent
         map((value: string |any| null) => this._filter(value?.trim() ?? '',key))
       );
     });
-
   }
 
   //פונקציה שמחזירה האם הערך שהתקבל מופיע ברשימה הכוללת
@@ -170,6 +167,8 @@ export class UploadResourceComponent
     return false;
   });
  }
+
+ 
 
  //מאתחלת את כל הערכים של בחירה מרובה בטופס לריקים
   ngOnInit(): void {
@@ -190,6 +189,13 @@ export class UploadResourceComponent
     while (Array?.length > 0) {
       Array.removeAt(0);
     }
+
+    if(key!=='ages')
+      {
+        console.log("path",this.createPath(key));
+         
+        this.getfromServer(`/${this.createPath(key)}`,key);
+      }
     })
     
     if(this.formMode=='edit'){
@@ -237,9 +243,23 @@ export class UploadResourceComponent
       if (status === 'VALID') {
         this.formErrorMessage = null; // הסתרת ההודעה כאשר הטופס תקין
       }
+      
     });
-  
- }
+  }
+
+  createPath(key:string):string
+  {
+    console.log("hi");
+    
+    if(key=='tags')
+      return 'tags/getAll'
+    else if(key=='subjects')
+      return 'subjects/getAll'
+    else
+    return key
+  }
+
+  //חסימת אפשרות להעלאת כמה סוגי קבצים
   handleClick(event:Event,option: string): void {
     const modeAble= Object.keys(this.disabledOptions).find(k=>this.disabledOptions[k])
     if (!this.disabledOptions[option] && modeAble) {
@@ -424,7 +444,8 @@ downloadFile(filePath:string)
   //בעת שינוי סוג קובץ
   onFileTypeChange(event: Event): void {
     const selectedType = (event.target as HTMLSelectElement).value;
-    this.isImage = selectedType == 'תמונה';//עידכון האם מדובר בתמונה כדי לדעת האם נדרש תמונת שער
+    const imagesType:Array<string>=["כרזה","דף עבודה","איור","יצירה"]
+    this.isImage =imagesType.includes(selectedType)  ;//עידכון האם מדובר בתמונה כדי לדעת האם נדרש תמונת שער
   }
 
   //בעת בחירת תמונת שער
@@ -596,62 +617,101 @@ downloadFile(filePath:string)
   }
   
   //יבוא תגיות מטבלת תגיות
-  getTags()
+  getfromServer(path:string,fieldKey:string)
   {
-    this.apiService.Read('/tags/getAll').subscribe({
+    this.apiService.Read(path).subscribe({
       next: (response) => {
         if (Array.isArray(response)) {
-          this.multipleChoiceFields['tags'].allOption = response;
-          console.log("dataTags: ",this.multipleChoiceFields['tags'].allOption);
+          this.multipleChoiceFields[fieldKey].allOption = response;
+          console.log("dataTags: ",this.multipleChoiceFields[fieldKey].allOption);
         } else {
-          this.multipleChoiceFields['tags'].allOption = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+          this.multipleChoiceFields[fieldKey].allOption = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
         }  
       },
         error: (err) => 
           {
-          console.error('Error fetching tags', err);
+          console.error(`Error fetching ${fieldKey}`, err);
           },
       });
   }
 
-// private _formattedTags: string = '';
 
-// get formattedTags(): string {
-//   return this._formattedTags;
-// }
 
-// set formattedTags(value: string) {
-//   this._formattedTags = value;
-// }
 
-  // get formattedTags() {
-  //   if (this.formMode === 'edit') {
-  //     return this.multipleChoiceFields['tags'].optionSelected.map(tagId => this.getTagById(tagId)).join(', ');
-  //   }
-  //   return '';
-  // }
-  
-  getTagById(tagId:string)
+
+  //קבלת שם התגית לפי ה_id שלה
+  getOptionById(optionId:string,fieldKey:string)
   {
-    return this.multipleChoiceFields['tags'].allOption.find(opt=> opt._id===tagId).name
+    return this.multipleChoiceFields[fieldKey].allOption.find(opt=> opt._id===optionId).name
   }
 
-  //חלון דיאלוג להוספת נושא נוסף
-  openDialog() {
+  paramsForDialog(fieldKey:string)
+  {
+    const params:Record<string,{}>={
+      'tags':{
+        title:'הוספת תגית חדשה',
+        label:'שם תגית',
+        isDescription:true
+      },
+      'specializations':{
+        title:'הוספת התמחות חדשה',
+        label:'שם התמחות',
+        isDescription:false
+      },
+      'subjects':{
+        title:'הוספת נושא חדש',
+        label:'שם נושא',
+        isDescription:true
+      },
+    }
+    return params[fieldKey]
+  }
+
+  //חלון דיאלוג להוספת ערך נוסף
+  openDialog(fieldKey:string,path:string) {
     const dialogRef = this.dialog.open(DialogComponent, {
       width: '400px',
+      data:this.paramsForDialog(fieldKey)
     });
-    const field=this.multipleChoiceFields['subjects']
+    const field=this.multipleChoiceFields[fieldKey]
 
-    dialogRef.afterClosed().subscribe((result: string) => {
-      if (result) {
-        field.allOption.push(result); // הוספת הנושא לרשימה אם הוזן
-        field.optionSelected.push(result);
-      const Array = this.fileForm.get('subjects') as FormArray;
-      Array.push(new FormControl(result));
-      }
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (  result && result.newValue ) {
+        const createdByIdNumber = localStorage.getItem('idNumber'); // קריאה ל-ID מה-LocalStorage
+  
+      if (createdByIdNumber) {
+        let newObject:any={}
+        if(result.description)
+        {
+          newObject = {
+          name: result.newValue,
+          description: result.description,
+          createdByIdNumber: createdByIdNumber, // מוסיף את ה-ID שנמצא ב-LocalStorage
+        };
+        }else{
+           newObject = {
+            name: result.newValue,
+            createdByIdNumber: createdByIdNumber, // מוסיף את ה-ID שנמצא ב-LocalStorage
+        }
+        }
+        
+  
+        // שליחה דרך BODY במקום PARAM 
+        this.apiService.Post(path, newObject).subscribe({
+        next: (response) => {
+          field.allOption.push({_id: response.insertedId,...newObject}); // הוספת הנושא לרשימה אם הוזן
+          field.optionSelected.push(response.insertedId);
+          const Array = this.fileForm.get(fieldKey) as FormArray;
+          Array.push(new FormControl(response.insertedId));
+      },
+      error: (err) => console.error('Error adding:', err),
     });
+    }
   }
+})
+}
+    
+
 
   //שינוי לשם טוב באנגלית 
   sanitizeFileName(originalName:string) {

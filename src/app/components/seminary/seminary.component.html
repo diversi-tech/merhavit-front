@@ -1,0 +1,82 @@
+<div class="Seminar-management-container">
+    <div class="Seminar-header">
+      <div class="Seminar-cell">שם הסמינר</div>
+      <div class="Seminar-cell">מיקום</div>
+      <div class="Seminar-cell">אימייל</div>
+      <div class="Seminar-cell">ספרניות</div>
+      <div class="Seminar-cell">פעולות</div>
+    </div>
+    
+    <!-- כפתור הוספת תגית חדשה -->
+    <div class="Seminar-row add-Seminar-row">
+      <div class="Seminar-cell">
+        <button class="action-button" (click)="addNewSeminar()">
+          <i class="fas" [class.fa-plus]="!isAddingSeminar" [class.fa-minus]="isAddingSeminar"></i>
+          הוספת סמינר
+        </button>
+      </div>
+  
+      <!-- תיבות למילוי כשמוסיפים תגית חדשה -->
+      <div class="Seminar-cell Seminar-input-cell" *ngIf="isAddingSeminar">
+        <input [(ngModel)]="newSeminarName" type="text" class="Seminar-input" placeholder="שם הסמינר" />
+      </div>
+      <div class="Seminar-cell Seminar-input-cell" *ngIf="isAddingSeminar">
+        <input [(ngModel)]="newSeminarLocation" type="text" class="Seminar-input" placeholder="מיקום " />
+      </div>
+      <div class="Seminar-cell Seminar-input-cell" *ngIf="isAddingSeminar">
+        <input [(ngModel)]="newSeminarEmail" type="email" class="Seminar-input" placeholder="אימייל " />
+      </div>
+      <div class="Seminar-cell Seminar-actions" *ngIf="isAddingSeminar">
+        <button class="action-button" (click)="saveNewSeminar()">
+          <i class="fas fa-check"></i> שמירה
+        </button>
+      </div>
+    </div>
+  
+    <div class="Seminar-row" *ngFor="let Seminar of seminaries">
+      <div class="Seminar-cell">
+        <div *ngIf="!Seminar.isEditing">{{ Seminar.name }}</div>
+        <input *ngIf="Seminar.isEditing" [(ngModel)]="Seminar.name" type="text" class="Seminar-input" (input)="onChangeFieldsSeminar(Seminar)"/>
+      </div>
+      <div class="Seminar-cell">
+        <div *ngIf="!Seminar.isEditing">{{ Seminar.location }}</div>
+        <input *ngIf="Seminar.isEditing" [(ngModel)]="Seminar.location" type="text" class="Seminar-input" (input)="onChangeFieldsSeminar(Seminar)"/>
+      </div>
+      <div class="Seminar-cell">
+        <div *ngIf="!Seminar.isEditing">{{ Seminar.email }}</div>
+        <input *ngIf="Seminar.isEditing" [(ngModel)]="Seminar.email" type="email" class="Seminar-input" (input)="onChangeFieldsSeminar(Seminar)"/>
+      </div>
+      <div class="Seminar-cell">
+        <div *ngFor="let librarian of Seminar.librarianIds" style="display: flex; align-items: right;">
+        <button *ngIf="Seminar.isEditing" (click)="removeLibrarian(Seminar,librarian)" >X</button>
+        <div >{{ getLibrarianById(librarian) }}</div>
+      </div>
+      <mat-form-field *ngIf="Seminar.isEditing">
+        <mat-label>הוסיפי ספרנית</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let librarian of filterLibrarianBySeminar(Seminar)" (click)="addLibrarian(Seminar,librarian._id)">{{librarian.firstName}} {{librarian.lastName}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+      <!-- <button *ngIf="Seminar.isEditing" (click)="onChangeFieldsSeminar(Seminar)">+</button> -->
+    </div>
+      <div class="Seminar-cell Seminar-actions">
+        <button class="action-button" (click)="editSeminar(Seminar)">
+          <i *ngIf="!Seminar.isEditing" class="fas fa-edit"></i>
+          <i *ngIf="Seminar.isEditing" class="fas fa-check"></i>
+        </button>
+        <button class="action-button" (click)="showConfirmation(Seminar)">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- דיאלוג אישור מחיקה -->
+  <div class="confirmation-dialog" *ngIf="confirmSeminar">
+    <div class="dialog-content">
+      <p>האם אתה בטוח שברצונך למחוק את הסמינר {{ confirmSeminar.name }}?</p>
+      <button (click)="confirmDeleteSeminar()">אישור</button>
+      <button (click)="closeConfirmation()">ביטול</button>
+    </div>
+  </div>
+  

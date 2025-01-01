@@ -3,19 +3,22 @@ import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
 import { ApiService } from '../../api.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-favorites',
   templateUrl: './favorites.html',
   styleUrls: ['./favorites.css'],
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, MatSnackBarModule],
 })
 export class FavoritesComponent implements OnInit {
   favorites: any[] = [];
   userId: string = '';
 
-  constructor(private apiService: ApiService, private router: Router) {}
+  constructor(private apiService: ApiService, private router: Router, private _snackBar: MatSnackBar) {}
 
   async ngOnInit(): Promise<void> {
     this.getUserIdFromToken();
@@ -100,9 +103,23 @@ export class FavoritesComponent implements OnInit {
       .subscribe({
         next: () => {
           this.favorites = this.favorites.filter((item) => item.itemId !== itemId);
+          this._snackBar.open('הפריט הוסר מהמועדפים !', 'סגור', {
+            duration: 2000,
+            panelClass: ['my-custom-snackbar'],
+            direction: 'rtl',
+          });
         },
         error: (error) => {
           console.error('Error removing favorite:', error);
+          this._snackBar.open(
+            'שגיאה במחיקת הפריט מהמועדפים.',
+            'סגור',
+            {
+              duration: 3000,
+              panelClass: ['error-snackbar'],
+              direction: 'rtl',
+            }
+          );
         },
       });
   }

@@ -1,6 +1,6 @@
 <div class="confirmation-dialog" *ngIf="confirmUser">
   <div class="dialog-content">
-  <p>האם אתה בטוח שברצונך למחוק את {{ confirmUser.fullName }}? </p>
+    <p>האם אתה בטוח שברצונך למחוק את {{ confirmUser.fullName }}?</p>
     <button (click)="confirmDeleteUser()">אישור</button>
     <button (click)="closeConfirmation()">ביטול</button>
   </div>
@@ -19,7 +19,7 @@
     <div class="user-cell">פעולות</div>
   </div>
 
-  <div class="user-row" *ngFor="let user of users">
+  <div class="user-row" *ngFor="let user of filteredUsers">
     <div class="user-cell">{{ user.firstName || 'N/A' }}</div>
     <div class="user-cell">{{ user.lastName || 'N/A' }}</div>
     <div class="user-cell">{{ user.idNumber || 'N/A' }}</div>
@@ -41,8 +41,18 @@
 
       <!-- תפריט הבחירה של התפקיד -->
       <div *ngIf="selectedUser === user" class="role-menu">
-        <button (click)="changeRole(user, 'Site Manager')">מנהל סמינר</button>
-        <button (click)="changeRole(user, 'Librarian')">ספרנית</button>
+        <button
+          *ngIf="loggedInUserRole === 'Admin'"
+          (click)="changeRole(user, 'Site Manager')"
+        >
+          מנהל סמינר
+        </button>
+        <button
+          *ngIf="loggedInUserRole === 'Admin' || loggedInUserRole === 'Site Manager'"
+          (click)="changeRole(user, 'Librarian')"
+        >
+          ספרנית
+        </button>
         <button (click)="changeRole(user, 'Student')">סטודנט</button>
       </div>
     </div>

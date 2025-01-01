@@ -1,12 +1,39 @@
 <div class="personal-details-container" dir="rtl">
   <!-- סרגל ניווט -->
   <div class="nav-tabs">
-    <div [class.active]="activeTab === 'personal-details'" (click)="navigateTo('personal-details')">פרטים אישיים</div>
-    <div [class.active]="activeTab === 'returns'" (click)="navigateTo('returns')">החזרות/חובות</div>
-    <div [class.active]="activeTab === 'activity-questions'" (click)="navigateTo('activity-questions')">השאלות פעילות</div>
-    <div [class.active]="activeTab === 'orders'" (click)="navigateTo('orders')">הזמנות</div>
-    <div [class.active]="activeTab === 'favorites'" (click)="navigateTo('favorites')">שמירות</div>
-    <div [class.active]="activeTab === 'notifications'" (click)="navigateTo('notifications')">הודעות</div>
+    <div
+      [class.active]="activeTab === 'personal-details'"
+      (click)="navigateTo('personal-details')"
+    >
+      פרטים אישיים
+    </div>
+    <div
+      [class.active]="activeTab === 'returns'"
+      (click)="navigateTo('returns')"
+    >
+      החזרות/חובות
+    </div>
+    <div
+      [class.active]="activeTab === 'activity-questions'"
+      (click)="navigateTo('activity-questions')"
+    >
+      השאלות פעילות
+    </div>
+    <div [class.active]="activeTab === 'orders'" (click)="navigateTo('orders')">
+      הזמנות
+    </div>
+    <div
+      [class.active]="activeTab === 'favorites'"
+      (click)="navigateTo('favorites')"
+    >
+      שמירות
+    </div>
+    <div
+      [class.active]="activeTab === 'notifications'"
+      (click)="navigateTo('notifications')"
+    >
+      הודעות
+    </div>
   </div>
 
   <!-- טופס הפרטים האישיים -->
@@ -14,49 +41,92 @@
     <div class="form-grid">
       <div class="form-group">
         <label>שם פרטי</label>
-        <input type="text" placeholder="מירי" [(ngModel)]="user.firstName" name="firstName" required />
+        <input
+          type="text"
+          placeholder="מירי"
+          [(ngModel)]="user.firstName"
+          name="firstName"
+          required
+        />
       </div>
 
       <div class="form-group">
         <label>שם משפחה</label>
-        <input type="text" placeholder="טל" [(ngModel)]="user.lastName" name="lastName" required />
+        <input
+          type="text"
+          placeholder="טל"
+          [(ngModel)]="user.lastName"
+          name="lastName"
+          required
+        />
       </div>
 
       <div class="form-group">
         <label>טלפון נייד</label>
-        <input type="text" placeholder="05484949216" [(ngModel)]="user.phoneNumber" name="phoneNumber" />
+        <input
+          type="text"
+          placeholder="05484949216"
+          [(ngModel)]="user.phoneNumber"
+          name="phoneNumber"
+        />
       </div>
 
       <div class="form-group">
         <label>כתובת</label>
-        <input type="text" placeholder="צהל 16 אופקים" [(ngModel)]="user.address" name="address" />
+        <input
+          type="text"
+          placeholder="צהל 16 אופקים"
+          [(ngModel)]="user.address"
+          name="address"
+        />
       </div>
 
       <div class="form-group">
         <label>מייל</label>
-        <input type="text" placeholder="g@gmail.com" [(ngModel)]="user.email" name="email" />
+        <input
+          type="text"
+          placeholder="g@gmail.com"
+          [(ngModel)]="user.email"
+          name="email"
+        />
       </div>
 
       <div class="form-group">
         <label>כיתה</label>
-        <input type="text" placeholder="ה'" [(ngModel)]="user.class" name="class" />
+        <select [(ngModel)]="user.class" name="class">
+          <option *ngFor="let class of classes" [value]="class._id">
+            {{ class.name }}
+          </option>
+        </select>
       </div>
 
       <div class="form-group">
         <label>התמחות</label>
-        <input type="text" placeholder="מתמטיקה" [(ngModel)]="user.specialization" name="specialization" />
+        <select [(ngModel)]="user.specialization" name="specialization">
+          <option
+            *ngFor="let specialization of specializations"
+            [value]="specialization._id"
+          >
+            {{ specialization.name }}
+          </option>
+        </select>
       </div>
 
       <div class="form-group">
         <label>סמינר</label>
-        <input type="text" placeholder="כהנה" [(ngModel)]="user.assignedSeminaryId" name="assignedSeminaryId" />
+        <select [(ngModel)]="user.assignedSeminaryId" name="assignedSeminaryId">
+          <option *ngFor="let seminary of seminaries" [value]="seminary._id">
+            {{ seminary.name }}
+          </option>
+        </select>
       </div>
-
     </div>
 
     <!-- כפתורים -->
     <div class="button-group">
-      <button type="button" class="cancel-button" (click)="cancel()">ביטול</button>
+      <button type="button" class="cancel-button" (click)="cancel()">
+        ביטול
+      </button>
       <button type="submit" class="save-button">שמירת שינויים</button>
     </div>
   </form>

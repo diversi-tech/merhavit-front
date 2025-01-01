@@ -15,7 +15,7 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes, withHashLocation()), // שימוש ב-HashLocationStrategy
 
     provideHttpClient(withInterceptors([authInterceptor])), // רישום ה-Interceptor
-    provideAnimations(), provideAnimationsAsync(),
+    provideAnimations(), provideAnimationsAsync(), provideAnimationsAsync(),
     // הגדרת הנתיבים
   ],
 })

@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ApiService } from '../../api.service';
+
 @Component({
   selector: 'app-registration',
   standalone: true,
@@ -19,6 +20,8 @@ import { ApiService } from '../../api.service';
 export class RegistrationComponent {
   registrationForm: FormGroup;
   seminaries: any[] = [];
+  specializations: any[] = [];
+  classes: any[] = [];
   errorMessage: string | null = null;
 
   constructor(
@@ -30,15 +33,22 @@ export class RegistrationComponent {
       {
         firstName: ['', Validators.required],
         lastName: ['', Validators.required],
-        idNumber: ['',[ Validators.required, Validators.minLength(9), Validators.maxLength(9),],],
+        idNumber: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(9),
+            Validators.maxLength(9),
+          ],
+        ],
         address: ['', Validators.required],
         phone: ['', [Validators.required, Validators.pattern(/^05\d{8}$/)]],
         email: ['', [Validators.email]],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', Validators.required],
-        class: ['', [Validators.required]],
-        specialization: ['', Validators.required],
-        seminar: ['', Validators.required],
+        class: [{ value: '', disabled: true }, Validators.required],
+        specialization: [{ value: '', disabled: true }, Validators.required],
+        seminar: [{ value: '', disabled: true }, Validators.required],
       },
       { validator: this.passwordMatchValidator }
     ); // הוספת הולידציה של התאמת סיסמאות
@@ -51,18 +61,23 @@ export class RegistrationComponent {
   }
 
   ngOnInit(): void {
-    // קריאה לשרת כדי לקבל את רשימת הסמינרים
     this.apiService.Read('/seminaries').subscribe((data: any[]) => {
-   
-      console.log('data', data)
-      this.seminaries = data; // שמירה של הרשימה המלאה כפי שהתקבלה מהשרת
-      console.log('this.seminaries', this.seminaries)
+      this.seminaries = data;
+      this.registrationForm.get('seminar')?.enable(); 
+    });
 
+    this.apiService.Read('/specializations').subscribe((data: any[]) => {
+      this.specializations = data;
+      this.registrationForm.get('specialization')?.enable();
+    });
+
+    this.apiService.Read('/classes').subscribe((data: any[]) => {
+      this.classes = data;
+      this.registrationForm.get('class')?.enable(); 
     });
   }
 
   onSubmit() {
-
     if (this.registrationForm.invalid) {
       console.log('הרשמה נכשלה. אנא בדוק את כל השדות ונסה שוב.');
       this.errorMessage = 'הרשמה נכשלה. אנא בדוק את כל השדות ונסה שוב.';
@@ -89,6 +104,4 @@ export class RegistrationComponent {
         },
       });
   }
-
-
 }

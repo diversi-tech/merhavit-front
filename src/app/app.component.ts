@@ -14,7 +14,6 @@ import { UploadResourceComponent } from './components/upload-resource/upload-res
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component'
 
 
-
 @Component({
   selector: 'app-root',
   standalone: true,
