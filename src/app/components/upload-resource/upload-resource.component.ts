@@ -99,9 +99,10 @@ export class UploadResourceComponent
     'subjects':{
       Ctrl : new FormControl(''),
       optionSelected: [] as string[],
-      allOption: ["סבלנות","מרחביות","סטודיו","מקצועי","הר געש","פסח","מדעים","עונות השנה","מעבדות לחרות"
-        ,"גיל ההתבגרות","ואהבת לרעך כמוך","עבודת המידות","חסד","נתינה","הפרפר והגולם","מתמטיקה","גאוגרפיה",
-      "גשם","חורף","צונאמי","גדולי ישראל"],
+      allOption: [],
+      // ["סבלנות","מרחביות","סטודיו","מקצועי","הר געש","פסח","מדעים","עונות השנה","מעבדות לחרות"
+      //   ,"גיל ההתבגרות","ואהבת לרעך כמוך","עבודת המידות","חסד","נתינה","הפרפר והגולם","מתמטיקה","גאוגרפיה",
+      // "גשם","חורף","צונאמי","גדולי ישראל"],
       filteredOption$: null as Observable<string[]> | null
     },
     'tags':{
@@ -178,8 +179,10 @@ export class UploadResourceComponent
       Array.removeAt(0);
     }
 
-    if(key!=='ages' && key!=='subjects')
+    if(key!=='ages')
       {
+        console.log("path",this.createPath(key));
+         
         this.getfromServer(`/${this.createPath(key)}`,key);
       }
     })
@@ -194,8 +197,13 @@ export class UploadResourceComponent
 
   createPath(key:string):string
   {
+    console.log("hi");
+    
     if(key=='tags')
       return 'tags/getAll'
+    else if(key=='subjects')
+      return 'subjects/getAll'
+    else
     return key
   }
 
@@ -519,24 +527,6 @@ export class UploadResourceComponent
     return this.multipleChoiceFields[fieldKey].allOption.find(opt=> opt._id===optionId).name
   }
 
-  //חלון דיאלוג להוספת נושא נוסף
-  openDialogSubject() {
-    const dialogRef = this.dialog.open(DialogComponent, {
-      width: '400px',
-    });
-    const field=this.multipleChoiceFields['subjects']
-
-    dialogRef.afterClosed().subscribe((result: string) => {
-      if (result) {
-        field.allOption.push(result); // הוספת הנושא לרשימה אם הוזן
-        field.optionSelected.push(result);
-      const Array = this.fileForm.get('subjects') as FormArray;
-      Array.push(new FormControl(result));
-
-      }
-    });
-  }
-
   paramsForDialog(fieldKey:string)
   {
     const params:Record<string,{}>={
@@ -559,6 +549,7 @@ export class UploadResourceComponent
     return params[fieldKey]
   }
 
+  //חלון דיאלוג להוספת ערך נוסף
   openDialog(fieldKey:string,path:string) {
     const dialogRef = this.dialog.open(DialogComponent, {
       width: '400px',
