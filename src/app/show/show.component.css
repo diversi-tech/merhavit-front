@@ -287,3 +287,28 @@
   background-color: red;
   color: white;
 }
+
+.no-data-message{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #f8f9fa; /* צבע רקע עדין */
+  border: 0.5vh dashed #11457b; /* גבול עם קווקוו */
+  border-radius: 1rem; /* קצוות מעוגלים */
+  padding: 2vw; /* ריווח פנימי */
+  margin: 20vh auto; /* מרכז ההודעה */
+  color: #6c757d; /* צבע טקסט אפור עדין */
+  font-size: 2rem; /* גודל טקסט */
+  font-weight: 500; /* עיצוב טקסט מודגש במידה בינונית */
+  max-width: 400vw; /* רוחב מקסימלי */
+  box-shadow: 0 4vh 6vh rgba(0, 0, 0, 0.1); /* הצללה קלה */
+  text-align: center; /* מרכז הטקסט */
+}
+
+.icon-no-data-message {
+  margin-top: 6vh;
+  font-size: 2rem; /* גודל אייקון */
+  color: #11457b; /* צבע כחול */
+  margin-bottom: 10vh; /* ריווח מתחת לאייקון */
+}

@@ -3,6 +3,7 @@ import { ApiService } from '../../api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchService } from '../../shared/search.service';
+import { jwtDecode } from 'jwt-decode';
 
 
 @Component({
@@ -20,7 +21,7 @@ export class UserManagementComponent implements OnInit {
   seminaries: any[] = [];
   specializations: any[] = [];
   classes: any[] = [];
-
+  loggedInUserRole: any = null; // המשתמש שתפריט התפקיד שלו פתוח
   searchTerm: string = 'all';
   filterOption: string = '';
 
@@ -31,11 +32,14 @@ export class UserManagementComponent implements OnInit {
 
   ngOnInit(): void {
    this.loadData();
-
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      this.setUserRole();
+    } else {
+      console.error('localStorage is not available on the server.');
+    }
     // Subscribe לשינויים בנתונים מהשירות
     this.searchService.searchTerm$.subscribe((term) => {
       this.searchTerm = term;
-      console.log('searchTerm', this.searchTerm);
 
       this.filterUsers();
     });
@@ -46,6 +50,19 @@ export class UserManagementComponent implements OnInit {
 
       this.filterUsers();
     });
+  }
+  // פונקציה לקבלת התפקיד מתוך ה-Token
+  private setUserRole(): void {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        this.loggedInUserRole = decodedToken.userType || null;
+      } catch (error) {
+        console.error('Failed to decode token', error);
+        this.loggedInUserRole = null;
+      }
+    }
   }
 
   loadData() {
@@ -87,13 +104,6 @@ export class UserManagementComponent implements OnInit {
     this.apiService.Read('/users/all').subscribe({
       next: (response) => {
         this.users = response;
-        // this.users = response.map(user => {
-        //   const seminary = this.seminaries.find(s => s._id === user.assignedSeminaryId);
-        //   return {
-        //     ...user,
-        //     seminaryName: seminary ? seminary.name : 'לא הוקצה סמינר'
-        //   };
-        // });
         this.filterUsers(); // סינון המשתמשים גם לאחר קבלת הנתונים
       },
       error: (err) => {
@@ -116,7 +126,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   toggleRoleMenu(user: any) {
-    if (user.userType === 'Admin') {
+    if (user.userType === 'Admin'||this.loggedInUserRole==='Librarian'||this.loggedInUserRole==='Student'||(this.loggedInUserRole==='Site Manager'&&user.userType==='Site Manager')) {
       console.log('Cannot change role for Admin users.');
       return; // אל תפתח את התפריט
     }
@@ -124,24 +134,44 @@ export class UserManagementComponent implements OnInit {
   }
 
   changeRole(user: any, newRole: string) {
-    console.log('changeRole');
+    // בקרת הרשאות לשינוי תפקידים
+    if (this.loggedInUserRole === 'Admin') {
+      // Admin יכול לשנות לכל תפקיד
+      if (['Site Manager', 'Librarian', 'Student'].includes(newRole)) {
+        this.executeRoleChange(user, newRole);
+      } else {
+        console.error('Admin cannot assign this role:', newRole);
+      }
+    } else if (this.loggedInUserRole === 'Site Manager') {
+      // Site Manager יכול לשנות רק ל-Librarian ו-Site Manager
+      if (['Librarian', 'Site Manager'].includes(newRole)) {
+        this.executeRoleChange(user, newRole);
+      } else {
+        console.error('Site Manager cannot assign this role:', newRole);
+      }
+    } else {
+      // משתמשים אחרים לא יכולים לשנות תפקידים
+      console.error('User is not authorized to change roles.');
+    }
+  }
 
+  executeRoleChange(user: any, newRole: string) {
     const data = {
-      idNumber: user.idNumber, // חובה לוודא שהוא נכון
-      newRole: newRole, // מפתח צריך להיות "newRole" כדי להתאים לצד השרת
+      idNumber: user.idNumber,
+      newRole: newRole,
     };
+
     this.apiService.Put(`/users/updateRole`, data).subscribe({
       next: (response) => {
         console.log(`Role updated to ${newRole} for user:`, user);
-        user.userType = newRole; // עדכון תפקיד בממשק
-        this.selectedUser = null; // סגירת התפריט לאחר שינוי התפקיד
+        user.userType = newRole; // עדכון התפקיד בממשק
+        this.selectedUser = null; // סגירת תפריט התפקידים
       },
       error: (err) => {
         console.error('Error updating role', err);
       },
     });
   }
-
   showConfirmation(user: any) {
     this.confirmUser = user;
   }
@@ -216,11 +246,6 @@ export class UserManagementComponent implements OnInit {
     this.filteredUsers = tempUsers;
   }
 
-  getSeminaryName(assignedSeminaryId: string): string {
-    const seminary = this.seminaries.find(sem => sem._id === assignedSeminaryId);
-    return seminary ? seminary.name : 'לא נבחר סמינר';
-  }
-  
   getEntityName(entityId: string, entities: any[]): string {
     const entity = entities.find(ent => ent._id === entityId);
     return entity ? entity.name : 'N/A';

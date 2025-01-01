@@ -51,8 +51,18 @@
 
       <!-- תפריט הבחירה של התפקיד -->
       <div *ngIf="selectedUser === user" class="role-menu">
-        <button (click)="changeRole(user, 'Site Manager')">מנהל סמינר</button>
-        <button (click)="changeRole(user, 'Librarian')">ספרנית</button>
+        <button
+          *ngIf="loggedInUserRole === 'Admin'"
+          (click)="changeRole(user, 'Site Manager')"
+        >
+          מנהל סמינר
+        </button>
+        <button
+          *ngIf="loggedInUserRole === 'Admin' || loggedInUserRole === 'Site Manager'"
+          (click)="changeRole(user, 'Librarian')"
+        >
+          ספרנית
+        </button>
         <button (click)="changeRole(user, 'Student')">סטודנט</button>
       </div>
     </div>

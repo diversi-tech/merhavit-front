@@ -133,19 +133,19 @@
               />
             </div>
               <mat-chip-row *ngFor="let subject of multipleChoiceFields['subjects'].optionSelected" [removable]="true" (removed)="remove(subject,'subjects')">
-                {{subject}}
+                {{getOptionById(subject,'subjects')}}
                 <button matChipRemove>×</button>
               </mat-chip-row>
             </mat-chip-grid>
             <mat-autocomplete #subjectsAuto="matAutocomplete" (optionSelected)="select($event,'subjects')" [displayWith]="displayFn" [autoActiveFirstOption]="false" >
-              <mat-option *ngFor="let subject of (multipleChoiceFields['subjects'].filteredOption$ | async)" [value]="subject" (change)="toggleSelection( subject, 'subjects')" (click)="$event.stopPropagation()" >
+              <mat-option *ngFor="let subject of (multipleChoiceFields['subjects'].filteredOption$ | async)" [value]="subject._id" (change)="toggleSelection( subject, 'subjects')" (click)="$event.stopPropagation()" >
                 <div (click)="optionClicked($event, subject,'subjects')">
-                  <mat-checkbox [checked]="multipleChoiceFields['subjects'].optionSelected.includes(subject)">
-                {{ subject }}
+                  <mat-checkbox [checked]="multipleChoiceFields['subjects'].optionSelected.includes(subject._id)">
+                {{ subject.name }}
               </mat-checkbox>
             </div>
               </mat-option>
-              <button mat-raised-button color="primary" class="custom-button" (click)="openDialog()" >+ נושא חדש</button>
+              <button mat-raised-button color="primary" class="custom-button" (click)="openDialog('subjects','/subjects/addSubject')" >+ נושא חדש</button>
             </mat-autocomplete>
           </mat-form-field>
           <div class="error-fields" *ngIf="fileForm.get('subjects')?.invalid && fileForm.get('subjects')?.touched">
@@ -174,18 +174,19 @@
             />
           </div>
             <mat-chip-row *ngFor="let specialization of multipleChoiceFields['specializations'].optionSelected" [removable]="true" (removed)="remove(specialization,'specializations')">
-              {{specialization}}
+              {{getOptionById(specialization,'specializations')}}
               <button matChipRemove>×</button>
             </mat-chip-row>
           </mat-chip-grid>
           <mat-autocomplete #specializationsAuto="matAutocomplete" (optionSelected)="select($event,'specializations')" [displayWith]="displayFn" [autoActiveFirstOption]="false" >
-            <mat-option *ngFor="let specialization of (multipleChoiceFields['specializations'].filteredOption$ | async)" [value]="specialization" (change)="toggleSelection( specialization, 'specializations')" (click)="$event.stopPropagation()" >
+            <mat-option *ngFor="let specialization of (multipleChoiceFields['specializations'].filteredOption$ | async)" [value]="specialization._id" (change)="toggleSelection( specialization, 'specializations')" (click)="$event.stopPropagation()" >
               <div (click)="optionClicked($event, specialization,'specializations')">
-                <mat-checkbox [checked]="multipleChoiceFields['specializations'].optionSelected.includes(specialization)">
-              {{ specialization }}
+                <mat-checkbox [checked]="multipleChoiceFields['specializations'].optionSelected.includes(specialization._id)">
+              {{ specialization.name }}
             </mat-checkbox>
           </div>
             </mat-option>
+            <button mat-raised-button color="primary" class="custom-button" (click)="openDialog('specializations','/Specializations/addSpecialization')"  >+ התמחות חדשה </button>
           </mat-autocomplete>
         </mat-form-field>
         <div class="error-fields" *ngIf="fileForm.get('specializations')?.invalid && fileForm.get('specializations')?.touched">
@@ -345,7 +346,7 @@
               />
               </div>
               <mat-chip-row *ngFor="let tag of multipleChoiceFields['tags'].optionSelected" [removable]="true" (removed)="remove(tag,'tags')">
-                {{getTagById(tag)}}
+                {{getOptionById(tag,'tags')}}
                 <button matChipRemove>×</button>
               </mat-chip-row>
             </mat-chip-grid>
@@ -357,6 +358,7 @@
               </mat-checkbox>
             </div>
               </mat-option>
+              <button mat-raised-button color="primary" class="custom-button" (click)="openDialog('tags','/tags/addTag')" >+ תגית חדשה </button>
             </mat-autocomplete>
           </mat-form-field>
           

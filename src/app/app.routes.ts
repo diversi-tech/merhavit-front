@@ -16,6 +16,9 @@ import { UploadResourceComponent } from './components/upload-resource/upload-res
 import { FavoritesComponent } from './components/Favorites/favorites';
 import { TagManagementComponent } from './components/Librarian/tag-management';
 import { SpecializationManagementComponent } from './components/Librarian/specialization-management';
+import { ManagementComponent } from './components/management/management.component';
+import { SeminaryComponent } from './components/seminary/seminary.component';
+import { SubjectManagementComponent } from './components/Librarian/subject-management';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -25,7 +28,7 @@ export const routes: Routes = [
   { path: 'registration', component: RegistrationComponent },
   { path: 'personal-details', component: PersonalDetailsComponent },
   { path: 'change-password', component: PasswordChangeComponent },
-  { path: 'user-management', component: UserManagementComponent },
+  
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'success-registration', component: SuccessRegistrationComponent },
@@ -42,8 +45,17 @@ export const routes: Routes = [
   { path: 'items/images/worksheets', component: ItemsListComponent }, // דפי עבודה
   { path: 'items/images/paintings', component: ItemsListComponent }, // איורים
   { path: 'items/images/creations', component: ItemsListComponent }, // יצירות
-  { path: 'tag-management', component: TagManagementComponent },
-  { path: 'specialization-management', component: SpecializationManagementComponent },
+  { path: 'management', component: ManagementComponent,
+    children: [
+      { path: 'tags', component: TagManagementComponent },
+      { path: 'seminaries', component: SeminaryComponent },
+      { path: 'users', component: UserManagementComponent },
+      { path: 'subjects', component:SubjectManagementComponent },
+      { path: 'specializations', component: SpecializationManagementComponent },
+      { path: '', redirectTo: 'tags', pathMatch: 'full' }, // ניתוב ברירת מחדל
+    ],
+  },//ניהול לספרנית ואדמין בלבד
+  
   { path: '**', redirectTo: '' }, // עמוד ברירת מחדל לכל כתובת לא תקינה
 ];
 
