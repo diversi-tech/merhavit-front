@@ -130,7 +130,7 @@ export class ItemsListComponent implements OnInit {
       this.apiService.Read(url).subscribe({
         next: (response: { data: any[], totalCount: number }) => {
           console.log('API Response: ', response);
-          if (response.success && Array.isArray(response.data)) {
+          if (Array.isArray(response.data)) {
             this.itemsFromServer = response.data;
             console.log('Items received from server:', this.itemsFromServer);
     
@@ -147,7 +147,7 @@ export class ItemsListComponent implements OnInit {
           console.error('Error fetching items', err);
           this.items = [];
           this.showNoDataMessage = true;
-	   this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+	   this.totalItems = 0; // משתמשים ב-totalCount מהשרת
           reject(err);
         },
       });
@@ -490,7 +490,7 @@ filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
       }
     }
   }
-}
+
 
  getPageSizeOptions(): number[] {
     if (this.totalItems <= 5) {
@@ -501,3 +501,4 @@ filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
       return [5, 10, 15, 20];
     }
   }
+}
