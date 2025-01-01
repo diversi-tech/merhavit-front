@@ -141,11 +141,13 @@
 }
 
 .action-button {
+  border: none;
   padding: 0.5em 1em;
   font-size: 1rem;
-  border-radius: 2em;
   cursor: pointer;
+  border-radius: 2em;
   transition: all 0.3s;
+  background-color: transparent;
 }
 
 .action-button.edit {
@@ -170,7 +172,11 @@
   color: red;
 }
 
-.action-button.favorite:hover,
+.action-button.favorite {
+  color: red;
+}
+
+.action-button.not-favorite:hover,
 .action-button.download:hover {
   color: #218838;
 }
@@ -233,29 +239,15 @@
   .pagination-container .arrow:hover {
     color: #000;
   }
-
-  .favorite-icon {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-
-  .action-button-favorite.favorite {
-    color: red !important;
-  }
-
-  .action-button-favorite.not-favorite {
-    color: gray;
-  }
 }
 
 .file-extension-container {
+  direction: ltr;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 5vw; /* תואם לגובה התמונה */
-  width: 5vw;  /* תואם לרוחב התמונה */
+  width: 5vw; /* תואם לרוחב התמונה */
   background-color: #f8f8f8;
   border: 1px solid #ddd;
   font-size: 1.2rem; /* גודל טקסט יותר ברור */
@@ -284,4 +276,14 @@
 
 .default-icon {
   color: gray;
+}
+
+.my-custom-snackbar {
+  background-color: green;
+  color: white;
+}
+
+.error-snackbar {
+  background-color: red;
+  color: white;
 }

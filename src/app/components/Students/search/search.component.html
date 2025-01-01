@@ -230,12 +230,70 @@
         </div>
       </div>
     </div>
-    <input
-      type="text"
-      class="search-input"
-      placeholder="הקלד מילת חיפוש..."
-      [(ngModel)]="searchTerm"
-      (input)="onSearchChange()"
-    />
+
+    <!-- <div class="search-input-container">
+      <input
+        type="text"
+        class="search-input"
+        [formControl]="searchControl"
+        placeholder="הקלד מילת חיפוש..."
+        (focus)="showSearchHistory()"
+        (blur)="hideSearchHistory()"
+      />
+      <button mat-icon-button (click)="onSearch()">
+        <mat-icon>search</mat-icon>
+      </button>
+
+      תיבת היסטוריית החיפושים -->
+    <!-- <div class="search-history-box" *ngIf="isSearchHistoryVisible">
+        <div
+          *ngFor="let item of searchResults"
+          class="search-history-item"
+          (click)="onSearch(item)"
+        >
+          <i class="fas fa-search"></i>
+          <span>{{ item }}</span>
+        </div>
+      </div>
+    </div> -->
+    <div class="search-input-container">
+      <!-- חיפוש כללי -->
+      <div *ngIf="!isUserManagementComponent">
+        <input
+          type="text"
+          class="search-input"
+          [formControl]="searchControl"
+          placeholder="הקלד מילת חיפוש..."
+          (focus)="showSearchHistory()"
+          (blur)="hideSearchHistory()"
+        />
+        <button mat-icon-button (click)="onSearch()">
+          <mat-icon>search</mat-icon>
+        </button>
+
+        <!-- תיבת היסטוריית החיפושים -->
+        <div class="search-history-box" *ngIf="isSearchHistoryVisible">
+          <div
+            *ngFor="let item of searchResults"
+            class="search-history-item"
+            (click)="onSearch(item)"
+          >
+            <i class="fas fa-search"></i>
+            <span>{{ item }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- חיפוש מותאם לניהול משתמשים -->
+      <div *ngIf="isUserManagementComponent" class="user-management-search">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="הקלד מילת חיפוש..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+        />
+      </div>
+    </div>
   </div>
 </div>

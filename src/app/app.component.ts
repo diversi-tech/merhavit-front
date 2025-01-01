@@ -16,25 +16,24 @@ import { UploadResourceComponent } from './components/upload-resource/upload-res
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component'
 
 
-
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     CommonModule, 
     RouterOutlet, 
-    RouterLink, 
-    RouterLinkActive,
-    ItemsListComponent,
+    // RouterLink, 
+    // RouterLinkActive,
+    // ItemsListComponent,
     MatDialogModule,
     ItemsListModule,
     SearchComponent, 
-    ItemPageComponent,
+    // ItemPageComponent,
     FormsModule,
-    EditMediaComponent,
+    // EditMediaComponent,
     ReactiveFormsModule,
     ItemsListModule,
-    UploadResourceComponent,
+    // UploadResourceComponent,
     NavigationBarComponent,
   ],
   templateUrl: './app.component.html',

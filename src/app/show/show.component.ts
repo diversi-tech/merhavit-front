@@ -18,7 +18,6 @@
 
 // import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 
-
 // interface Item {
 
 //   id: string;
@@ -45,7 +44,6 @@
 
 // }
 
-
 // @Component({
 
 //   selector: 'app-items-list',
@@ -60,7 +58,6 @@
 
 // })
 
-
 // //@Injectable({ providedIn: 'root' })
 
 // export class ItemsListComponent implements OnInit {
@@ -68,7 +65,6 @@
 //   public items: Item[] = []; //מערך המוצרים של הספריה
 
 //   public userType: string = ''; // משתנה לשמירת סוג המשתמש
-
 
 //   constructor(
 
@@ -81,7 +77,6 @@
 //     private route: ActivatedRoute
 
 //   ) {}
-
 
 //   async ngOnInit(): Promise<void> {
 
@@ -104,7 +99,6 @@
 //     });
 
 //   }
-
 
 //   getUserTypeFromToken(): void {
 
@@ -138,18 +132,15 @@
 
 //   }
 
-
 //   async getItems(page: number = 0, limit: number = 100) {
 
 //     console.log('hi');
-
 
 //     this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}`).subscribe({
 
 //       next: (response) => {
 
 //         console.log('i this is the response: ', response);
-
 
 //         if (Array.isArray(response)) {
 
@@ -173,7 +164,6 @@
 
 //   }
 
-
 //   editItem(item: Item) {
 
 //     // ניווט לדף edit-media
@@ -186,13 +176,11 @@
 
 //   }
 
-
 //   deleteResource(itemToDelete: Item) {
 
 //     console.log('Delete item: ', itemToDelete);
 
 //     // הוסף כאן את הלוגיקה למחיקת משתמש
-
 
 //     //הפונקציה מקבלת את הנתיב שאיתו היא תתחבר לפונ המחיקה בשרת
 
@@ -240,7 +228,6 @@
 
 //   }
 
-
 //   downloadResource(item: Item): void {
 
 //     if (!item.id) {
@@ -253,7 +240,6 @@
 
 //     }
 
-
 //     if (!item.filePath) {
 
 //       console.error('File path is missing.');
@@ -264,9 +250,7 @@
 
 //     }
 
-
 //     console.log('item.filePath', item.filePath);
-
 
 //     this.apiService
 
@@ -287,7 +271,6 @@
 //       )
 
 //       // .Read(`/EducationalResource/presigned-url?filePath=${item.filePath}`)
-
 
 //       .subscribe({
 
@@ -329,7 +312,6 @@
 
 //         //     downloadLink.style.display = 'none';
 
-
 //         //     document.body.appendChild(downloadLink);
 
 //         //     downloadLink.click();
@@ -355,7 +337,6 @@
 //       });
 
 //   }
-
 
 //   filterItems(type: string): void {
 
@@ -385,7 +366,6 @@
 
 //   }
 
-
 //   getFileNameFromPath(filePath: string): string {
 
 //     return filePath.split('/').pop() || 'downloaded-file';
@@ -406,7 +386,6 @@
 
 //     }
 
-
 //     try {
 
 //       const decodedToken: any = jwtDecode(token);
@@ -421,9 +400,7 @@
 
 //       };
 
-
 //       console.log('Request Data:', requestData);
-
 
 //     this.apiService.Post('/favorites/add', requestData).subscribe({
 
@@ -467,7 +444,6 @@
 
 // currentPage: number = 0;
 
-
 // nextPage() {
 
 //   this.currentPage++;
@@ -475,7 +451,6 @@
 //   this.getItems(this.currentPage);
 
 // }
-
 
 // previousPage() {
 
@@ -487,9 +462,7 @@
 
 //   }
 
-
 // }
-
 
 //  navigateToItemPage(itemId: string): void {
 
@@ -499,7 +472,6 @@
 
 // }
 
-
 import { Component, Injectable, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
@@ -507,9 +479,14 @@ import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../api.service';
 import { jwtDecode } from 'jwt-decode';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
-import {log} from 'console';
-import {ChangeDetectionStrategy} from '@angular/core';
-import {MatCardModule} from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { log } from 'console';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 
 interface Item {
@@ -533,10 +510,15 @@ interface Item {
   styleUrls: ['./show.component.css'],
   standalone: true,
 
-  imports: [CommonModule, MatTableModule, MatCardModule, MatIconModule],
-
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatCardModule,
+    MatIconModule,
+  ],
 })
-
 export class ItemsListComponent implements OnInit {
   public items: Item[] = []; // מערך המוצרים של הספריה
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
@@ -546,7 +528,9 @@ export class ItemsListComponent implements OnInit {
     private http: HttpClient,
     private apiService: ApiService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private _snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {}
 
   // async ngOnInit(): Promise<void> {
@@ -576,12 +560,13 @@ export class ItemsListComponent implements OnInit {
       await this.route.queryParams.subscribe((params) => {
         const type = params['type'];
         this.getItems(0, 1000, '', type);
-     });
+      });
       await this.loadFavorites();
       this.updateFavoriteStatus();
     } catch (error) {
       console.error('Error initializing data:', error);
     }
+    console.log('items after favorites:', this.items);
   }
 
   getUserTypeFromToken(): void {
@@ -599,7 +584,6 @@ export class ItemsListComponent implements OnInit {
     } else {
       console.warn('Code is running on the server. Skipping token check.');
     }
-
   }
 
   async getItems(
@@ -607,29 +591,25 @@ export class ItemsListComponent implements OnInit {
     limit: number = 1000,
     searchTerm: string = '',
     typeFilter: string = ''
-
   ): Promise<void> {
     // איפוס ההודעה בתחילת הבדיקה
     this.showNoDataMessage = false;
-  
+
     // שליפת נתונים
     if (searchTerm !== '' && typeFilter === '') {
       return new Promise((resolve, reject) => {
         this.apiService
           .Read(
-            `/EducationalResource/getAll?page=${page}&limit=${limit}&searchTerm=${searchTerm}`).subscribe({
+            `/EducationalResource/getAll?page=${page}&limit=${limit}&searchTerm=${searchTerm}`
+          )
+          .subscribe({
             next: (response) => {
               console.log('All items response: ', response);
 
-
               if (Array.isArray(response)) {
-
                 this.items = response;
-
               } else {
-
                 this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
-
               }
               // מחכים 2 שניות לפני הצגת ההודעה אם אין נתונים
               setTimeout(() => {
@@ -652,10 +632,7 @@ export class ItemsListComponent implements OnInit {
             },
           });
       });
-
-    }
-
-    else if (searchTerm === '' && typeFilter !== '') {
+    } else if (searchTerm === '' && typeFilter !== '') {
       return new Promise((resolve, reject) => {
         this.apiService
           .Read(
@@ -668,11 +645,9 @@ export class ItemsListComponent implements OnInit {
                 this.items = response;
                 console.log('this.items***************', this.items);
               } else {
-
                 this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
 
                 console.log('this.items***************', this.items);
-
               }
               // מחכים 2 שניות לפני הצגת ההודעה אם אין נתונים
               setTimeout(() => {
@@ -682,22 +657,16 @@ export class ItemsListComponent implements OnInit {
               }, 100);
 
               resolve();
-
             },
 
             error: (err) => {
-
               console.error('Error fetching items', err);
 
               reject(err);
-
             },
-
           });
       });
-    }
-
-    else if (searchTerm !== '' && typeFilter !== '') {
+    } else if (searchTerm !== '' && typeFilter !== '') {
       return new Promise((resolve, reject) => {
         this.apiService
           .Read(
@@ -792,9 +761,7 @@ export class ItemsListComponent implements OnInit {
     //   },
 
     // });
-
   }
-
 
   editItem(item: Item) {
     this.router.navigate(['/edit-media'], {
@@ -830,23 +797,35 @@ export class ItemsListComponent implements OnInit {
   downloadResource(item: Item): void {
     if (!item._id) {
       console.error('Item ID is missing.');
-      alert('לא ניתן להוריד את הקובץ. חסר ID');
+      // alert('לא ניתן להוריד את הקובץ. חסר ID');
+      this._snackBar.open('לא ניתן להוריד את הקובץ. חסר ID', 'סגור', {
+        duration: 3000,
+        panelClass: ['error-snackbar'],
+        direction: 'rtl',
+      });
       return;
     }
 
     if (!item.filePath) {
       console.error('File path is missing.');
-      alert('לא ניתן להוריד את הקובץ. חסר ניתוב');
+      // alert('לא ניתן להוריד את הקובץ. חסר ניתוב');
+      this._snackBar.open('לא ניתן להוריד את הקובץ. חסר ניתוב', 'סגור', {
+        duration: 3000,
+        panelClass: ['error-snackbar'],
+        direction: 'rtl',
+      });
       return;
     }
 
-
     this.apiService
       .Read(
-        `/EducationalResource/presigned-url?filePath=${encodeURIComponent(item.filePath)}`)
+        `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
+          item.filePath
+        )}`
+      )
       .subscribe({
         next: (response) => {
-          // const presignedUrl = response.url;
+          const presignedUrl = response.url;
           if (response && response.url) {
             const downloadLink = document.createElement('a');
             downloadLink.href = response.url;
@@ -856,16 +835,29 @@ export class ItemsListComponent implements OnInit {
             document.body.removeChild(downloadLink);
           } else {
             console.error('Invalid response for download URL.');
-            alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
+            // alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
+            this._snackBar.open(
+              'לא ניתן להוריד את הקובץ. אנא נסה שוב.',
+              'סגור',
+              {
+                duration: 3000,
+                panelClass: ['error-snackbar'],
+                direction: 'rtl',
+              }
+            );
           }
         },
         error: (err) => {
           console.error('Error fetching presigned URL:', err);
-          alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
+          // alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
+          this._snackBar.open('שגיאה בהורדת הקובץ. אנא נסה שוב.', 'סגור', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+            direction: 'rtl',
+          });
         },
       });
   }
-
 
   // filterItemsByType(type: string): void {
 
@@ -878,7 +870,6 @@ export class ItemsListComponent implements OnInit {
   // }
   updateItems(items: Item[]): void {
     this.items = items;
-
   }
 
   filterItemsByType(type: string): void {
@@ -907,51 +898,88 @@ export class ItemsListComponent implements OnInit {
       const token = localStorage.getItem('access_token');
       if (!token) {
         console.error('User is not logged in.');
-        alert('עליך להתחבר כדי להוסיף למועדפים.');
+        // alert('עליך להתחבר כדי להוסיף למועדפים.');
+        this._snackBar.open('עליך להתחבר כדי להוסיף למועדפים.', 'סגור', {
+          duration: 2000,
+          panelClass: ['my-custom-snackbar'],
+          direction: 'rtl',
+        });
         return;
       }
 
       try {
         const decodedToken: any = jwtDecode(token);
         const userId = decodedToken.idNumber;
-        const requestData = {
-          userId: userId,
-          itemId: item._id,
-        };
+
         const isAlreadyFavorite = this.favorites.some(
           (fav) => fav.itemId === item._id
         );
 
         if (isAlreadyFavorite) {
           console.log('Item is already in favorites');
-          alert('הפריט כבר נמצא במועדפים.');
+          // alert('הפריט כבר נמצא במועדפים.');
+          this._snackBar.open('הפריט כבר נמצא במועדפים.', 'סגור', {
+            duration: 2000,
+            panelClass: ['my-custom-snackbar'],
+            direction: 'rtl',
+          });
           return;
         }
+        const requestData = {
+          userId: userId,
+          itemId: item._id,
+        };
 
         this.apiService.Post('/favorites/add', requestData).subscribe({
           next: (response) => {
             console.log('Item added to favorites:', response);
             this.favorites.push({ itemId: item._id });
-            alert('הפריט נוסף למועדפים ');
+            // alert('הפריט נוסף למועדפים ');
+            this._snackBar.open('הפריט נוסף למועדפים ', 'סגור', {
+              duration: 2000,
+              panelClass: ['my-custom-snackbar'],
+              direction: 'rtl',
+            });
           },
           error: (err) => {
             console.error('Error adding item to favorites:', err);
-            alert('שגיאה בהוספת המוצר למועדפים. אנא נסה שוב.');
+            // alert('שגיאה בהוספת המוצר למועדפים. אנא נסה שוב.');
+            this._snackBar.open(
+              'שגיאה בהוספת הפריט למועדפים. אנא נסה שוב.',
+              'סגור',
+              {
+                duration: 3000,
+                panelClass: ['error-snackbar'],
+                direction: 'rtl',
+              }
+            );
           },
         });
       } catch (error) {
+        this._snackBar.open(
+          'שגיאה בהוספת הפריט למועדפים. אנא נסה שוב.',
+          'סגור',
+          {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+            direction: 'rtl',
+          }
+        );
         console.error('Error decoding token:', error);
-        alert('שגיאה באימות המשתמש.');
+        // alert('שגיאה באימות המשתמש.');
+        this._snackBar.open('שגיאה באימות המשתמש. נסה להתחבר שנית.', 'סגור', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+          direction: 'rtl',
+        });
       }
     }
   }
-
 
   getFileExtension(filePath: string): string | null {
     const match = filePath.match(/\.[0-9a-z]+$/i);
     return match ? match[0] : null;
   }
-
 
   //הוספת לוגיקת דפדוף
   currentPage: number = 0;
@@ -971,7 +999,6 @@ export class ItemsListComponent implements OnInit {
     }
   }
 
-
   navigateToItemPage(item: Item): void {
     if (item && item._id) {
       this.router.navigate(['/item-page', item._id]); // וודא שהשימוש הוא ב _id
@@ -980,101 +1007,45 @@ export class ItemsListComponent implements OnInit {
     }
   }
 
-
   async loadFavorites(): Promise<void> {
-
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-
       const token = localStorage.getItem('access_token');
 
       if (!token) return;
 
-
       try {
-
         const decodedToken: any = jwtDecode(token);
 
         const userId = decodedToken.idNumber;
 
-        // const response = await
-
         return new Promise((resolve, reject) => {
+          this.apiService.Read(`/favorites/user/${userId}`).subscribe({
+            next: (response) => {
+              this.favorites = response.favorites || [];
 
-          this.apiService
+              resolve();
 
-            .Read(`/favorites/user/${userId}`)
+              console.log('this.favorites', this.favorites);
+            },
 
-            // .toPromise();
+            error: (err) => {
+              console.error('Error fetching favorites:', err);
 
-            .subscribe({
-
-              // if (response?.favorites?.length) {
-
-              //   this.favorites = response.favorites;
-
-              //   console.log(' this.favorites', this.favorites);
-
-              //   console.log('this.items=============+++++++==', this.items);
-
-
-              //   this.items.forEach((item) => {
-
-              //     item.isFavorite = this.favorites.some(
-
-              //       (fav) => fav.itemId === item.id
-
-              //     );
-
-              //   });
-
-              // } else {
-
-              //   this.favorites = [];
-
-
-              //   this.items.forEach((item) => (item.isFavorite = false));
-
-              next: (response) => {
-
-                this.favorites = response.favorites || [];
-
-                resolve();
-
-                console.log('this.favorites', this.favorites);
-
-              },
-
-
-              error: (err) => {
-
-                console.error('Error fetching favorites:', err);
-
-
-                reject(err);
-
-              },
-
-            });
-
+              reject(err);
+            },
+          });
         });
-
       } catch (error) {
-
         console.error('Error fetching favorites:', error);
-
       }
-
     }
-
   }
-
 
   // updateFavoriteStatus(): void {
 
   //   if (!this.favorites || this.favorites.length === 0) {
 
   //     this.items.forEach((item) => (item.isFavorite = false));
-
 
   //     return;
 
@@ -1090,45 +1061,31 @@ export class ItemsListComponent implements OnInit {
 
   // }
 
-
   updateFavoriteStatus(): void {
-
     this.items.forEach((item) => {
-
       const isFavorite = this.favorites.some((fav) => fav.itemId === item._id);
 
       item.isFavorite = isFavorite;
-
     });
 
     console.log('this.items', this.items);
-
   }
 
-
   toggleFavorite(item: Item): void {
-
     if (!item.isFavorite) {
-
       this.addToFavorites(item);
 
       item.isFavorite = true;
-
     } else {
-
       this.removeFromFavorites(item);
 
       item.isFavorite = false;
-
     }
-
   }
-
 
   // toggleFavorite(item: Item): void {
 
   //   const isFavorite = this.favorites.some(fav => fav.itemId === item.id);
-
 
   //   if (isFavorite) {
 
@@ -1166,53 +1123,57 @@ export class ItemsListComponent implements OnInit {
 
   // }
 
-
   removeFromFavorites(item: Item): void {
-
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-
       const token = localStorage.getItem('access_token');
 
       if (!token) return;
 
-
       try {
-
         const decodedToken: any = jwtDecode(token);
 
         const userId = decodedToken.idNumber;
 
+        // פתיחת דיאלוג אישור
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+          width: '350px',
+        });
 
-        this.apiService
+        // המתנה לתשובת המשתמש
+        dialogRef.afterClosed().subscribe((result) => {
+          if (result) {
+            // אם המשתמש אישר, המשך להסרה
 
-          .Post('/favorites/remove', { userId, itemId: item._id })
+            this.apiService
 
-          .subscribe({
+              .Delete('/favorites/remove', { userId: userId, itemId: item._id })
 
-            next: (response) => {
+              .subscribe({
+                next: (response) => {
+                  console.log('Item removed from favorites:', response);
 
-              console.log('Item removed from favorites:', response);
+                  // alert('המוצר הוסר מהמועדפים בהצלחה!');
+                  this.favorites = this.favorites.filter(
+                    (fav) => fav.itemId !== item._id
+                  );
+                  this._snackBar.open('הפריט הוסר מהמועדפים !', 'סגור', {
+                    duration: 2000,
+                    panelClass: ['my-custom-snackbar'],
+                    direction: 'rtl',
+                  });
+                },
 
-              alert('המוצר הוסר מהמועדפים בהצלחה!');
-
-            },
-
-            error: (err) => {
-
-              console.error('Error removing item from favorites:', err);
-
-            },
-
-          });
-
+                error: (err) => {
+                  console.error('Error removing item from favorites:', err);
+                },
+              });
+          } else {
+            console.log('המשתמש ביטל את הפעולה');
+          }
+        });
       } catch (error) {
-
         console.error('Error decoding token:', error);
-
       }
-
     }
-
   }
-
 }

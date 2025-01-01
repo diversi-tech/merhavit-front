@@ -19,7 +19,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 
 @Component({
   selector: 'app-item-page',
-  templateUrl: './item-page.component.html',
+  templateUrl:'./item-page.component.html', //'./item-page.component.html',
   styleUrls: ['./item-page.component.css'],
   standalone: true,
   imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule], // ייבוא המודולים
