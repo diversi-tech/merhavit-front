@@ -648,7 +648,7 @@ export class ItemsListComponent implements OnInit {
     if (this.items.length === 0) {
       setTimeout(() => {
         this.showNoDataMessage = true;
-      }, 2000);
+      }, 100);
     }
   }
   
