@@ -1,6 +1,4 @@
-    
 
-<!-- הצגת רשימת הפריטים -->
 <div class="table-container">
   <mat-card appearance="outlined" class="no-data-message" *ngIf="showNoDataMessage">
     <mat-card-header>
@@ -10,10 +8,6 @@
       </mat-card-content>
     </mat-card-header>
   </mat-card>
-
-
-
-
   <div class="row" *ngFor="let item of items" (click)="navigateToItemPage(item)">
     <div class="item-content">
       <img [src]="item.coverImage || 'image/file-not-found'" alt="Item Image" class="item-image" />
@@ -31,14 +25,11 @@
       </div>
     </div>
     <!-- הצגת כפתורים לספרנית -->
-
     <div class="actions" *ngIf="['Admin', 'Site Manager', 'Librarian'].includes(userType)">
       <button class="action-button delete" (click)="deleteResource(item); $event.stopPropagation()">
         <i class="far fa-trash-alt"></i>
       </button>
-      <button class="action-button edit"
-      (click)="editItem(item) ; $event.stopPropagation()" >עריכה</button>
-     
+      <button class="action-button edit" (click)="editItem(item); $event.stopPropagation()">עריכה</button>
     </div>
     <!-- הצגת כפתורים לתלמידה -->
     <div class="actions" *ngIf="userType === 'Student'">
@@ -51,7 +42,6 @@
       <button (click)="toggleFavorite(item); $event.stopPropagation()">
         {{ item.isFavorite ? "הסר מהמועדפים" : "הוסף למועדפים" }}
       </button>
-
       <button class="action-button download" *ngIf="
           item.type === 'כרזה' ||
           item.type === 'דף עבודה' ||
@@ -70,6 +60,13 @@
     </div>
   </div>
 </div>
+
+
+
+
+
+
+
 <router-outlet></router-outlet>
 
 <!-- <div class="pagination-container"> -->

@@ -5,7 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../api.service';
 import { jwtDecode } from 'jwt-decode';
-import { RouterModule, Router, ActivatedRoute , RouterLink, RouterOutlet} from '@angular/router';
+import { RouterModule, Router, ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -44,15 +44,15 @@ interface Item {
     MatSnackBarModule,
     MatCardModule,
     MatIconModule,
-     RouterOutlet,
-      MatPaginatorModule
+    RouterOutlet,
+    MatPaginatorModule
   ],
 })
 export class ItemsListComponent implements OnInit {
 
- searchTerm: string = ''
- typeFilter: string = ''
- 
+  searchTerm: string = ''
+  typeFilter: string = ''
+
   public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public showNoDataMessage: boolean = false; // משתנה לשליטה בהצגת ההודעה
@@ -69,7 +69,7 @@ export class ItemsListComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
-  ) {}
+  ) { }
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
     this.route.queryParams.subscribe(params => {
@@ -111,7 +111,7 @@ export class ItemsListComponent implements OnInit {
     }
   }
   onPageChange(event: PageEvent) {
-    this.getItems(event.pageIndex, event.pageSize,this.searchTerm,this.typeFilter);
+    this.getItems(event.pageIndex, event.pageSize, this.searchTerm, this.typeFilter);
   }
 
   async getItems(
@@ -120,9 +120,9 @@ export class ItemsListComponent implements OnInit {
     searchTerm: string = '',
     typeFilter: string = ''
   ): Promise<void> {
-  
-  this.searchTerm=searchTerm
-    this.typeFilter=typeFilter
+
+    this.searchTerm = searchTerm
+    this.typeFilter = typeFilter
 
     this.showNoDataMessage = false;
     const url = `/EducationalResource/getAll?page=${page}&limit=${limit}`;
@@ -132,23 +132,25 @@ export class ItemsListComponent implements OnInit {
         next: (response: { data: any[], totalCount: number }) => {
           console.log('API Response: ', response);
 
-              if (Array.isArray(response)) {
+          if (Array.isArray(response)) {
             this.itemsFromServer = response.data;
             console.log('Items received from server:', this.itemsFromServer);
             // מבצע סינון לפי סוג
             this.filterItemsByType(searchTerm, typeFilter);
           } else {
-            this.items = [];
-            this.showNoDataMessage = true;
+            this.itemsFromServer = response.data;
+            this.filterItemsByType(searchTerm, typeFilter);
+            // this.items = [];
+            // this.showNoDataMessage = true;
           }
-  this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+          this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
           resolve();
         },
         error: (err) => {
           console.error('Error fetching items', err);
           this.items = [];
           this.showNoDataMessage = true;
- this.totalItems = 0; // משתמשים ב-totalCount מהשרת
+          this.totalItems = 0; // משתמשים ב-totalCount מהשרת
           reject(err);
         },
       });
@@ -156,13 +158,13 @@ export class ItemsListComponent implements OnInit {
   }
 
 
-filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
+  filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
     let filteredItems = [...this.itemsFromServer];
-  
+
     console.log('Before filtering:', filteredItems);
     console.log('Search term:', searchTerm);
     console.log('Type filter:', typeFilter);
-  
+
     // סינון לפי חיפוש (searchTerm)
     if (searchTerm) {
       filteredItems = filteredItems.filter(item =>
@@ -171,16 +173,16 @@ filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
       );
       console.log('After search term filtering:', filteredItems);
     }
-  
+
     // סינון לפי סוג (typeFilter)
     if (typeFilter) {
       filteredItems = filteredItems.filter(item => item.type === typeFilter);
       console.log('After type filter:', filteredItems);
     }
-  
+
     this.items = filteredItems;
     console.log('Final filtered items:', this.items);
-  
+
     if (this.items.length === 0) {
       setTimeout(() => {
         this.showNoDataMessage = true;
@@ -188,7 +190,7 @@ filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
     }
   }
   async editItem(item1: Item) {
-    
+
     this.router.navigate(['/upload-resource', item1._id], { queryParams: { additionalParam: 'edit' } });
 
   }
@@ -497,7 +499,7 @@ filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
   }
 
 
- getPageSizeOptions(): number[] {
+  getPageSizeOptions(): number[] {
     if (this.totalItems <= 5) {
       return [];
     } else if (this.totalItems >= 11) {

@@ -930,7 +930,6 @@ onSubmitEdit() :void
             formData.append('files',this.renameFile(this.coverImage))
           }
 
-      console.log("form data//////////////////// "+formData);
       formData.forEach((value, key) => {
         console.log(`${key}: ${value}`);
       });
