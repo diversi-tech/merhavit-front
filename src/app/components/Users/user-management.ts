@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchService } from '../../shared/search.service';
 
+
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.html',
@@ -16,6 +17,9 @@ export class UserManagementComponent implements OnInit {
   selectedUser: any = null; // המשתמש שתפריט התפקיד שלו פתוח
   confirmUser: any = null;
   filteredUsers = [...this.users];
+  seminaries: any[] = [];
+  specializations: any[] = [];
+  classes: any[] = [];
 
   searchTerm: string = 'all';
   filterOption: string = '';
@@ -26,7 +30,7 @@ export class UserManagementComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getUsers();
+   this.loadData();
 
     // Subscribe לשינויים בנתונים מהשירות
     this.searchService.searchTerm$.subscribe((term) => {
@@ -44,10 +48,52 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
+  loadData() {
+    // טוען סמינרים, התמחויות וכיתות תחילה
+    this.apiService.Read('/seminaries').subscribe(
+      (seminariesData: any[]) => {
+        this.seminaries = seminariesData;
+
+        this.apiService.Read('/specializations').subscribe(
+          (specializationsData: any[]) => {
+            this.specializations = specializationsData;
+
+            this.apiService.Read('/classes').subscribe(
+              (classesData: any[]) => {
+                this.classes = classesData;
+
+                // כעת טוען את פרטי המשתמש
+                this.getUsers();
+
+              },
+              (error) => {
+                console.error('Error fetching classes:', error);
+              }
+            );
+          },
+          (error) => {
+            console.error('Error fetching specializations:', error);
+          }
+        );
+      },
+      (error) => {
+        console.error('Error fetching seminaries:', error);
+      }
+    );
+  }
+
+
   getUsers() {
     this.apiService.Read('/users/all').subscribe({
       next: (response) => {
         this.users = response;
+        // this.users = response.map(user => {
+        //   const seminary = this.seminaries.find(s => s._id === user.assignedSeminaryId);
+        //   return {
+        //     ...user,
+        //     seminaryName: seminary ? seminary.name : 'לא הוקצה סמינר'
+        //   };
+        // });
         this.filterUsers(); // סינון המשתמשים גם לאחר קבלת הנתונים
       },
       error: (err) => {
@@ -169,4 +215,16 @@ export class UserManagementComponent implements OnInit {
     // עדכון רשימת המשתמשים המסוננים
     this.filteredUsers = tempUsers;
   }
+
+  getSeminaryName(assignedSeminaryId: string): string {
+    const seminary = this.seminaries.find(sem => sem._id === assignedSeminaryId);
+    return seminary ? seminary.name : 'לא נבחר סמינר';
+  }
+  
+  getEntityName(entityId: string, entities: any[]): string {
+    const entity = entities.find(ent => ent._id === entityId);
+    return entity ? entity.name : 'N/A';
+  }
+  
+  
 }
