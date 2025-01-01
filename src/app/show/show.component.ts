@@ -303,6 +303,7 @@ filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
   }
   updateItems(items: Item[]): void {
     this.items = items;
+  }
   getFileNameFromPath(filePath: string): string {
     return filePath.split('/').pop() || 'downloaded-file';
   }
