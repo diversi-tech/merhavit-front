@@ -1,9 +1,13 @@
-<p>dialog works!</p>
-<h2 mat-dialog-title>הוספת נושא חדש</h2>
+
+<h2 mat-dialog-title>{{data.title}}</h2>
 <mat-dialog-content>
   <mat-form-field appearance="outline"  style="width: 100%;">
-    <mat-label>נושא חדש</mat-label>
-    <input matInput [(ngModel)]="newSubject" />
+    <mat-label>{{data.label}}</mat-label>
+    <input matInput [(ngModel)]="newVal" />
+  </mat-form-field>
+  <mat-form-field *ngIf="data.isDescription" appearance="outline"  style="width: 100%;">
+    <mat-label >תיאור</mat-label>
+    <textarea  matInput [(ngModel)]="description" ></textarea>
   </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions class="dialog-actions">
