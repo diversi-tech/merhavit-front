@@ -1,11 +1,16 @@
-
 import { Component, Injectable, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../api.service';
 import { jwtDecode } from 'jwt-decode';
-import { RouterModule, Router, ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
+import {
+  RouterModule,
+  Router,
+  ActivatedRoute,
+  RouterLink,
+  RouterOutlet,
+} from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -45,19 +50,18 @@ interface Item {
     MatCardModule,
     MatIconModule,
     RouterOutlet,
-    MatPaginatorModule
+    MatPaginatorModule,
   ],
 })
 export class ItemsListComponent implements OnInit {
-
-  searchTerm: string = ''
-  typeFilter: string = ''
+  searchTerm: string = '';
+  typeFilter: string = '';
 
   public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public showNoDataMessage: boolean = false; // משתנה לשליטה בהצגת ההודעה
   public favorites: { itemId: string }[] = [];
-  itemsFromServer: any[] = [];// משתנה לשמירת כל הפריטים שהתקבלו מהשרת
+  itemsFromServer: any[] = []; // משתנה לשמירת כל הפריטים שהתקבלו מהשרת
   public items: Item[] = []; // רשימת הפריטים שמוצגים בסופו של דבר
 
   constructor(
@@ -69,24 +73,48 @@ export class ItemsListComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
-  ) { }
+  ) {}
+  // async ngOnInit(): Promise<void> {
+  //   this.getUserTypeFromToken();
+
+  //   this.route.queryParams.subscribe(params => {
+  //     const type = params['type'];
+  //     if (type) {
+  //       this.getItems(0, 100, '', type); // שליפת נתונים עם סוג מסנן
+  //     } else {
+  //       this.getItems(0, 100, ''); // שליפת כל הנתונים אם אין סוג
+  //     }
+  //   });
+  //   await this.initializeData();
+
+  // }
+
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
-    this.route.queryParams.subscribe(params => {
-      const type = params['type'];
-      if (type) {
-        this.getItems(0, 100, '', type); // שליפת נתונים עם סוג מסנן
-      } else {
-        this.getItems(0, 100, ''); // שליפת כל הנתונים אם אין סוג
-      }
+
+    const paramsPromise = new Promise<void>((resolve) => {
+      this.route.queryParams.subscribe((params) => {
+        const type = params['type'];
+        if (type) {
+          this.getItems(0, 100, '', type).then(() => resolve());
+        } else {
+          this.getItems(0, 100, '').then(() => resolve());
+        }
+      });
     });
+
+    // מחכה לסיום שליפת הנתונים לפי פרמטרים לפני אתחול
+    await paramsPromise;
+    await this.initializeData();
   }
   async initializeData() {
     try {
-      await this.route.queryParams.subscribe((params) => {
-        const type = params['type'];
-        this.getItems(0, 100, '', type);
-      });
+      // await this.route.queryParams.subscribe((params) => {
+      //   const type = params['type'];
+      //   this.getItems(0, 100, '', type);
+      // });
+      console.log('items before favorites:', this.items);
+
       await this.loadFavorites();
       this.updateFavoriteStatus();
     } catch (error) {
@@ -111,7 +139,12 @@ export class ItemsListComponent implements OnInit {
     }
   }
   onPageChange(event: PageEvent) {
-    this.getItems(event.pageIndex, event.pageSize, this.searchTerm, this.typeFilter);
+    this.getItems(
+      event.pageIndex,
+      event.pageSize,
+      this.searchTerm,
+      this.typeFilter
+    ).then(() => this.updateFavoriteStatus());
   }
 
   async getItems(
@@ -120,16 +153,15 @@ export class ItemsListComponent implements OnInit {
     searchTerm: string = '',
     typeFilter: string = ''
   ): Promise<void> {
-
-    this.searchTerm = searchTerm
-    this.typeFilter = typeFilter
+    this.searchTerm = searchTerm;
+    this.typeFilter = typeFilter;
 
     this.showNoDataMessage = false;
     const url = `/EducationalResource/getAll?page=${page}&limit=${limit}`;
     console.log(`Requesting URL: ${url}`);
     return new Promise((resolve, reject) => {
       this.apiService.Read(url).subscribe({
-        next: (response: { data: any[], totalCount: number }) => {
+        next: (response: { data: any[]; totalCount: number }) => {
           console.log('API Response: ', response);
 
           if (Array.isArray(response)) {
@@ -157,7 +189,6 @@ export class ItemsListComponent implements OnInit {
     });
   }
 
-
   filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
     let filteredItems = [...this.itemsFromServer];
 
@@ -167,16 +198,17 @@ export class ItemsListComponent implements OnInit {
 
     // סינון לפי חיפוש (searchTerm)
     if (searchTerm) {
-      filteredItems = filteredItems.filter(item =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchTerm.toLowerCase())
+      filteredItems = filteredItems.filter(
+        (item) =>
+          item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
       console.log('After search term filtering:', filteredItems);
     }
 
     // סינון לפי סוג (typeFilter)
     if (typeFilter) {
-      filteredItems = filteredItems.filter(item => item.type === typeFilter);
+      filteredItems = filteredItems.filter((item) => item.type === typeFilter);
       console.log('After type filter:', filteredItems);
     }
 
@@ -190,9 +222,9 @@ export class ItemsListComponent implements OnInit {
     }
   }
   async editItem(item1: Item) {
-
-    this.router.navigate(['/upload-resource', item1._id], { queryParams: { additionalParam: 'edit' } });
-
+    this.router.navigate(['/upload-resource', item1._id], {
+      queryParams: { additionalParam: 'edit' },
+    });
   }
 
   deleteResource(itemToDelete: Item) {
@@ -201,14 +233,14 @@ export class ItemsListComponent implements OnInit {
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // כאן תוכל לקרוא לפונקציה שמוחקת את הפריט מהשרת
-        //הפונקציה מקבלת את הנתיב שאיתו היא תתחבר לפונ המחיקה בשרת 
+        //הפונקציה מקבלת את הנתיב שאיתו היא תתחבר לפונ המחיקה בשרת
         //וכן את האובייקט למחיקה
-        this.apiService.Delete(`/EducationalResource/${itemToDelete._id}`, {}).subscribe(
-          {
+        this.apiService
+          .Delete(`/EducationalResource/${itemToDelete._id}`, {})
+          .subscribe({
             next: (response) => {
               // פעולה במידה והמחיקה הצליחה
               console.log('Item deleted successfully:', response);
@@ -218,10 +250,11 @@ export class ItemsListComponent implements OnInit {
                 panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
               });
               // ניתן לעדכן את ה-UI או להוריד את הפריט מהרשימה המקומית
-              this.items = this.items.filter(item => item._id !== itemToDelete._id);
+              this.items = this.items.filter(
+                (item) => item._id !== itemToDelete._id
+              );
               this.items = this.items; // עדכון הפריטים המוצגים
               this.totalItems--; // עדכון מספר הנתונים לאחר מחיקה
-
             },
             error: (err) => {
               // טיפול במקרה של שגיאה
@@ -236,9 +269,8 @@ export class ItemsListComponent implements OnInit {
               console.log('Delete request completed.');
             },
           });
-
       }
-    })
+    });
   }
 
   downloadResource(item: Item): void {
@@ -314,7 +346,6 @@ export class ItemsListComponent implements OnInit {
       const token = localStorage.getItem('access_token');
       if (!token) {
         console.error('User is not logged in.');
-        // alert('עליך להתחבר כדי להוסיף למועדפים.');
         this._snackBar.open('עליך להתחבר כדי להוסיף למועדפים.', 'סגור', {
           duration: 2000,
           panelClass: ['my-custom-snackbar'],
@@ -328,14 +359,15 @@ export class ItemsListComponent implements OnInit {
         const isAlreadyFavorite = this.favorites.some(
           (fav) => fav.itemId === item._id
         );
+
         if (isAlreadyFavorite) {
           console.log('Item is already in favorites');
-          // alert('הפריט כבר נמצא במועדפים.');
           this._snackBar.open('הפריט כבר נמצא במועדפים.', 'סגור', {
             duration: 2000,
             panelClass: ['my-custom-snackbar'],
             direction: 'rtl',
           });
+          item.isFavorite = true;
           return;
         }
         const requestData = {
@@ -346,7 +378,9 @@ export class ItemsListComponent implements OnInit {
           next: (response) => {
             console.log('Item added to favorites:', response);
             this.favorites.push({ itemId: item._id });
-            // alert('הפריט נוסף למועדפים ');
+            console.log('this.favorites', this.favorites);
+
+            item.isFavorite = true;
             this._snackBar.open('הפריט נוסף למועדפים ', 'סגור', {
               duration: 2000,
               panelClass: ['my-custom-snackbar'],
@@ -355,7 +389,6 @@ export class ItemsListComponent implements OnInit {
           },
           error: (err) => {
             console.error('Error adding item to favorites:', err);
-            // alert('שגיאה בהוספת המוצר למועדפים. אנא נסה שוב.');
             this._snackBar.open(
               'שגיאה בהוספת הפריט למועדפים. אנא נסה שוב.',
               'סגור',
@@ -378,7 +411,6 @@ export class ItemsListComponent implements OnInit {
           }
         );
         console.error('Error decoding token:', error);
-        // alert('שגיאה באימות המשתמש.');
         this._snackBar.open('שגיאה באימות המשתמש. נסה להתחבר שנית.', 'סגור', {
           duration: 3000,
           panelClass: ['error-snackbar'],
@@ -414,6 +446,8 @@ export class ItemsListComponent implements OnInit {
     }
   }
   async loadFavorites(): Promise<void> {
+    console.log('fffffffffffffffffffffffffffffff');
+
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const token = localStorage.getItem('access_token');
       if (!token) return;
@@ -448,10 +482,8 @@ export class ItemsListComponent implements OnInit {
   toggleFavorite(item: Item): void {
     if (!item.isFavorite) {
       this.addToFavorites(item);
-      item.isFavorite = true;
     } else {
       this.removeFromFavorites(item);
-      item.isFavorite = false;
     }
   }
   removeFromFavorites(item: Item): void {
@@ -467,6 +499,8 @@ export class ItemsListComponent implements OnInit {
         });
         // המתנה לתשובת המשתמש
         dialogRef.afterClosed().subscribe((result) => {
+          console.log('User decision:', result); // לוג לבדיקת ערך result
+
           if (result) {
             // אם המשתמש אישר, המשך להסרה
             this.apiService
@@ -474,10 +508,11 @@ export class ItemsListComponent implements OnInit {
               .subscribe({
                 next: (response) => {
                   console.log('Item removed from favorites:', response);
-                  // alert('המוצר הוסר מהמועדפים בהצלחה!');
+                  // הסרת הפריט ממערך המועדפים המקומי לאחר הצלחה
                   this.favorites = this.favorites.filter(
                     (fav) => fav.itemId !== item._id
                   );
+                  item.isFavorite = false;
                   this._snackBar.open('הפריט הוסר מהמועדפים !', 'סגור', {
                     duration: 2000,
                     panelClass: ['my-custom-snackbar'],
@@ -497,7 +532,6 @@ export class ItemsListComponent implements OnInit {
       }
     }
   }
-
 
   getPageSizeOptions(): number[] {
     if (this.totalItems <= 5) {
