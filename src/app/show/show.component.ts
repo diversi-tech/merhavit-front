@@ -44,6 +44,8 @@ interface Item {
 
 export class ItemsListComponent implements OnInit {
 
+    searchTerm: string = ''
+    typeFilter: string = ''
   public items: Item[] = []; //מערך המוצרים של הספריה 
   public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
@@ -95,7 +97,7 @@ export class ItemsListComponent implements OnInit {
   }
 
 onPageChange(event: PageEvent) {
-    this.getItems(event.pageIndex, event.pageSize);
+    this.getItems(event.pageIndex, event.pageSize,this.searchTerm,this.typeFilter);
   }
   // async getItems(page: number = 0, limit: number = 1000, searchTerm:string = '', typeFilter: string = '') {
   //   if(searchTerm!==''&&typeFilter===''){
@@ -172,9 +174,11 @@ onPageChange(event: PageEvent) {
   async getItems(
     page: number = 0,
     limit: number = 20,
-    searchTerm: string = '',
-    typeFilter: string = ''
+    searchTerm: string='' ,
+    typeFilter: string =''
   ): Promise<void> {
+    this.searchTerm=searchTerm
+    this.typeFilter=typeFilter
     if (searchTerm !== '' && typeFilter === '') {
       return new Promise((resolve, reject) => {
         this.apiService
@@ -314,15 +318,58 @@ onPageChange(event: PageEvent) {
       },
     });
   }
+  //מה ש GPT נתן לי
+  // async getItems(
+  //   page: number = 0,
+  //   limit: number = 20,
+  //   searchTerm: string = '',
+  //   typeFilter: string = ''
+  // ): Promise<void> {
+  //   this.searchTerm = searchTerm;
+  //   this.typeFilter = typeFilter;
+  
+  //   let apiUrl = `/EducationalResource/getAll?page=${page}&limit=${limit}`;
+  //   if (searchTerm) {
+  //     apiUrl += `&searchTerm=${searchTerm}`;
+  //   }
+  //   if (typeFilter) {
+  //     apiUrl += `&typeFilter=${typeFilter}`;
+  //   }
+  
+  //   return new Promise((resolve, reject) => {
+  //     this.apiService.Read(apiUrl).subscribe({
+  //       next: (response: { data: any[], totalCount: number }) => {
+  //         console.log('All items response: ', response);
+  
+  //         if (Array.isArray(response.data)) {
+  //           this.items = response.data;
+  //         } else {
+  //           this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+  //         }
+  
+  //         this.totalItems = response.data.length; // משתמשים ב-totalCount מהשרת
+  //         console.log('Total items: ', this.totalItems); // לוג של totalItems
+  
+  //         // אם יש סוג בפרמטרים של ה-URL, נסנן מיד
+  //         const type = this.route.snapshot.queryParamMap.get('type');
+  //         if (type) {
+  //           this.filterItemsByType(type);
+  //         }
+  
+  //         resolve();
+  //       },
+  //       error: (err) => {
+  //         console.error('Error fetching items', err);
+  //         reject(err);
+  //       },
+  //     });
+  //   });
+  // }
+  
 
 
   async editItem(item1: Item) {
-    // ניווט לדף edit-media  עם כמה פרמטרים 
-    // this.router.navigate(['/edit-media'], {
-    //   state: { id: item.id } 
-    // })
     
-    // this.router.navigate(['/upload-resource', item1._id]);
     this.router.navigate(['/upload-resource', item1._id], { queryParams: { additionalParam: 'edit' } });
 
   }
@@ -429,11 +476,15 @@ onPageChange(event: PageEvent) {
       next: (response: { data: any[], totalCount: number }) => {
         if (Array.isArray(response.data)) {
           this.items = response.data;
+          this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+
         } else {
           this.items = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
 	   this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
         }
         console.log('Filtered items:', this.items);
+        console.log('Filtered total count:', this.totalItems);
+
       },
       error: (err) => {
         console.error('Error filtering items by type', err);
@@ -646,4 +697,15 @@ previousPage() {
       }
     }
   }
+
+  getPageSizeOptions(): number[] {
+    if (this.totalItems <= 5) {
+      return [];
+    } else if (this.totalItems >= 11) {
+      return [5, 10];
+    } else {
+      return [5, 10, 15, 20];
+    }
+  }
+  
 }

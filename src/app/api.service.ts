@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs';
 const serverPath = 'https://merhavit-back.onrender.com';
-// const serverPath = 'http://localhost:3004';
+//  const serverPath = 'http://localhost:3004';
 
 @Injectable({
   providedIn: 'root',
@@ -32,6 +32,13 @@ export class ApiService {
         withCredentials: true})
   }
   // PUT
+  PutWithoutHeaders(query: string, updatedData: any): Observable<any> {
+    let fullpath = serverPath + query;
+    return this.http.put(fullpath, updatedData, {
+      withCredentials: true,
+    });
+  }
+
   Put(query: string, updatedData: any): Observable<any> {
     let fullpath = serverPath + query;
     return this.http.put(fullpath, updatedData, {
@@ -39,6 +46,7 @@ export class ApiService {
       withCredentials: true,
     });
   }
+
   // DELETE
   Delete(query: string, data: any): Observable<any> {
     let fullpath = serverPath + query;

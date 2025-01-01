@@ -45,6 +45,7 @@ import { HttpResponse } from '@angular/common/http';
 })
 export class UploadResourceComponent  
 {
+  isFirstEdit:boolean=false
   itemID:string='' //i added
   resourceItem: any; // משתנה חדש לשמירת האובייקט שהתקבל
   fileForm: FormGroup;
@@ -213,9 +214,10 @@ export class UploadResourceComponent
             subjects: this.resourceItem.subjects||"",
             publicationDate: this.resourceItem.publicationDate||"",
           });
-         
-          this.downloadFile(this.resourceItem.filePath)
           
+          this.downloadFile(this.resourceItem.filePath)
+          this.isFirstEdit=true
+          this.contentOption=this.getContentOption(this.resourceItem.contentOption)
 
           // עדכון optionSelected
         //  this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
@@ -229,15 +231,15 @@ export class UploadResourceComponent
       },
   });
 }
-  }
+ 
   
    this.fileForm.statusChanges.subscribe((status) => {
       if (status === 'VALID') {
         this.formErrorMessage = null; // הסתרת ההודעה כאשר הטופס תקין
       }
     });
-  }
-
+  
+ }
   handleClick(event:Event,option: string): void {
     const modeAble= Object.keys(this.disabledOptions).find(k=>this.disabledOptions[k])
     if (!this.disabledOptions[option] && modeAble) {
@@ -339,7 +341,7 @@ downloadFile(filePath:string)
   
   onFileSelected(event?: Event, filePath?:string): void 
   {
- if(this.formMode!='edit') {
+      if(this.isFirstEdit===false) {
       if(event)
       {
     const input = event.target as HTMLInputElement;
@@ -348,7 +350,10 @@ downloadFile(filePath:string)
       {
       this.file = input.files[0];
       }}
+      
     }   
+    this.isFirstEdit=false
+
     if (this.file) 
     {
       const fileType = this.file.type;
@@ -399,6 +404,8 @@ downloadFile(filePath:string)
 
     
       this.fileErrorMessage="חסר קובץ / קישור / תוכן. אנא מלאי אחת מהאפשרויות"
+      if(this.formMode=='edit')
+         this.isFirstEdit=false
   }
 
   removeCoverImage()
@@ -591,7 +598,7 @@ downloadFile(filePath:string)
   //יבוא תגיות מטבלת תגיות
   getTags()
   {
-    this.apiService.Read('/Tag').subscribe({
+    this.apiService.Read('/tags/getAll').subscribe({
       next: (response) => {
         if (Array.isArray(response)) {
           this.multipleChoiceFields['tags'].allOption = response;
@@ -672,7 +679,15 @@ downloadFile(filePath:string)
      add:'file',
      addLink:'link'
      }
-     return options[option]
+     const reverseOptions = Object.fromEntries(
+      Object.entries(options).map(([key, value]) => [value, key])
+    );
+    // בדיקה לפי מפתח
+    if (options[option]) {
+      return options[option];
+    }
+    // בדיקה לפי ערך
+    return reverseOptions[option];
   }
 
   //קבלת _ID של המשתמש הנוכחי
@@ -800,7 +815,6 @@ downloadFile(filePath:string)
 
 onSubmitEdit() :void
 {
-  alert("on submit edit")
   console.log("**************subject "+JSON.stringify(this.fileForm.value.subjects));
   console.log("*************title "+JSON.stringify(this.fileForm.value.title));
   console.log("*************author  "+JSON.stringify(this.fileForm.value.author));
@@ -816,37 +830,56 @@ onSubmitEdit() :void
   console.log("*************link "+this.link);
   console.log("*************image "+this.isImage);
 
-     
-if(!this.fileForm.valid)
-  console.log("===============not valid=============");
-  console.log("file "+this.file);
-  
-  console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
-  if (this.fileForm.valid  && this.file)
-    {
-      console.log("iiiiiiiiiiiiiiiiiii mmmm");
-      
-      const formData= new FormData();
-      console.log("spec: "+JSON.stringify(this.fileForm.value.specializations));
-      const metadata={
-        ...this.fileForm.value,
-        createdBy:localStorage.getItem('idNumber')
-      }
-       console.log(" נתונים" +metadata.title);
-       let str:string=JSON.stringify(metadata)
-      console.log("string data: "+str)
-      formData.append('metadata',str)
-       formData.append('resource',this.file)
-      if(this.coverImage)
+   
+      if(this.content && !this.file)//אם הקובץ הוא של העלאת תוכן שמירה שלו במשתנה
       {
-        console.log("image "+this.coverImage);
-        formData.append('coverImage',this.coverImage)
+         this.file=this.createTextFile();
       }
-     console.log(" נתונים" +formData.get('metaData'));
+      if (this.fileForm.valid && (this.file || this.link ) && ((!this.isImage && this.coverImage) || this.isImage)) //ולידציה של השדות
+        {
+          const formData= new FormData();
+          
+          const metadata={
+            ...this.fileForm.value,
+            createdBy:localStorage.getItem('idNumber'),
+            // filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
+            // contentOption:this.getContentOption(this.contentOption)//מצב הטופס
+          }
+           
+          let str:string=JSON.stringify(metadata)
+          console.log("string data: "+str)
+          formData.append('metadata',str) //הכנסת אוביקט של הנתונים לאוביקט שליחה
+          if(this.file)
+          {
+           const rename=this.renameFile(this.file)
+           console.log(rename);
+           
+            formData.append('files',rename)//הכנסת הקובץ לאוביקט לשליחה
+          }
+  
+          if(this.isImage)
+          {
+            this.coverImage=this.file //אם סוג תמונה תמונת השער היא אותה תמונה
+          }
+             
+  
+          if(this.coverImage && this.contentOption!=='edit')//הכנסת תמונת שער לאוביקט לשליחה
+          {
+            console.log("image "+this.coverImage);
+            
+            formData.append('files',this.renameFile(this.coverImage))
+          }
+
+      console.log("form data//////////////////// "+formData);
+      formData.forEach((value, key) => {
+        console.log(`${key}: ${value}`);
+      });
+      
+          
      const query = `/EducationalResource/${this.itemID}`;
      console.log("********qeury*** "+query);
      
-      this.apiService.Put(query,formData).subscribe({ // put 
+      this.apiService.PutWithoutHeaders(query,formData).subscribe({ // put 
         next: (response) => {
          console.log('טופס נשלח בהצלחה:', this.fileForm.value);
          this.snackBar.open('הפריט נערך בהצלחה', 'Close', {
@@ -873,4 +906,5 @@ if(!this.fileForm.valid)
 this.location.back()
 
 }
+
 }

@@ -114,7 +114,9 @@
 <!-- <div class="pagination-container"> -->
   <mat-paginator
   [length]="totalItems"
-  [pageSizeOptions]="[2, 4, 6, 8]"
+  [pageSize]="10"
+  [pageSizeOptions]="getPageSizeOptions()"
+
   (page)="onPageChange($event)"
   showFirstLastButtons
   >
