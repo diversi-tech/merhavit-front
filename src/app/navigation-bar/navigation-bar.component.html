@@ -62,8 +62,11 @@
         <i class="fas fa-tags"></i> ניהול התמחויות
       </a>
     </li>
-  
-    <li *ngIf="userRole == 'Admin'">
+      <a (click)="navigateAndFilter('specialization-management')">
+        <i class="fas fa-tags"></i> ניהול התמחויות
+      </a>
+    </li>
+    <li *ngIf="userRole === 'Admin' || userRole === 'Site Manager'">
       <a (click)="navigateAndFilter('user-management')">
         <i class="fas fa-users"></i> ניהול משתמשים
       </a>
