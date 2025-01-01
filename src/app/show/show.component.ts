@@ -59,6 +59,7 @@ export class ItemsListComponent implements OnInit {
   public favorites: { itemId: string }[] = [];
   itemsFromServer: any[] = [];// משתנה לשמירת כל הפריטים שהתקבלו מהשרת
   public items: Item[] = []; // רשימת הפריטים שמוצגים בסופו של דבר
+
   constructor(
     private http: HttpClient,
     private apiService: ApiService,
@@ -74,9 +75,9 @@ export class ItemsListComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       const type = params['type'];
       if (type) {
-        this.getItems(0, 1000, '', type); // שליפת נתונים עם סוג מסנן
+        this.getItems(0, 100, '', type); // שליפת נתונים עם סוג מסנן
       } else {
-        this.getItems(0, 1000, ''); // שליפת כל הנתונים אם אין סוג
+        this.getItems(0, 100, ''); // שליפת כל הנתונים אם אין סוג
       }
     });
   }
@@ -84,7 +85,7 @@ export class ItemsListComponent implements OnInit {
     try {
       await this.route.queryParams.subscribe((params) => {
         const type = params['type'];
-        this.getItems(0, 1000, '', type);
+        this.getItems(0, 100, '', type);
       });
       await this.loadFavorites();
       this.updateFavoriteStatus();
@@ -130,24 +131,24 @@ export class ItemsListComponent implements OnInit {
       this.apiService.Read(url).subscribe({
         next: (response: { data: any[], totalCount: number }) => {
           console.log('API Response: ', response);
-          if (Array.isArray(response.data)) {
+
+              if (Array.isArray(response)) {
             this.itemsFromServer = response.data;
             console.log('Items received from server:', this.itemsFromServer);
-    
             // מבצע סינון לפי סוג
             this.filterItemsByType(searchTerm, typeFilter);
           } else {
             this.items = [];
             this.showNoDataMessage = true;
           }
-	  this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+  this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
           resolve();
         },
         error: (err) => {
           console.error('Error fetching items', err);
           this.items = [];
           this.showNoDataMessage = true;
-	   this.totalItems = 0; // משתמשים ב-totalCount מהשרת
+ this.totalItems = 0; // משתמשים ב-totalCount מהשרת
           reject(err);
         },
       });
@@ -157,9 +158,11 @@ export class ItemsListComponent implements OnInit {
 
 filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
     let filteredItems = [...this.itemsFromServer];
+  
     console.log('Before filtering:', filteredItems);
     console.log('Search term:', searchTerm);
     console.log('Type filter:', typeFilter);
+  
     // סינון לפי חיפוש (searchTerm)
     if (searchTerm) {
       filteredItems = filteredItems.filter(item =>
@@ -168,18 +171,20 @@ filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
       );
       console.log('After search term filtering:', filteredItems);
     }
+  
     // סינון לפי סוג (typeFilter)
     if (typeFilter) {
       filteredItems = filteredItems.filter(item => item.type === typeFilter);
       console.log('After type filter:', filteredItems);
     }
+  
     this.items = filteredItems;
-    
     console.log('Final filtered items:', this.items);
+  
     if (this.items.length === 0) {
       setTimeout(() => {
         this.showNoDataMessage = true;
-      }, 2000);
+      }, 100);
     }
   }
   async editItem(item1: Item) {
@@ -298,7 +303,6 @@ filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
   }
   updateItems(items: Item[]): void {
     this.items = items;
-  }
   getFileNameFromPath(filePath: string): string {
     return filePath.split('/').pop() || 'downloaded-file';
   }
