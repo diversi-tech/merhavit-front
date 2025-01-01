@@ -27,7 +27,7 @@ export const routes: Routes = [
   { path: 'registration', component: RegistrationComponent },
   { path: 'personal-details', component: PersonalDetailsComponent },
   { path: 'change-password', component: PasswordChangeComponent },
-  { path: 'user-management', component: UserManagementComponent },
+  
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'success-registration', component: SuccessRegistrationComponent },
@@ -48,6 +48,7 @@ export const routes: Routes = [
     children: [
       { path: 'tags', component: TagManagementComponent },
       { path: 'seminaries', component: SeminaryComponent },
+      { path: 'users', component: UserManagementComponent },
       { path: 'specializations', component: SpecializationManagementComponent },
       { path: '', redirectTo: 'tags', pathMatch: 'full' }, // ניתוב ברירת מחדל
     ],
