@@ -18,6 +18,7 @@ import { TagManagementComponent } from './components/Librarian/tag-management';
 import { SpecializationManagementComponent } from './components/Librarian/specialization-management';
 import { ManagementComponent } from './components/management/management.component';
 import { SeminaryComponent } from './components/seminary/seminary.component';
+import { SubjectManagementComponent } from './components/Librarian/subject-management';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -49,6 +50,7 @@ export const routes: Routes = [
       { path: 'tags', component: TagManagementComponent },
       { path: 'seminaries', component: SeminaryComponent },
       { path: 'users', component: UserManagementComponent },
+      { path: 'subjects', component:SubjectManagementComponent },
       { path: 'specializations', component: SpecializationManagementComponent },
       { path: '', redirectTo: 'tags', pathMatch: 'full' }, // ניתוב ברירת מחדל
     ],
