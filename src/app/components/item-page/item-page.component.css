@@ -12,32 +12,41 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  grid-area: item-1;
+  display: flex;
+  justify-content: flex-end; /* הצמדת התמונה לימין */
+}
+.ng-container{
+  max-width: 100%; /* תמונה לא תחרוג מהרוחב הקבוע */
+  max-height: 100%; /* תמונה לא תחרוג מהגובה הקבוע */
+  object-fit: scale-down; /* שמירה על יחס גובה-רוחב */
 }
 
 .item-1 img{
-  width: 25vw; /* קביעת רוחב קבוע */
-  height: 55vh; /* קביעת גובה קבוע */
+  margin-top: 14vh;
+  width: 25vw; 
+  height: 55vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .item-1 video{
-  width: 25vw; /* קביעת רוחב קבוע */
-  height: 40vh; /* קביעת גובה קבוע */
+  width: 25vw;
+  height: 40vh; 
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .item-1 audio{
-  width: 50vw;
+  width: 25vw;
 }
 
-.item-1 video, .item-1 img, .item-1 embed, .item-1 audio {
-  max-width: 100%; /* תמונה לא תחרוג מהרוחב הקבוע */
-  max-height: 100%; /* תמונה לא תחרוג מהגובה הקבוע */
-  object-fit: cover; /* שמירה על יחס גובה-רוחב */
+.item-1 .document-cover-image {
+  margin-top: 17vh;
+  width: 25vw; /* שומר על פרופורציות ברוחב */
+  height: 67vh; /* שומר על פרופורציות בגובה */
 }
 
 .item-details img {
@@ -98,11 +107,7 @@
   font-weight: bold;
 }
 
-.item-1 {
-  grid-area: item-1;
-  display: flex;
-  justify-content: flex-end; /* הצמדת התמונה לימין */
-}
+
 
 .item-2 {
   grid-area: item-2;
@@ -133,7 +138,7 @@
 /* תמונה לאודיו */
 #audio-cover-image {
   display: block;
-  margin: 0 auto 1vh;
+  margin: 15vh auto 1vh;
   width: 50vw; /* קביעת רוחב קבוע */
   height: 50vh; /* קביעת גובה קבוע */
   max-width: 25vw; /* גבול מקסימלי לרוחב */
@@ -173,8 +178,9 @@
 }
 
 /* תגיות */
-.example-chip-list {
-  width: 40vw;
+.example-form-field {
+  width: 50vw;
   background-color: white; 
 }
+
 

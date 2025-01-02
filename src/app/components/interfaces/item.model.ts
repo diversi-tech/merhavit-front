@@ -1,5 +1,6 @@
 export interface Item {
-  id: string;
+  isFavorite: boolean;
+  _id: string;
   description: string;
   title: string;
   type: string;

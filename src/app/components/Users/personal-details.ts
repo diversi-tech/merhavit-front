@@ -4,13 +4,13 @@ import { ApiService } from '../../api.service';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
-
-
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-personal-details',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatSnackBarModule],
   templateUrl: './personal-details.html',
   styleUrls: ['./personal-details.css'],
 })
@@ -27,12 +27,16 @@ export class PersonalDetailsComponent implements OnInit {
     assignedSeminaryId: '',
   };
   activeTab: string = 'personal-details';
-
+  originalUser: any = {};
+  seminaries: any[] = [];
+  specializations: any[] = [];
+  classes: any[] = [];
 
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -42,7 +46,7 @@ export class PersonalDetailsComponent implements OnInit {
       if (token) {
         try {
           const decodedToken: any = jwtDecode(token);
-          const idNumber = decodedToken.idNumber; 
+          const idNumber = decodedToken.idNumber;
           console.log('idNumber', idNumber);
           if (idNumber) {
             this.loadUserData(idNumber);
@@ -64,22 +68,56 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   loadUserData(idNumber: string) {
-    this.apiService.Read(`/users/idNumber/${idNumber}`).subscribe(
-      (data) => {
-        console.log('User data from server:', data);
-        this.user = data; 
+    // טוען סמינרים, התמחויות וכיתות תחילה
+    this.apiService.Read('/seminaries').subscribe(
+      (seminariesData: any[]) => {
+        this.seminaries = seminariesData;
+
+        this.apiService.Read('/specializations').subscribe(
+          (specializationsData: any[]) => {
+            this.specializations = specializationsData;
+
+            this.apiService.Read('/classes').subscribe(
+              (classesData: any[]) => {
+                this.classes = classesData;
+
+                // כעת טוען את פרטי המשתמש
+                this.apiService.Read(`/users/idNumber/${idNumber}`).subscribe(
+                  (userData) => {
+                    console.log('User data from server:', userData);
+                    this.user = userData; // עדכון כל הנתונים של המשתמש
+                    this.originalUser = userData;
+                  },
+                  (error) => {
+                    console.error('Error fetching user data:', error);
+                  }
+                );
+              },
+              (error) => {
+                console.error('Error fetching classes:', error);
+              }
+            );
+          },
+          (error) => {
+            console.error('Error fetching specializations:', error);
+          }
+        );
       },
       (error) => {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching seminaries:', error);
       }
     );
   }
 
   onSubmit() {
-    console.log('this.user', this.user);
+    console.log('this.user before submit', this.user);
     this.apiService.Put('/users/update-user', this.user).subscribe(
       (response) => {
-        alert('Details updated successfully');
+        this._snackBar.open('הפרטים האישיים עודכנו בהצלחה!', 'סגור', {
+          duration: 2000,
+          panelClass: ['my-custom-snackbar'],
+          direction: 'rtl',
+        });
       },
       (error) => {
         console.error('Error updating data:', error);
@@ -88,17 +126,12 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   cancel() {
-    const idNumber = localStorage.getItem('idNumber'); 
-    if (idNumber) {
-      this.loadUserData(idNumber); 
-    }
-    else {
-      console.error('ID number not found in localStorage');
-    }
+    this.user = { ...this.originalUser }; // שחזור נתוני המשתמש המקוריים
+    console.log('this.user', this.user);
   }
 
   goToChangePassword() {
-    this.router.navigate(['/change-password']); 
+    this.router.navigate(['/change-password']);
   }
   navigateTo(tab: string) {
     this.activeTab = tab;

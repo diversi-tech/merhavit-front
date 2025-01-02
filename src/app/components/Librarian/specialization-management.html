@@ -1,0 +1,57 @@
+<div class="specialization-management-container">
+    <div class="specialization-header">
+      <div class="specialization-cell">שם ההתמחות</div>
+      <div class="specialization-cell">פעולות</div>
+    </div>
+    
+    <!-- כפתור הוספת התמחות חדשה -->
+    <div class="specialization-row add-specialization-row">
+      <div class="specialization-cell">
+        <button class="action-button" (click)="addNewSpecialization()">
+          <i class="fas" [class.fa-plus]="!isAddingSpecialization" [class.fa-minus]="isAddingSpecialization"></i>
+          הוספת התמחות
+        </button>
+      </div>
+  
+      <!-- תיבות למילוי כשמוסיפים התמחות חדשה -->
+      <div class="specialization-cell specialization-input-cell" *ngIf="isAddingSpecialization">
+        <input [(ngModel)]="newSpecializationName" type="text" class="specialization-input" placeholder="שם ההתמחות" />
+      </div>
+     
+      <div class="specialization-cell specialization-actions" *ngIf="isAddingSpecialization">
+        <button class="action-button" (click)="saveNewSpecialization()">
+          <i class="fas fa-check"></i> שמירה
+        </button>
+      </div>
+    </div>
+  
+    <div class="specialization-row" *ngFor="let specialization of specializations">
+      <div class="specialization-cell">
+        <div *ngIf="!specialization.isEditing">{{ specialization.name }}</div>
+        <input *ngIf="specialization.isEditing" [(ngModel)]="specialization.name" type="text" class="specialization-input" />
+      </div>
+      <!-- <div class="tag-cell">
+        <div *ngIf="!tag.isEditing">{{ tag.description }}</div>
+        <textarea *ngIf="tag.isEditing" [(ngModel)]="tag.description" class="tag-input"></textarea>
+      </div> -->
+      <div class="specialization-cell specialization-actions">
+        <button class="action-button" (click)="editSpecialization(specialization)">
+          <i *ngIf="!specialization.isEditing" class="fas fa-edit"></i>
+          <i *ngIf="specialization.isEditing" class="fas fa-check"></i>
+        </button>
+        <button class="action-button" (click)="showConfirmation(specialization)">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- דיאלוג אישור מחיקה -->
+  <div class="confirmation-dialog" *ngIf="confirmSpecialization">
+    <div class="dialog-content">
+      <p>האם אתה בטוח שברצונך למחוק את ההתמחות {{ confirmSpecialization.name }}?</p>
+      <button (click)="confirmDeleteSpecialization()">אישור</button>
+      <button (click)="closeConfirmation()">ביטול</button>
+    </div>
+  </div>
+  

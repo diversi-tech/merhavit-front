@@ -1,31 +1,34 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component,AfterViewInit,ViewEncapsulation, computed, ElementRef, inject, model, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { MatChipEditedEvent,MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
-import { map, Observable, startWith } from 'rxjs';
+import { map, Observable, startWith,tap } from 'rxjs';
 import { ApiService } from '../../api.service';
+import { title } from 'process';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatIconModule } from '@angular/material/icon';
-import { OverlayModule } from '@angular/cdk/overlay';
-import { MatDialog } from '@angular/material/dialog';
+import { Overlay, OverlayModule, OverlayPositionBuilder } from '@angular/cdk/overlay';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { DialogComponent } from '../dialog/dialog.component';
 import {MatRadioModule} from '@angular/material/radio';
 import { QuillModule } from 'ngx-quill';
 import { transliterate } from 'transliteration';
+import {Location} from '@angular/common'  // i added
+import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 import { Router, RouterModule } from '@angular/router';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { HttpResponse } from '@angular/common/http';
 
 
-
-
-//import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -33,19 +36,24 @@ import { Router, RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule,FormsModule,ReactiveFormsModule,MatChipsModule, MatAutocompleteModule, 
     MatFormFieldModule, MatInputModule,MatIconModule,OverlayModule,MatAutocompleteModule, 
-    MatButtonModule,MatRadioModule,QuillModule,RouterModule],
+    MatButtonModule,MatRadioModule,QuillModule,RouterModule,MatCheckboxModule,MatDialogModule],
   templateUrl: './upload-resource.component.html',
   styleUrls: ['./upload-resource.component.css']
 })
 export class UploadResourceComponent  
 {
+  isFirstEdit:boolean=false
+  itemID:string='' //i added
+  resourceItem: any; // משתנה חדש לשמירת האובייקט שהתקבל
   fileForm: FormGroup;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   formMode:string='add'
-  contentOption: string='';//שמירת מצב הטופס לפי סוג הקובץ המוכנס לתוכו
+  contentOption: string='edit';//שמירת מצב הטופס לפי סוג הקובץ המוכנס לתוכו
   errorMessage: string | null = null;//הודעת שגיאה לכפתור רדיו
   formErrorMessage:string|null=null;//הודעת שגיאה לטופס חסר שדות חובה
+  fileErrorMessage: string|null=null //הודעת שגיאה חסר קובץ
+  coverImageErrorMessage:string |null=null //הודעת שגיאה חסר תמונת שער
 //שמירה באיזה מצב של הטופס מילאו ערך
   disabledOptions: Record<string, boolean> = {
     edit: false,
@@ -64,7 +72,7 @@ export class UploadResourceComponent
   isPDF:boolean=false;
   isImage:boolean=true
   isAudio:boolean=false
-  fileTypes:Array<string>= ["ספר","סרטון","שיר","מערך","תמונה"];
+  fileTypes:Array<string>= ["ספר","סרטון","שיר","מערך","כרזה","דף עבודה","איור","יצירה"];
   userId:string=''
   // purchaseLocations:Array<string>=["חנות אונליין"];
   
@@ -84,7 +92,7 @@ export class UploadResourceComponent
     'specializations':{
       Ctrl : new FormControl(''),
       optionSelected: [] as string[],
-      allOption: ['מדעים', 'מחשבים', 'היסטוריה', 'ספרות'],
+      allOption: [],
       filteredOption$: null as Observable<string[]> | null
     },
     'ages':{
@@ -96,9 +104,10 @@ export class UploadResourceComponent
     'subjects':{
       Ctrl : new FormControl(''),
       optionSelected: [] as string[],
-      allOption: ["סבלנות","מרחביות","סטודיו","מקצועי","הר געש","פסח","מדעים","עונות השנה","מעבדות לחרות"
-        ,"גיל ההתבגרות","ואהבת לרעך כמוך","עבודת המידות","חסד","נתינה","הפרפר והגולם","מתמטיקה","גאוגרפיה",
-      "גשם","חורף","צונאמי","גדולי ישראל"],
+      allOption: [],
+      // ["סבלנות","מרחביות","סטודיו","מקצועי","הר געש","פסח","מדעים","עונות השנה","מעבדות לחרות"
+      //   ,"גיל ההתבגרות","ואהבת לרעך כמוך","עבודת המידות","חסד","נתינה","הפרפר והגולם","מתמטיקה","גאוגרפיה",
+      // "גשם","חורף","צונאמי","גדולי ישראל"],
       filteredOption$: null as Observable<string[]> | null
     },
     'tags':{
@@ -111,21 +120,17 @@ export class UploadResourceComponent
 
   readonly addOnBlur = true;
 
-  
-  
-  
-
-  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer,private apiService:ApiService,private dialog: MatDialog,private snackBar: MatSnackBar,private router: Router) {
+  constructor(private pr:ActivatedRoute, private location:Location,private me:ActivatedRoute,private fb: FormBuilder, private sanitizer: DomSanitizer,private apiService:ApiService,private dialog: MatDialog,private snackBar: MatSnackBar,private router: Router) {
     // יצירת טופס
     this.fileForm = this.fb.group({
       title: ['', Validators.required],
-      publicationDate: ['', Validators.required],
+      publicationDate: ['', Validators.required],  
       type: ['', Validators.required],
-      subjects: this.fb.array([[], Validators.required]),
+      subjects: this.fb.array([], [Validators.required]),
       //approved: ['', Validators.required],
       //loanValidity: ['', Validators.required],
-      specializations:this.fb.array([[], Validators.required]),
-      ages: this.fb.array([[], Validators.required]),
+      specializations:this.fb.array([],[ Validators.required]),
+      ages: this.fb.array([], [Validators.required]),
       level: ['', Validators.required],
       language: ['', Validators.required],
       //purchaseLocation: ['', Validators.required],
@@ -138,7 +143,7 @@ export class UploadResourceComponent
       tags:this.fb.array([[]])
       
     });
-    this.getTags(); //יבוא תגיות מטבלת התגיות במסד הנתונים
+    //this.getTags(); //יבוא תגיות מטבלת התגיות במסד הנתונים
 //
     Object.entries(this.multipleChoiceFields).forEach(([key, value]) => {
       value.filteredOption$ = value.Ctrl.valueChanges.pipe(
@@ -163,8 +168,20 @@ export class UploadResourceComponent
   });
  }
 
+ 
+
  //מאתחלת את כל הערכים של בחירה מרובה בטופס לריקים
   ngOnInit(): void {
+ this.pr.queryParamMap.subscribe(queryParams => {
+      const additionalParam = queryParams.get('additionalParam');
+      this.formMode = additionalParam !== null ? additionalParam : this.formMode; // הצבת הערך לתוך formMode או שמירה על ברירת המחדל
+    });
+
+    if(this.formMode=='edit'){
+    this.me.params.subscribe(p=>{this.itemID=p['_id']
+      console.log("Received resource ID: ", this.itemID);
+    } ) }
+
     Object.keys(this.multipleChoiceFields).forEach((key)=>{
       const Array = this.fileForm.get(key) as FormArray;
       //console.log("Array:",Array);
@@ -172,8 +189,74 @@ export class UploadResourceComponent
     while (Array?.length > 0) {
       Array.removeAt(0);
     }
+
+    if(key!=='ages')
+      {
+        console.log("path",this.createPath(key));
+         
+        this.getfromServer(`/${this.createPath(key)}`,key);
+      }
     })
     
+    if(this.formMode=='edit'){
+    //i added 
+    this.apiService.Read(`/EducationalResource/${this.itemID}`).subscribe({
+      next: (response: any) => {
+          console.log("This is the response: ", response);
+          // שמירת האובייקט במשתנה חדש
+          this.resourceItem = response; // resourceItem הוא משתנה חדש בקומפוננטה שלך
+          
+          this.fileForm.patchValue({
+            title: this.resourceItem.title||"",
+            tags: this.resourceItem.tags||"",
+            description: this.resourceItem.description||"",
+            author: this.resourceItem.author||"",
+            releaseYear: this.resourceItem.releaseYear||"",
+            language: this.resourceItem.language||"",
+            level: this.resourceItem.level||"",
+            ages: this.resourceItem.ages||"",
+            type: this.resourceItem.type||"",
+            specializations: this.resourceItem.specializations||"",
+            subjects: this.resourceItem.subjects||"",
+            publicationDate: this.resourceItem.publicationDate||"",
+          });
+          
+          this.downloadFile(this.resourceItem.filePath)
+          this.isFirstEdit=true
+          this.contentOption=this.getContentOption(this.resourceItem.contentOption)
+
+          // עדכון optionSelected
+        //  this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
+        //  this.multipleChoiceFields['tags'].optionSelected = this.resourceItem.tags;
+        //  this.multipleChoiceFields['specializations'].optionSelected = this.resourceItem.specializations;
+        //  this.multipleChoiceFields['ages'].optionSelected = this.resourceItem.ages;
+
+      },
+      error: (err) => {
+          console.error('Error fetching resource by ID', err);
+      },
+  });
+}
+ 
+  
+   this.fileForm.statusChanges.subscribe((status) => {
+      if (status === 'VALID') {
+        this.formErrorMessage = null; // הסתרת ההודעה כאשר הטופס תקין
+      }
+      
+    });
+  }
+
+  createPath(key:string):string
+  {
+    console.log("hi");
+    
+    if(key=='tags')
+      return 'tags/getAll'
+    else if(key=='subjects')
+      return 'subjects/getAll'
+    else
+    return key
   }
 
   //חסימת אפשרות להעלאת כמה סוגי קבצים
@@ -226,16 +309,73 @@ export class UploadResourceComponent
     console.log("link:",this.link);
     this.disabledOptions['addLink']= this.link && this.isValidLink? true:false;
     this.errorMessage= this.disabledOptions['addLink']?null:this.errorMessage;
+    if(this.link){
+            this.fileErrorMessage=null
+            this.formErrorMessage=null
+    }
+    else
+      this.fileErrorMessage="חסר קובץ / קישור / תוכן. אנא מלאי אחת מהאפשרויות"
   }
 
   //בעת בחירת קובץ ממחשב
-  onFileSelected(event: Event): void 
+downloadFile(filePath:string)
+ {
+    console.log('Query URL:', filePath); 
+
+    this.apiService
+  .Read(`/EducationalResource/presigned-url?filePath=${encodeURIComponent(filePath)}`)
+  .subscribe({
+    next: async (response) => {
+      const presignedUrl = response.url;
+      if (response && response.url) {
+        try {
+          const fileResponse = await fetch(presignedUrl);
+          if (!fileResponse.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const blob = await fileResponse.blob();
+          const file = new File([blob], this.resourceItem.title, { type: blob.type });
+          this.file=file
+          
+          // כאן תוכל להשתמש במשתנה file כפי שצריך
+          console.log('File received:',file, this.file);
+          this.onFileSelected();
+
+        } catch (error) {
+          console.error('Error fetching the file:', error);
+          alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
+        }
+      } else {
+        console.error('Invalid response for download URL.');
+        alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
+      }
+    },
+    error: (err) => {
+      console.error('Error fetching presigned URL:', err);
+      alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
+    },
+  });
+
+  }
+  
+  
+  onFileSelected(event?: Event, filePath?:string): void 
   {
+      if(this.isFirstEdit===false) {
+      if(event)
+      {
     const input = event.target as HTMLInputElement;
     this.disabledOptions['add']=this.file? true:false 
     if (input.files && input.files[0]) 
       {
       this.file = input.files[0];
+      }}
+      
+    }   
+    this.isFirstEdit=false
+
+    if (this.file) 
+    {
       const fileType = this.file.type;
       const fileName = this.file.name.toLowerCase();
 
@@ -267,22 +407,45 @@ export class UploadResourceComponent
           }
       }
       this.disabledOptions['add']=this.file? true:false 
+      if(this.file)
+      {
+                this.fileErrorMessage=null
+                this.formErrorMessage=null
+      }
   }
 
   //מחיקת הקובץ הנבחר
   removeSelectedFile()
   {
-    debugger
     this.file=null
     this.previewImage=this.sanitizer.bypassSecurityTrustResourceUrl('assets/camera-placeholder.jpg')
     this.clearPreviewsExcept('image');
     this.disabledOptions['add']=this.file? true:false
+
+    
+      this.fileErrorMessage="חסר קובץ / קישור / תוכן. אנא מלאי אחת מהאפשרויות"
+      if(this.formMode=='edit')
+         this.isFirstEdit=false
+  }
+
+  removeCoverImage()
+  {
+    this.coverImage=null
+    this.displayImage=null
+    this.coverImageErrorMessage="חסר תמונת תצוגה מקדימה לקובץ"
+  }
+
+  removeLink()
+  {
+    this.link='';
+    this.onLinkChange()
   }
 
   //בעת שינוי סוג קובץ
   onFileTypeChange(event: Event): void {
     const selectedType = (event.target as HTMLSelectElement).value;
-    this.isImage = selectedType == 'תמונה';//עידכון האם מדובר בתמונה כדי לדעת האם נדרש תמונת שער
+    const imagesType:Array<string>=["כרזה","דף עבודה","איור","יצירה"]
+    this.isImage =imagesType.includes(selectedType)  ;//עידכון האם מדובר בתמונה כדי לדעת האם נדרש תמונת שער
   }
 
   //בעת בחירת תמונת שער
@@ -300,6 +463,12 @@ export class UploadResourceComponent
 
 
       }
+      if(this.coverImage){
+                this.coverImageErrorMessage=null
+                this.formErrorMessage=null
+      }
+      else
+       this.coverImageErrorMessage="חסר תמונת תצוגה מקדימה לקובץ"
     }
 
     //שמירה איזה סוג קובץ נבחר
@@ -313,7 +482,15 @@ export class UploadResourceComponent
   //כאשר מקלידים באפשרות עריכת תוכן
   onEditFileSelected()
   {
+    console.log("content",this.content);
     this.disabledOptions['edit']= this.content? true:false//חסימה של שאר האפשרויות
+    if(this.content){
+            this.fileErrorMessage=null
+            this.formErrorMessage=null
+    }
+    else
+    this.fileErrorMessage="חסר קובץ / קישור / תוכן. אנא מלאי אחת מהאפשרויות"
+
   }
 
   //יצירת קובץ HTML המכיל את התוכן שהמשתמש הקליד
@@ -356,97 +533,185 @@ export class UploadResourceComponent
   }
 
   //הוספת ערך בשדה בחירה מרובה
-  add(event: MatChipInputEvent,fieldKey:string): void {
+  add(event: any, fieldKey: string): void {
     const value = (event.value || '').trim();
-    console.log("val: "+value);
-    const field=this.multipleChoiceFields[fieldKey]
-    
-    if (value && field.allOption.includes(value) /*&& !this.specializations.includes(value)*/) {
-      field.optionSelected.push(value);
-      const Array = this.fileForm.get(fieldKey) as FormArray;
-      Array.push(new FormControl(value));
-  
+    const field = this.multipleChoiceFields[fieldKey];
+
+    const option = field.allOption.find(opt => opt.name === value);
+    const optionId = option ? option._id : value;
+
+    if (value && field.allOption.includes(optionId) && !field.optionSelected.includes(optionId)) {
+      field.optionSelected.push(optionId);
+      const array = this.fileForm.get(fieldKey) as FormArray;
+      array.push(new FormControl(optionId));
     }
-  
+
     event.chipInput!.clear();
-  field.Ctrl.setValue('');
+    field.Ctrl.setValue('');
+    if (this.fileForm.valid) {
+      this.formErrorMessage = null; 
+    }
   }
+
 
   //הסרת ערך משדה בחירה מרובה
-  remove(option: string,fieldKey:string): void 
-  {
-    const field=this.multipleChoiceFields[fieldKey]
-    const Array = this.fileForm.get(fieldKey) as FormArray;
-  const index = Array.controls.findIndex(ctrl => ctrl.value === option);
+  remove(option: string, fieldKey: string): void {
+    const field = this.multipleChoiceFields[fieldKey];
+    const array = this.fileForm.get(fieldKey) as FormArray;
+    const index = field.optionSelected.indexOf(option);
 
-  if (index >= 0) {
-    Array.removeAt(index);
-    field.optionSelected.splice(index, 1);     
+    if (index >= 0) {
+      field.optionSelected.splice(index, 1);
+      array.removeAt(index);
+    }
+  // const updatedValues = field.optionSelected.join(', ');
+  // this.fileForm.get(fieldKey)?.setValue(updatedValues);
   }
+// updateFormattedFields(fieldKey: string): void {
+  //   // עדכן את formattedTags או שדות אחרים לפי הצורך
+  //   if (fieldKey === 'tags') {
+  //     this.formattedTags = this.multipleChoiceFields['tags'].optionSelected.map(tagId => this.getTagById(tagId)).join(', ');
+  //   }
+  //   // הוסף כאן לוגיקה לשדות אחרים במידת הצורך
+  // }
+
+  //טיפול בהכנסת הערך הנבחר למערכים
+   toggleSelection(option:any,fieldKey:string) {
+    const field = this.multipleChoiceFields[fieldKey];
+    const optionId = typeof option === 'object' ? option._id : option;
+
+    if (!field.optionSelected.includes(optionId)) {
+          field.optionSelected.push(optionId);
+          const array = this.fileForm.get(fieldKey) as FormArray;
+          array.push(new FormControl(optionId));
+        }
+     else {
+      this.remove(optionId, fieldKey);
+    }
+    
+    field.Ctrl.setValue('');
+      
   }
 
-//בחירת ערך מרשימה לשדה בחירה מרובה
+//בחירת ערך מרשימה עי סימון לשדה בחירה מרובה
+   optionClicked(event: Event, option:any,fieldKey:string) {
+    event.stopPropagation();
+    this.toggleSelection(option,fieldKey);
+  }
+
+  displayFn(value: string): string {
+    return value;
+  }
+
+//בחירת ערך מרשימה  ע"י לחיצה לשדה בחירה מרובה
   select(event: MatAutocompleteSelectedEvent,fieldKey:string): void {
     const value = event.option.value.trim(); // השתמשי ב-option.value במקום ב-viewValue
-    const field=this.multipleChoiceFields[fieldKey]
-
-    if (value && value !== null && value !== undefined) {
-      const Array = this.fileForm.get(fieldKey) as FormArray;
-      console.log("Array: ",Array);
-
-    if (!field.optionSelected.includes(value)) {
-      console.log("value: ",value);
-      
-      field.optionSelected.push(value);
-    
-    // הוספת ההתמחות שנבחרה למערך ההתמחויות שבטופס
-    Array.push(new FormControl(value));
-    }
+     this.toggleSelection(value, fieldKey);   
   }
-    field.Ctrl.setValue('');    
+  
+  markFieldAsTouched(fieldName: string): void {
+    const field = this.fileForm.get(fieldName);
+    if (field && !field.touched) {
+      field.markAsTouched();
+    }
   }
   
   //יבוא תגיות מטבלת תגיות
-  getTags()
+  getfromServer(path:string,fieldKey:string)
   {
-    this.apiService.Read('/Tag').subscribe({
+    this.apiService.Read(path).subscribe({
       next: (response) => {
         if (Array.isArray(response)) {
-          this.multipleChoiceFields['tags'].allOption = response;
-          console.log("dataTags: ",this.multipleChoiceFields['tags'].allOption);
+          this.multipleChoiceFields[fieldKey].allOption = response;
+          console.log("dataTags: ",this.multipleChoiceFields[fieldKey].allOption);
         } else {
-          this.multipleChoiceFields['tags'].allOption = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+          this.multipleChoiceFields[fieldKey].allOption = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
         }  
       },
         error: (err) => 
           {
-          console.error('Error fetching tags', err);
+          console.error(`Error fetching ${fieldKey}`, err);
           },
       });
   }
 
+
+
+
+
   //קבלת שם התגית לפי ה_id שלה
-  getTagById(tagId:string)
+  getOptionById(optionId:string,fieldKey:string)
   {
-    return this.multipleChoiceFields['tags'].allOption.find(opt=> opt._id===tagId).name
+    return this.multipleChoiceFields[fieldKey].allOption.find(opt=> opt._id===optionId).name
   }
 
-  //חלון דיאלוג להוספת נושא נוסף
-  openDialog() {
+  paramsForDialog(fieldKey:string)
+  {
+    const params:Record<string,{}>={
+      'tags':{
+        title:'הוספת תגית חדשה',
+        label:'שם תגית',
+        isDescription:true
+      },
+      'specializations':{
+        title:'הוספת התמחות חדשה',
+        label:'שם התמחות',
+        isDescription:false
+      },
+      'subjects':{
+        title:'הוספת נושא חדש',
+        label:'שם נושא',
+        isDescription:true
+      },
+    }
+    return params[fieldKey]
+  }
+
+  //חלון דיאלוג להוספת ערך נוסף
+  openDialog(fieldKey:string,path:string) {
     const dialogRef = this.dialog.open(DialogComponent, {
       width: '400px',
+      data:this.paramsForDialog(fieldKey)
     });
-    const field=this.multipleChoiceFields['subjects']
+    const field=this.multipleChoiceFields[fieldKey]
 
-    dialogRef.afterClosed().subscribe((result: string) => {
-      if (result) {
-        field.allOption.push(result); // הוספת הנושא לרשימה אם הוזן
-        field.optionSelected.push(result);
-      const Array = this.fileForm.get('subjects') as FormArray;
-      Array.push(new FormControl(result));
-      }
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (  result && result.newValue ) {
+        const createdByIdNumber = localStorage.getItem('idNumber'); // קריאה ל-ID מה-LocalStorage
+  
+      if (createdByIdNumber) {
+        let newObject:any={}
+        if(result.description)
+        {
+          newObject = {
+          name: result.newValue,
+          description: result.description,
+          createdByIdNumber: createdByIdNumber, // מוסיף את ה-ID שנמצא ב-LocalStorage
+        };
+        }else{
+           newObject = {
+            name: result.newValue,
+            createdByIdNumber: createdByIdNumber, // מוסיף את ה-ID שנמצא ב-LocalStorage
+        }
+        }
+        
+  
+        // שליחה דרך BODY במקום PARAM 
+        this.apiService.Post(path, newObject).subscribe({
+        next: (response) => {
+          field.allOption.push({_id: response.insertedId,...newObject}); // הוספת הנושא לרשימה אם הוזן
+          field.optionSelected.push(response.insertedId);
+          const Array = this.fileForm.get(fieldKey) as FormArray;
+          Array.push(new FormControl(response.insertedId));
+      },
+      error: (err) => console.error('Error adding:', err),
     });
+    }
   }
+})
+}
+    
+
 
   //שינוי לשם טוב באנגלית 
   sanitizeFileName(originalName:string) {
@@ -474,7 +739,15 @@ export class UploadResourceComponent
      add:'file',
      addLink:'link'
      }
-     return options[option]
+     const reverseOptions = Object.fromEntries(
+      Object.entries(options).map(([key, value]) => [value, key])
+    );
+    // בדיקה לפי מפתח
+    if (options[option]) {
+      return options[option];
+    }
+    // בדיקה לפי ערך
+    return reverseOptions[option];
   }
 
   //קבלת _ID של המשתמש הנוכחי
@@ -528,7 +801,7 @@ export class UploadResourceComponent
         }
            
 
-        if(this.coverImage)//הכנסת תמונת שער לאוביקט לשליחה
+        if(this.coverImage && this.contentOption!=='edit')//הכנסת תמונת שער לאוביקט לשליחה
         {
           console.log("image "+this.coverImage);
           
@@ -543,9 +816,9 @@ export class UploadResourceComponent
            Swal.fire({ //הודעה למשתמש
             title: 'טופס נשלח בהצלחה!',
             icon: 'success',
-            showCancelButton: true,
+            showCancelButton: false,
             confirmButtonText: 'OK',
-            buttonsStyling: false,
+            buttonsStyling: true,
             
             customClass: {
                 confirmButton: 'btn btn-primary px-4',
@@ -563,9 +836,9 @@ export class UploadResourceComponent
             title: 'תקלה בשליחת הטופס!',
             text: 'שגיאה '+err.status ,
             icon: 'error',
-            showCancelButton: true,
+            showCancelButton: false,
             confirmButtonText: 'OK',
-            buttonsStyling: false,
+            buttonsStyling: true,
             
             customClass: {
                 confirmButton: 'btn btn-primary px-4',
@@ -581,11 +854,116 @@ export class UploadResourceComponent
   }else{
     console.log("טופס לא תקין");
     this.isSubmitting = false;
-    this.formErrorMessage="טופס לא תקין. אנא וודאי שכל השדות מלאים" //הצגת מסר למשתמש אם השדות לא תקינים
+
+    if(this.file || this.link || this.content){
+      this.fileErrorMessage=null
+    }
+    else{
+      this.fileErrorMessage="חסר קובץ / קישור / תוכן. אנא מלאי אחת מהאפשרויות"
+    }
+
+    if(this.coverImage)
+      this.coverImageErrorMessage=null
+    else
+     this.coverImageErrorMessage="חסר תמונת תצוגה מקדימה לקובץ"
+    
+    this.formErrorMessage="טופס לא תקין. אנא וודאי שכל השדות הנדרשים מלאים" //הצגת מסר למשתמש אם השדות לא תקינים
+    this.fileForm.markAllAsTouched();
   }
   
 }
 
+onSubmitEdit() :void
+{
+  console.log("**************subject "+JSON.stringify(this.fileForm.value.subjects));
+  console.log("*************title "+JSON.stringify(this.fileForm.value.title));
+  console.log("*************author  "+JSON.stringify(this.fileForm.value.author));
+  console.log("*************tags "+JSON.stringify(this.fileForm.value.tags));
+  console.log("*************spec: "+JSON.stringify(this.fileForm.value.specializations));
+  console.log("*************age: "+JSON.stringify(this.fileForm.value.ages));
+  console.log("*************level: "+JSON.stringify(this.fileForm.value.level));
+  console.log("*************description: "+JSON.stringify(this.fileForm.value.description));
+  console.log("*************releaseYear: "+JSON.stringify(this.fileForm.value.releaseYear));
+  console.log("*************language: "+JSON.stringify(this.fileForm.value.language));
+  console.log("*************publicationDate: "+JSON.stringify(this.fileForm.value.publicationDate));
+  console.log("*************file "+this.file);
+  console.log("*************link "+this.link);
+  console.log("*************image "+this.isImage);
+
+   
+      if(this.content && !this.file)//אם הקובץ הוא של העלאת תוכן שמירה שלו במשתנה
+      {
+         this.file=this.createTextFile();
+      }
+      if (this.fileForm.valid && (this.file || this.link ) && ((!this.isImage && this.coverImage) || this.isImage)) //ולידציה של השדות
+        {
+          const formData= new FormData();
+          
+          const metadata={
+            ...this.fileForm.value,
+            createdBy:localStorage.getItem('idNumber'),
+            // filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
+            // contentOption:this.getContentOption(this.contentOption)//מצב הטופס
+          }
+           
+          let str:string=JSON.stringify(metadata)
+          console.log("string data: "+str)
+          formData.append('metadata',str) //הכנסת אוביקט של הנתונים לאוביקט שליחה
+          if(this.file)
+          {
+           const rename=this.renameFile(this.file)
+           console.log(rename);
+           
+            formData.append('files',rename)//הכנסת הקובץ לאוביקט לשליחה
+          }
+  
+          if(this.isImage)
+          {
+            this.coverImage=this.file //אם סוג תמונה תמונת השער היא אותה תמונה
+          }
+             
+  
+          if(this.coverImage && this.contentOption!=='edit')//הכנסת תמונת שער לאוביקט לשליחה
+          {
+            console.log("image "+this.coverImage);
+            
+            formData.append('files',this.renameFile(this.coverImage))
+          }
+
+      formData.forEach((value, key) => {
+        console.log(`${key}: ${value}`);
+      });
+      
+          
+     const query = `/EducationalResource/${this.itemID}`;
+     console.log("********qeury*** "+query);
+     
+      this.apiService.PutWithoutHeaders(query,formData).subscribe({ // put 
+        next: (response) => {
+         console.log('טופס נשלח בהצלחה:', this.fileForm.value);
+         this.snackBar.open('הפריט נערך בהצלחה', 'Close', {
+          duration: 3000,
+          panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
+        });  
+        },
+        error: (err) =>
+        {
+         console.log('תקלה בשליחת טופס',err);
+         this.snackBar.open('בעיה בעריכת הפריט, נסה שוב', 'סגור', {
+          duration: 3000,
+          panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
+        });   
+        },
+      });
+}else{
+  console.log("טופס לא תקין");
+  this.snackBar.open('בעיה בעריכת הפריט, נסה שוב', 'סגור', {
+    duration: 3000,
+    panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
+  });   
+}
+this.location.back()
+
 }
 
-
+}

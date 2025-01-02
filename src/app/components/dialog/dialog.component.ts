@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
@@ -20,13 +20,19 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class DialogComponent 
 {
-  newSubject: string = '';
+  newVal: string = '';
+  description:string='';
 
-  constructor(public dialogRef: MatDialogRef<DialogComponent>) {}
+  constructor(public dialogRef: MatDialogRef<DialogComponent>,@Inject(MAT_DIALOG_DATA) public data: any) {
+    console.log("data",data);
+    
+  }
 
   save() {
-    if (this.newSubject.trim()) {
-      this.dialogRef.close(this.newSubject); // מחזיר את הנושא החדש לקריאה
+    if (this.newVal.trim() && this.data.isDescription && this.description.trim()) {
+      this.dialogRef.close({newValue:this.newVal , description:this.description}); // מחזיר את הנושא החדש לקריאה
+    }else if(this.newVal.trim()){
+      this.dialogRef.close({newValue:this.newVal});
     }
   }
 

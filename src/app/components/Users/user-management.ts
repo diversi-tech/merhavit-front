@@ -2,7 +2,9 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { ApiService } from '../../api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { log } from 'node:console';
+import { SearchService } from '../../shared/search.service';
+import { jwtDecode } from 'jwt-decode';
+
 
 @Component({
   selector: 'app-user-management',
@@ -15,23 +17,101 @@ export class UserManagementComponent implements OnInit {
   users: any[] = [];
   selectedUser: any = null; // המשתמש שתפריט התפקיד שלו פתוח
   confirmUser: any = null;
+  filteredUsers = [...this.users];
+  seminaries: any[] = [];
+  specializations: any[] = [];
+  classes: any[] = [];
+  loggedInUserRole: any = null; // המשתמש שתפריט התפקיד שלו פתוח
+  searchTerm: string = 'all';
+  filterOption: string = '';
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private searchService: SearchService
+  ) {}
 
   ngOnInit(): void {
-    this.getUsers();
+   this.loadData();
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      this.setUserRole();
+    } else {
+      console.error('localStorage is not available on the server.');
+    }
+    // Subscribe לשינויים בנתונים מהשירות
+    this.searchService.searchTerm$.subscribe((term) => {
+      this.searchTerm = term;
+
+      this.filterUsers();
+    });
+
+    this.searchService.filterOption$.subscribe((option) => {
+      this.filterOption = option;
+      console.log('ההסינון', this.filterOption);
+
+      this.filterUsers();
+    });
   }
+  // פונקציה לקבלת התפקיד מתוך ה-Token
+  private setUserRole(): void {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        this.loggedInUserRole = decodedToken.userType || null;
+      } catch (error) {
+        console.error('Failed to decode token', error);
+        this.loggedInUserRole = null;
+      }
+    }
+  }
+
+  loadData() {
+    // טוען סמינרים, התמחויות וכיתות תחילה
+    this.apiService.Read('/seminaries').subscribe(
+      (seminariesData: any[]) => {
+        this.seminaries = seminariesData;
+
+        this.apiService.Read('/specializations').subscribe(
+          (specializationsData: any[]) => {
+            this.specializations = specializationsData;
+
+            this.apiService.Read('/classes').subscribe(
+              (classesData: any[]) => {
+                this.classes = classesData;
+
+                // כעת טוען את פרטי המשתמש
+                this.getUsers();
+
+              },
+              (error) => {
+                console.error('Error fetching classes:', error);
+              }
+            );
+          },
+          (error) => {
+            console.error('Error fetching specializations:', error);
+          }
+        );
+      },
+      (error) => {
+        console.error('Error fetching seminaries:', error);
+      }
+    );
+  }
+
 
   getUsers() {
     this.apiService.Read('/users/all').subscribe({
       next: (response) => {
         this.users = response;
+        this.filterUsers(); // סינון המשתמשים גם לאחר קבלת הנתונים
       },
       error: (err) => {
         console.error('Error fetching users', err);
       },
     });
   }
+
   deleteUser(user: any) {
     const data = { idNumber: user.idNumber };
     this.apiService.Delete('/users/deleteUser', data).subscribe({
@@ -46,7 +126,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   toggleRoleMenu(user: any) {
-    if (user.userType === 'Admin') {
+    if (user.userType === 'Admin'||this.loggedInUserRole==='Librarian'||this.loggedInUserRole==='Student'||(this.loggedInUserRole==='Site Manager'&&user.userType==='Site Manager')) {
       console.log('Cannot change role for Admin users.');
       return; // אל תפתח את התפריט
     }
@@ -54,24 +134,44 @@ export class UserManagementComponent implements OnInit {
   }
 
   changeRole(user: any, newRole: string) {
-    console.log("changrRole");
-    
+    // בקרת הרשאות לשינוי תפקידים
+    if (this.loggedInUserRole === 'Admin') {
+      // Admin יכול לשנות לכל תפקיד
+      if (['Site Manager', 'Librarian', 'Student'].includes(newRole)) {
+        this.executeRoleChange(user, newRole);
+      } else {
+        console.error('Admin cannot assign this role:', newRole);
+      }
+    } else if (this.loggedInUserRole === 'Site Manager') {
+      // Site Manager יכול לשנות רק ל-Librarian ו-Site Manager
+      if (['Librarian', 'Site Manager'].includes(newRole)) {
+        this.executeRoleChange(user, newRole);
+      } else {
+        console.error('Site Manager cannot assign this role:', newRole);
+      }
+    } else {
+      // משתמשים אחרים לא יכולים לשנות תפקידים
+      console.error('User is not authorized to change roles.');
+    }
+  }
+
+  executeRoleChange(user: any, newRole: string) {
     const data = {
-      idNumber: user.idNumber, // חובה לוודא שהוא נכון
-      newRole: newRole, // מפתח צריך להיות "newRole" כדי להתאים לצד השרת
+      idNumber: user.idNumber,
+      newRole: newRole,
     };
+
     this.apiService.Put(`/users/updateRole`, data).subscribe({
       next: (response) => {
         console.log(`Role updated to ${newRole} for user:`, user);
-        user.userType = newRole; // עדכון תפקיד בממשק
-        this.selectedUser = null; // סגירת התפריט לאחר שינוי התפקיד
+        user.userType = newRole; // עדכון התפקיד בממשק
+        this.selectedUser = null; // סגירת תפריט התפקידים
       },
       error: (err) => {
         console.error('Error updating role', err);
       },
     });
   }
-
   showConfirmation(user: any) {
     this.confirmUser = user;
   }
@@ -94,4 +194,62 @@ export class UserManagementComponent implements OnInit {
       this.selectedUser = null; // סגור את התפריט אם לוחצים מחוצה לו
     }
   }
+
+  filterUsers() {
+    console.log('on filter users');
+
+    let tempUsers = [...this.users];
+
+    // אם יש מילת חיפוש
+    if (this.filterOption) {
+      const filterOption = this.filterOption.split(' '); // מפצל את ה-filterOption למילים בודדות
+
+      tempUsers = tempUsers.filter((user) => {
+        return filterOption.every((term) => {
+          // נוודא שכל מילה תתאים לשדה המתאים שלה (key:value)
+          const [key, value] = term.split(':'); // מפרק כל מילה למפתח וערך
+          if (key && value) {
+            // אם יש מפתח וערך, נבדוק אם השדה של המשתמש מכיל את הערך הזה
+            return (
+              user[key] &&
+              user[key].toString().toLowerCase().includes(value.toLowerCase())
+            );
+          }
+          return true; // אם אין מפתח וערך, לא משפיע על הסינון
+        });
+      });
+
+      console.log('tempUsers after filterOption filter', tempUsers);
+
+      // אם לא נמצא שום תוצאה אחרי הסינון, הצג את כל המשתמשים
+      if (tempUsers.length === 0) {
+        tempUsers = [...this.users];
+      }
+    }
+
+    // סינון לפי אופציית הסינון (אם לא 'all')
+    if (this.searchTerm !== 'all') {
+      tempUsers = tempUsers.filter((user) => {
+        return Object.values(user).some((field) => {
+          if (typeof field === 'string') {
+            return field
+              .toString()
+              .toLowerCase()
+              .includes(this.searchTerm.toLowerCase());
+          }
+          return false; // התעלם משדות שאינם מסוג string או number
+        });
+      });
+    }
+
+    // עדכון רשימת המשתמשים המסוננים
+    this.filteredUsers = tempUsers;
+  }
+
+  getEntityName(entityId: string, entities: any[]): string {
+    const entity = entities.find(ent => ent._id === entityId);
+    return entity ? entity.name : 'N/A';
+  }
+  
+  
 }
