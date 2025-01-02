@@ -33,7 +33,7 @@
         <div class="item-description">{{ item.description }}</div>
         <div class="item-meta">
           <span class="meta-label">מחבר: </span>
-          <span class="meta-value">{{ item.author }}</span> |
+          <span class="meta-value">{{ item.Author }}</span> |
           <span class="meta-label">תאריך העלאה:</span>
           <span class="meta-value">{{
             item.publicationDate | date : "dd/MM/yyyy"
@@ -100,15 +100,13 @@
 
 <router-outlet></router-outlet>
 
-<div class="pagination-container">
-  <mat-paginator
+<!-- <div class="pagination-container"> -->
+<mat-paginator
   [length]="totalItems"
+  [pageSize]="10"
   [pageSizeOptions]="getPageSizeOptions()"
   (page)="onPageChange($event)"
   showFirstLastButtons
-  >
-</mat-paginator> 
-</div>
-
-<!--   [pageSize]="totalItems"
- -->
+>
+</mat-paginator>
+<!-- </div> -->

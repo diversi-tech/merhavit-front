@@ -4,96 +4,75 @@ import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../api.service';
 import { jwtDecode } from 'jwt-decode';
-import {
-  RouterModule,
-  Router,
-  ActivatedRoute,
-  RouterLink,
-  RouterOutlet,
-} from '@angular/router';
+import {RouterModule,Router,ActivatedRoute,RouterLink,RouterOutlet,} from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { Item } from '../components/interfaces/item.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ItemsService } from '../items.service'
 import { MatDialog } from '@angular/material/dialog';
 import { log } from 'console';
-import { ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
-import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
-interface Item {
-  _id: string;
-  description: string;
-  title: string;
-  type: string;
-  author: string;
-  publicationDate: Date;
-  Tags: Array<string>;
-  createdBy: string;
-  ApprovedBy: string;
-  coverImage: string;
-  filePath: string;
-  isFavorite?: boolean;
-}
+
+
+// interface Item {
+//   _id: string;
+//  description: string;
+//   title: string;
+//  type: string;
+//   author: string;
+//  publicationDate: Date;
+//   Tags: Array<string>;
+//  createdBy: string;
+//   ApprovedBy: string;
+//   coverImage: string;
+//   filePath: string;
+//   isFavorite?: boolean;
+// }
+
+
 @Component({
   selector: 'app-items-list',
   templateUrl: './show.component.html',
   styleUrls: ['./show.component.css'],
   standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatSnackBarModule,
-    MatCardModule,
-    MatIconModule,
-    RouterOutlet,
-    MatPaginatorModule,
-  ],
-})
-export class ItemsListComponent implements OnInit {
-  searchTerm: string = '';
-  typeFilter: string = '';
+  imports: [CommonModule,MatTableModule,MatButtonModule,MatSnackBarModule, MatCardModule,MatIconModule,RouterOutlet,MatPaginatorModule],})
 
-  public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
+export class ItemsListComponent implements OnInit {
+  public items: Item[] = []; //מערך המוצרים של הספריה
+public typeFilter: string = '';
+public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public showNoDataMessage: boolean = false; // משתנה לשליטה בהצגת ההודעה
   public favorites: { itemId: string }[] = [];
   itemsFromServer: any[] = []; // משתנה לשמירת כל הפריטים שהתקבלו מהשרת
-  public items: Item[] = []; // רשימת הפריטים שמוצגים בסופו של דבר
+  public allItems: Item[] = []; // מערך המכיל את כל הפריטים
+  private itemsInterval: any;
+  public searchTerm: string = '';
+  constructor(private http: HttpClient, private _snackBar: MatSnackBar ,private snackBar: MatSnackBar,private dialog: MatDialog, private apiService: ApiService, private router: Router,private ro: Router,private itemsService: ItemsService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
-  constructor(
-    private http: HttpClient,
-    private apiService: ApiService,
-    private router: Router,
-    private ro: Router,
-    private route: ActivatedRoute,
-    private _snackBar: MatSnackBar,
-    private snackBar: MatSnackBar,
-    private dialog: MatDialog
-  ) {}
-  // async ngOnInit(): Promise<void> {
-  //   this.getUserTypeFromToken();
 
-  //   this.route.queryParams.subscribe(params => {
-  //     const type = params['type'];
-  //     if (type) {
-  //       this.getItems(0, 100, '', type); // שליפת נתונים עם סוג מסנן
-  //     } else {
-  //       this.getItems(0, 100, ''); // שליפת כל הנתונים אם אין סוג
-  //     }
-  //   });
-  //   await this.initializeData();
-
-  // }
 
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
+     this.itemsService.fetchItems();
+     this.items = this.itemsService.items;
+    console.log("items in show component",this.items)
+    this.itemsInterval = setInterval(() => {
 
-    const paramsPromise = new Promise<void>((resolve) => {
+      if (this.itemsService.items !== this.items) {
+        this.items = [...this.itemsService.items];
+        this.cdr.detectChanges(); // עדכון ה-UI
+      }
+    }, 1000);
+     const paramsPromise = new Promise<void>((resolve) => {
       this.route.queryParams.subscribe((params) => {
         const type = params['type'];
         if (type) {
@@ -108,12 +87,10 @@ export class ItemsListComponent implements OnInit {
     await paramsPromise;
     await this.initializeData();
   }
-  async initializeData() {
+   
+  
+   async initializeData() {
     try {
-      // await this.route.queryParams.subscribe((params) => {
-      //   const type = params['type'];
-      //   this.getItems(0, 100, '', type);
-      // });
       console.log('items before favorites:', this.items);
 
       await this.loadFavorites();
@@ -123,6 +100,9 @@ export class ItemsListComponent implements OnInit {
     }
     console.log('items after favorites:', this.items);
   }
+
+
+
   getUserTypeFromToken(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const token = localStorage.getItem('access_token');
@@ -147,6 +127,63 @@ export class ItemsListComponent implements OnInit {
       this.typeFilter
     ).then(() => this.updateFavoriteStatus());
   }
+  
+  
+  // async getItems(page: number = 0,limit: number = 100,searchTerm: string = '',typeFilter: string = ''): Promise<void> {
+  //   this.searchTerm = searchTerm;
+  //   this.typeFilter = typeFilter;
+
+  //   this.showNoDataMessage = false;
+  //   const url = `/EducationalResource/getAll?page=${page}&limit=${limit}`;
+  //   console.log(`Requesting URL: ${url}`);
+  //   return new Promise((resolve, reject) => {
+  //     this.apiService.Read(url).subscribe({
+  //       next: (response: { data: any[]; totalCount: number }) => {
+  //         console.log('API Response: ', response);
+
+  //         if (Array.isArray(response)) {
+  //           this.itemsFromServer = response.data;
+  //           console.log('Items received from server:', this.itemsFromServer);
+  //           // מבצע סינון לפי סוג
+  //           this.filterItemsByType(searchTerm, typeFilter);
+  //         } else {
+  //           this.itemsFromServer = response.data;
+  //           this.filterItemsByType(searchTerm, typeFilter);
+  //           // this.items = [];
+  //           // this.showNoDataMessage = true;
+  //         }
+  //         this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+  //         resolve();
+  //       },
+  //       error: (err) => {
+  //         console.error('Error fetching items', err);
+  //         this.items = [];
+  //         this.showNoDataMessage = true;
+  //         this.totalItems = 0; // משתמשים ב-totalCount מהשרת
+  //         reject(err);
+  //       },
+  //     });
+  //   });
+  // }
+
+
+  //בכלל לא מגיע לפה
+//  getItems(page: number = 0, limit: number = 100, searchTerm: string = '', typeFilter: string = '') {
+//    console.log("enter to getItems in show component")
+  //  const params: any = { page, limit };
+//    if (searchTerm) params.searchTerm = searchTerm;
+//    if (typeFilter) params.typeFilter = typeFilter;
+  
+//    this.apiService.Read(`/EducationalResource/getAll${ params }`).subscribe({
+  //    next: (response) => {
+    //    this.items = response.data || [];
+      //  console.log("items in show.component.ts",this.items)
+//      },
+  //    error: (err) => {
+    //    console.error('Error fetching items:', err);
+     // },
+ //   });
+ // }
 
   async getItems(
     page: number = 0,
@@ -168,17 +205,15 @@ export class ItemsListComponent implements OnInit {
           if (Array.isArray(response)) {
             this.itemsFromServer = response.data;
             console.log('Items received from server:', this.itemsFromServer);
-            this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
             // מבצע סינון לפי סוג
             this.filterItemsByType(searchTerm, typeFilter);
           } else {
             this.itemsFromServer = response.data;
-            this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
             this.filterItemsByType(searchTerm, typeFilter);
             // this.items = [];
             // this.showNoDataMessage = true;
           }
-         
+          this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
           resolve();
         },
         error: (err) => {
@@ -217,7 +252,6 @@ export class ItemsListComponent implements OnInit {
 
     this.items = filteredItems;
     console.log('Final filtered items:', this.items);
-    // this.totalItems=filteredItems.length
 
     if (this.items.length === 0) {
       setTimeout(() => {
@@ -235,7 +269,7 @@ export class ItemsListComponent implements OnInit {
     console.log('Delete item: ', itemToDelete);
     // הוסף כאן את הלוגיקה למחיקת משתמש
 
-    const dialogRef = this.dialog.open(ConfirmDialogComponent1);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
@@ -540,8 +574,9 @@ export class ItemsListComponent implements OnInit {
   getPageSizeOptions(): number[] {
     if (this.totalItems <= 5) {
       return [];
-    } 
-    else {
+    } else if (this.totalItems >= 11) {
+      return [5, 10];
+    } else {
       return [5, 10, 15, 20];
     }
   }

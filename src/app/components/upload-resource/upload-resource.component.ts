@@ -189,7 +189,7 @@ export class UploadResourceComponent
     while (Array?.length > 0) {
       Array.removeAt(0);
     }
- 
+
     if(key!=='ages')
       {
         console.log("path",this.createPath(key));
@@ -199,6 +199,7 @@ export class UploadResourceComponent
     })
     
     if(this.formMode=='edit'){
+    //i added 
     this.apiService.Read(`/EducationalResource/${this.itemID}`).subscribe({
       next: (response: any) => {
           console.log("This is the response: ", response);
@@ -223,6 +224,7 @@ export class UploadResourceComponent
           this.downloadFile(this.resourceItem.filePath)
           this.isFirstEdit=true
           this.contentOption=this.getContentOption(this.resourceItem.contentOption)
+
           // עדכון optionSelected
         //  this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
         //  this.multipleChoiceFields['tags'].optionSelected = this.resourceItem.tags;
@@ -316,59 +318,45 @@ export class UploadResourceComponent
   }
 
   //בעת בחירת קובץ ממחשב
-  downloadFile(filePath: string) {
-    if (this.resourceItem.contentOption === 'link') {
-      this.link = this.resourceItem.filePath;
-      return;
-    }
-  
-    console.log('Query URL:', filePath);
-  
+downloadFile(filePath:string)
+ {
+    console.log('Query URL:', filePath); 
+
     this.apiService
-      .Read(`/EducationalResource/presigned-url?filePath=${encodeURIComponent(filePath)}`)
-      .subscribe({
-        next: async (response) => {
-          const presignedUrl = response.url;
-          if (response && response.url) {
-            try {
-              // קריאה ל-presigned URL
-              const fileResponse = await fetch(presignedUrl);
-              if (!fileResponse.ok) {
-                throw new Error('Network response was not ok');
-              }
-  
-              // אם התוכן הוא טקסט
-              if (this.resourceItem.contentOption === 'text') {
-                const content = await fileResponse.text(); // שמירת התוכן במשתנה content
-                console.log("Content: " + content);
-                this.content = content; // כאן אתה שומר את התוכן במשתנה content
-              } else {
-                // אם התוכן הוא לא טקסט, קרא את ה-blob
-                const blob = await fileResponse.blob();
-                const file = new File([blob], this.resourceItem.title, { type: blob.type });
-                this.file = file;
-  
-                console.log('File received:', file, this.file);
-              }
-  
-              this.onFileSelected();
-  
-            } catch (error) {
-              console.error('Error fetching the file:', error);
-              alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
-            }
-          } else {
-            console.error('Invalid response for download URL.');
-            alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
+  .Read(`/EducationalResource/presigned-url?filePath=${encodeURIComponent(filePath)}`)
+  .subscribe({
+    next: async (response) => {
+      const presignedUrl = response.url;
+      if (response && response.url) {
+        try {
+          const fileResponse = await fetch(presignedUrl);
+          if (!fileResponse.ok) {
+            throw new Error('Network response was not ok');
           }
-        },
-        error: (err) => {
-          console.error('Error fetching presigned URL:', err);
+          const blob = await fileResponse.blob();
+          const file = new File([blob], this.resourceItem.title, { type: blob.type });
+          this.file=file
+          
+          // כאן תוכל להשתמש במשתנה file כפי שצריך
+          console.log('File received:',file, this.file);
+          this.onFileSelected();
+
+        } catch (error) {
+          console.error('Error fetching the file:', error);
           alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
-        },
-      });
+        }
+      } else {
+        console.error('Invalid response for download URL.');
+        alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
+      }
+    },
+    error: (err) => {
+      console.error('Error fetching presigned URL:', err);
+      alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
+    },
+  });
+
   }
-  
   
   
   onFileSelected(event?: Event, filePath?:string): void 
@@ -914,8 +902,8 @@ onSubmitEdit() :void
           const metadata={
             ...this.fileForm.value,
             createdBy:localStorage.getItem('idNumber'),
-            filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
-             contentOption:this.getContentOption(this.contentOption)//מצב הטופס
+            // filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
+            // contentOption:this.getContentOption(this.contentOption)//מצב הטופס
           }
            
           let str:string=JSON.stringify(metadata)
