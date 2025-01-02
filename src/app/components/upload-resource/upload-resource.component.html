@@ -299,12 +299,12 @@
           </div>
         </div> -->
         
-          <div class="form-group">
+          <div *ngIf="contentOption!=='edit'" class="form-group">
             <label for="releaseYear">שנת הוצאה*</label>
-            <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" [placeholder]="formMode === 'edit' ? fileForm.get('releaseYear')?.value : 'הכנס שנת הוצאה'" />
-            <div class="error-fields" *ngIf="fileForm.get('releaseYear')?.invalid && fileForm.get('releaseYear')?.touched">
+            <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" />
+            <!-- <div class="error-fields" *ngIf="fileForm.get('releaseYear')?.invalid && fileForm.get('releaseYear')?.touched">
               <small *ngIf="fileForm.get('releaseYear')?.errors?.['required']">יש להזין שנת הוצאה</small>
-            </div>
+            </div> -->
           </div>
           <div class="form-group">
             <label for="author">מחבר/זמר*</label>

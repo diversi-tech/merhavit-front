@@ -74,7 +74,8 @@
   <!-- דיאלוג אישור מחיקה -->
   <div class="confirmation-dialog" *ngIf="confirmSeminar">
     <div class="dialog-content">
-      <p>האם אתה בטוח שברצונך למחוק את הסמינר {{ confirmSeminar.name }}?</p>
+      <p *ngIf="isStudentExisted">קיימות תלמידות בסמינר {{ confirmSeminar.name }} </p>
+      <p>האם אתה בטוח שברצונך למחוק את סמינר {{ confirmSeminar.name }}?</p>
       <button (click)="confirmDeleteSeminar()">אישור</button>
       <button (click)="closeConfirmation()">ביטול</button>
     </div>

@@ -3,6 +3,7 @@ import { ApiService } from '../../api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormField, MatLabel, MatOption, MatSelect } from '@angular/material/select';
+import { jwtDecode } from 'jwt-decode';
 
 interface Seminar {
   _id: string;
@@ -25,30 +26,33 @@ interface Seminar {
 export class SeminaryComponent implements OnInit {
   seminaries: Array<any> = []
   librarians: Array<any> = []
+  users:Array<any>=[]
   confirmSeminar: any = null;
   isAddingSeminar: boolean = false; // משתנה לצורך הוספת סמינר חדש
   newSeminarName: string = ''; //שם הסמינר החדש
   newSeminarLocation: string = ''; // מיקום הסמינר החדש
   newSeminarEmail: string = ''//אימייל הסמינר החדש
   newLibrarians: Array<string> = []//ספרניות הסמינר החדש
+  userType:string=''
+  isStudentExisted:boolean=false;
+
 
 
   constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
     this.loadSeminaries();
-    this.getLibrarians();
+    this.getUsers();
+    this.librarians = this.users.filter(user => user.userType === "Librarian");
+    this.getUserTypeFromToken();
   }
 
   loadSeminaries(): void {
+    const userIdNumber = localStorage.getItem('idNumber'); // קריאה ל-ID מה-LocalStorage
     this.apiService.Read('/seminaries').subscribe({
       next: (data: Seminar[]) => {
-        // if (Array.isArray(data)) {
-        //       this.seminaries = data;
-        //     } else {
-        //       this.seminaries = data.data || []; // ברירת מחדל למערך ריק אם אין נתונים
-        //     }
         this.seminaries = data;
+        this.seminaries.forEach(seminar=>seminar.siteManagerId=userIdNumber)
         console.log('seminaries', this.seminaries);
       },
       error: (err) => console.error('Error loading seminaries:', err)
@@ -56,7 +60,13 @@ export class SeminaryComponent implements OnInit {
   }
 
   showConfirmation(seminar: Seminar): void {
-    this.confirmSeminar = seminar;
+    if(this.userType==='Admin'){
+       this.confirmSeminar = seminar;
+    }
+      if(this.getStudentsBySeminar(this.confirmSeminar).length>0){
+        this.isStudentExisted=true;
+      }
+        
   }
 
   closeConfirmation(): void {
@@ -66,7 +76,6 @@ export class SeminaryComponent implements OnInit {
   confirmDeleteSeminar(): void {
     const userIdNumber = localStorage.getItem('idNumber'); // קריאה ל-ID מה-LocalStorage
     if (this.confirmSeminar) {
-      if (userIdNumber === this.confirmSeminar.siteManagerId) {
         console.log(`Deleting Seminar with ID: ${this.confirmSeminar._id}`);
         const SeminarToDelete = this.confirmSeminar._id;
 
@@ -79,9 +88,6 @@ export class SeminaryComponent implements OnInit {
             },
             error: (err) => console.error('Error deleting Seminar:', err)
           });
-      } else {
-        console.error('cannot delete other seminar.');
-      }
     } else {
       console.error('No Seminar selected for deletion.');
     }
@@ -107,15 +113,21 @@ export class SeminaryComponent implements OnInit {
   }
 
   editSeminar(Seminar: Seminar): void {
-    if (Seminar.isEditing) {
+    const userIdNumber = localStorage.getItem('idNumber'); // קריאה ל-ID מה-LocalStorage
+    if (userIdNumber === Seminar.siteManagerId || this.userType=='Admin') {
+    if (Seminar.isEditing ) {
       this.saveSeminar(Seminar);
     } else {
       Seminar.isEditing = true;
     }
+  }else{
+    console.error(" לא ניתן לערוך סמינר אחר");
+    
   }
+}
 
   saveSeminar(Seminar: Seminar): void {
-    if (Seminar.isChanging) {
+    if (Seminar.isChanging ) {
       this.apiService.Put(`/seminaries/${Seminar._id}`,
         {
           _id: Seminar._id,    //body
@@ -199,10 +211,10 @@ export class SeminaryComponent implements OnInit {
   }
 
 
-  getLibrarians() {
+  getUsers() {
     this.apiService.Read('/users/all').subscribe({
       next: (response: any[]) => {
-        this.librarians = response.filter(user => user.userType === "Librarian");
+        this.users=response;
       },
       error: (err) => {
         console.error('Error fetching users', err);
@@ -215,5 +227,29 @@ export class SeminaryComponent implements OnInit {
     const filterArray = this.librarians.filter(lib => lib.assignedSeminaryId === seminar._id)
     return filterArray
   }
+
+  getStudentsBySeminar(seminar:Seminar):any[]{
+    return this.users.filter(user=>user.assignedSeminaryId===seminar._id)
+  }
+
+  getUserTypeFromToken(): void {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          this.userType = decodedToken.userType || '';
+          console.log(this.userType);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
+      }
+    } else {
+      console.error('localStorage is not available on the server.');
+    }
+
+  }
+
 
 }

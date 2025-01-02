@@ -137,7 +137,7 @@ export class UploadResourceComponent
       //price: ['', Validators.required],
       //catalogNumber: ['', Validators.required],
       //copies: ['', Validators.required],
-      releaseYear: ['', Validators.required],
+      releaseYear: [''],
       author: ['', Validators.required],
       description: [''],
       tags:this.fb.array([[]])
@@ -694,8 +694,6 @@ downloadFile(filePath:string)
             createdByIdNumber: createdByIdNumber, // מוסיף את ה-ID שנמצא ב-LocalStorage
         }
         }
-        
-  
         // שליחה דרך BODY במקום PARAM 
         this.apiService.Post(path, newObject).subscribe({
         next: (response) => {
@@ -739,15 +737,19 @@ downloadFile(filePath:string)
      add:'file',
      addLink:'link'
      }
+     
      const reverseOptions = Object.fromEntries(
       Object.entries(options).map(([key, value]) => [value, key])
     );
+  
     // בדיקה לפי מפתח
     if (options[option]) {
       return options[option];
     }
+  
     // בדיקה לפי ערך
     return reverseOptions[option];
+  
   }
 
   //קבלת _ID של המשתמש הנוכחי
