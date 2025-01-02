@@ -1,37 +1,33 @@
-<!-- דף ניווט (Pagination) -->
-<div class="pagination-container">
-  <span
-    class="arrow"
-    (click)="previousPage()"
-    [class.disabled]="currentPage === 0"
-  >
-    ❮
-  </span>
-  <span class="arrow" (click)="nextPage()">❯</span>
-</div>
-
-<!-- הצגת רשימת הפריטים -->
-<div class="table-container" >
+<div class="table-container">
   <mat-card
-  appearance="outlined"
-  class="no-data-message"
-  *ngIf="showNoDataMessage"
->
-  <mat-card-header>
-    <mat-icon mat-card-avatar color="primary" fontSize="large">info</mat-icon>
-    <mat-card-content>
-      <p>אין נתונים להצגה</p>
-    </mat-card-content>
-  </mat-card-header>
-</mat-card>
-
-
-  
-  
-   
-  <div class="row" *ngFor="let item of items" (click)="navigateToItemPage(item)">
+    appearance="outlined"
+    class="no-data-message"
+    *ngIf="showNoDataMessage"
+  >
+    <mat-card-header>
+      <mat-icon
+        mat-card-avatar
+        color="primary"
+        fontSize="large"
+        class="icon-no-data-message"
+        >info</mat-icon
+      >
+      <mat-card-content>
+        <p>אין נתונים להצגה</p>
+      </mat-card-content>
+    </mat-card-header>
+  </mat-card>
+  <div
+    class="row"
+    *ngFor="let item of items"
+    (click)="navigateToItemPage(item)"
+  >
     <div class="item-content">
-      <img [src]="item.coverImage || 'image/file-not-found'" alt="Item Image" class="item-image" />
+      <img
+        [src]="item.coverImage || 'image/file-not-found'"
+        alt="Item Image"
+        class="item-image"
+      />
       <div class="item-details">
         <div class="item-title">{{ item.title }}</div>
         <div class="item-description">{{ item.description }}</div>
@@ -46,7 +42,6 @@
       </div>
     </div>
     <!-- הצגת כפתורים לספרנית -->
-
     <div
       class="actions"
       *ngIf="['Admin', 'Site Manager', 'Librarian'].includes(userType)"
@@ -57,9 +52,12 @@
       >
         <i class="far fa-trash-alt"></i>
       </button>
-      <button class="action-button edit"
-      (click)=" $event.stopPropagation()"
-      >עריכה</button>
+      <button
+        class="action-button edit"
+        (click)="editItem(item); $event.stopPropagation()"
+      >
+        עריכה
+      </button>
     </div>
     <!-- הצגת כפתורים לתלמידה -->
     <div class="actions" *ngIf="userType === 'Student'">
@@ -73,10 +71,6 @@
       >
         <i class="far fa-heart"></i>
       </button>
-      <button (click)="toggleFavorite(item); $event.stopPropagation()">
-        {{ item.isFavorite ? "הסר מהמועדפים" : "הוסף למועדפים" }}
-      </button>
-
       <button
         class="action-button download"
         *ngIf="
@@ -103,3 +97,18 @@
     </div>
   </div>
 </div>
+
+<router-outlet></router-outlet>
+
+<div class="pagination-container">
+  <mat-paginator
+  [length]="totalItems"
+  [pageSizeOptions]="getPageSizeOptions()"
+  (page)="onPageChange($event)"
+  showFirstLastButtons
+  >
+</mat-paginator> 
+</div>
+
+<!--   [pageSize]="totalItems"
+ -->

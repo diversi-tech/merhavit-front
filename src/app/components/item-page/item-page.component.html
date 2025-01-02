@@ -1,7 +1,7 @@
 <div class="grid-container">
   <!-- קובץ הפריט -->
   <div *ngIf="item" class="grid-item item-1">
-    <ng-container *ngIf="previewUrl; else noFile">
+    <ng-container *ngIf="previewUrl; else noFile" class="ng-container">
       <div *ngIf="isPoster || isWorksheet || isPainting || isCreation">
         <img [src]="previewUrl" [alt]="item.title || 'Image not found'">
       </div>
@@ -20,7 +20,6 @@
             [src]="item.coverImage" 
             [alt]="'Cover image for ' + (item.title || 'מערך')" 
             class="document-cover-image" 
-            style="cursor: pointer; max-width: 100%; height: auto;"
           >
         </a>
         <p>לחצי 👆 על הכריכה להצגת המסמך*</p>
