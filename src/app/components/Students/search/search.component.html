@@ -49,12 +49,15 @@
         </div>
         <ul *ngIf="showFilterOptions" class="dropdown-options">
           <li (click)="onSelectFilter('all')">כל סוגי הקבצים</li>
-          <li (click)="onSelectFilter('pictures')">תמונות</li>
-          <li (click)="onSelectFilter('videos')">סרטונים</li>
-          <li (click)="onSelectFilter('presentations')">מצגות</li>
-          <li (click)="onSelectFilter('songs')">שירים</li>
-          <li (click)="onSelectFilter('books')">ספרים</li>
-          <li (click)="onSelectFilter('equipment')">ציוד</li>
+          <li (click)="onSelectFilter('כרזה')">כרזות</li>
+          <li (click)="onSelectFilter('דף עבודה')">דפי עבודה</li>
+          <li (click)="onSelectFilter('איור')">איורים</li>
+          <li (click)="onSelectFilter('יצירה')">יצירות</li>
+          <li (click)="onSelectFilter('סרטון')">סרטונים</li>
+          <li (click)="onSelectFilter('מצגת')">מצגות</li>
+          <li (click)="onSelectFilter('שיר')">שירים</li>
+          <li (click)="onSelectFilter('ספר')">ספרים</li>
+          <li (click)="onSelectFilter('ציוד')">ציוד</li>
         </ul>
       </div>
 
@@ -231,45 +234,11 @@
       </div>
     </div>
 
-    <!-- <div class="search-input-container">
-      <input
-        type="text"
-        class="search-input"
-        [formControl]="searchControl"
-        placeholder="הקלד מילת חיפוש..."
-        (focus)="showSearchHistory()"
-        (blur)="hideSearchHistory()"
-      />
-      <button mat-icon-button (click)="onSearch()">
-        <mat-icon>search</mat-icon>
-      </button>
-
-      תיבת היסטוריית החיפושים -->
-    <!-- <div class="search-history-box" *ngIf="isSearchHistoryVisible">
-        <div
-          *ngFor="let item of searchResults"
-          class="search-history-item"
-          (click)="onSearch(item)"
-        >
-          <i class="fas fa-search"></i>
-          <span>{{ item }}</span>
-        </div>
-      </div>
-    </div> -->
+  
     <div class="search-input-container">
       <!-- חיפוש כללי -->
       <div *ngIf="!isUserManagementComponent">
-        <input
-          type="text"
-          class="search-input"
-          [formControl]="searchControl"
-          placeholder="הקלד מילת חיפוש..."
-          (focus)="showSearchHistory()"
-          (blur)="hideSearchHistory()"
-        />
-        <button mat-icon-button (click)="onSearch()">
-          <mat-icon>search</mat-icon>
-        </button>
+    
 
         <!-- תיבת היסטוריית החיפושים -->
         <div class="search-history-box" *ngIf="isSearchHistoryVisible">
@@ -284,16 +253,16 @@
         </div>
       </div>
 
-      <!-- חיפוש מותאם לניהול משתמשים -->
       <div *ngIf="isUserManagementComponent" class="user-management-search">
-        <input
-          type="text"
-          class="search-input"
-          placeholder="הקלד מילת חיפוש..."
-          [(ngModel)]="searchTerm"
-          (input)="onSearchChange()"
-        />
-      </div>
+            </div>
+ <input type="text"  type="text" 
+ [(ngModel)]="searchTerm" 
+ (input)="onSearchChange()"  class="search-input"  [formControl]="searchControl"  placeholder="הקלד מילת חיפוש..." 
+ (focus)="showSearchHistory()"
+ (blur)="hideSearchHistory()"/>
+ <button mat-icon-button (click)="onSearch()">
+  <mat-icon>search</mat-icon>
+</button>
     </div>
   </div>
 </div>

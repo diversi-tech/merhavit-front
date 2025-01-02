@@ -28,8 +28,8 @@ import { importProvidersFrom } from '@angular/core';
   standalone: true,
   imports: [MatDialogModule], // הוספת MatDialogModule כאן
 })
-export class ConfirmDialogComponent {
-  constructor(public dialogRef: MatDialogRef<ConfirmDialogComponent>) {}
+export class ConfirmDialogComponent1 {
+  constructor(public dialogRef: MatDialogRef<ConfirmDialogComponent1>) {}
 
   onNoClick(): void {
     this.dialogRef.close(false);
