@@ -335,6 +335,7 @@ export class ItemsListComponent implements OnInit {
         },
       });
   }
+
   updateItems(items: Item[]): void {
     this.items = items;
   }
