@@ -17,6 +17,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
+import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
 
 interface Item {
   _id: string;
@@ -135,15 +136,17 @@ export class ItemsListComponent implements OnInit {
           if (Array.isArray(response)) {
             this.itemsFromServer = response.data;
             console.log('Items received from server:', this.itemsFromServer);
+            this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
             // מבצע סינון לפי סוג
             this.filterItemsByType(searchTerm, typeFilter);
           } else {
             this.itemsFromServer = response.data;
+            this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
             this.filterItemsByType(searchTerm, typeFilter);
             // this.items = [];
             // this.showNoDataMessage = true;
           }
-          this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+         
           resolve();
         },
         error: (err) => {
@@ -182,6 +185,7 @@ export class ItemsListComponent implements OnInit {
 
     this.items = filteredItems;
     console.log('Final filtered items:', this.items);
+    // this.totalItems=filteredItems.length
 
     if (this.items.length === 0) {
       setTimeout(() => {
@@ -199,7 +203,7 @@ export class ItemsListComponent implements OnInit {
     console.log('Delete item: ', itemToDelete);
     // הוסף כאן את הלוגיקה למחיקת משתמש
 
-    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent1);
 
     dialogRef.afterClosed().subscribe(result => {
 
@@ -502,9 +506,8 @@ export class ItemsListComponent implements OnInit {
   getPageSizeOptions(): number[] {
     if (this.totalItems <= 5) {
       return [];
-    } else if (this.totalItems >= 11) {
-      return [5, 10];
-    } else {
+    } 
+    else {
       return [5, 10, 15, 20];
     }
   }

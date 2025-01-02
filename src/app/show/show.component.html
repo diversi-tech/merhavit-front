@@ -69,14 +69,15 @@
 
 <router-outlet></router-outlet>
 
-<!-- <div class="pagination-container"> -->
+<div class="pagination-container">
   <mat-paginator
   [length]="totalItems"
-  [pageSize]="10"
   [pageSizeOptions]="getPageSizeOptions()"
-
   (page)="onPageChange($event)"
   showFirstLastButtons
   >
 </mat-paginator> 
-<!-- </div> -->
+</div>
+
+<!--   [pageSize]="totalItems"
+ -->
