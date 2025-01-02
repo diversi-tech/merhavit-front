@@ -11,7 +11,6 @@ import { ForgotPasswordComponent } from './components/Users/forgot-password';
 import { ResetPasswordComponent } from './components/Users/reset-password';
 import { SuccessRegistrationComponent } from './components/Users/success-registration';
 import { ItemPageComponent } from './components/item-page/item-page.component';
-import { EditMediaComponent } from './edit-media/edit-media.component';
 import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
 import { FavoritesComponent } from './components/Favorites/favorites';
 import { TagManagementComponent } from './components/Librarian/tag-management';
@@ -32,8 +31,8 @@ export const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'success-registration', component: SuccessRegistrationComponent },
-  { path: 'edit-media', component: EditMediaComponent },
   { path: 'item-page/:id', component: ItemPageComponent },
+  { path: 'upload-resource/:_id', component: UploadResourceComponent },
   { path: 'upload-resource', component: UploadResourceComponent },
   { path: 'favorites', component: FavoritesComponent },
   { path: 'items/all', component: ItemsListComponent }, // הכל

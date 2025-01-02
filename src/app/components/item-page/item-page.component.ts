@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ApiService } from '../../api.service';
-import { Item } from './interfaces/item-page.interface';
-import { SimilarItem } from './interfaces/similar-item-page.interface';
+import { Item } from '../interfaces/item-page.interface';
+import { SimilarItem } from '../interfaces/similar-item-page.interface';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';

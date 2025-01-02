@@ -15,6 +15,7 @@
     <div class="user-cell">מספר טלפון</div>
     <div class="user-cell">מייל</div>
     <div class="user-cell">כיתה</div>
+    <div class="user-cell">סמינר</div>
     <div class="user-cell">התמחות</div>
     <div class="user-cell">פעולות</div>
   </div>
@@ -26,8 +27,17 @@
     <div class="user-cell">{{ user.address || 'N/A' }}</div>
     <div class="user-cell">{{ user.phoneNumber || 'N/A' }}</div>
     <div class="user-cell">{{ user.email || 'N/A' }}</div>
-    <div class="user-cell">{{ user.class || 'N/A' }}</div>
-    <div class="user-cell">{{ user.specialization || 'N/A' }}</div>
+    <div class="user-cell">
+      <div>{{ getEntityName(user.class, classes) }}</div>
+    </div>
+
+    <div class="user-cell">
+      <div>{{ getEntityName(user.assignedSeminaryId, seminaries) }}</div>
+    </div>
+    <div class="user-cell">
+      <div>{{ getEntityName(user.specialization, specializations) }}</div>
+    </div>
+
     <div class="user-cell user-actions">
       <!-- אייקון מחיקה -->
       <button class="action-button" (click)="showConfirmation(user)">
