@@ -68,19 +68,22 @@
     </section>
   </div>
 
-  <!-- פריטים דומים -->
+
+
+
+<!-- פריטים דומים -->
   <div class="grid-item item-3">
     <h3>פריטים דומים</h3>
     <div class="similar-items">
       <div *ngFor="let similarItem of similarItems" class="similar-item" (click)="navigateToItem(similarItem._id)">
         <div class="image-container">
-          <!-- התמונה -->
-          <img 
+        <!-- התמונה -->
+        <img 
             *ngIf="similarItem.coverImage" 
-            [src]="getCoverImageSimilarItem(similarItem)" 
+          [src]="getCoverImageSimilarItem(similarItem)" 
             [alt]="similarItem.title || 'Cover image not found'"
-          >
-          <p *ngIf="!similarItem.coverImage" class="file-not-found">הקובץ לא נמצא</p>
+        >
+          <p *ngIf="!similarItem?.coverImage" class="file-not-found">הקובץ לא נמצא</p>
 
           <!-- אייקון מבוסס סוג -->
           <ng-container *ngIf="similarItem.type">
