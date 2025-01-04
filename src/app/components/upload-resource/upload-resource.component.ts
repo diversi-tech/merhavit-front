@@ -59,6 +59,7 @@ export class UploadResourceComponent
     edit: false,
     add: false,
     addLink: false, 
+    physicalBook:false
 }
   content = ''; // תוכן העורך
   fileToEdit: File | null = null;
@@ -72,9 +73,9 @@ export class UploadResourceComponent
   isPDF:boolean=false;
   isImage:boolean=true
   isAudio:boolean=false
-  fileTypes:Array<string>= ["ספר","סרטון","שיר","מערך","כרזה","דף עבודה","איור","יצירה"];
+  fileTypes:Array<string>= ['ספר דיגיטלי',"סרטון","שיר","מערך","כרזה","דף עבודה","איור","יצירה"];
   userId:string=''
-  // purchaseLocations:Array<string>=["חנות אונליין"];
+  purchaseLocations:Array<string>=["חנות אונליין","פוטומן"];
   
   levels:Array<string>=["נמוכה","גבוהה"];
   languages:Array<string>=["אנגלית","עברית"];
@@ -127,24 +128,23 @@ export class UploadResourceComponent
       publicationDate: ['', Validators.required],  
       type: ['', Validators.required],
       subjects: this.fb.array([], [Validators.required]),
-      //approved: ['', Validators.required],
-      //loanValidity: ['', Validators.required],
+      approved: [''],
+      loanValidity: [''],
       specializations:this.fb.array([],[ Validators.required]),
       ages: this.fb.array([], [Validators.required]),
       level: ['', Validators.required],
       language: ['', Validators.required],
-      //purchaseLocation: ['', Validators.required],
-      //price: ['', Validators.required],
-      //catalogNumber: ['', Validators.required],
-      //copies: ['', Validators.required],
+      purchaseLocation: [''],
+      price: [''],
+      catalogNumber: [''],
+      copies: [''],
       releaseYear: [''],
       author: ['', Validators.required],
       description: [''],
-      tags:this.fb.array([[]])
-      
+      tags:this.fb.array([[]]),
+      libraryLocation:['']
     });
-    //this.getTags(); //יבוא תגיות מטבלת התגיות במסד הנתונים
-//
+   
     Object.entries(this.multipleChoiceFields).forEach(([key, value]) => {
       value.filteredOption$ = value.Ctrl.valueChanges.pipe(
         startWith(''),
@@ -261,6 +261,8 @@ export class UploadResourceComponent
 
   //חסימת אפשרות להעלאת כמה סוגי קבצים
   handleClick(event:Event,option: string): void {
+    console.log("option",this.contentOption);
+    
     const modeAble= Object.keys(this.disabledOptions).find(k=>this.disabledOptions[k])
     if (!this.disabledOptions[option] && modeAble) {
       event.preventDefault();
@@ -279,6 +281,7 @@ export class UploadResourceComponent
       edit: 'עריכת תוכן',
       add: 'העלאת תוכן',
       addLink: 'קישורים',
+      book: 'ספר להשאלה'
     };
     return labels[option] || option;
   }
@@ -508,7 +511,7 @@ downloadFile(filePath:string)
 
     // הגדרת שם הקובץ
     const fileName = firstLine ? `${firstLine}.html` : 'default.html';//שם הקובץ לפי השורה הראשונ
-    this.fileForm.patchValue({ type: 'טקסט' }); // הגדרת ערך ברירת מחדל
+    this.fileForm.patchValue({ type: 'טקסט' }); // הגדרת ערך ברירת מחדל לסוג
     this.updateTypeValidator(false); // הסרת הוולידטור
     
     return new File([this.content], fileName, { type: 'text/html' });//קובץ HTML שמכיל את התוכן בפורמט HTML 
@@ -735,7 +738,8 @@ downloadFile(filePath:string)
      const options :Record<string, string>={
      edit:'text',
      add:'file',
-     addLink:'link'
+     addLink:'link',
+     physicalBook:'book'
      }
      
      const reverseOptions = Object.fromEntries(
@@ -775,14 +779,20 @@ downloadFile(filePath:string)
     {
        this.file=this.createTextFile();
     }
-    if (this.fileForm.valid && (this.file || this.link ) && ((!this.isImage && this.coverImage) || this.isImage)) //ולידציה של השדות
+    if(this.contentOption=='physicalBook')
+    {
+      this.fileForm.patchValue({ type: 'ספר פיזי' }); // הגדרת ערך ברירת מחדל
+      this.updateTypeValidator(false);
+    }
+    if (this.fileForm.valid && (this.file || this.link || this.contentOption=='physicalBook') && ((!this.isImage && this.coverImage) || this.isImage)) //ולידציה של השדות
       {
         const formData= new FormData();
         
+        const { libraryLocation, ...form } = this.fileForm.value;
         const metadata={
-          ...this.fileForm.value,
+          ...form,
           createdBy:this.userId,
-          filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
+          filePath:libraryLocation||this.link, //אם לא הוכנס קישור או מיקום נכנס מחרוזת ריקה
           contentOption:this.getContentOption(this.contentOption)//מצב הטופס
         }
          
