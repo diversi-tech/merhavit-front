@@ -587,4 +587,16 @@ await this.initializeData();
       return [5, 10, 15, 20];
     }
   }
+  
+  isNewItem(item: Item): boolean {
+    const currentDate = new Date();
+    const publicationDate = new Date(item.publicationDate);
+    const differenceInTime = currentDate.getTime() - publicationDate.getTime();
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24); // המרה לימים
+
+    return differenceInDays < 30; // אם ההפרש פחות מ-30 ימים, אז זה נחשב ל"חדש"
+  }
+
 }
+
+
