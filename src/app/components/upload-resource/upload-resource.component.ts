@@ -219,11 +219,20 @@ export class UploadResourceComponent
             specializations: this.resourceItem.specializations||"",
             subjects: this.resourceItem.subjects||"",
             publicationDate: this.resourceItem.publicationDate||"",
+            approved:this.resourceItem.approved||"",
+            loanValidity:this.resourceItem.loanValidity||"",
+            purchaseLocation:this.resourceItem.purchaseLocation ||"",
+            price:this.resourceItem.price ||"",
+            catalogNumber:this.resourceItem.catalogNumber ||"",
+            copies:this.resourceItem.copies ||"",
+            libraryLocation:this.resourceItem.libraryLocation ||"",
           });
+
           
           this.downloadFile(this.resourceItem.filePath)
           this.isFirstEdit=true
           this.contentOption=this.getContentOption(this.resourceItem.contentOption)
+          
 
           // עדכון optionSelected
         //  this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
