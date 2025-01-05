@@ -86,6 +86,12 @@ items:Item[]=[];
         } else {
           console.log('The searchControl has a value:', value);
         }
+
+        this.searchControl.valueChanges
+        .pipe(debounceTime(300), distinctUntilChanged()) // מצמצם קריאות
+        .subscribe(() => {
+          this.loadSearchHistory(); // עדכון תיבת ההיסטוריה לפי הערך החדש
+        }); 
       });
   }
 
@@ -163,12 +169,6 @@ items:Item[]=[];
       // מעדכן את הרשימה המקומית
     this.searchResults = updatedHistory;
   }  
-
-
-
-
-
-
 
   // הצגת תיבת ההיסטוריה
   showSearchHistory() {
