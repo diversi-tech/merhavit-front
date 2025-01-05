@@ -71,7 +71,7 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
         this.items = [...this.itemsService.items];
         this.cdr.detectChanges(); // עדכון ה-UI
       }
-    }, 500);
+    }, 300);
      const paramsPromise = new Promise<void>((resolve) => {
       this.route.queryParams.subscribe((params) => {
         const type = params['type'];
