@@ -1,0 +1,57 @@
+<div class="class-management-container">
+    <div class="class-header">
+      <div class="class-cell">שם הכיתה</div>
+      <div class="class-cell">פעולות</div>
+    </div>
+    
+    <!-- כפתור הוספת כיתה חדשה -->
+    <div class="class-row add-class-row">
+      <div class="class-cell">
+        <button class="action-button" (click)="addNewClass()">
+          <i class="fas" [class.fa-plus]="!isAddingClass" [class.fa-minus]="isAddingClass"></i>
+          הוספת כיתה
+        </button>
+      </div>
+  
+      <!-- תיבות למילוי כשמוסיפים כיתה חדשה -->
+      <div class="class-cell class-input-cell" *ngIf="isAddingClass">
+        <input [(ngModel)]="newClassName" type="text" class="class-input" placeholder="שם הכיתה" />
+      </div>
+     
+      <div class="class-cell class-actions" *ngIf="isAddingClass">
+        <button class="action-button" (click)="saveNewClass()">
+          <i class="fas fa-check"></i> שמירה
+        </button>
+      </div>
+    </div>
+  
+    <div class="class-row" *ngFor="let class of classes">
+      <div class="class-cell">
+        <div *ngIf="!class.isEditing">{{ class.name }}</div>
+        <input *ngIf="class.isEditing" [(ngModel)]="class.name" type="text" class="class-input" />
+      </div>
+      <!-- <div class="tag-cell">
+        <div *ngIf="!tag.isEditing">{{ tag.description }}</div>
+        <textarea *ngIf="tag.isEditing" [(ngModel)]="tag.description" class="tag-input"></textarea>
+      </div> -->
+      <div class="class-cell class-actions">
+        <button class="action-button" (click)="editClass(class)">
+          <i *ngIf="!class.isEditing" class="fas fa-edit"></i>
+          <i *ngIf="class.isEditing" class="fas fa-check"></i>
+        </button>
+        <button class="action-button" (click)="showConfirmation(class)">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- דיאלוג אישור מחיקה -->
+  <div class="confirmation-dialog" *ngIf="confirmClass">
+    <div class="dialog-content">
+      <p>האם אתה בטוח שברצונך למחוק את הכיתה {{ confirmClass.name }}?</p>
+      <button (click)="confirmDeleteClass()">אישור</button>
+      <button (click)="closeConfirmation()">ביטול</button>
+    </div>
+  </div>
+  

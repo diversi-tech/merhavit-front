@@ -4,12 +4,18 @@ import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../api.service';
 import { jwtDecode } from 'jwt-decode';
-import {RouterModule,Router,ActivatedRoute,RouterLink,RouterOutlet,} from '@angular/router';
+import {
+  RouterModule,
+  Router,
+  ActivatedRoute,
+  RouterLink,
+  RouterOutlet,
+} from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { Item } from '../components/interfaces/item.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { ItemsService } from '../items.service'
+import { ItemsService } from '../items.service';
 import { MatDialog } from '@angular/material/dialog';
 import { log } from 'console';
 import { ChangeDetectorRef } from '@angular/core';
@@ -19,9 +25,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
-
-
-
+import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 // interface Item {
 //   _id: string;
 //  description: string;
@@ -36,37 +40,52 @@ import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog
 //   filePath: string;
 //   isFavorite?: boolean;
 // }
-
-
 @Component({
   selector: 'app-items-list',
   templateUrl: './show.component.html',
   styleUrls: ['./show.component.css'],
   standalone: true,
-  imports: [CommonModule,MatTableModule,MatButtonModule,MatSnackBarModule, MatCardModule,MatIconModule,RouterOutlet,MatPaginatorModule],})
-
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatCardModule,
+    MatIconModule,
+    RouterOutlet,
+    MatPaginatorModule,
+  ],
+})
 export class ItemsListComponent implements OnInit {
   public items: Item[] = []; //מערך המוצרים של הספריה
-public typeFilter: string = '';
-public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
+  public typeFilter: string = '';
+  searchTerm: string = '';
+  public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public showNoDataMessage: boolean = false; // משתנה לשליטה בהצגת ההודעה
   public favorites: { itemId: string }[] = [];
   itemsFromServer: any[] = []; // משתנה לשמירת כל הפריטים שהתקבלו מהשרת
   public allItems: Item[] = []; // מערך המכיל את כל הפריטים
   private itemsInterval: any;
-  public searchTerm: string = '';
-  constructor(private http: HttpClient, private _snackBar: MatSnackBar ,private snackBar: MatSnackBar,private dialog: MatDialog, private apiService: ApiService, private router: Router,private ro: Router,private itemsService: ItemsService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
-
-
+  constructor(
+    private http: HttpClient,
+    private _snackBar: MatSnackBar,
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+    private apiService: ApiService,
+    private router: Router,
+    private ro: Router,
+    private itemsService: ItemsService,
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
+  ) {}
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
-     this.itemsService.fetchItems();
-     this.items = this.itemsService.items;
-    console.log("items in show component",this.items)
+    this.itemsService.fetchItems();
+    this.items = this.itemsService.items;
+    console.log('items in show component', this.items);
     this.itemsInterval = setInterval(() => {
-
       if (this.itemsService.items !== this.items) {
         this.items = [...this.itemsService.items];
         this.cdr.detectChanges(); // עדכון ה-UI
@@ -82,27 +101,20 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
         }
       });
     });
-
     // מחכה לסיום שליפת הנתונים לפי פרמטרים לפני אתחול
     await paramsPromise;
     await this.initializeData();
   }
-   
-  
-   async initializeData() {
+  async initializeData() {
     try {
       console.log('items before favorites:', this.items);
-
       await this.loadFavorites();
       this.updateFavoriteStatus();
     } catch (error) {
       console.error('Error initializing data:', error);
     }
-    // console.log('items after favorites:', this.items);
+    console.log('items after favorites:', this.items);
   }
-
-
-
   getUserTypeFromToken(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const token = localStorage.getItem('access_token');
@@ -127,12 +139,9 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
       this.typeFilter
     ).then(() => this.updateFavoriteStatus());
   }
-  
-  
   // async getItems(page: number = 0,limit: number = 100,searchTerm: string = '',typeFilter: string = ''): Promise<void> {
   //   this.searchTerm = searchTerm;
   //   this.typeFilter = typeFilter;
-
   //   this.showNoDataMessage = false;
   //   const url = `/EducationalResource/getAll?page=${page}&limit=${limit}`;
   //   console.log(`Requesting URL: ${url}`);
@@ -140,7 +149,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
   //     this.apiService.Read(url).subscribe({
   //       next: (response: { data: any[]; totalCount: number }) => {
   //         console.log('API Response: ', response);
-
   //         if (Array.isArray(response)) {
   //           this.itemsFromServer = response.data;
   //           console.log('Items received from server:', this.itemsFromServer);
@@ -165,26 +173,22 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
   //     });
   //   });
   // }
-
-
   //בכלל לא מגיע לפה
-//  getItems(page: number = 0, limit: number = 100, searchTerm: string = '', typeFilter: string = '') {
-//    console.log("enter to getItems in show component")
+  //  getItems(page: number = 0, limit: number = 100, searchTerm: string = '', typeFilter: string = '') {
+  //    console.log("enter to getItems in show component")
   //  const params: any = { page, limit };
-//    if (searchTerm) params.searchTerm = searchTerm;
-//    if (typeFilter) params.typeFilter = typeFilter;
-  
-//    this.apiService.Read(`/EducationalResource/getAll${ params }`).subscribe({
+  //    if (searchTerm) params.searchTerm = searchTerm;
+  //    if (typeFilter) params.typeFilter = typeFilter;
+  //    this.apiService.Read(`/EducationalResource/getAll${ params }`).subscribe({
   //    next: (response) => {
-    //    this.items = response.data || [];
-      //  console.log("items in show.component.ts",this.items)
-//      },
+  //    this.items = response.data || [];
+  //  console.log("items in show.component.ts",this.items)
+  //      },
   //    error: (err) => {
-    //    console.error('Error fetching items:', err);
-     // },
- //   });
- // }
-
+  //    console.error('Error fetching items:', err);
+  // },
+  //   });
+  // }
   async getItems(
     page: number = 0,
     limit: number = 100,
@@ -193,7 +197,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
   ): Promise<void> {
     this.searchTerm = searchTerm;
     this.typeFilter = typeFilter;
-
     this.showNoDataMessage = false;
     const url = `/EducationalResource/getAll?page=${page}&limit=${limit}`;
     console.log(`Requesting URL: ${url}`);
@@ -201,7 +204,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
       this.apiService.Read(url).subscribe({
         next: (response: { data: any[]; totalCount: number }) => {
           console.log('API Response: ', response);
-
           if (Array.isArray(response)) {
             this.itemsFromServer = response.data;
             console.log('Items received from server:', this.itemsFromServer);
@@ -226,14 +228,11 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
       });
     });
   }
-
   filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
     let filteredItems = [...this.itemsFromServer];
-
     console.log('Before filtering:', filteredItems);
     console.log('Search term:', searchTerm);
     console.log('Type filter:', typeFilter);
-
     // סינון לפי חיפוש (searchTerm)
     if (searchTerm) {
       filteredItems = filteredItems.filter(
@@ -243,16 +242,13 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
       );
       console.log('After search term filtering:', filteredItems);
     }
-
     // סינון לפי סוג (typeFilter)
     if (typeFilter) {
       filteredItems = filteredItems.filter((item) => item.type === typeFilter);
       console.log('After type filter:', filteredItems);
     }
-
     this.items = filteredItems;
     console.log('Final filtered items:', this.items);
-
     if (this.items.length === 0) {
       setTimeout(() => {
         this.showNoDataMessage = true;
@@ -264,13 +260,10 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
       queryParams: { additionalParam: 'edit' },
     });
   }
-
   deleteResource(itemToDelete: Item) {
     console.log('Delete item: ', itemToDelete);
     // הוסף כאן את הלוגיקה למחיקת משתמש
-
     const dialogRef = this.dialog.open(ConfirmDialogComponent1);
-
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // כאן תוכל לקרוא לפונקציה שמוחקת את הפריט מהשרת
@@ -310,7 +303,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
       }
     });
   }
-
   downloadResource(item: Item): void {
     if (!item._id) {
       console.error('Item ID is missing.');
@@ -373,6 +365,7 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
         },
       });
   }
+
   updateItems(items: Item[]): void {
     this.items = items;
   }
@@ -397,7 +390,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
         const isAlreadyFavorite = this.favorites.some(
           (fav) => fav.itemId === item._id
         );
-
         if (isAlreadyFavorite) {
           console.log('Item is already in favorites');
           this._snackBar.open('הפריט כבר נמצא במועדפים.', 'סגור', {
@@ -417,7 +409,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
             console.log('Item added to favorites:', response);
             this.favorites.push({ itemId: item._id });
             console.log('this.favorites', this.favorites);
-
             item.isFavorite = true;
             this._snackBar.open('הפריט נוסף למועדפים ', 'סגור', {
               duration: 2000,
@@ -485,7 +476,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
   }
   async loadFavorites(): Promise<void> {
     console.log('fffffffffffffffffffffffffffffff');
-
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const token = localStorage.getItem('access_token');
       if (!token) return;
@@ -538,7 +528,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
         // המתנה לתשובת המשתמש
         dialogRef.afterClosed().subscribe((result) => {
           console.log('User decision:', result); // לוג לבדיקת ערך result
-
           if (result) {
             // אם המשתמש אישר, המשך להסרה
             this.apiService
@@ -570,7 +559,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
       }
     }
   }
-
   getPageSizeOptions(): number[] {
     if (this.totalItems <= 5) {
       return [];

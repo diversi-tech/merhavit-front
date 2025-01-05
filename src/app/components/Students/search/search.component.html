@@ -237,17 +237,7 @@
     <div class="search-input-container">
       <!-- חיפוש כללי -->
       <div *ngIf="!isUserManagementComponent">
-        <!-- <input
-          type="text"
-          class="search-input"
-          [formControl]="searchControl"
-          placeholder="הקלד מילת חיפוש..."
-          (focus)="showSearchHistory()"
-          (blur)="hideSearchHistory()"
-        />
-        <button mat-icon-button (click)="onSearch()">
-          <mat-icon>search</mat-icon>
-        </button> -->
+    
 
         <!-- תיבת היסטוריית החיפושים -->
         <div class="search-history-box" *ngIf="isSearchHistoryVisible">
@@ -266,7 +256,9 @@
             </div>
  <input type="text"  type="text" 
  [(ngModel)]="searchTerm" 
- (input)="onSearchChange()"  class="search-input"  [formControl]="searchControl"  placeholder="הקלד מילת חיפוש..." />
+ (input)="onSearchChange()"  class="search-input"  [formControl]="searchControl"  placeholder="הקלד מילת חיפוש..." 
+ (focus)="showSearchHistory()"
+ (blur)="hideSearchHistory()"/>
  <button mat-icon-button (click)="onSearch()">
   <mat-icon>search</mat-icon>
 </button>
