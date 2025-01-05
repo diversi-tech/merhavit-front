@@ -44,6 +44,7 @@
 }
 
 .table-container {
+  padding-bottom: 50px; /* או גובה ה-paginator */
   direction: rtl;
   display: flex;
   flex-direction: column;
@@ -312,3 +313,14 @@
   color: #11457b; /* צבע כחול */
   margin-bottom: 10vh; /* ריווח מתחת לאייקון */
 }
+.paginator-container {
+  position: fixed; /* מציב את ה-div בתחתית המסך */
+  bottom: 0; /* מציב את ה-div בתחתית */
+  left: 0;
+  right: 0;
+  z-index: 1000; /* ודאי שה-div יהיה מעל אלמנטים אחרים */
+  background-color: white; /* רקע כדי להפריד אותו מהתוכן */
+  padding: 10px; /* ריווח פנימי אם צריך */
+}
+
+
