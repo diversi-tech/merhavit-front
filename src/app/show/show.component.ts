@@ -90,8 +90,8 @@ export class ItemsListComponent implements OnInit {
         this.items = [...this.itemsService.items];
         this.cdr.detectChanges(); // עדכון ה-UI
       }
-    }, 1000);
-    const paramsPromise = new Promise<void>((resolve) => {
+    }, 300);
+     const paramsPromise = new Promise<void>((resolve) => {
       this.route.queryParams.subscribe((params) => {
         const type = params['type'];
         if (type) {

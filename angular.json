@@ -54,7 +54,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
+                  "maximumWarning": "5kB",
                   "maximumError": "6kB"
                 }
               ],
@@ -113,7 +113,19 @@
         },
         "deploy": {
           "builder": "angular-cli-ghpages:deploy"
-        }
+        },
+        "prerender": {
+  "options": {
+    "routes": [
+      "/",
+      "/login",
+      "/students",
+      "/management",
+      "/items/all"
+    ],
+    "timeout": 60000
+  }
+}
       }
     }
   },
