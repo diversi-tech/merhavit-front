@@ -71,6 +71,7 @@ import { Item } from './components/interfaces/item.model';
   providedIn: 'root',
 })
 export class ItemsService {
+  public totalItems=0
   public items: Item[] = [];
   public page: number = 0;
   public limit: number = 10;
@@ -159,8 +160,12 @@ export class ItemsService {
     this.apiService
       .Read(`/EducationalResource/getAll?${params.toString()}`)
       .subscribe(
-        (response: any) => {
+      (response: {data:any,totalCount:number}) => {
           this.items = response.data || []; // מבטיח שהמערך יתעדכן רק אם יש נתונים
+        console.log('items after favorites:', this.items);
+        this.totalItems=response.totalCount
+        console.log('total items:--------', this.totalItems);
+
         },
         (error) => {
           console.error('Error fetching items:', error); // לוג טעות אם יש בעיה בהבאת הנתונים

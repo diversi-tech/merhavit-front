@@ -81,7 +81,8 @@
           item.type === 'סרטון' ||
           item.type === 'שיר' ||
           item.type === 'מערך' ||
-          item.type === 'טקסט'
+          item.type === 'טקסט' ||
+          item.type === 'ספר דיגיטלי'
         "
         (click)="downloadResource(item); $event.stopPropagation()"
       >
@@ -89,7 +90,7 @@
       </button>
       <button
         class="action-button order"
-        *ngIf="item.type === 'ספר'"
+        *ngIf="item.type === 'ספר פיזי'"
         (click)="$event.stopPropagation()"
       >
         להזמנה
