@@ -71,7 +71,7 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
         this.items = [...this.itemsService.items];
         this.cdr.detectChanges(); // עדכון ה-UI
       }
-    }, 1000);
+    }, 500);
      const paramsPromise = new Promise<void>((resolve) => {
       this.route.queryParams.subscribe((params) => {
         const type = params['type'];
@@ -98,7 +98,7 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
     } catch (error) {
       console.error('Error initializing data:', error);
     }
-    console.log('items after favorites:', this.items);
+    // console.log('items after favorites:', this.items);
   }
 
 

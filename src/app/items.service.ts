@@ -150,6 +150,7 @@ export class ItemsService {
     this.apiService.Read(`/EducationalResource/getAll?${params.toString()}`).subscribe(
       (response: any) => {
         this.items = response.data || []; // מבטיח שהמערך יתעדכן רק אם יש נתונים
+        console.log('items after favorites:', this.items);
       },
       (error) => {
         console.error('Error fetching items:', error); // לוג טעות אם יש בעיה בהבאת הנתונים

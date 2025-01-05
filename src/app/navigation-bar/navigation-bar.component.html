@@ -5,12 +5,12 @@
   </div>
   <ul class="sidebar-menu">
     <li>
-      <a (click)="navigateAndFilter('all')">
+      <a (click)="onSelectFilter('all')">
         <i class="far fa-calendar-alt"></i> הכל
       </a>
     </li>
     <li>
-      <a (click)="navigateAndFilter('guests')">
+      <a (click)="onSelectFilter('מערך')">
         <i class="fas fa-layer-group"></i> מערכים
       </a>
     </li>
@@ -24,33 +24,33 @@
         ></i>
       </a>
       <ul class="submenu" *ngIf="activeSubMenu === 'images'">
-        <li><a (click)="navigateAndFilter('posters')">כרזות</a></li>
-        <li><a (click)="navigateAndFilter('worksheets')">דפי עבודה</a></li>
-        <li><a (click)="navigateAndFilter('paintings')">איורים</a></li>
-        <li><a (click)="navigateAndFilter('creations')">יצירות</a></li>
+        <li><a (click)="onSelectFilter('כרזה')">כרזות</a></li>
+        <li><a (click)="onSelectFilter('דף עבודה')">דפי עבודה</a></li>
+        <li><a (click)="onSelectFilter('איור')">איורים</a></li>
+        <li><a (click)="onSelectFilter('יצירה')">יצירות</a></li>
       </ul>
     </li>
 
     <li>
-      <a (click)="navigateAndFilter('movies')">
+      <a (click)="onSelectFilter('סרטון')">
         <i class="fas fa-play"></i> סרטונים
       </a>
     </li>
 
     <li>
-      <a (click)="navigateAndFilter('songs')">
+      <a (click)="onSelectFilter('שיר')">
         <i class="fas fa-music"></i> שירים
       </a>
     </li>
 
     <li>
-      <a (click)="navigateAndFilter('books')">
+      <a (click)="onSelectFilter('ספר')">
         <i class="fas fa-book"></i> ספרים
       </a>
     </li>
     <!-- כפתור ניהול תגיות - מוצג לכל תפקיד שאינו STUDENT -->
       <li *ngIf="userType !== 'Student'">
-        <a (click)="navigateAndFilter('management')">
+        <a (click)="onSelectFilter('management')">
           <i class="fas fa-user-cog"></i> ניהול
         </a>
       </li>
