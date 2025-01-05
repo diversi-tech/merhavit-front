@@ -122,7 +122,8 @@
       "/students",
       "/management",
       "/items/all"
-    ]
+    ],
+    "timeout": 60000
   }
 }
       }
