@@ -23,6 +23,7 @@
     (click)="navigateToItemPage(item)"
   >
     <div class="item-content">
+      <div *ngIf="isNewItem(item)" class="new-label">חדש</div>
       <img
         [src]="item.coverImage || 'image/file-not-found'"
         alt="Item Image"
