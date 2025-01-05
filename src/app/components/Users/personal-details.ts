@@ -22,7 +22,7 @@ export class PersonalDetailsComponent implements OnInit {
     phoneNumber: '',
     email: '',
     password: '',
-    class: '',
+    classId: '',
     specialization: '',
     assignedSeminaryId: '',
   };
@@ -121,6 +121,17 @@ export class PersonalDetailsComponent implements OnInit {
       },
       (error) => {
         console.error('Error updating data:', error);
+        // שליפת ההודעה מתוך אובייקט השגיאה
+        const errorMessage =
+          error?.error?.message ||
+          'אירעה שגיאה בלתי צפויה. נסו שוב מאוחר יותר.';
+
+        // הצגת הודעת השגיאה ב-SnackBar
+        this._snackBar.open(errorMessage, 'סגור', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+          direction: 'rtl',
+        });
       }
     );
   }
