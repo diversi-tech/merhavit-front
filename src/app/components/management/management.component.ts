@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { Router, RouterOutlet } from '@angular/router';
@@ -10,14 +10,16 @@ import { jwtDecode } from 'jwt-decode';
   standalone: true,
   imports: [CommonModule, FormsModule, MatTabsModule, RouterOutlet],
   templateUrl: './management.component.html',
-  styleUrl: './management.component.css'
+  styleUrl: './management.component.css',
 })
 export class ManagementComponent {
-  constructor(private router: Router) {
-    this.getUserTypeFromToken()
-  }
-  userType: string = ''
-
+  constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
+  userType: string = '';
+  ngOnInit(): void {
+  // Perform checks only on the browser platform
+  if (isPlatformBrowser(this.platformId)) {
+    this.getUserTypeFromToken();
+  }  }
 
   onTabChange(event: MatTabChangeEvent) {
     const tabs: Record<string, string> = {
@@ -25,14 +27,13 @@ export class ManagementComponent {
       'ניהול סמינרים': 'seminaries',
       'ניהול תגיות': 'tags',
       'ניהול התמחויות': 'specializations',
-      'ניהול נושאים': 'subjects'
-    }
-    this.router.navigate([`/management/${tabs[event.tab.textLabel]}`])
+      'ניהול נושאים': 'subjects',
+    };
+    this.router.navigate([`/management/${tabs[event.tab.textLabel]}`]);
   }
 
   getUserTypeFromToken(): void {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-
+    if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem('access_token');
       if (token) {
         try {
@@ -46,7 +47,6 @@ export class ManagementComponent {
     } else {
       console.error('localStorage is not available on the server.');
     }
-
   }
-
+  
 }
