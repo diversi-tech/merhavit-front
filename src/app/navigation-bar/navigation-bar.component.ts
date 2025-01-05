@@ -103,16 +103,22 @@ export class NavigationBarComponent {
   //   this.itemsService.typeFilter = type; // מעדכן את הסינון ב-service
   //   this.itemsService.fetchItems(); // שולח את הבקשה לשרת עם הסינון החדש
   // }
-  onSelectFilter(type: string): void {
-    const targetRoute = '/show-details'; // הנתיב הרצוי
-    const currentUrl = this.router.url;
+  
 
-    if (currentUrl !== targetRoute) {
-      this.router.navigate([targetRoute]).then(() => {
-        this.updateFilter(type);
-      });
+  onSelectFilter(type: string, isManagement: boolean): void {
+    if (isManagement) {
+      this.router.navigate(['/management']); // ניווט לנתיב ניהול
     } else {
-      this.updateFilter(type);
+      const targetRoute = '/show-details'; // הנתיב הרצוי
+      const currentUrl = this.router.url;
+  
+      if (currentUrl !== targetRoute) {
+        this.router.navigate([targetRoute]).then(() => {
+          this.updateFilter(type);
+        });
+      } else {
+        this.updateFilter(type);
+      }
     }
   }
 
