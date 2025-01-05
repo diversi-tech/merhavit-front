@@ -11,10 +11,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { FormsModule } from '@angular/forms';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { signal } from '@angular/core';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import {ChangeDetectionStrategy, model} from '@angular/core';
+import {MatCardModule} from '@angular/material/card';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {JsonPipe} from '@angular/common';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 
 @Component({
@@ -22,7 +26,8 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
   templateUrl:'./item-page.component.html', //'./item-page.component.html',
   styleUrls: ['./item-page.component.css'],
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule], // ייבוא המודולים
+  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule,MatCardModule, MatDatepickerModule], // ייבוא המודולים
+  changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class ItemPageComponent implements OnInit {

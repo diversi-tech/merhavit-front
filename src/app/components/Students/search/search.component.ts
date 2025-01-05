@@ -14,9 +14,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { SearchService } from '../../../shared/search.service';
 import { Item } from '../../../item.inteface';
 
-
-
-
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -53,10 +50,7 @@ items:Item[]=[];
     phone: '',
   };
  
-
- 
   constructor(private router: Router, private itemsService: ItemsService,private searchService:SearchService, private cdr: ChangeDetectorRef,private route: ActivatedRoute) { }
-
 
   ngOnInit(): void {
     this.searchControl.valueChanges

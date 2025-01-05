@@ -20,24 +20,6 @@ import { PageEvent } from '@angular/material/paginator';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
-
-
-// interface Item {
-//   _id: string;
-//  description: string;
-//   title: string;
-//  type: string;
-//   author: string;
-//  publicationDate: Date;
-//   Tags: Array<string>;
-//  createdBy: string;
-//   ApprovedBy: string;
-//   coverImage: string;
-//   filePath: string;
-//   isFavorite?: boolean;
-// }
-
-
 @Component({
   selector: 'app-items-list',
   templateUrl: './show.component.html',
@@ -47,18 +29,19 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 
 export class ItemsListComponent implements OnInit {
   public items: Item[] = []; //מערך המוצרים של הספריה
-public typeFilter: string = '';
-public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
+  public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public showNoDataMessage: boolean = false; // משתנה לשליטה בהצגת ההודעה
   public favorites: { itemId: string }[] = [];
   itemsFromServer: any[] = []; // משתנה לשמירת כל הפריטים שהתקבלו מהשרת
   public allItems: Item[] = []; // מערך המכיל את כל הפריטים
   private itemsInterval: any;
+  public typeFilter: string = '';
   public searchTerm: string = '';
+  private page: number=0;
+  private limit: number=10;
+  
   constructor(private http: HttpClient, private _snackBar: MatSnackBar ,private snackBar: MatSnackBar,private dialog: MatDialog, private apiService: ApiService, private router: Router,private ro: Router,private itemsService: ItemsService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
-
-
 
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
@@ -71,7 +54,7 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
         this.items = [...this.itemsService.items];
         this.cdr.detectChanges(); // עדכון ה-UI
       }
-    }, 1000);
+    }, 500);
      const paramsPromise = new Promise<void>((resolve) => {
       this.route.queryParams.subscribe((params) => {
         const type = params['type'];
@@ -88,7 +71,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
     await this.initializeData();
   }
    
-  
    async initializeData() {
     try {
       console.log('items before favorites:', this.items);
@@ -100,8 +82,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
     }
     console.log('items after favorites:', this.items);
   }
-
-
 
   getUserTypeFromToken(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
@@ -119,72 +99,24 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
       console.warn('Code is running on the server. Skipping token check.');
     }
   }
+  // onPageChange(event: PageEvent) {
+  //   this.getItems(
+  //     event.pageIndex,
+  //     event.pageSize,
+  //     this.searchTerm,
+  //     this.typeFilter
+  //   ).then(() => this.updateFavoriteStatus());
+  // }
   onPageChange(event: PageEvent) {
+    this.page = event.pageIndex; // עדכון דף הנוכחי
+    this.limit = event.pageSize; // עדכון מספר פריטים לעמוד
     this.getItems(
-      event.pageIndex,
-      event.pageSize,
+      this.page,
+      this.limit,
       this.searchTerm,
       this.typeFilter
     ).then(() => this.updateFavoriteStatus());
   }
-  
-  
-  // async getItems(page: number = 0,limit: number = 100,searchTerm: string = '',typeFilter: string = ''): Promise<void> {
-  //   this.searchTerm = searchTerm;
-  //   this.typeFilter = typeFilter;
-
-  //   this.showNoDataMessage = false;
-  //   const url = `/EducationalResource/getAll?page=${page}&limit=${limit}`;
-  //   console.log(`Requesting URL: ${url}`);
-  //   return new Promise((resolve, reject) => {
-  //     this.apiService.Read(url).subscribe({
-  //       next: (response: { data: any[]; totalCount: number }) => {
-  //         console.log('API Response: ', response);
-
-  //         if (Array.isArray(response)) {
-  //           this.itemsFromServer = response.data;
-  //           console.log('Items received from server:', this.itemsFromServer);
-  //           // מבצע סינון לפי סוג
-  //           this.filterItemsByType(searchTerm, typeFilter);
-  //         } else {
-  //           this.itemsFromServer = response.data;
-  //           this.filterItemsByType(searchTerm, typeFilter);
-  //           // this.items = [];
-  //           // this.showNoDataMessage = true;
-  //         }
-  //         this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
-  //         resolve();
-  //       },
-  //       error: (err) => {
-  //         console.error('Error fetching items', err);
-  //         this.items = [];
-  //         this.showNoDataMessage = true;
-  //         this.totalItems = 0; // משתמשים ב-totalCount מהשרת
-  //         reject(err);
-  //       },
-  //     });
-  //   });
-  // }
-
-
-  //בכלל לא מגיע לפה
-//  getItems(page: number = 0, limit: number = 100, searchTerm: string = '', typeFilter: string = '') {
-//    console.log("enter to getItems in show component")
-  //  const params: any = { page, limit };
-//    if (searchTerm) params.searchTerm = searchTerm;
-//    if (typeFilter) params.typeFilter = typeFilter;
-  
-//    this.apiService.Read(`/EducationalResource/getAll${ params }`).subscribe({
-  //    next: (response) => {
-    //    this.items = response.data || [];
-      //  console.log("items in show.component.ts",this.items)
-//      },
-  //    error: (err) => {
-    //    console.error('Error fetching items:', err);
-     // },
- //   });
- // }
-
   async getItems(
     page: number = 0,
     limit: number = 100,
