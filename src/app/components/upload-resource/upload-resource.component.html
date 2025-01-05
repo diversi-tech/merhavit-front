@@ -211,30 +211,30 @@
               [matChipInputFor]="agesChipList"
               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
               [matChipInputAddOnBlur]="true"
-              (matChipInputTokenEnd)="add($event,'ages')"
+              (matChipInputTokenEnd)="add($event,'classes')"
               [matAutocomplete]="agesAuto"
-              (focusout)="markFieldAsTouched('ages')"
-              [value]="formMode === 'edit' ? multipleChoiceFields['ages'].optionSelected.join(', ') : ''"
+              (focusout)="markFieldAsTouched('classes')"
+              [value]="formMode === 'edit' ? multipleChoiceFields['classes'].optionSelected.join(', ') : ''"
               [placeholder]="formMode === 'edit' ? '' : ''"
             />
           </div>
-            <mat-chip-row *ngFor="let age of multipleChoiceFields['ages'].optionSelected" [removable]="true" (removed)="remove(age,'ages')">
-              {{age}}
+            <mat-chip-row *ngFor="let class of multipleChoiceFields['classes'].optionSelected" [removable]="true" (removed)="remove(class,'classes')">
+              {{getOptionById(class,'classes')}}
               <button matChipRemove>×</button>
             </mat-chip-row>
           </mat-chip-grid>
-          <mat-autocomplete #agesAuto="matAutocomplete" (optionSelected)="select($event,'ages')"  [displayWith]="displayFn" [autoActiveFirstOption]="false" >
-            <mat-option *ngFor="let age of (multipleChoiceFields['ages'].filteredOption$ | async)" [value]="age" (change)="toggleSelection( age, 'ages')" (click)="$event.stopPropagation()" >
-              <div (click)="optionClicked($event, age,'ages')">
-              <mat-checkbox [checked]="multipleChoiceFields['ages'].optionSelected.includes(age)">
-              {{ age }}
+          <mat-autocomplete #agesAuto="matAutocomplete" (optionSelected)="select($event,'classes')"  [displayWith]="displayFn" [autoActiveFirstOption]="false" >
+            <mat-option *ngFor="let class of (multipleChoiceFields['classes'].filteredOption$ | async)" [value]="class._id" (change)="toggleSelection( class, 'classes')" (click)="$event.stopPropagation()" >
+              <div (click)="optionClicked($event, class,'classes')">
+              <mat-checkbox [checked]="multipleChoiceFields['classes'].optionSelected.includes(class._id)">
+              {{ class.name }}
             </mat-checkbox>
             </div>
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-        <div class="error-fields" *ngIf="fileForm.get('ages')?.invalid && fileForm.get('ages')?.touched">
-          <small *ngIf="fileForm.get('ages')?.errors?.['required']">יש לבחור לפחות גיל אחד</small>
+        <div class="error-fields" *ngIf="fileForm.get('classes')?.invalid && fileForm.get('classes')?.touched">
+          <small *ngIf="fileForm.get('classes')?.errors?.['required']">יש לבחור לפחות גיל אחד</small>
         </div>
       </div>  
       

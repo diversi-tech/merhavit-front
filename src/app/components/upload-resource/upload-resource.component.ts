@@ -95,10 +95,10 @@ export class UploadResourceComponent {
         allOption: [],
         filteredOption$: null as Observable<string[]> | null
       },
-      'ages': {
+      'classes': {
         Ctrl: new FormControl(''),
         optionSelected: [] as string[],
-        allOption: ["כיתות יד", "כיתות יג", "מורות"],
+        allOption: [],
         filteredOption$: null as Observable<string[]> | null
       },
       'subjects': {
@@ -130,7 +130,7 @@ export class UploadResourceComponent {
       approved: [''],
       loanValidity: [''],
       specializations: this.fb.array([], [Validators.required]),
-      ages: this.fb.array([], [Validators.required]),
+      classes: this.fb.array([], [Validators.required]),
       level: ['', Validators.required],
       language: ['', Validators.required],
       purchaseLocation: [''],
@@ -191,11 +191,9 @@ export class UploadResourceComponent {
         Array.removeAt(0);
       }
 
-      if (key !== 'ages') {
         console.log("path", this.createPath(key));
-
         this.getfromServer(`/${this.createPath(key)}`, key);
-      }
+      
     })
 
     if (this.formMode == 'edit') {
@@ -214,7 +212,7 @@ export class UploadResourceComponent {
             releaseYear: this.resourceItem.releaseYear || "",
             language: this.resourceItem.language || "",
             level: this.resourceItem.level || "",
-            ages: this.resourceItem.ages || "",
+            classes: this.resourceItem.classes || "",
             type: this.resourceItem.type || "",
             specializations: this.resourceItem.specializations || "",
             subjects: this.resourceItem.subjects || "",
@@ -229,7 +227,7 @@ export class UploadResourceComponent {
           //  this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
           //  this.multipleChoiceFields['tags'].optionSelected = this.resourceItem.tags;
           //  this.multipleChoiceFields['specializations'].optionSelected = this.resourceItem.specializations;
-          //  this.multipleChoiceFields['ages'].optionSelected = this.resourceItem.ages;
+          //  this.multipleChoiceFields['classes'].optionSelected = this.resourceItem.classes;
 
         },
         error: (err) => {
@@ -883,7 +881,7 @@ export class UploadResourceComponent {
     console.log("*************author  " + JSON.stringify(this.fileForm.value.author));
     console.log("*************tags " + JSON.stringify(this.fileForm.value.tags));
     console.log("*************spec: " + JSON.stringify(this.fileForm.value.specializations));
-    console.log("*************age: " + JSON.stringify(this.fileForm.value.ages));
+    console.log("*************age: " + JSON.stringify(this.fileForm.value.classes));
     console.log("*************level: " + JSON.stringify(this.fileForm.value.level));
     console.log("*************description: " + JSON.stringify(this.fileForm.value.description));
     console.log("*************releaseYear: " + JSON.stringify(this.fileForm.value.releaseYear));
