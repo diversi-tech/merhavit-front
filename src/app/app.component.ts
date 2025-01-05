@@ -12,20 +12,18 @@ import { ItemPageComponent } from './components/item-page/item-page.component';
 import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component'
-
-
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterOutlet, 
-    RouterLink, 
+    CommonModule,
+    RouterOutlet,
+    RouterLink,
     RouterLinkActive,
     ItemsListComponent,
     MatDialogModule,
     ItemsListModule,
-    SearchComponent, 
+    SearchComponent,
     ItemPageComponent,
     FormsModule,
     ReactiveFormsModule,
@@ -35,28 +33,22 @@ import { NavigationBarComponent } from './navigation-bar/navigation-bar.componen
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'] ,
-
 })
 export class AppComponent {
   title = 'routing-app';
   showSearchComponent: boolean = true; // ברירת מחדל: להציג את SearchComponent
   navigationBar: boolean = true;
-
   constructor(private router: Router) {}
-
   ngOnInit() {
     this.router.events.subscribe(() => {
-  
         // נתיבים שבהם לא נרצה להציג את הקומפוננטה
         const excludedRoutes = ['/login', '/registration', '/welcome','/','/personal-details','/item-page','/reset-password','/forgot-password','/success-registration'];
         const excludedRoutesForSeaech=['/upload-resource']
         this.showSearchComponent = !excludedRoutes.includes(this.router.url) && !excludedRoutesForSeaech.includes(this.router.url);
         this.navigationBar = !excludedRoutes.includes(this.router.url);
-      
     });
   }
   activeSubMenu: string | null = null;
-
 toggleSubMenu(menu: string): void {
   if (this.activeSubMenu === menu) {
     this.activeSubMenu = null; // סגירה אם כבר פתוח

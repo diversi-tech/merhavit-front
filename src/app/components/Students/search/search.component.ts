@@ -34,6 +34,7 @@ export class SearchComponent implements OnInit {
   isUserManagementComponent = false;
   isSearchHistoryVisible: boolean = false;
   searchResults:any[]=[];
+  userId: string = '';
  selectedFilter: string = ''; 
   searchTerm = '';
   typeFilter = '';
@@ -49,6 +50,9 @@ items:Item[]=[];
     address: '',
     phone: '',
   };
+
+  searchHistories: { [key: string]: string[] } = {}; // מילון לאחסון היסטוריות חיפוש
+
  
   constructor(private router: Router, private itemsService: ItemsService,private searchService:SearchService, private cdr: ChangeDetectorRef,private route: ActivatedRoute) { }
 
@@ -80,6 +84,12 @@ items:Item[]=[];
         } else {
           console.log('The searchControl has a value:', value);
         }
+
+        this.searchControl.valueChanges
+        .pipe(debounceTime(300), distinctUntilChanged()) // מצמצם קריאות
+        .subscribe(() => {
+          this.loadSearchHistory(); // עדכון תיבת ההיסטוריה לפי הערך החדש
+        }); 
       });
   }
 
@@ -142,28 +152,47 @@ items:Item[]=[];
     }
   }
 
+  getUserIdFromToken(): void {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          // this.userType = decodedToken.userType || '';
+          this.userId = decodedToken.idNumber || '';
+          console.log('userId', this.userId);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
+      }
+    } else {
+      console.warn('Code is running on the server. Skipping token check.');
+    }
+  }
   updateSearchHistory(searchTerm: string): void {
-    // טוען את ההיסטוריה הקיימת מה-localStorage
-    const storedHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-      // מסיר חיפושים כפולים
-    const updatedHistory = storedHistory.filter((term: string) => term !== searchTerm);
-      // מוסיף את החיפוש הנוכחי לראש הרשימה
+    // שליפת ה- userId מה-token
+    this.getUserIdFromToken();
+      if (!this.userId) {
+      console.error('User ID not found. Unable to update search history.');
+      return;}
+      // שליפת היסטוריית כל המשתמשים מה-localStorage או יצירת אובייקט ריק
+    const storedHistories: { [key: string]: string[] } = JSON.parse(localStorage.getItem('searchHistories') || '{}');
+        // שליפת ההיסטוריה של המשתמש הנוכחי או יצירת רשימה ריקה
+    const userHistory = storedHistories[this.userId] || [];
+        // הסרת מופעים קודמים של החיפוש הנוכחי
+    const updatedHistory = userHistory.filter(term => term !== searchTerm);
+        // הוספת החיפוש הנוכחי לראש הרשימה
     updatedHistory.unshift(searchTerm);
-      // שומר רק עד 7 חיפושים
-    if (updatedHistory.length > 7) {
-      updatedHistory.pop();   }
-      // מעדכן את ה-localStorage
-    localStorage.setItem('searchHistory', JSON.stringify(updatedHistory));
-      // מעדכן את הרשימה המקומית
-    this.searchResults = updatedHistory;
-  }  
-
-
-
-
-
-
-
+        // הגבלת ההיסטוריה ל-7 חיפושים בלבד
+    const trimmedHistory = updatedHistory.slice(0, 7);
+        // עדכון ההיסטוריה של המשתמש הנוכחי ב-dictionary
+    storedHistories[this.userId] = trimmedHistory;
+        // שמירת היסטוריית כל המשתמשים ב-localStorage
+    localStorage.setItem('searchHistories', JSON.stringify(storedHistories));
+        // עדכון הרשימה המקומית (לדוגמה, לעדכון תצוגת היסטוריית החיפושים של המשתמש הנוכחי)
+    this.searchResults = trimmedHistory;
+  }
+  
   // הצגת תיבת ההיסטוריה
   showSearchHistory() {
     this.isSearchHistoryVisible = true;
@@ -176,23 +205,34 @@ items:Item[]=[];
     }, 600); // השהיה קטנה כדי לאפשר לחיצה על פריטים
   }
 
-  loadSearchHistory(): void {
+  loadSearchHistory(): void {  
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      const storedHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+      // שליפת ה- userId מה-token
+      this.getUserIdFromToken();
+  
+      if (!this.userId) {
+        console.error('User ID not found. Unable to load search history.');
+        return;
+      }
+      // שליפת היסטוריית כל המשתמשים מה-localStorage או יצירת אובייקט ריק
+      const storedHistories: { [key: string]: string[] } = JSON.parse(localStorage.getItem('searchHistories') || '{}');
+            // שליפת ההיסטוריה של המשתמש הנוכחי או יצירת רשימה ריקה
+      const userHistory = storedHistories[this.userId] || [];
       const searchTerm = this.searchControl.value.toLowerCase(); // האותיות שנכתבו בשורת החיפוש
-    
-      if (searchTerm) {
+       if (searchTerm) {
         // סינון לפי הערך בשורת החיפוש
-        this.searchResults = storedHistory.filter((term: string) =>
+        this.searchResults = userHistory.filter((term: string) =>
           term.toLowerCase().includes(searchTerm)
         );
       } else {
         // הצגת כל ההיסטוריה אם אין ערך בשורת החיפוש
-        this.searchResults = storedHistory; }    } else {
+        this.searchResults = userHistory;
+      }
+    } else {
       console.error('localStorage is not available on the server.');
     }
-    
   }
+  
 
 
   

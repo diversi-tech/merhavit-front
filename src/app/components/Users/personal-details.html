@@ -93,7 +93,7 @@
 
       <div class="form-group">
         <label>כיתה</label>
-        <select [(ngModel)]="user.class" name="class">
+        <select [(ngModel)]="user.classId" name="class">
           <option *ngFor="let class of classes" [value]="class._id">
             {{ class.name }}
           </option>
