@@ -18,6 +18,7 @@ import { SpecializationManagementComponent } from './components/Librarian/specia
 import { ManagementComponent } from './components/management/management.component';
 import { SeminaryComponent } from './components/seminary/seminary.component';
 import { SubjectManagementComponent } from './components/Librarian/subject-management';
+import { ClassManagementComponent } from './components/Librarian/class-management';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -35,15 +36,15 @@ export const routes: Routes = [
   { path: 'upload-resource/:_id', component: UploadResourceComponent },
   { path: 'upload-resource', component: UploadResourceComponent },
   { path: 'favorites', component: FavoritesComponent },
-  { path: 'items/all', component: ItemsListComponent }, // הכל
-  { path: 'items/guests', component: ItemsListComponent }, // מערכים
-  { path: 'items/movies', component: ItemsListComponent }, // סרטונים
-  { path: 'items/songs', component: ItemsListComponent }, // שירים
-  { path: 'items/books', component: ItemsListComponent }, // ספרים
-  { path: 'items/images/posters', component: ItemsListComponent }, // כרזות
-  { path: 'items/images/worksheets', component: ItemsListComponent }, // דפי עבודה
-  { path: 'items/images/paintings', component: ItemsListComponent }, // איורים
-  { path: 'items/images/creations', component: ItemsListComponent }, // יצירות
+  // { path: 'items/all', component: ItemsListComponent }, // הכל
+  // { path: 'items/guests', component: ItemsListComponent }, // מערכים
+  // { path: 'items/movies', component: ItemsListComponent }, // סרטונים
+  // { path: 'items/songs', component: ItemsListComponent }, // שירים
+  // { path: 'items/books', component: ItemsListComponent }, // ספרים
+  // { path: 'items/images/posters', component: ItemsListComponent }, // כרזות
+  // { path: 'items/images/worksheets', component: ItemsListComponent }, // דפי עבודה
+  // { path: 'items/images/paintings', component: ItemsListComponent }, // איורים
+  // { path: 'items/images/creations', component: ItemsListComponent }, // יצירות
   { path: 'management', component: ManagementComponent,
     children: [
       { path: 'tags', component: TagManagementComponent },
@@ -51,6 +52,7 @@ export const routes: Routes = [
       { path: 'users', component: UserManagementComponent },
       { path: 'subjects', component:SubjectManagementComponent },
       { path: 'specializations', component: SpecializationManagementComponent },
+      { path: 'classes', component: ClassManagementComponent },
       { path: '', redirectTo: 'tags', pathMatch: 'full' }, // ניתוב ברירת מחדל
     ],
   },//ניהול לספרנית ואדמין בלבד
