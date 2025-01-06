@@ -50,7 +50,7 @@
     </li>
     <!-- כפתור ניהול תגיות - מוצג לכל תפקיד שאינו STUDENT -->
       <li *ngIf="userType !== 'Student'">
-        <a (click)="onSelectFilter('management')">
+        <a (click)="tagManagementButton('management')">
           <i class="fas fa-user-cog"></i> ניהול
         </a>
       </li>

@@ -220,6 +220,10 @@ export class NavigationBarComponent {
     }
   }
 
+  tagManagementButton(type: string): void {
+    this.router.navigate(['/management']);
+  }
+
   private updateFilter(type: string): void {
     this.selectedFilter = type;
     this.itemsService.typeFilter = type; // עדכון הסינון ב-service
