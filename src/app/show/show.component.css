@@ -298,12 +298,16 @@
   border-radius: 1rem; /* קצוות מעוגלים */
   padding: 2vw; /* ריווח פנימי */
   margin: 20vh auto; /* מרכז ההודעה */
-  color: #6c757d; /* צבע טקסט אפור עדין */
   font-size: 2rem; /* גודל טקסט */
-  font-weight: 500; /* עיצוב טקסט מודגש במידה בינונית */
   max-width: 400vw; /* רוחב מקסימלי */
   box-shadow: 0 4vh 6vh rgba(0, 0, 0, 0.1); /* הצללה קלה */
+}
+
+.no-data-message p{
+  margin-top: 6vh;
+  color: #6c757d; /* צבע טקסט אפור עדין */
   text-align: center; /* מרכז הטקסט */
+  font-weight: 500; /* עיצוב טקסט מודגש במידה בינונית */
 }
 
 .icon-no-data-message {
