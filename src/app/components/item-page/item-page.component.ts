@@ -19,14 +19,16 @@ import {provideNativeDateAdapter} from '@angular/material/core';
 import {JsonPipe} from '@angular/common';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-item-page',
   templateUrl:'./item-page.component.html', //'./item-page.component.html',
   styleUrls: ['./item-page.component.css'],
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule,MatCardModule, MatDatepickerModule], // ייבוא המודולים
+  providers: [provideNativeDateAdapter()],
+  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule,MatCardModule, MatDatepickerModule
+    ,MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, JsonPipe ], // ייבוא המודולים
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
@@ -50,14 +52,18 @@ export class ItemPageComponent implements OnInit {
   tags = signal<string[]>([]);
   readonly reactiveKeywords = signal(['']);
   readonly formControl = new FormControl(['angular']);
-
+  readonly range = new FormGroup({
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null),
+  });
 
 
   constructor(
     private route: ActivatedRoute,
     private apiService: ApiService,
     private sanitizer: DomSanitizer,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -69,8 +75,9 @@ export class ItemPageComponent implements OnInit {
   } else {
     console.error('Item ID not found in route');
   }
+  this.cdr.detectChanges();
 }
-
+borrowItem(){}
 fetchItemDetails(itemId: string) {
   if (!itemId) {
     console.error('Invalid item ID');
