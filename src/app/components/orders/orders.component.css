@@ -1,0 +1,83 @@
+/* סרגל כרטיסיות */
+.nav-tabs {
+  font-size: 1.125rem; /* 18px -> 1.125rem */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 2.5rem; /* 40px -> 2.5rem */
+}
+
+.nav-tabs div {
+  padding: 0.9375rem 1.5625rem; /* 15px 25px -> 0.9375rem 1.5625rem */
+  cursor: pointer;
+  font-weight: bold;
+  color: #333;
+}
+
+.nav-tabs div.active {
+  border-bottom: 0.125rem solid #000; /* 2px -> 0.125rem */
+  color: #000;
+}
+
+.orders-container {
+  margin-top: 2.5rem; /* 40px -> 2.5rem */
+  direction: rtl; /* כתיבה מימין לשמאל */
+  text-align: right; /* יישור התוכן לשמאל */
+  width: 50%; /* רוחב המיכל */
+  margin-left: auto; /* יידחוף את המיכל לשמאל */
+  margin-right: 4.375rem; /* 70px -> 4.375rem */
+}
+
+.status-approved {
+  background-color: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 2em;
+  padding: 0.5em 1em;
+  font-size: 1rem;
+  transition: background-color 0.3s ease; /* מעבר חלק */
+}
+
+.status-approved:hover {
+  background-color: #006400; /* ירוק כהה יותר */
+}
+
+.status-rejected {
+  background-color: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 2em;
+  padding: 0.5em 1em;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.status-rejected:hover {
+  background-color: #8B0000; /* אדום כהה יותר */
+}
+
+.status-pending {
+  background-color: gray;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 2em;
+  padding: 0.5em 0.8em;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.status-pending:hover {
+  background-color: #505050; /* אפור כהה יותר */
+}
+
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem; /* ריווח בין הכפתורים */
+  justify-content: flex-start; /* יישור לשמאל */
+  align-items: center; /* יישור אנכי */
+}
+

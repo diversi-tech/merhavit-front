@@ -17,6 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class FavoritesComponent implements OnInit {
   favorites: any[] = [];
   userId: string = '';
+  activeTab = 'favorites';
 
   constructor(private apiService: ApiService, private router: Router, private _snackBar: MatSnackBar) {}
 
@@ -127,4 +128,10 @@ export class FavoritesComponent implements OnInit {
   navigateToItemPage(itemId: string): void {
     this.router.navigate([`/item-page/${itemId}`]);
   }
+
+  navigateTo(tab: string): void {
+    this.activeTab = tab;
+    this.router.navigate([`/${tab}`]);
+  }
+
 }
