@@ -59,6 +59,11 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
   public searchTerm: string = '';
   public ifArrIsEmty: boolean = false;
   private subscription: Subscription = new Subscription();
+    viewMode: 'grid' | 'list' = 'grid';  // ברירת המחדל היא כרטיסיות
+    
+  
+  
+  
   constructor(private http: HttpClient, private _snackBar: MatSnackBar ,private snackBar: MatSnackBar,private dialog: MatDialog, private apiService: ApiService, private router: Router,private ro: Router,private itemsService: ItemsService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
 
@@ -88,6 +93,12 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
      // ביצוע מנוי לערך של ifArrIsEmty
     this.subscription = this.itemsService.ifArrIsEmty$.subscribe((isEmpty) => {
       this.ifArrIsEmty = isEmpty;
+        // לבדוק את בדיקת הצגת ההודעה למשתמש
+        if (this.ifArrIsEmty) {
+          this.showNoDataMessage = true;
+        }else{
+          this.showNoDataMessage = false;
+        }
       console.log('ifArrIsEmty value updated:', isEmpty);
         // לבדוק את בדיקת הצגת ההודעה למשתמש
         if (this.ifArrIsEmty) {
@@ -114,7 +125,9 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
     // console.log('items after favorites:', this.items);
   }
 
-
+  toggleViewMode() {
+    this.viewMode = this.viewMode === 'grid' ? 'list' : 'grid'; // שינוי תצוגה
+  }
 
   getUserTypeFromToken(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {

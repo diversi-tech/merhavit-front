@@ -68,39 +68,11 @@
   background-color: #f5f5f5; /* צבע רקע בהיר יותר */
 }
 
-.item-content {
-  display: flex;
-  gap: 2vw; /* מרווח יחסי לרוחב */
-  align-items: center;
-}
-
 .item-image {
   width: 5vw;
   height: 5vw;
   border-radius: 0.5rem;
   object-fit: cover;
-}
-
-.item-details {
-  flex: 1;
-}
-
-.item-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #007bff;
-  margin-bottom: 0.3em;
-}
-
-.item-description {
-  font-size: 1rem;
-  color: #666;
-}
-
-.item-meta {
-  font-size: 0.9rem;
-  color: black;
-  margin-top: 0.5em;
 }
 
 .meta-label {
@@ -199,12 +171,6 @@
     align-items: flex-start;
   }
 
-  .item-content {
-    flex-direction: column;
-    gap: 1vh;
-    align-items: flex-start;
-  }
-
   .item-image {
     width: 20vw;
     height: 20vw;
@@ -287,6 +253,247 @@
   background-color: red;
   color: white;
 }
+
+
+
+
+
+
+/* עיצוב הגריד של הכרטיסיות */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 כרטיסיות בשורה */
+  gap: 0.5rem; /* מרווח בין כרטיסיות */
+  width: 80vw; /* הגבלת רוחב הגריד ל-90% מרוחב המסך */
+  margin: 0 auto; /* ממרכז את הגריד */
+}
+
+@media (max-width: 1200px) {
+  .card-container {
+    grid-template-columns: repeat(3, 1fr); /* 3 כרטיסיות בשורה */
+  }
+}
+
+@media (max-width: 768px) {
+  .card-container {
+    grid-template-columns: repeat(2, 1fr); /* 2 כרטיסיות בשורה */
+  }
+}
+
+@media (max-width: 480px) {
+  .card-container {
+    grid-template-columns: 1fr; /* כרטיסיה אחת בשורה */
+  }
+}
+
+/* עיצוב הכרטיסיות */
+.card-container .item-card {
+  display: flex;
+  top: 1rem;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* הכרטיסיה תתפוס את כל הגובה */
+  width: 100%; /* הכרטיסיה תתפוס את כל הרוחב */
+  padding: 0; /* להסיר ריפוד פנימי */
+  overflow: hidden; /* להסתיר את יתר התוכן */
+  max-width: 19vw; /* תמונה לא תחרוג מהרוחב הקבוע */
+  max-height: 30vh; /* תמונה לא תחרוג מהגובה הקבוע */
+  min-width: 19vw; /* תמונה לא תחרוג מהרוחב הקבוע */
+  min-height: 30vh; /* תמונה לא תחרוג מהגובה הקבוע */
+}
+
+.card-container .item-card .item-image {
+  width: 100%; /* התמונה תתפוס את כל רוחב הכרטיסיה */
+  height: 100%; /* התמונה תתפוס את כל גובה הכרטיסיה */
+  object-fit: cover; /* התמונה תכסה את כל הכרטיסיה מבלי לעוות את הפרופורציות */
+  max-width: 19vw; /* תמונה לא תחרוג מהרוחב הקבוע */
+  max-height: 30vh; /* תמונה לא תחרוג מהגובה הקבוע */
+  min-width: 19vw; /* תמונה לא תחרוג מהרוחב הקבוע */
+  min-height: 30vh; /* תמונה לא תחרוג מהגובה הקבוע */
+}
+
+@media (max-width: 1200px) {
+  .card-container .item-card .item-image {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-container .item-card .item-image {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-container .item-card .item-image {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* עיצוב הרשימה */
+.list-container {
+  display: block; /* רשימה */
+  top: 1rem;
+  width: 70vw; /* הגבלת רוחב הגריד ל-70% מרוחב המסך */
+}
+
+.item-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 1.5rem; /* מרווח בין פריטים */
+  cursor: pointer;
+  border-bottom: 0.2vh solid #ccc;
+  padding: 1rem; /* ריפוד פנימי */
+}
+
+
+.item-image {
+  width: 10rem; /* גודל התמונה ב-REM */
+  height: 10rem;
+  object-fit: cover;
+  border-radius: 0.1rem; /* רדיוס פינות */
+  object-fit: cover; /* לוודא שהתמונה לא תשתנה באופן לא פרופורציונלי */
+  max-width: 20vw; /* תמונה לא תחרוג מהרוחב הקבוע */
+  max-height: 30vh; /* תמונה לא תחרוג מהגובה הקבוע */
+  min-width: 20vw; /* תמונה לא תחרוג מהרוחב הקבוע */
+  min-height: 30vh; /* תמונה לא תחרוג מהגובה הקבוע */
+}
+
+.mat-mdc-card-header {
+  padding: 0 !important; /* ביטול ה-padding */
+}
+
+
+/* עיצוב לרשימה בלבד */
+.list-container .item-row {
+  height: 5rem; /* הגבלת גובה הפריט ברשימה */
+  padding: 0.75rem 1rem; /* ריפוד קטן יותר */
+  display: flex; /* כדי שהעיצוב יהיה בצורה של row */
+  align-items: center; /* למרכז את התוכן */
+}
+
+.list-container .item-row .item-image {
+  height: 4rem; /* גובה התמונה ברשימה */
+  width: auto; /* כדי לשמור על פרופורציות התמונה */
+  object-fit: cover; /* לוודא שהתמונה לא תשתנה באופן לא פרופורציונלי */
+  max-width: 7vw; /* תמונה לא תחרוג מהרוחב הקבוע */
+  max-height: 12vh; /* תמונה לא תחרוג מהגובה הקבוע */
+  min-width: 7vw; /* תמונה לא תחרוג מהרוחב הקבוע */
+  min-height: 12vh; /* תמונה לא תחרוג מהגובה הקבוע */
+}
+
+@media (max-width: 768px) {
+  .list-container .item-row {
+    height: 7rem; /* גובה פריט קטן יותר במובייל */
+  }
+
+  .list-container .item-row .item-image {
+    height: 3rem; /* גובה התמונה במובייל */
+  }
+}
+
+.view-toggle-button {
+  margin-bottom: 1.5rem; /* מרווח מתחת לכפתור */
+  position: absolute; /* מאפשר מיקום מוחלט */
+  top: 11.2vh; /* מרחק מהחלק העליון */
+  left: 0.5vw; /* מרחק מהצד השמאלי */
+  z-index: 1000; /* מבטיח שהאייקון יהיה מעל האלמנטים האחרים */
+  background: none; /* מסיר רקע ברירת מחדל */
+  border: none; /* מסיר גבול ברירת מחדל */
+  cursor: pointer; /* הופך את הכפתור לקליקבילי */
+}
+
+mat-icon {
+  font-size: 1.5rem; /* גודל האייקון ב-REM */
+}
+
+/* עיצוב של המפצל בין כרטיסיות לרשימה */
+.table-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.item-card-header {
+  position: relative; /* מאפשר מיקום מוחלט של אייקון בתוך כרטיס */
+}
+
+.item-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  position: relative;
+}
+
+.overlay-svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 14vh;
+  width: 15vw;
+  fill: #FFFF;
+}
+
+.item-image-list {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  position: relative;
+}
+
+.overlay-svg-list {
+  position: absolute;
+  top: 4.5vh; /* מרחק מלמעלה */
+  left: 53vw; /* מרחק משמאל */
+  width: 3rem; /* גודל האייקון */
+  height: 3rem;
+  fill: #999; /* צבע האייקון */
+
+}
+
+.item-content {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 1rem;
+  position: relative; /* כדי שהאייקון ימוקם יחסית לתמונה */
+}
+
+.item-details {
+  flex: 1;
+}
+
+.item-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #007bff;
+  margin-bottom: 0.3em;
+}
+
+.item-description {
+  font-size: 1rem;
+  color: #666;
+}
+
+.item-meta {
+  font-size: 0.9rem;
+  color: #999;
+  margin-top: 0.5em;
+}
+
+
+
+
+
+
+
+
 
 .no-data-message{
   display: flex;
