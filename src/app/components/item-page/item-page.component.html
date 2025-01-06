@@ -5,10 +5,13 @@
       <div *ngIf="isPoster || isWorksheet || isPainting || isCreation">
         <img [src]="previewUrl" [alt]="item.title || 'Image not found'">
       </div>
+      <div *ngIf="physicalBook">
+        <img [src]="previewUrl" class="document-cover-image" [alt]="item.title || 'Image not found'">
+      </div>
       <div *ngIf="isVideo">
         <video [src]="previewUrl" controls></video>
       </div>
-      <div *ngIf="isDocument || isBook">
+      <div *ngIf="isDocument || digitalBook">
         <!-- הצגת תמונת הכריכה -->
         <a 
           *ngIf="item.coverImage" 
@@ -46,6 +49,7 @@
     <p><strong>שפה:</strong> {{ item.language || '' }}</p>
     <p><strong>שנת הוצאה לאור:</strong> {{ item.releaseYear || '' }}</p>
     <p><strong>מחבר:</strong> {{ item.author || '' }}</p>
+    <p *ngIf="item.physicalBook==true"><strong>מיקום בסיפריה:</strong> {{ item.location || '' }}</p>
     <p><strong>תיאור:</strong> {{ item.description || '' }}</p>
 <!-- הצגת התגיות -->
 <section>

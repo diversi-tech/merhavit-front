@@ -15,4 +15,6 @@ export interface Item {
   coverImage: string;
   filePath: string;
   specializations: string[];
+  physicalBook?: boolean; // האם מדובר בספר פיזי
+  location?: string; // המיקום הפיזי של הספר (אם קיים)
 }

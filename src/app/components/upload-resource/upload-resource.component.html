@@ -8,7 +8,7 @@
     <mat-radio-button class="example-radio-button" [value]="'edit'" (click)="handleClick($event,'edit')">עריכת תוכן</mat-radio-button>
     <mat-radio-button class="example-radio-button" [value]="'add'" (click)="handleClick($event,'add')">העלאת תוכן </mat-radio-button>
     <mat-radio-button class="example-radio-button" [value]="'addLink'" (click)="handleClick($event,'addLink')">קישורים</mat-radio-button>
-    <mat-radio-button class="example-radio-button" [value]="'physicalBook'" (click)="handleClick($event,'book')">ספר להשאלה</mat-radio-button>
+    <mat-radio-button class="example-radio-button" [value]="'physicalBook'" (click)="handleClick($event,'physicalBook')">ספר להשאלה</mat-radio-button>
 </mat-radio-group>
 <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 <div class="container">

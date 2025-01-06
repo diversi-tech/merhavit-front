@@ -72,7 +72,7 @@ export class UploadResourceComponent {
   isPDF: boolean = false;
   isImage: boolean = true
   isAudio: boolean = false
-  fileTypes: Array<string> = ['ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
+  fileTypes: Array<string> = ['ספר להשאלה' ,'ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
   userId: string = ''
   purchaseLocations: Array<string> = ["חנות אונליין", "פוטומן"];
 
@@ -278,7 +278,7 @@ export class UploadResourceComponent {
       edit: 'עריכת תוכן',
       add: 'העלאת תוכן',
       addLink: 'קישורים',
-      book: 'ספר להשאלה'
+      physicalBook: 'ספר להשאלה'
     };
     return labels[option] || option;
   }
@@ -424,7 +424,7 @@ export class UploadResourceComponent {
     this.coverImageErrorMessage = "חסר תמונת תצוגה מקדימה לקובץ"
     if(this.contentOption=='physicalBook')
       {
-       this.disabledOptions['book'] = this.coverImage ? true : false
+       this.disabledOptions['physicalBook'] = this.coverImage ? true : false
       }
   }
 
@@ -464,7 +464,7 @@ export class UploadResourceComponent {
 
     if(this.contentOption=='physicalBook')
        {
-        this.disabledOptions['book'] = this.coverImage ? true : false
+        this.disabledOptions['physicalBook'] = this.coverImage ? true : false
        }
   }
 
@@ -725,7 +725,7 @@ export class UploadResourceComponent {
       edit: 'text',
       add: 'file',
       addLink: 'link',
-      physicalBook: 'book'
+      physicalBook: 'physicalBook'
     }
 
     const reverseOptions = Object.fromEntries(
@@ -766,7 +766,7 @@ export class UploadResourceComponent {
     }
 
     if (this.contentOption == 'physicalBook') {
-      this.fileForm.patchValue({ type: 'ספר פיזי' }); // הגדרת ערך ברירת מחדל
+      this.fileForm.patchValue({ type: 'ספר להשאלה' }); // הגדרת ערך ברירת מחדל
       this.updateTypeValidator(false);
     } else {
       this.fileForm.patchValue({ approved: '' })

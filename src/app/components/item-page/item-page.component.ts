@@ -15,6 +15,8 @@ import { FormsModule } from '@angular/forms';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { signal } from '@angular/core';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { BookLocationComponent } from './book-location/book-location/book-location.component';
 
 
 @Component({
@@ -22,7 +24,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
   templateUrl:'./item-page.component.html', //'./item-page.component.html',
   styleUrls: ['./item-page.component.css'],
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule], // ייבוא המודולים
+  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule, MatDialogModule], // ייבוא המודולים
   schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class ItemPageComponent implements OnInit {
@@ -35,7 +37,8 @@ export class ItemPageComponent implements OnInit {
   isCreation = false;
   isAudio = false;
   isVideo = false;
-  isBook = false;
+  digitalBook = false;
+  physicalBook = false;
   isDocument = false; // ניהול הצגת המסמך
   inputValue: string = '';
   readonly addOnBlur = true;
@@ -52,7 +55,8 @@ export class ItemPageComponent implements OnInit {
     private route: ActivatedRoute,
     private apiService: ApiService,
     private sanitizer: DomSanitizer,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog // הוספת MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -136,17 +140,20 @@ fetchSimilarItems(itemId: string) {
     } else if (fileType.includes('pdf') || fileType.includes('מערך')) {
       this.clearPreviewsExcept('מערך');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
-    } else if (fileType.includes('pdf') || fileType.includes('ספר') || fileType.includes('book')) {
-      this.clearPreviewsExcept('ספר');
+    } else if (fileType.includes('pdf') || fileType.includes('ספר דיגיטלי') || fileType.includes('digitalBook')) {
+      this.clearPreviewsExcept('ספר דיגיטלי');
+      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
+    }else if (fileType.includes('ספר להשאלה') || fileType.includes('physicalBook')) {
+      this.clearPreviewsExcept('ספר להשאלה');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
     } else {
       console.error('Unknown file type:', fileType);
       this.previewUrl = null;
     }
     console.log('Cover image URL:', this.item?.coverImage);
-  }
+  }  
 
-  clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'ספר' | 'שיר') {
+  clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'ספר דיגיטלי' | 'ספר להשאלה' | 'שיר') {
     this.isPoster = type === 'כרזה';
     this.isWorksheet = type === 'דף עבודה';
     this.isPainting = type === 'איור';
@@ -154,7 +161,8 @@ fetchSimilarItems(itemId: string) {
     this.isAudio = type === 'שיר';
     this.isVideo = type === 'סרטון';
     this.isDocument = type === 'מערך';
-    this.isBook = type === 'ספר';
+    this.digitalBook = type === 'ספר דיגיטלי';
+    this.physicalBook = type === 'ספר להשאלה';
   }
 
   navigateToItem(itemId: string) {

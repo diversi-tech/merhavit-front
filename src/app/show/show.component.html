@@ -67,7 +67,7 @@
 
           <!-- אייקון ספר -->
           <svg 
-            *ngIf=" item.type === 'ספר'" 
+            *ngIf=" item.type === 'ספר דיגיטלי' || item.type === 'ספר להשאלה'" 
             class="overlay-svg" 
             viewBox="0 -960 960 960" 
             >
@@ -140,7 +140,7 @@
 
           <!-- אייקון ספר -->
           <svg 
-            *ngIf=" item.type === 'ספר'" 
+            *ngIf=" item.type === 'ספר דיגיטלי' || item.type === 'ספר להשאלה'" 
             class="overlay-svg-list" 
             viewBox="0 -960 960 960" 
             >
@@ -217,7 +217,7 @@
         </button>
         <button
           class="action-button order"
-          *ngIf="item.type === 'ספר'"
+          *ngIf=" item.type === 'ספר דיגיטלי' || item.type === 'ספר להשאלה'"
           (click)="$event.stopPropagation()"
         >
           להזמנה

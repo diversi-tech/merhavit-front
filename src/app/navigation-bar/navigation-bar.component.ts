@@ -130,7 +130,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { ItemsService } from '../items.service';
-type ItemType = 'all' | 'guests' | 'movies' | 'songs' | 'books' | 'posters' | 'worksheets' | 'paintings' | 'creations' | 'management';
+
 
 @Component({
   selector: 'app-navigation-bar',
