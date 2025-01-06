@@ -319,7 +319,7 @@
 .new-label {
   position: absolute;
   top: 1px;
-  left: 10px;
+  left: -100px;
   background-color: #359149; /* צבע בולט */
   color: white;
   padding: 2px 6px; /* הקטנה של padding */
