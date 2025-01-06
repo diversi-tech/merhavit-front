@@ -121,7 +121,9 @@
       "/login",
       "/students",
       "/management",
-      "/items/all"
+      "/items/all",
+      "/show-details",
+      "/success-registration"
     ],
     "timeout": 60000
   }

@@ -5,6 +5,7 @@ import { HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { Item } from './components/interfaces/item.model';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,9 @@ import { Item } from './components/interfaces/item.model';
 export class ItemsService {
   public totalItems = 0
   public items: Item[] = [];
+  private itemsSubject = new BehaviorSubject<Item[]>([]); // Subject לניהול הנתונים
+  items$ = this.itemsSubject.asObservable(); // Observable שניתן להאזין לו
+  private isFetching = false;
   public page: number = 0;
   public limit: number = 10;
   public searchTerm: string = '';
@@ -113,7 +117,7 @@ export class ItemsService {
       .pipe(
         map((response: any) => {
           this.items = response.data || [];
-          console.log("getItems items", this.items)
+          this.itemsSubject.next(this.items); // עדכון ה-BehaviorSubject
           return this.items;
         })
       );
@@ -139,6 +143,10 @@ export class ItemsService {
   }
 
   fetchItems(): void {
+    if(this.isFetching){
+      return
+    }
+    this.isFetching=true
     let params = new HttpParams()
       .set('page', this.page.toString())
       .set('limit', this.limit.toString());
@@ -146,6 +154,7 @@ export class ItemsService {
     if (this.searchTerm) {
       params = params.set('searchTerm', this.searchTerm);
     }
+console.log("type in service",this.typeFilter);
 
     if (this.typeFilter && this.typeFilter !== 'all') {
       // אם נבחר סוג סינון
@@ -157,13 +166,15 @@ export class ItemsService {
       .subscribe(
         (response: { data: any, totalCount: number }) => {
           this.items = response.data || []; // מבטיח שהמערך יתעדכן רק אם יש נתונים
+          this.itemsSubject.next(this.items);
           console.log('items after favorites:', this.items);
           this.totalItems = response.totalCount
           console.log('total items:--------', this.totalItems);
-
+        this.isFetching = false;
         },
         (error) => {
           console.error('Error fetching items:', error); // לוג טעות אם יש בעיה בהבאת הנתונים
+          this.isFetching = false;
         }
       );
   }

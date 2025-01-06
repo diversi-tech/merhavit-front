@@ -111,7 +111,10 @@ export class NavigationBarComponent {
     } else {
       const targetRoute = '/show-details'; // הנתיב הרצוי
       const currentUrl = this.router.url;
-  
+      console.log("currentUrl",currentUrl);
+      console.log("type",type);
+      
+      
       if (currentUrl !== targetRoute) {
         this.router.navigate([targetRoute]).then(() => {
           this.updateFilter(type);
@@ -127,6 +130,7 @@ export class NavigationBarComponent {
     this.showFilterOptions = false;
     this.itemsService.typeFilter = type; // עדכון הסינון ב-service
     this.itemsService.fetchItems(); // שליחת בקשה לשרת עם הסינון החדש
+    
   }
 }
 
