@@ -16,7 +16,6 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { signal } from '@angular/core';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { BookLocationComponent } from './book-location/book-location/book-location.component';
 
 
 @Component({
