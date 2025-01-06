@@ -178,9 +178,74 @@
 }
 
 /* תגיות */
-.example-form-field {
+.tags {
   width: 50vw;
   background-color: white; 
+  direction: rtl;
+  overflow-x: auto;
+  white-space: nowrap;
+  overflow-y: hidden;
+  text-align: center;
 }
 
+.chip-container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-items: center;
+}
 
+mat-chip-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin: 0 5px;
+  position: relative;
+  box-sizing: border-box;
+  padding: 4px 8px; /* להוסיף רווחים פנימיים */
+}
+
+.mat-mdc-standard-chip .mdc-evolution-chip__text-label {
+  margin: 0; /* לוודא שאין מרווחים נוספים */
+  padding: 0;
+}
+
+.mat-mdc-standard-chip.mdc-evolution-chip--with-trailing-action .mdc-evolution-chip__action--primary {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+}
+
+/* עיצוב פס גלילה */
+.chip-container::-webkit-scrollbar {
+  height: 6px; /* עובי הפס גלילה */
+}
+
+.chip-container::-webkit-scrollbar-track {
+  background: #f1f1f1; /* צבע הרקע של פס הגלילה */
+  border-radius: 10px;
+}
+
+.chip-container::-webkit-scrollbar-thumb {
+  background: #888; /* צבע הידית של פס הגלילה */
+  border-radius: 10px;
+}
+
+.chip-container::-webkit-scrollbar-thumb:hover {
+  background: #555; /* צבע הידית בעת ריחוף */
+}

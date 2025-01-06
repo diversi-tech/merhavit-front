@@ -43,14 +43,6 @@
   color: #fff;
 }
 
-.table-container {
-  direction: rtl;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #ffffff;
-}
-
 .row {
   display: flex;
   justify-content: space-between;
@@ -66,6 +58,7 @@
 /* שינוי צבע הרקע כאשר מעבירים את העכבר על הפריט */
 .row:hover {
   background-color: #f5f5f5; /* צבע רקע בהיר יותר */
+  cursor: pointer; /* שינוי הסמן לצורת יד */
 }
 
 .item-image {
@@ -141,6 +134,7 @@
 
 .action-button.delete:hover {
   background-color: #f3f7fd;
+  cursor: pointer; /* שינוי הסמן לצורת יד */
   color: red;
 }
 
@@ -161,6 +155,7 @@
 
 .action-button.order:hover {
   background-color: #218838;
+  cursor: pointer; /* שינוי הסמן לצורת יד */
 }
 
 /* מדיה קווריס לריספונסיביות במסכים קטנים */
@@ -204,6 +199,7 @@
 
   .pagination-container .arrow:hover {
     color: #000;
+    cursor: pointer; /* שינוי הסמן לצורת יד */
   }
 }
 
@@ -416,17 +412,25 @@ mat-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
+  direction: rtl;
+  background-color: #ffffff;
 }
 
-.item-card-header {
+.item-card-header:hover {
   position: relative; /* מאפשר מיקום מוחלט של אייקון בתוך כרטיס */
+  cursor: pointer; /* שינוי הסמן לצורת יד */
 }
 
-.item-image {
+.item-image:hover {
   width: 100%;
   height: auto;
   display: block;
   position: relative;
+  cursor: pointer; /* שינוי הסמן לצורת יד */
+}
+
+.overlay-svg:hover{
+  cursor: pointer; /* שינוי הסמן לצורת יד */
 }
 
 .overlay-svg {
