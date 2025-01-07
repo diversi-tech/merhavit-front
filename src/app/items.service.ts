@@ -139,6 +139,7 @@ export class ItemsService {
     return this.apiService.Read(`/EducationalResource/getAll?${params.toString()}`).pipe(
       map((response: any) => {
         this.items = response.data || [];
+	this.itemsSubject.next(this.items);
         return this.items;
       })
     );

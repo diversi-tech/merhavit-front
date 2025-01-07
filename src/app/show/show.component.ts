@@ -63,7 +63,8 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
 
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
-    this.itemsService.fetchItems();
+    this.itemsService.typeFilter = 'all'; // עדכון הסינון ב-service
+    this.itemsService.fetchItems(); // שליחת בקשה לשרת עם הסינון החדש
     this.items = this.itemsService.items;
     console.log("items in show component",this.items)
     this.itemsInterval = setInterval(() => {
