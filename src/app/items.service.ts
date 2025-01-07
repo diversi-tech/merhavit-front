@@ -11,7 +11,7 @@ import { error } from 'node:console';
   providedIn: 'root',
 })
 export class ItemsService {
-  public totalItems = 0
+  public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public items: Item[] = [];
   private itemsSubject = new BehaviorSubject<Item[]>([]); // Subject לניהול הנתונים
   items$ = this.itemsSubject.asObservable(); // Observable שניתן להאזין לו
@@ -31,6 +31,11 @@ export class ItemsService {
   public createdBy: string = '';
   public isnew: string = '';
   public duration: number = 0;
+  public ifArrIsEmty: boolean = false;
+  private ifArrIsEmtySubject = new BehaviorSubject<boolean>(false); // BehaviorSubject
+  public ifArrIsEmty$ = this.ifArrIsEmtySubject.asObservable(); // Observable
+  private totalSubject = new BehaviorSubject<number>(0); // Subject לניהול המספר 
+  totalItems$ = this.totalSubject.asObservable(); // Observable שניתן להאזין לו
 
   constructor(private apiService: ApiService) { }
   ngOnInit(): void {
@@ -42,9 +47,11 @@ export class ItemsService {
     this.apiService
       .Read(`/EducationalResource/getAll?page=${this.page}&limit=${this.limit}`)
       .subscribe({
-        next: (response: any) => {
-          console.log("loadItems response", response)
+        next: (response: {data:any[],totalCount:number}) => {
           this.items = response.data || []; // אתחול המערך בנתונים מהשרת
+          this.totalItems=response.totalCount
+          console.log("!!!!!!!!!!!!!! "+this.totalItems);
+          this.ifArrIsEmtySubject.next(this.items.length === 0); // עדכון הערך
         },
         error: (err) => {
           console.error('Error fetching items from server', err);
@@ -53,8 +60,8 @@ export class ItemsService {
   }
 
   getItems(
-    page: number = this.page,
-    limit: number = this.limit,
+    page: number = 0,
+    limit: number = 10,
     searchTerm: string = this.searchTerm,
     typeFilter: string = this.typeFilter,
     title: string = this.title,
@@ -70,9 +77,9 @@ export class ItemsService {
     duration: number = this.duration
   ): Observable<Item[]> {
     let params = new HttpParams()
-      .set('page', page.toString())
-      .set('limit', limit.toString());
-
+      // .set('page', page.toString())
+      // .set('limit', limit.toString());
+    
     if (searchTerm) {
       params = params.set('searchTerm', searchTerm);
     }
@@ -113,53 +120,64 @@ export class ItemsService {
       params = params.set('duration', duration);
     }
     return this.apiService
-      .Read(`/EducationalResource/getAll?${params.toString()}`)
+      .Read(`/EducationalResource/getAll?page=${page}&limit=${limit}${params.toString()}`)
       .pipe(
-        map((response: any) => {
+        map((response: {data:any[],totalCount:number}) => {
           this.items = response.data || [];
           this.itemsSubject.next(this.items); // עדכון ה-BehaviorSubject
+          this.totalItems=response.totalCount
+          this.totalSubject.next(this.totalItems)
+          console.log("items************** "+this.items);
+          
           return this.items;
         })
       );
   }
+ 
 
-  searchItems(searchTerm: string = this.searchTerm): Observable<Item[]> {
+  searchItems(searchTerm: string = this.searchTerm,page: number = 0,
+    limit: number = 100): Observable<Item[]> {
     let params = new HttpParams()
-      .set('page', this.page.toString())
-      .set('limit', this.limit.toString());
-
+      // .set('page', this.page.toString())
+      // .set('limit', this.limit.toString());
+    
     if (searchTerm) {
       params = params.set('searchTerm', searchTerm);
     }
 
     return this.apiService
-      .Read(`/EducationalResource/getAll?${params.toString()}`)
+      .Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&${params.toString()}`)
       .pipe(
-        map((response: any) => {
+        map((response: {data:any[],totalCount:number}) => {
           this.items = response.data || [];
           this.itemsSubject.next(this.items);
+          this.totalItems = response.totalCount;  // עדכון של totalItems לפי התוצאות שסוננו
+          this.totalSubject.next(this.totalItems)
           return this.items;
         })
       );
   }
 
-  fetchItems(): void {
-    console.log("in fetchItems");
-    console.log(this.title);
+  
+
+  fetchItems(page: number = 0,
+    limit: number = 100): void {
     this.isFetching = true;
     
-    let params = new HttpParams()
-      .set('page', this.page.toString())
-      .set('limit', this.limit.toString());
-  
-    if (this.searchTerm) {
-      params = params.set('searchTerm', this.searchTerm);
-    }
+  let params = new HttpParams()
+    // .set('page', this.page.toString())
+    // .set('limit', this.limit.toString());
+    console.log("************",page,limit);
+
+  if (this.searchTerm) {
+    params = params.set('searchTerm', this.searchTerm);
+  }
     console.log("type in service", this.typeFilter);
-  
-    if (this.typeFilter && this.typeFilter !== 'all') {
-      params = params.set('filterType', this.typeFilter);
-    }
+
+  if (this.typeFilter && this.typeFilter !== 'all') {
+      
+    params = params.set('filterType', this.typeFilter);
+  }
     if (this.title) {
       params = params.set('title', this.title);
     }
@@ -197,50 +215,23 @@ export class ItemsService {
     console.log("URL with parameters:", `/EducationalResource/getAll?${params.toString()}`);
     console.log("params",params)
     console.log("params.toString",params.toString)
-    this.apiService.Read(`/EducationalResource/getAll?${params.toString()}`).subscribe(
-      (response: any) => {
-        console.log("response: ",response)
-        this.items = response.data || []; // מבטיח שהמערך יתעדכן רק אם יש נתונים
-        this.itemsSubject.next(this.items);
+     this.apiService.Read(`/EducationalResource/getAll?page=${page}&limit=${limit}&${params.toString()}`)
+     .subscribe(
+      (response: {data:any[],totalCount:number}) => {
+        this.items = response.data || [];
+        this.itemsSubject.next(this.items); // עדכון ה-BehaviorSubject
+        this.totalItems = response.totalCount;  // עדכון של totalItems לפי התוצאות שסוננו
+        this.totalSubject.next(this.totalItems)
+        console.log('items after favorites:', this.items);
+        this.ifArrIsEmtySubject.next(this.items.length === 0); // עדכון הערך
+        console.log('total items:--------', this.totalItems);
+       
       },
       (error) => {
-        console.error('Error fetching items:', error); // לוג טעות אם יש בעיה בהבאת הנתונים
+        console.error('Error fetching items:', error);
+      
       }
     );
-  }
-
-  //   return this.apiService.Read(`/EducationalResource/getAll?${params.toString()}`).pipe(
-  //     map((response: { data: any, totalCount: number }) => {
-  //       this.items = response.data || [];
-  //       this.itemsSubject.next(this.items);
-  //       this.totalItems = response.totalCount;
-  //       console.log('total items:--------', this.totalItems);
-  //       this.isFetching = false;
-  //       return this.items;
-  //     }),
-  //     catchError((err) => {
-  //       console.error('Error fetching items from server', err);
-  //       this.isFetching = false;
-  //       throw err; // חובה להחזיר שגיאה אם לא רוצים שה-Observable יתנהג כרגיל
-  //     })
-  //   );
-  // }
-  getAllItemsAlways(
-    page: number = this.page,
-    limit: number = this.limit,): Observable<Item[]> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('limit', limit.toString());
-    
-    return this.apiService
-      .Read(`/EducationalResource/getAll?${params.toString()}`)
-      .pipe(
-        map((response: any) => {
-          this.items = response.data || [];
-          this.itemsSubject.next(this.items); // עדכון ה-BehaviorSubject
-          return this.items;
-        })
-      );
-  }
-
 }
+}
+
