@@ -268,27 +268,27 @@
           <h2>אודות הקובץ</h2>
           <div class="form-group" *ngIf="contentOption=='physicalBook'">
           <label for="purchaseLocation">איפה נקנה</label>
-          <select class="input_fields" id="purchaseLocation" formControlName="purchaseLocation">
+          <select class="input_fields" id="pLocation" formControlName="purchaseLocation">
             <option *ngFor="let pLocation of purchaseLocations" [value]="pLocation">{{ pLocation }}</option>
           </select>
         </div>
         <div class="form-group" *ngIf="contentOption=='physicalBook'">
           <label for="price">כמה עלה</label>
-          <input class="input_fields" type="number" id="price" formControlName="price" />
+          <input class="input_fields" type="number" id="price" formControlName="price" [placeholder]="formMode === 'edit' ? fileForm.get('price')?.value : ''"/>
         <!-- <div class="error-fields" *ngIf="fileForm.get('price')?.invalid && fileForm.get('price')?.touched">
             <small *ngIf="fileForm.get('price')?.errors?.['required']">יש להזין מחיר</small>
           </div> -->
         </div>
         <div class="form-group" *ngIf="contentOption=='physicalBook'">
           <label for="catalogNumber">מק"ט</label>
-          <input class="input_fields" type="number" id="catalogNumber" formControlName="catalogNumber" />
+          <input class="input_fields" type="number" id="catalogNumber" formControlName="catalogNumber" [placeholder]="formMode === 'edit' ? fileForm.get('catalogNumber')?.value : ''"/>
        <!-- <div class="error-fields" *ngIf="fileForm.get('catalogNumber')?.invalid && fileForm.get('catalogNumber')?.touched">
             <small *ngIf="fileForm.get('titcatalogNumberle')?.errors?.['required']">יש להזין מק"ט</small>
           </div> -->
         </div>
         <div class="form-group" *ngIf="contentOption=='physicalBook'">
           <label for="copies">*מס עותקים</label>
-          <input class="input_fields" type="number" id="copies" formControlName="copies" />
+          <input class="input_fields" type="number" id="copies" formControlName="copies" [placeholder]="formMode === 'edit' ? fileForm.get('copies')?.value : ''" />
         <!-- <div class="error-fields" *ngIf="fileForm.get('copies')?.invalid && fileForm.get('copies')?.touched">
             <small *ngIf="fileForm.get('copies')?.errors?.['required']">יש להזין מס עותקים</small>
           </div> -->
@@ -296,7 +296,7 @@
         
           <div *ngIf="contentOption!=='edit'" class="form-group">
             <label for="releaseYear">שנת הוצאה</label>
-            <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" />
+            <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" [placeholder]="formMode === 'edit' ? fileForm.get('releaseYear')?.value : ''" />
             <!-- <div class="error-fields" *ngIf="fileForm.get('releaseYear')?.invalid && fileForm.get('releaseYear')?.touched">
               <small *ngIf="fileForm.get('releaseYear')?.errors?.['required']">יש להזין שנת הוצאה</small>
             </div> -->
@@ -311,7 +311,7 @@
 
           <div class="form-group" *ngIf="contentOption=='physicalBook'">
             <label for="libraryLocation">מיקום בספרייה</label>
-            <input class="input_fields" type="text" id="libraryLocation" formControlName="libraryLocation" [placeholder]="formMode === 'edit' ? fileForm.get('libraryLocation')?.value : ''"/>
+            <input class="input_fields" type="text" id="libraryLocation" formControlName="libraryLocation" [placeholder]="formMode === 'edit' ? this.resourceItem.filePath : ''"/>
           </div>
         </div>
         <!-- כותרת: סטטוס -->
@@ -330,7 +330,7 @@
         </div>
         <div class="form-group">
           <label for="loanValidity">משך השאלה</label>
-          <input class="input_fields" type="text" id="loanValidity" formControlName="loanValidity" />
+          <input class="input_fields" type="text" id="loanValidity" formControlName="loanValidity" [placeholder]="formMode === 'edit' ? fileForm.get('loanValidity')?.value : ''"/>
         <!-- <div class="error-fields" *ngIf="fileForm.get('loanValidity')?.invalid && fileForm.get('loanValidity')?.touched">
             <small *ngIf="fileForm.get('loanValidity')?.errors?.['required']">יש להזין תוקף</small>
           </div> -->

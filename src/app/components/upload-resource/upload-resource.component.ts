@@ -27,6 +27,7 @@ import Swal from 'sweetalert2';
 import { Router, RouterModule } from '@angular/router';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HttpResponse } from '@angular/common/http';
+import { ItemsService } from '../../items.service';
 
 
 
@@ -120,7 +121,7 @@ export class UploadResourceComponent {
 
   readonly addOnBlur = true;
 
-  constructor(private pr: ActivatedRoute, private location: Location, private me: ActivatedRoute, private fb: FormBuilder, private sanitizer: DomSanitizer, private apiService: ApiService, private dialog: MatDialog, private snackBar: MatSnackBar, private router: Router) {
+  constructor(private itemService:ItemsService,private pr: ActivatedRoute, private location: Location, private me: ActivatedRoute, private fb: FormBuilder, private sanitizer: DomSanitizer, private apiService: ApiService, private dialog: MatDialog, private snackBar: MatSnackBar, private router: Router) {
     // יצירת טופס
     this.fileForm = this.fb.group({
       title: ['', Validators.required],
@@ -203,19 +204,17 @@ export class UploadResourceComponent {
           console.log("This is the response: ", response);
           // שמירת האובייקט במשתנה חדש
           this.resourceItem = response; // resourceItem הוא משתנה חדש בקומפוננטה שלך
+           this.contentOption = this.getContentOption(this.resourceItem.contentOption)
+           console.log("file "+this.resourceItem.filePath);
 
           this.fileForm.patchValue({
             title: this.resourceItem.title || "",
-            tags: this.resourceItem.tags || "",
             description: this.resourceItem.description || "",
             author: this.resourceItem.author || "",
             releaseYear: this.resourceItem.releaseYear || "",
             language: this.resourceItem.language || "",
             level: this.resourceItem.level || "",
-            classes: this.resourceItem.classes || "",
             type: this.resourceItem.type || "",
-            specializations: this.resourceItem.specializations || "",
-            subjects: this.resourceItem.subjects || "",
             publicationDate: this.resourceItem.publicationDate || "",
             approved:this.resourceItem.approved||"",
             loanValidity:this.resourceItem.loanValidity||"",
@@ -224,12 +223,16 @@ export class UploadResourceComponent {
             catalogNumber:this.resourceItem.catalogNumber ||"",
             copies:this.resourceItem.copies ||"",
             libraryLocation:this.resourceItem.libraryLocation ||"",
+            subjects: Array.isArray(this.resourceItem.subjects) ? this.resourceItem.subjects : [],
+            tags: Array.isArray(this.resourceItem.tags) ? this.resourceItem.tags : [],
+            specializations: Array.isArray(this.resourceItem.specializations) ? this.resourceItem.specializations : [],
+            classes: Array.isArray(this.resourceItem.classes) ? this.resourceItem.classes : [],
           });
-
+          
+          
           this.downloadFile(this.resourceItem.filePath)
-          this.isFirstEdit = true
-          this.contentOption = this.getContentOption(this.resourceItem.contentOption)
-
+          if(this.contentOption=='add' || this.contentOption=='physicalBook')
+             this.isFirstEdit = true
           // עדכון optionSelected
           //  this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
           //  this.multipleChoiceFields['tags'].optionSelected = this.resourceItem.tags;
@@ -896,9 +899,8 @@ export class UploadResourceComponent {
 
       const metadata = {
         ...this.fileForm.value,
-        createdBy: localStorage.getItem('idNumber'),
-        // filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
-        // contentOption:this.getContentOption(this.contentOption)//מצב הטופס
+         filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
+        contentOption:this.getContentOption(this.contentOption)//מצב הטופס
       }
 
       let str: string = JSON.stringify(metadata)
@@ -938,6 +940,7 @@ export class UploadResourceComponent {
             duration: 3000,
             panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
           });
+          this.itemService.fetchItems()
         },
         error: (err) => {
           console.log('תקלה בשליחת טופס', err);
@@ -955,7 +958,6 @@ export class UploadResourceComponent {
       });
     }
     this.location.back()
-
   }
 
 }

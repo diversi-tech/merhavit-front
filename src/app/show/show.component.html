@@ -103,10 +103,17 @@
 <div class="pagination-container">
 <mat-paginator
   [length]="totalItems"
-  [pageSize]="10"
+  [pageSize]="limit"
   [pageSizeOptions]="getPageSizeOptions()"
   (page)="onPageChange($event)"
   showFirstLastButtons
 >
 </mat-paginator>
 </div>
+
+
+
+
+
+
+

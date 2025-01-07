@@ -221,10 +221,6 @@ items:Item[]=[];
   //  }
   //}
   
-  
-  
-
-
 
  private checkIfUserManagementRoute(): void {
     const currentUrl = this.router.url; // מקבל את ה-URL הנוכחי

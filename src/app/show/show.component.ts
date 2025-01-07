@@ -1,4 +1,4 @@
-import { Component, Injectable, OnInit } from '@angular/core';
+import { Component, Injectable, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
@@ -21,25 +21,14 @@ import { log } from 'console';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
-import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
-// interface Item {
-//   _id: string;
-//  description: string;
-//   title: string;
-//  type: string;
-//   author: string;
-//  publicationDate: Date;
-//   Tags: Array<string>;
-//  createdBy: string;
-//   ApprovedBy: string;
-//   coverImage: string;
-//   filePath: string;
-//   isFavorite?: boolean;
-// }
+import { Subject, combineLatest, of } from 'rxjs';
+import { debounceTime, switchMap, takeUntil, catchError } from 'rxjs/operators';
+
+
 @Component({
   selector: 'app-items-list',
   templateUrl: './show.component.html',
@@ -58,8 +47,6 @@ import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dia
 })
 export class ItemsListComponent implements OnInit {
   public items: Item[] = []; //מערך המוצרים של הספריה
-  public typeFilter: string = '';
-  searchTerm: string = '';
   public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public showNoDataMessage: boolean = false; // משתנה לשליטה בהצגת ההודעה
@@ -67,6 +54,12 @@ export class ItemsListComponent implements OnInit {
   itemsFromServer: any[] = []; // משתנה לשמירת כל הפריטים שהתקבלו מהשרת
   public allItems: Item[] = []; // מערך המכיל את כל הפריטים
   private itemsInterval: any;
+  public page: number=0;
+  public limit: number=10;
+  public typeFilter: string = '';
+  public searchTerm: string = '';
+  private destroy$ = new Subject<void>();
+  @ViewChild(MatPaginator) paginator!: MatPaginator; 
 
   constructor(
     private http: HttpClient,
@@ -80,31 +73,45 @@ export class ItemsListComponent implements OnInit {
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {}
+  
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
-    this.itemsService.fetchItems();
-    this.items = this.itemsService.items;
-    console.log('items in show component', this.items);
-    this.itemsInterval = setInterval(() => {
-      if (this.itemsService.items !== this.items) {
-        this.items = [...this.itemsService.items];
-        this.cdr.detectChanges(); // עדכון ה-UI
+  // קריאה לשרת כשמשתנה פרמטר
+    this.route.queryParams // האזנה לפרמטרים ב-URL
+  .pipe(
+    switchMap((params) => {
+      takeUntil(this.destroy$)
+      const type = params['type'] || '';
+      if (this.itemsService.typeFilter !== type) {
+        this.itemsService.typeFilter = type; // עדכון סוג הסינון בשירות
+        this.itemsService.page = 0; // התחלה מחדש
+        this.itemsService.getItems(0,10, '', type)
       }
-    }, 300);
-     const paramsPromise = new Promise<void>((resolve) => {
-      this.route.queryParams.subscribe((params) => {
-        const type = params['type'];
-        if (type) {
-          this.getItems(0, 100, '', type).then(() => resolve());
-        } else {
-          this.getItems(0, 100, '').then(() => resolve());
-        }
-      });
-    });
-    // מחכה לסיום שליפת הנתונים לפי פרמטרים לפני אתחול
-    await paramsPromise;
-    await this.initializeData();
-  }
+      
+      // return this.itemsService.items$; // האזנה לזרם הנתונים
+      return combineLatest([this.itemsService.items$, this.itemsService.totalItems$]);
+     }),
+        catchError((err) => {
+          console.error('Error fetching items:', err);
+          return of([]); // במקרה של טעות
+    }),
+  )
+  .subscribe(([items, totalItems]
+  ) => {
+    this.items = items;
+    this.totalItems=totalItems;
+
+    this.cdr.detectChanges();
+  });
+await this.initializeData();
+}
+
+ngOnDestroy(): void {
+  this.destroy$.next();
+  this.destroy$.complete();
+}
+
+
   async initializeData() {
     try {
       console.log('items before favorites:', this.items);
@@ -131,14 +138,17 @@ export class ItemsListComponent implements OnInit {
       console.warn('Code is running on the server. Skipping token check.');
     }
   }
+  
+  resetPaginator(): void { if (this.paginator) { this.paginator.pageIndex = this.page; this.paginator.pageSize = this.limit; } }
+  
   onPageChange(event: PageEvent) {
-    this.getItems(
-      event.pageIndex,
-      event.pageSize,
-      this.searchTerm,
-      this.typeFilter
-    ).then(() => this.updateFavoriteStatus());
+    this.page = event.pageIndex;
+    this.limit = event.pageSize;
+    // this.getItems(this.page, this.limit).then(() => this.updateFavoriteStatus());
+    this.itemsService.fetchItems(this.page, this.limit)
+    this.updateFavoriteStatus();
   }
+  
   // async getItems(page: number = 0,limit: number = 100,searchTerm: string = '',typeFilter: string = ''): Promise<void> {
   //   this.searchTerm = searchTerm;
   //   this.typeFilter = typeFilter;
@@ -195,8 +205,7 @@ export class ItemsListComponent implements OnInit {
     searchTerm: string = '',
     typeFilter: string = ''
   ): Promise<void> {
-    this.searchTerm = searchTerm;
-    this.typeFilter = typeFilter;
+    
     this.showNoDataMessage = false;
     const url = `/EducationalResource/getAll?page=${page}&limit=${limit}`;
     console.log(`Requesting URL: ${url}`);
@@ -206,16 +215,18 @@ export class ItemsListComponent implements OnInit {
           console.log('API Response: ', response);
           if (Array.isArray(response)) {
             this.itemsFromServer = response.data;
+            this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+
             console.log('Items received from server:', this.itemsFromServer);
+            if(searchTerm!=''|| typeFilter!='')
             // מבצע סינון לפי סוג
-            this.filterItemsByType(searchTerm, typeFilter);
+                 this.filterItemsByType(searchTerm, typeFilter);
           } else {
             this.itemsFromServer = response.data;
             this.filterItemsByType(searchTerm, typeFilter);
             // this.items = [];
             // this.showNoDataMessage = true;
           }
-          this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
           resolve();
         },
         error: (err) => {
@@ -249,12 +260,16 @@ export class ItemsListComponent implements OnInit {
     }
     this.items = filteredItems;
     console.log('Final filtered items:', this.items);
+    // this.totalItems=this.items.length
     if (this.items.length === 0) {
       setTimeout(() => {
         this.showNoDataMessage = true;
       }, 100);
     }
   }
+
+
+
   async editItem(item1: Item) {
     this.router.navigate(['/upload-resource', item1._id], {
       queryParams: { additionalParam: 'edit' },
@@ -559,13 +574,13 @@ export class ItemsListComponent implements OnInit {
       }
     }
   }
+  
   getPageSizeOptions(): number[] {
-    if (this.totalItems <= 5) {
-      return [];
-    } else if (this.totalItems >= 11) {
-      return [5, 10];
-    } else {
-      return [5, 10, 15, 20];
-    }
+    this.resetPaginator()
+
+    const options = [5, 10, 15, 20];
+    return options.filter(option => option <= this.totalItems);
+    
   }
+  
 }

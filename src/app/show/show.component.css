@@ -44,7 +44,7 @@
 }
 
 .table-container {
-  padding-bottom: 50px; /* או גובה ה-paginator */
+  padding-bottom: 60px; /* או גובה ה-paginator */
   direction: rtl;
   display: flex;
   flex-direction: column;
@@ -179,7 +179,7 @@
 
 .action-button.not-favorite:hover,
 .action-button.download:hover {
-  color: #218838;
+  color: hsl(133, 61%, 33%);
 }
 
 .action-button.order {
@@ -219,7 +219,7 @@
   .filter-buttons {
     flex-wrap: wrap;
   }
-  .pagination-container {
+  /* .pagination-container {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -227,7 +227,25 @@
     font-size: 14px;
     color: #444;
     margin: 10px 0;
-  }
+    position: fixed; 
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; 
+    background-color: white; 
+    padding: 10px; 
+  } */
+
+  .pagination-container {
+    position: fixed; /* מציב את ה-div בתחתית המסך */
+    bottom: 0; /* מציב את ה-div בתחתית */
+    left: 0;
+    right: 0;
+    z-index: 1000; /* ודאי שה-div יהיה מעל אלמנטים אחרים */
+    background-color: white; /* רקע כדי להפריד אותו מהתוכן */
+    padding: 10px; /* ריווח פנימי אם צריך */
+}
+
 
   .pagination-container .arrow {
     font-size: 18px;
@@ -312,15 +330,6 @@
   font-size: 2rem; /* גודל אייקון */
   color: #11457b; /* צבע כחול */
   margin-bottom: 10vh; /* ריווח מתחת לאייקון */
-}
-.paginator-container {
-  position: fixed; /* מציב את ה-div בתחתית המסך */
-  bottom: 0; /* מציב את ה-div בתחתית */
-  left: 0;
-  right: 0;
-  z-index: 1000; /* ודאי שה-div יהיה מעל אלמנטים אחרים */
-  background-color: white; /* רקע כדי להפריד אותו מהתוכן */
-  padding: 10px; /* ריווח פנימי אם צריך */
 }
 
 
