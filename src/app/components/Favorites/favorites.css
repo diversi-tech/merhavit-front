@@ -4,7 +4,10 @@
 
 .favorites-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); /* מתאים לגדלים שונים */
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(15rem, 1fr)
+  ); /* מתאים לגדלים שונים */
   gap: 1.25rem; /* 20px */
 }
 
@@ -97,11 +100,35 @@
 /* רספונסיביות */
 @media (max-width: 768px) {
   .favorites-grid {
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); /* גודל קטן יותר */
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(10rem, 1fr)
+    ); /* גודל קטן יותר */
   }
 
   .favorite-item img,
   .file-extension-container {
     height: 7.5rem; /* 120px */
   }
+}
+
+/* סרגל כרטיסיות */
+.nav-tabs {
+  font-size: 1.125rem; /* 18px -> 1.125rem */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 2.5rem; /* 40px -> 2.5rem */
+}
+
+.nav-tabs div {
+  padding: 0.9375rem 1.5625rem; /* 15px 25px -> 0.9375rem 1.5625rem */
+  cursor: pointer;
+  font-weight: bold;
+  color: #333;
+}
+
+.nav-tabs div.active {
+  border-bottom: 0.125rem solid #000; /* 2px -> 0.125rem */
+  color: #000;
 }
