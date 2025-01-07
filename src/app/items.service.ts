@@ -48,7 +48,7 @@ export class ItemsService {
         next: (response: any) => {
           console.log("loadItems response", response)
           this.items = response.data || []; // אתחול המערך בנתונים מהשרת
-	  this.ifArrIsEmtySubject.next(this.items.length === 0); // עדכון הערך
+	        this.ifArrIsEmtySubject.next(this.items.length === 0); // עדכון הערך
         },
         error: (err) => {
           console.error('Error fetching items from server', err);
@@ -202,7 +202,7 @@ export class ItemsService {
       (response: any) => {
         console.log("response: ",response)
         this.items = response.data || []; // מבטיח שהמערך יתעדכן רק אם יש נתונים
-	this.ifArrIsEmtySubject.next(this.items.length === 0); // עדכון הערך
+	  this.ifArrIsEmtySubject.next(this.items.length === 0); // עדכון הערך
       },
       (error) => {
         console.error('Error fetching items:', error);

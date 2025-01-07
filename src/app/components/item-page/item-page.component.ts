@@ -11,8 +11,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { FormsModule } from '@angular/forms';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { signal } from '@angular/core';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -67,7 +65,7 @@ export class ItemPageComponent implements OnInit {
     private apiService: ApiService,
     private sanitizer: DomSanitizer,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
     private dialog: MatDialog // הוספת MatDialog
   ) {}
 
@@ -100,6 +98,8 @@ fetchItemDetails(itemId: string) {
       // כאן נעדכן את ה-tags מתוך פרטי הפריט
       this.tags.set(response.tags || []);
       this.setPreviewUrl(response);
+       // סימון שהמידע השתנה ויש לעדכן את התצוגה
+       this.cdr.markForCheck();
     },
     error: (err) => {
       console.error('Error fetching item details', err);
@@ -118,6 +118,8 @@ fetchSimilarItems(itemId: string) {
     next: (response) => {
       console.log('Similar items received:', response);
       this.similarItems = response;
+       // סימון שהמידע השתנה ויש לעדכן את התצוגה
+       this.cdr.markForCheck();
     },
     error: (err) => {
       console.error('Error fetching similar items', err);
@@ -199,6 +201,8 @@ fetchSimilarItems(itemId: string) {
           console.error('Unexpected response format:', response);
           this.reactiveKeywords.set([]); // מוודא שאין שגיאה בקונסול
         }
+         // סימון שהמידע השתנה ויש לעדכן את התצוגה
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Error fetching tags from server:', err);
