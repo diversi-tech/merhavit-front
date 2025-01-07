@@ -137,6 +137,7 @@ export class ItemsService {
       .pipe(
         map((response: any) => {
           this.items = response.data || [];
+          this.itemsSubject.next(this.items);
           return this.items;
         })
       );
