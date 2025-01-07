@@ -63,7 +63,7 @@ export class ItemsService {
     page: number = 0,
     limit: number = 10,
     searchTerm: string = this.searchTerm,
-    typeFilter: string = this.typeFilter
+    typeFilter: string = this.typeFilter,
     title: string = this.title,
     author: string = this.author,
     borrowed: string = this.borrowed,
@@ -178,6 +178,7 @@ export class ItemsService {
       
     params = params.set('filterType', this.typeFilter);
   }
+    if (this.title) {
       params = params.set('title', this.title);
     }
     if (this.author) {

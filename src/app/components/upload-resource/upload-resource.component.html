@@ -207,8 +207,8 @@
               (matChipInputTokenEnd)="add($event,'classes')"
               [matAutocomplete]="agesAuto"
               (focusout)="markFieldAsTouched('classes')"
-              [value]="formMode === 'edit' ? multipleChoiceFields['classes'].optionSelected.join(', ') : ''"
-              [placeholder]="formMode === 'edit' ? '' : ''"
+              [placeholder]="formMode === 'edit' ? '' : ''"                
+              [formArrayName]="'classes'"
             />
           </div>
             <mat-chip-row *ngFor="let class of multipleChoiceFields['classes'].optionSelected" [removable]="true" (removed)="remove(class,'classes')">

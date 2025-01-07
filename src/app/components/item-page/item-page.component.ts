@@ -29,7 +29,7 @@ import { ChangeDetectorRef } from '@angular/core';
   standalone: true,
   providers: [provideNativeDateAdapter()],
   imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule,MatCardModule,MatDialogModule, MatDatepickerModule
-    ,MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, JsonPipe ], // ייבוא המודולים
+    ,MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule,JsonPipe ], // ייבוא המודולים
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })

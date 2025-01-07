@@ -176,12 +176,7 @@ export class UploadResourceComponent {
       this.formMode = additionalParam !== null ? additionalParam : this.formMode; // הצבת הערך לתוך formMode או שמירה על ברירת המחדל
     });
 
-    if (this.formMode == 'edit') {
-      this.me.params.subscribe(p => {
-        this.itemID = p['_id']
-        console.log("Received resource ID: ", this.itemID);
-      })
-    }
+    
 
     Object.keys(this.multipleChoiceFields).forEach((key) => {
       const Array = this.fileForm.get(key) as FormArray;
@@ -197,7 +192,12 @@ export class UploadResourceComponent {
     })
 
     if (this.formMode == 'edit') {
-      //i added 
+
+      this.me.params.subscribe(p => {
+        this.itemID = p['_id']
+        console.log("Received resource ID: ", this.itemID);
+      })
+
       this.apiService.Read(`/EducationalResource/${this.itemID}`).subscribe({
         next: (response: any) => {
           console.log("This is the response: ", response);

@@ -1,4 +1,4 @@
-import { Component, Injectable, OnInit, OnDestroy, ViewChild  from '@angular/core';
+import { Component, Injectable, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
@@ -36,7 +36,7 @@ import { debounceTime, switchMap, takeUntil, catchError } from 'rxjs/operators';
     MatSnackBarModule,
     MatCardModule,
     MatIconModule,
-    RouterOutlet,
+    // RouterOutlet,
     MatPaginatorModule,
   ],
 })
@@ -45,7 +45,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   private refresh$ = new Subject<void>();
   public items: Item[] = []; //מערך המוצרים של הספריה
   
-  private limit: number=10;
   public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public showNoDataMessage: boolean = false; // משתנה לשליטה בהצגת ההודעה

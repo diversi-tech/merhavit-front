@@ -3,7 +3,7 @@
   max-width: 75rem; /* 1200px = 75rem עם root 16px */
   margin: auto;
   font-family: Arial, sans-serif;
-  direction: rtl;
+  /* direction: rtl; */
   color: #333;
 }
 
@@ -207,6 +207,7 @@
   } */
 
   .pagination-container {
+    display: flex;
     position: fixed; /* מציב את ה-div בתחתית המסך */
     bottom: 0; /* מציב את ה-div בתחתית */
     left: 0;
@@ -214,6 +215,7 @@
     z-index: 1000; /* ודאי שה-div יהיה מעל אלמנטים אחרים */
     background-color: white; /* רקע כדי להפריד אותו מהתוכן */
     padding: 10px; /* ריווח פנימי אם צריך */
+    direction: ltr
 }
 
 
