@@ -19,6 +19,7 @@ import { ManagementComponent } from './components/management/management.componen
 import { SeminaryComponent } from './components/seminary/seminary.component';
 import { SubjectManagementComponent } from './components/Librarian/subject-management';
 import { ClassManagementComponent } from './components/Librarian/class-management';
+import { BorrowRequestManagementComponent } from './components/Librarian/borrowRequest';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -32,19 +33,11 @@ export const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'success-registration', component: SuccessRegistrationComponent },
+  { path: 'borrowRequests', component: BorrowRequestManagementComponent },
   { path: 'item-page/:id', component: ItemPageComponent },
   { path: 'upload-resource/:_id', component: UploadResourceComponent },
   { path: 'upload-resource', component: UploadResourceComponent },
   { path: 'favorites', component: FavoritesComponent },
-  // { path: 'items/all', component: ItemsListComponent }, // הכל
-  // { path: 'items/guests', component: ItemsListComponent }, // מערכים
-  // { path: 'items/movies', component: ItemsListComponent }, // סרטונים
-  // { path: 'items/songs', component: ItemsListComponent }, // שירים
-  // { path: 'items/books', component: ItemsListComponent }, // ספרים
-  // { path: 'items/images/posters', component: ItemsListComponent }, // כרזות
-  // { path: 'items/images/worksheets', component: ItemsListComponent }, // דפי עבודה
-  // { path: 'items/images/paintings', component: ItemsListComponent }, // איורים
-  // { path: 'items/images/creations', component: ItemsListComponent }, // יצירות
   { path: 'management', component: ManagementComponent,
     children: [
       { path: 'tags', component: TagManagementComponent },

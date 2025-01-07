@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { ItemsService } from '../items.service';
-type ItemType = 'all' | 'guests' | 'movies' | 'songs' | 'books' | 'posters' | 'worksheets' | 'paintings' | 'creations' | 'management';
 
 
 @Component({
@@ -15,13 +14,16 @@ type ItemType = 'all' | 'guests' | 'movies' | 'songs' | 'books' | 'posters' | 'w
 })
 export class NavigationBarComponent {
 
-
-
-  constructor(private router: Router, private itemsService: ItemsService) {
-    this.getUserTypeFromToken()
+  constructor(private router: Router, private _itemsService: ItemsService) {
+    this.getUserTypeFromToken();
   }
+    // Getter לגישה ל-itemsService בצורה ציבורית
+    get itemsService() {
+      return this._itemsService;
+    }
+
   activeSubMenu: string | null = null;
-  userType: string = ''
+  userType: string = '';
   selectedFilter: string = '';
   selectedFileType: string = 'all';
   showFilterOptions: boolean = false;
@@ -35,51 +37,8 @@ export class NavigationBarComponent {
     }
   }
 
-  // navigateAndFilter(type: string): void {
-  //   // אם סוג הפריט הוא "הכל", אין צורך להעביר פרמטר, אחרת נשלח את סוג הפריט המתאים
-  //   if (type === 'all') {
-  //     this.router.navigate(['/items/all']); // עבור כפתור "הכל"
-  //   } else if (type === 'guests') {
-  //     this.router.navigate(['/items/guests'], {
-  //       queryParams: { type: 'מערך' },
-  //     }); // עבור כפתור "מערכים"
-  //   } else if (type === 'movies') {
-  //     this.router.navigate(['/items/movies'], {
-  //       queryParams: { type: 'סרטון' },
-  //     }); // עבור כפתור "סרטונים"
-  //   } else if (type === 'songs') {
-  //     this.router.navigate(['/items/songs'], { queryParams: { type: 'שיר' } }); // עבור כפתור "שירים"
-  //   } else if (type === 'books') {
-  //     this.router.navigate(['/items/books'], { queryParams: { type: 'ספר' } }); // עבור כפתור "ספרים"
-  //   } else if (type === 'posters') {
-  //     this.router.navigate(['/items/images/posters'], {
-  //       queryParams: { type: 'כרזה' },
-  //     }); // עבור כפתור "כרזות"
-  //   } else if (type === 'worksheets') {
-  //     this.router.navigate(['/items/images/worksheets'], {
-  //       queryParams: { type: 'דף עבודה' },
-  //     }); // עבור כפתור "דף עבודה"
-  //   } else if (type === 'paintings') {
-  //     this.router.navigate(['/items/images/paintings'], {
-  //       queryParams: { type: 'איור' },
-  //     }); // עבור כפתור "איורים"
-  //   } else if (type === 'creations') {
-  //     this.router.navigate(['/items/images/creations'], {
-  //       queryParams: { type: 'יצירה' },
-  //     }); // עבור כפתור "יצירות"
-  //   } else if (type === 'management') {
-  //     this.router.navigate(['/management'])//ניהול 
-  //   } else {
-  //     this.router.navigate([`/items/${type}`]); // עבור כל סוג אחר
-  //   }
-  // }
-
-  // navigateAndFilter(type: string): void {
-  //   this.router.navigate(['/items'], { queryParams: { type: type === 'all' ? '' : type } });
-  // }
   getUserTypeFromToken(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-
       const token = localStorage.getItem('access_token');
       if (token) {
         try {
@@ -93,18 +52,10 @@ export class NavigationBarComponent {
     } else {
       console.error('localStorage is not available on the server.');
     }
-
   }
 
-  // onSelectFilter(type: string): void {
-  //   this.selectedFileType = type;
-  //   this.showFilterOptions = false;
-  //   // console.log('סוג הקובץ שנבחר:', type);
-  //   this.itemsService.typeFilter = type; // מעדכן את הסינון ב-service
-  //   this.itemsService.fetchItems(); // שולח את הבקשה לשרת עם הסינון החדש
-  // }
   onSelectFilter(type: string): void {
-    const targetRoute = '/show-details'; // הנתיב הרצוי
+    const targetRoute = '/show-details';
     const currentUrl = this.router.url;
 
     if (currentUrl !== targetRoute) {
@@ -116,13 +67,14 @@ export class NavigationBarComponent {
     }
   }
 
+  tagManagementButton(type: string): void {
+    this.router.navigate(['/management']);
+  }
+
   private updateFilter(type: string): void {
-    this.selectedFileType = type;
-    this.showFilterOptions = false;
+    this.selectedFilter = type;
     this.itemsService.typeFilter = type; // עדכון הסינון ב-service
     this.itemsService.fetchItems(); // שליחת בקשה לשרת עם הסינון החדש
   }
 }
-
-
 

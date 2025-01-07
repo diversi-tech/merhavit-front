@@ -57,6 +57,7 @@
 
 .sidebar-menu li a:hover {
   background-color: #d5dff4;
+  cursor: pointer; /* שינוי הסמן לצורת יד */
 }
 
 /* סגנון כללי של תת-תפריט */
@@ -80,6 +81,7 @@
 
 .submenu li a:hover {
   background-color: #a9c1e5; /* רקע כחול כהה עוד יותר */
+  cursor: pointer; /* שינוי הסמן לצורת יד */
   color: #000;
 }
 

@@ -1,16 +1,10 @@
-import { Component, Injectable, OnInit, ViewChild } from '@angular/core';
+import { Component, Injectable, OnInit, OnDestroy, ViewChild  from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../api.service';
 import { jwtDecode } from 'jwt-decode';
-import {
-  RouterModule,
-  Router,
-  ActivatedRoute,
-  RouterLink,
-  RouterOutlet,
-} from '@angular/router';
+import {RouterModule,Router,ActivatedRoute,RouterLink,RouterOutlet,} from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { Item } from '../components/interfaces/item.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -25,9 +19,10 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
+import { Subscription } from 'rxjs';
 import { Subject, combineLatest, of } from 'rxjs';
 import { debounceTime, switchMap, takeUntil, catchError } from 'rxjs/operators';
-
 
 @Component({
   selector: 'app-items-list',
@@ -45,8 +40,12 @@ import { debounceTime, switchMap, takeUntil, catchError } from 'rxjs/operators';
     MatPaginatorModule,
   ],
 })
-export class ItemsListComponent implements OnInit {
+export class ItemsListComponent implements OnInit, OnDestroy  {
+  private destroy$ = new Subject<void>();
+  private refresh$ = new Subject<void>();
   public items: Item[] = []; //מערך המוצרים של הספריה
+  
+  private limit: number=10;
   public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public showNoDataMessage: boolean = false; // משתנה לשליטה בהצגת ההודעה
@@ -58,21 +57,14 @@ export class ItemsListComponent implements OnInit {
   public limit: number=10;
   public typeFilter: string = '';
   public searchTerm: string = '';
-  private destroy$ = new Subject<void>();
+  public ifArrIsEmty: boolean = false;
+  private subscription: Subscription = new Subscription();
+  viewMode: 'grid' | 'list' = 'grid';  // ברירת המחדל היא כרטיסיות
+ 
   @ViewChild(MatPaginator) paginator!: MatPaginator; 
+  
+  constructor(private http: HttpClient, private _snackBar: MatSnackBar ,private snackBar: MatSnackBar,private dialog: MatDialog, private apiService: ApiService, private router: Router,private ro: Router,private itemsService: ItemsService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
-  constructor(
-    private http: HttpClient,
-    private _snackBar: MatSnackBar,
-    private snackBar: MatSnackBar,
-    private dialog: MatDialog,
-    private apiService: ApiService,
-    private router: Router,
-    private ro: Router,
-    private itemsService: ItemsService,
-    private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
-  ) {}
   
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
@@ -103,24 +95,30 @@ export class ItemsListComponent implements OnInit {
 
     this.cdr.detectChanges();
   });
+
 await this.initializeData();
 }
 
-ngOnDestroy(): void {
-  this.destroy$.next();
-  this.destroy$.complete();
-}
-
-
-  async initializeData() {
+   
+  
+   async initializeData() {
     try {
       console.log('items before favorites:', this.items);
+
       await this.loadFavorites();
       this.updateFavoriteStatus();
     } catch (error) {
       console.error('Error initializing data:', error);
     }
     console.log('items after favorites:', this.items);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+ toggleViewMode() {
+    this.viewMode = this.viewMode === 'grid' ? 'list' : 'grid'; // שינוי תצוגה
   }
   getUserTypeFromToken(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
@@ -149,63 +147,16 @@ ngOnDestroy(): void {
     this.updateFavoriteStatus();
   }
   
-  // async getItems(page: number = 0,limit: number = 100,searchTerm: string = '',typeFilter: string = ''): Promise<void> {
-  //   this.searchTerm = searchTerm;
-  //   this.typeFilter = typeFilter;
-  //   this.showNoDataMessage = false;
-  //   const url = `/EducationalResource/getAll?page=${page}&limit=${limit}`;
-  //   console.log(`Requesting URL: ${url}`);
-  //   return new Promise((resolve, reject) => {
-  //     this.apiService.Read(url).subscribe({
-  //       next: (response: { data: any[]; totalCount: number }) => {
-  //         console.log('API Response: ', response);
-  //         if (Array.isArray(response)) {
-  //           this.itemsFromServer = response.data;
-  //           console.log('Items received from server:', this.itemsFromServer);
-  //           // מבצע סינון לפי סוג
-  //           this.filterItemsByType(searchTerm, typeFilter);
-  //         } else {
-  //           this.itemsFromServer = response.data;
-  //           this.filterItemsByType(searchTerm, typeFilter);
-  //           // this.items = [];
-  //           // this.showNoDataMessage = true;
-  //         }
-  //         this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
-  //         resolve();
-  //       },
-  //       error: (err) => {
-  //         console.error('Error fetching items', err);
-  //         this.items = [];
-  //         this.showNoDataMessage = true;
-  //         this.totalItems = 0; // משתמשים ב-totalCount מהשרת
-  //         reject(err);
-  //       },
-  //     });
-  //   });
-  // }
-  //בכלל לא מגיע לפה
-  //  getItems(page: number = 0, limit: number = 100, searchTerm: string = '', typeFilter: string = '') {
-  //    console.log("enter to getItems in show component")
-  //  const params: any = { page, limit };
-  //    if (searchTerm) params.searchTerm = searchTerm;
-  //    if (typeFilter) params.typeFilter = typeFilter;
-  //    this.apiService.Read(`/EducationalResource/getAll${ params }`).subscribe({
-  //    next: (response) => {
-  //    this.items = response.data || [];
-  //  console.log("items in show.component.ts",this.items)
-  //      },
-  //    error: (err) => {
-  //    console.error('Error fetching items:', err);
-  // },
-  //   });
-  // }
+  
   async getItems(
     page: number = 0,
     limit: number = 100,
     searchTerm: string = '',
     typeFilter: string = ''
   ): Promise<void> {
-    
+    this.searchTerm = searchTerm;
+    this.typeFilter = typeFilter;
+
     this.showNoDataMessage = false;
     const url = `/EducationalResource/getAll?page=${page}&limit=${limit}`;
     console.log(`Requesting URL: ${url}`);
@@ -213,25 +164,24 @@ ngOnDestroy(): void {
       this.apiService.Read(url).subscribe({
         next: (response: { data: any[]; totalCount: number }) => {
           console.log('API Response: ', response);
+
           if (Array.isArray(response)) {
             this.itemsFromServer = response.data;
             this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
 
             console.log('Items received from server:', this.itemsFromServer);
-            if(searchTerm!=''|| typeFilter!='')
+            
             // מבצע סינון לפי סוג
                  this.filterItemsByType(searchTerm, typeFilter);
           } else {
             this.itemsFromServer = response.data;
             this.filterItemsByType(searchTerm, typeFilter);
-            // this.items = [];
-            // this.showNoDataMessage = true;
           }
+          
           resolve();
         },
         error: (err) => {
           console.error('Error fetching items', err);
-          this.items = [];
           this.showNoDataMessage = true;
           this.totalItems = 0; // משתמשים ב-totalCount מהשרת
           reject(err);
@@ -239,11 +189,14 @@ ngOnDestroy(): void {
       });
     });
   }
+
   filterItemsByType(searchTerm: string = '', typeFilter: string = ''): void {
     let filteredItems = [...this.itemsFromServer];
+
     console.log('Before filtering:', filteredItems);
     console.log('Search term:', searchTerm);
     console.log('Type filter:', typeFilter);
+
     // סינון לפי חיפוש (searchTerm)
     if (searchTerm) {
       filteredItems = filteredItems.filter(
@@ -253,19 +206,16 @@ ngOnDestroy(): void {
       );
       console.log('After search term filtering:', filteredItems);
     }
+
     // סינון לפי סוג (typeFilter)
     if (typeFilter) {
       filteredItems = filteredItems.filter((item) => item.type === typeFilter);
       console.log('After type filter:', filteredItems);
     }
+
     this.items = filteredItems;
     console.log('Final filtered items:', this.items);
     // this.totalItems=this.items.length
-    if (this.items.length === 0) {
-      setTimeout(() => {
-        this.showNoDataMessage = true;
-      }, 100);
-    }
   }
 
 
@@ -275,10 +225,13 @@ ngOnDestroy(): void {
       queryParams: { additionalParam: 'edit' },
     });
   }
+
   deleteResource(itemToDelete: Item) {
     console.log('Delete item: ', itemToDelete);
     // הוסף כאן את הלוגיקה למחיקת משתמש
+
     const dialogRef = this.dialog.open(ConfirmDialogComponent1);
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // כאן תוכל לקרוא לפונקציה שמוחקת את הפריט מהשרת
@@ -318,6 +271,7 @@ ngOnDestroy(): void {
       }
     });
   }
+
   downloadResource(item: Item): void {
     if (!item._id) {
       console.error('Item ID is missing.');
@@ -380,7 +334,6 @@ ngOnDestroy(): void {
         },
       });
   }
-
   updateItems(items: Item[]): void {
     this.items = items;
   }
@@ -405,6 +358,7 @@ ngOnDestroy(): void {
         const isAlreadyFavorite = this.favorites.some(
           (fav) => fav.itemId === item._id
         );
+
         if (isAlreadyFavorite) {
           console.log('Item is already in favorites');
           this._snackBar.open('הפריט כבר נמצא במועדפים.', 'סגור', {
@@ -424,6 +378,7 @@ ngOnDestroy(): void {
             console.log('Item added to favorites:', response);
             this.favorites.push({ itemId: item._id });
             console.log('this.favorites', this.favorites);
+
             item.isFavorite = true;
             this._snackBar.open('הפריט נוסף למועדפים ', 'סגור', {
               duration: 2000,
@@ -491,6 +446,7 @@ ngOnDestroy(): void {
   }
   async loadFavorites(): Promise<void> {
     console.log('fffffffffffffffffffffffffffffff');
+
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const token = localStorage.getItem('access_token');
       if (!token) return;
@@ -543,6 +499,7 @@ ngOnDestroy(): void {
         // המתנה לתשובת המשתמש
         dialogRef.afterClosed().subscribe((result) => {
           console.log('User decision:', result); // לוג לבדיקת ערך result
+
           if (result) {
             // אם המשתמש אישר, המשך להסרה
             this.apiService
@@ -583,4 +540,12 @@ ngOnDestroy(): void {
     
   }
   
+ isNewItem(item: Item): boolean {
+    const currentDate = new Date();
+    const publicationDate = new Date(item.publicationDate);
+    const differenceInTime = currentDate.getTime() - publicationDate.getTime();
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24); // המרה לימים
+
+    return differenceInDays < 30; // אם ההפרש פחות מ-30 ימים, אז זה נחשב ל"חדש"
+  }
 }

@@ -44,13 +44,22 @@
     </li>
 
     <li>
-      <a (click)="onSelectFilter('ספר')">
+      <a (click)="toggleSubMenu('books')">
         <i class="fas fa-book"></i> ספרים
+        <i
+          class="fas fa-chevron-down submenu-icon"
+          [ngClass]="{ open: activeSubMenu === 'books' }"
+        ></i>
       </a>
+      <ul class="submenu" *ngIf="activeSubMenu === 'books'">
+        <li><a (click)="onSelectFilter('ספר דיגיטלי')">ספר דיגיטלי</a></li>
+        <li><a (click)="onSelectFilter('ספר להשאלה')">ספר להשאלה</a></li>
+      </ul>
     </li>
+
     <!-- כפתור ניהול תגיות - מוצג לכל תפקיד שאינו STUDENT -->
       <li *ngIf="userType !== 'Student'">
-        <a (click)="onSelectFilter('management')">
+        <a (click)="tagManagementButton('management')">
           <i class="fas fa-user-cog"></i> ניהול
         </a>
       </li>
