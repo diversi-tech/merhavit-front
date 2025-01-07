@@ -29,6 +29,20 @@ import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dia
 import { Subject, combineLatest, of } from 'rxjs';
 import { debounceTime, switchMap, takeUntil, catchError } from 'rxjs/operators';
 
+// interface Item {
+//   _id: string;
+//  description: string;
+//   title: string;
+//  type: string;
+//   author: string;
+//  publicationDate: Date;
+//   Tags: Array<string>;
+//  createdBy: string;
+//   ApprovedBy: string;
+//   coverImage: string;
+//   filePath: string;
+//   isFavorite?: boolean;
+// }
 @Component({
   selector: 'app-items-list',
   templateUrl: './show.component.html',
@@ -47,7 +61,6 @@ import { debounceTime, switchMap, takeUntil, catchError } from 'rxjs/operators';
 })
 export class ItemsListComponent implements OnInit, OnDestroy  {
   private destroy$ = new Subject<void>();
-  private refresh$ = new Subject<void>();
   public items: Item[] = []; //מערך המוצרים של הספריה
   public typeFilter: string = '';
   private page: number=0;
@@ -61,7 +74,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   public allItems: Item[] = []; // מערך המכיל את כל הפריטים
   private itemsInterval: any;
 
-  
   constructor(
     private http: HttpClient,
     private _snackBar: MatSnackBar,
@@ -74,80 +86,39 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {}
-//   async ngOnInit(): Promise<void> {
-//     this.getUserTypeFromToken();
-  
-//   // קריאה לשרת כשמשתנה פרמטר
-  
-//     this.route.queryParams // האזנה לפרמטרים ב-URL
-//   .pipe(
-//     switchMap((params) => {
-//       takeUntil(this.destroy$)
-//       const type = params['type'] || '';
-//       if (this.itemsService.typeFilter !== type) {
-//         this.itemsService.typeFilter = type; // עדכון סוג הסינון בשירות
-//         this.itemsService.page = 0; // התחלה מחדש
-//         this.itemsService.getItems(0, 100, '', type)
-//       }
-
-//       return this.itemsService.items$; // האזנה לזרם הנתונים
-//      }),
-//         catchError((err) => {
-//           console.error('Error fetching items:', err);
-//           return of([]); // במקרה של טעות
-        
-//     }),
+  async ngOnInit(): Promise<void> {
+    this.getUserTypeFromToken();
+    this.itemsService.typeFilter = 'all'; // עדכון הסינון ב-service
+    this.itemsService.fetchItems(); // שליחת בקשה לשרת עם הסינון החדש
     
-//   )
-//   .subscribe((items) => {
-//     this.items = items;
-//     this.cdr.detectChanges();
-//   });
-
-// await this.initializeData();
-// }
-
-async ngOnInit(): Promise<void> {
-  this.getUserTypeFromToken();
-  this.itemsService.fetchItems();
-  this.items = this.itemsService.items;
-  console.log("items in show component",this.items)
-  this.itemsInterval = setInterval(() => {
-    if (this.itemsService.items !== this.items) {
-      this.items = [...this.itemsService.items];
-      this.cdr.detectChanges(); // עדכון ה-UI
-    }
-  }, 200);
-   const paramsPromise = new Promise<void>((resolve) => {
-    this.route.queryParams.subscribe((params) => {
-      const type = params['type'];
-      if (type) {
-        this.getItems(0, 100, '', type).then(() => resolve());
-      } else {
-        this.getItems(0, 100, '').then(() => resolve());
+  // קריאה לשרת כשמשתנה פרמטר
+  
+    this.route.queryParams // האזנה לפרמטרים ב-URL
+  .pipe(
+    switchMap((params) => {
+      takeUntil(this.destroy$)
+      const type = params['type'] || '';
+      if (this.itemsService.typeFilter !== type) {
+        this.itemsService.typeFilter = type; // עדכון סוג הסינון בשירות
+        this.itemsService.page = 0; // התחלה מחדש
+        this.itemsService.getItems(0, 100, '', type)
       }
-    });
+
+      return this.itemsService.items$; // האזנה לזרם הנתונים
+     }),
+        catchError((err) => {
+          console.error('Error fetching items:', err);
+          return of([]); // במקרה של טעות
+        
+    }),
+    
+  )
+  .subscribe((items) => {
+    this.items = items;
+    this.cdr.detectChanges();
   });
-   // ביצוע מנוי לערך של ifArrIsEmty
-  // this.subscription = this.itemsService.ifArrIsEmty$.subscribe((isEmpty) => {
-  //   this.ifArrIsEmty = isEmpty;
-  //     // לבדוק את בדיקת הצגת ההודעה למשתמש
-  //     if (this.ifArrIsEmty) {
-  //       this.showNoDataMessage = true;
-  //     }else{
-  //       this.showNoDataMessage = false;
-  //     }
-  //   console.log('ifArrIsEmty value updated:', isEmpty);
-  //     // לבדוק את בדיקת הצגת ההודעה למשתמש
-  //     if (this.ifArrIsEmty) {
-  //       this.showNoDataMessage = true;
-  //     }else{
-  //       this.showNoDataMessage = false;
-  //     }
-  // });
-  // מחכה לסיום שליפת הנתונים לפי פרמטרים לפני אתחול
-  await paramsPromise;
-  await this.initializeData();
+
+await this.initializeData();
 }
 
   async initializeData() {
@@ -189,7 +160,56 @@ async ngOnInit(): Promise<void> {
       this.typeFilter
     ).then(() => this.updateFavoriteStatus());
   }
-
+  // async getItems(page: number = 0,limit: number = 100,searchTerm: string = '',typeFilter: string = ''): Promise<void> {
+  //   this.searchTerm = searchTerm;
+  //   this.typeFilter = typeFilter;
+  //   this.showNoDataMessage = false;
+  //   const url = `/EducationalResource/getAll?page=${page}&limit=${limit}`;
+  //   console.log(`Requesting URL: ${url}`);
+  //   return new Promise((resolve, reject) => {
+  //     this.apiService.Read(url).subscribe({
+  //       next: (response: { data: any[]; totalCount: number }) => {
+  //         console.log('API Response: ', response);
+  //         if (Array.isArray(response)) {
+  //           this.itemsFromServer = response.data;
+  //           console.log('Items received from server:', this.itemsFromServer);
+  //           // מבצע סינון לפי סוג
+  //           this.filterItemsByType(searchTerm, typeFilter);
+  //         } else {
+  //           this.itemsFromServer = response.data;
+  //           this.filterItemsByType(searchTerm, typeFilter);
+  //           // this.items = [];
+  //           // this.showNoDataMessage = true;
+  //         }
+  //         this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+  //         resolve();
+  //       },
+  //       error: (err) => {
+  //         console.error('Error fetching items', err);
+  //         this.items = [];
+  //         this.showNoDataMessage = true;
+  //         this.totalItems = 0; // משתמשים ב-totalCount מהשרת
+  //         reject(err);
+  //       },
+  //     });
+  //   });
+  // }
+  //בכלל לא מגיע לפה
+  //  getItems(page: number = 0, limit: number = 100, searchTerm: string = '', typeFilter: string = '') {
+  //    console.log("enter to getItems in show component")
+  //  const params: any = { page, limit };
+  //    if (searchTerm) params.searchTerm = searchTerm;
+  //    if (typeFilter) params.typeFilter = typeFilter;
+  //    this.apiService.Read(`/EducationalResource/getAll${ params }`).subscribe({
+  //    next: (response) => {
+  //    this.items = response.data || [];
+  //  console.log("items in show.component.ts",this.items)
+  //      },
+  //    error: (err) => {
+  //    console.error('Error fetching items:', err);
+  // },
+  //   });
+  // }
   async getItems(
     page: number = 0,
     limit: number = 100,
