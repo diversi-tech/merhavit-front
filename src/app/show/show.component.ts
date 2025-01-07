@@ -74,40 +74,82 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {}
-  async ngOnInit(): Promise<void> {
-    this.getUserTypeFromToken();
+//   async ngOnInit(): Promise<void> {
+//     this.getUserTypeFromToken();
   
-  // קריאה לשרת כשמשתנה פרמטר
+//   // קריאה לשרת כשמשתנה פרמטר
   
-    this.route.queryParams // האזנה לפרמטרים ב-URL
-  .pipe(
-    switchMap((params) => {
-      takeUntil(this.destroy$)
-      const type = params['type'] || '';
-      if (this.itemsService.typeFilter !== type) {
-        this.itemsService.typeFilter = type; // עדכון סוג הסינון בשירות
-        this.itemsService.page = 0; // התחלה מחדש
-        this.itemsService.getItems(0, 100, '', type)
-      }
+//     this.route.queryParams // האזנה לפרמטרים ב-URL
+//   .pipe(
+//     switchMap((params) => {
+//       takeUntil(this.destroy$)
+//       const type = params['type'] || '';
+//       if (this.itemsService.typeFilter !== type) {
+//         this.itemsService.typeFilter = type; // עדכון סוג הסינון בשירות
+//         this.itemsService.page = 0; // התחלה מחדש
+//         this.itemsService.getItems(0, 100, '', type)
+//       }
 
-      return this.itemsService.items$; // האזנה לזרם הנתונים
-     }),
-        catchError((err) => {
-          console.error('Error fetching items:', err);
-          return of([]); // במקרה של טעות
+//       return this.itemsService.items$; // האזנה לזרם הנתונים
+//      }),
+//         catchError((err) => {
+//           console.error('Error fetching items:', err);
+//           return of([]); // במקרה של טעות
         
-    }),
+//     }),
     
-  )
-  .subscribe((items) => {
-    this.items = items;
-    this.cdr.detectChanges();
-  });
+//   )
+//   .subscribe((items) => {
+//     this.items = items;
+//     this.cdr.detectChanges();
+//   });
 
-await this.initializeData();
+// await this.initializeData();
+// }
+
+async ngOnInit(): Promise<void> {
+  this.getUserTypeFromToken();
+  this.itemsService.fetchItems();
+  this.items = this.itemsService.items;
+  console.log("items in show component",this.items)
+  this.itemsInterval = setInterval(() => {
+    if (this.itemsService.items !== this.items) {
+      this.items = [...this.itemsService.items];
+      this.cdr.detectChanges(); // עדכון ה-UI
+    }
+  }, 200);
+   const paramsPromise = new Promise<void>((resolve) => {
+    this.route.queryParams.subscribe((params) => {
+      const type = params['type'];
+      if (type) {
+        this.getItems(0, 100, '', type).then(() => resolve());
+      } else {
+        this.getItems(0, 100, '').then(() => resolve());
+      }
+    });
+  });
+   // ביצוע מנוי לערך של ifArrIsEmty
+  // this.subscription = this.itemsService.ifArrIsEmty$.subscribe((isEmpty) => {
+  //   this.ifArrIsEmty = isEmpty;
+  //     // לבדוק את בדיקת הצגת ההודעה למשתמש
+  //     if (this.ifArrIsEmty) {
+  //       this.showNoDataMessage = true;
+  //     }else{
+  //       this.showNoDataMessage = false;
+  //     }
+  //   console.log('ifArrIsEmty value updated:', isEmpty);
+  //     // לבדוק את בדיקת הצגת ההודעה למשתמש
+  //     if (this.ifArrIsEmty) {
+  //       this.showNoDataMessage = true;
+  //     }else{
+  //       this.showNoDataMessage = false;
+  //     }
+  // });
+  // מחכה לסיום שליפת הנתונים לפי פרמטרים לפני אתחול
+  await paramsPromise;
+  await this.initializeData();
 }
 
-  
   async initializeData() {
     try {
       console.log('items before favorites:', this.items);
