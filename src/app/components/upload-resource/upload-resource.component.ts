@@ -27,6 +27,7 @@ import Swal from 'sweetalert2';
 import { Router, RouterModule } from '@angular/router';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HttpResponse } from '@angular/common/http';
+import { ItemsService } from '../../items.service';
 
 
 
@@ -74,7 +75,7 @@ export class UploadResourceComponent {
   isAudio: boolean = false
   fileTypes: Array<string> = ['ספר להשאלה' ,'ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
   userId: string = ''
-  purchaseLocations: Array<string> = ["חנות אונליין", "פוטומן"];
+  purchaseLocations: Array<string> = ["חנות ספרים", "פוטומן"];
 
   levels: Array<string> = ["נמוכה", "גבוהה"];
   languages: Array<string> = ["אנגלית", "עברית"];
@@ -120,11 +121,10 @@ export class UploadResourceComponent {
 
   readonly addOnBlur = true;
 
-  constructor(private pr: ActivatedRoute, private location: Location, private me: ActivatedRoute, private fb: FormBuilder, private sanitizer: DomSanitizer, private apiService: ApiService, private dialog: MatDialog, private snackBar: MatSnackBar, private router: Router) {
+  constructor(private itemService:ItemsService, private pr: ActivatedRoute, private location: Location, private me: ActivatedRoute, private fb: FormBuilder, private sanitizer: DomSanitizer, private apiService: ApiService, private dialog: MatDialog, private snackBar: MatSnackBar, private router: Router) {
     // יצירת טופס
     this.fileForm = this.fb.group({
       title: ['', Validators.required],
-      publicationDate: ['', Validators.required],
       type: ['', Validators.required],
       subjects: this.fb.array([], [Validators.required]),
       approved: [''],
@@ -216,7 +216,7 @@ export class UploadResourceComponent {
             type: this.resourceItem.type || "",
             specializations: this.resourceItem.specializations || "",
             subjects: this.resourceItem.subjects || "",
-            publicationDate: this.resourceItem.publicationDate || "",
+            
           });
 
           this.downloadFile(this.resourceItem.filePath)
@@ -886,7 +886,6 @@ export class UploadResourceComponent {
     console.log("*************description: " + JSON.stringify(this.fileForm.value.description));
     console.log("*************releaseYear: " + JSON.stringify(this.fileForm.value.releaseYear));
     console.log("*************language: " + JSON.stringify(this.fileForm.value.language));
-    console.log("*************publicationDate: " + JSON.stringify(this.fileForm.value.publicationDate));
     console.log("*************file " + this.file);
     console.log("*************link " + this.link);
     console.log("*************image " + this.isImage);

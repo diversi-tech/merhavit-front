@@ -2,7 +2,7 @@
   <!-- קובץ הפריט -->
   <div *ngIf="item" class="grid-item item-1">
     <ng-container *ngIf="previewUrl; else noFile" class="ng-container">
-      <div *ngIf="isPoster || isWorksheet || isPainting || isCreation">
+      <div *ngIf="isPoster || isWorksheet || isPainting || isCreation" class="img-item">
         <img [src]="previewUrl" [alt]="item.title || 'Image not found'">
       </div>
       <div *ngIf="physicalBook">
@@ -27,10 +27,11 @@
         </a>
         <p>לחצי 👆 על הכריכה להצגת המסמך*</p>
       </div>
-      
+
       <div *ngIf="isAudio">
         <!-- הצגת תמונת הכריכה מעל השיר -->
-        <img *ngIf="item.coverImage" [src]="item.coverImage" [alt]="'Cover image for ' + (item.title || 'שיר')" id="audio-cover-image">
+        <img *ngIf="item.coverImage" [src]="item.coverImage" [alt]="'Cover image for ' + (item.title || 'שיר')"
+          id="audio-cover-image">
         <audio [src]="previewUrl" controls></audio>
       </div>
     </ng-container>
@@ -79,7 +80,28 @@
 
 
   </div>
+<!-- בחירת טווח תאריכים -->
+      <mat-form-field appearance="fill" class="mat-form-field" *ngIf="isBook">
+        <mat-label>בחרי טווח תאריכים</mat-label>
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+          <input matStartDate formControlName="start" placeholder="תאריך התחלה">
+          <input matEndDate formControlName="end" placeholder="תאריך סיום">
+        </mat-date-range-input>
+        <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
 
+      <!-- הודעת שגיאה -->
+      <div *ngIf="range.controls.start.errors?.['matDatepickerParse']">
+        <mat-error>תאריך התחלה לא תקין</mat-error>
+      </div>
+      <div *ngIf="range.controls.end.errors?.['matDatepickerParse']">
+        <mat-error>תאריך סיום לא תקין</mat-error>
+      </div>
+
+      <!-- כפתור להשאלה -->
+      <button mat-raised-button color="primary" (click)="borrowItem()" *ngIf="physicalBook">להשאלה</button>
 
 
 

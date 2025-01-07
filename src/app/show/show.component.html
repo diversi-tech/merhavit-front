@@ -105,6 +105,7 @@
       (click)="navigateToItemPage(item)"
     >
       <div class="item-content">
+		<div *ngIf="isNewItem(item)" class="new-label">חדש</div>
         <img
           [src]="item.coverImage || 'image/file-not-found'"
           alt="Item Image"
@@ -210,7 +211,7 @@
         </button>
         <button
           class="action-button download"
-          *ngIf="item.type === 'כרזה' || item.type === 'דף עבודה' || item.type === 'איור' || item.type === 'יצירה' || item.type === 'סרטון' || item.type === 'שיר' || item.type === 'מערך' || item.type === 'טקסט'"
+          *ngIf="item.type === 'כרזה' || item.type === 'דף עבודה' || item.type === 'איור' || item.type === 'יצירה' || item.type === 'סרטון' || item.type === 'שיר' || item.type === 'מערך' || item.type === 'טקסט' || item.type === 'ספר דיגיטלי'"
           (click)="downloadResource(item); $event.stopPropagation()"
         >
           <i class="fas fa-download"></i>

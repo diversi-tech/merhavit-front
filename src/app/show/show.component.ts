@@ -1,4 +1,4 @@
-import { Component, Injectable, OnInit } from '@angular/core';
+import { Component, Injectable, OnInit, OnDestroy} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Item } from '../components/interfaces/item.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { ItemsService } from '../items.service'
+import { ItemsService } from '../items.service';
 import { MatDialog } from '@angular/material/dialog';
 import { log } from 'console';
 import { ChangeDetectorRef } from '@angular/core';
@@ -19,19 +19,34 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { Subscription } from 'rxjs';
-
+import { Subject, combineLatest, of } from 'rxjs';
+import { debounceTime, switchMap, takeUntil, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-items-list',
   templateUrl: './show.component.html',
   styleUrls: ['./show.component.css'],
   standalone: true,
-  imports: [CommonModule,MatTableModule,MatButtonModule,MatSnackBarModule, MatCardModule,MatIconModule,RouterOutlet,MatPaginatorModule],})
-
-export class ItemsListComponent implements OnInit {
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatCardModule,
+    MatIconModule,
+    RouterOutlet,
+    MatPaginatorModule,
+  ],
+})
+export class ItemsListComponent implements OnInit, OnDestroy  {
+  private destroy$ = new Subject<void>();
+  private refresh$ = new Subject<void>();
   public items: Item[] = []; //מערך המוצרים של הספריה
   public typeFilter: string = '';
+  private page: number=0;
+  private limit: number=10;
   public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public showNoDataMessage: boolean = false; // משתנה לשליטה בהצגת ההודעה
@@ -57,7 +72,7 @@ export class ItemsListComponent implements OnInit {
         this.items = [...this.itemsService.items];
         this.cdr.detectChanges(); // עדכון ה-UI
       }
-    }, 500);
+    }, 200);
      const paramsPromise = new Promise<void>((resolve) => {
       this.route.queryParams.subscribe((params) => {
         const type = params['type'];
@@ -100,13 +115,16 @@ export class ItemsListComponent implements OnInit {
     } catch (error) {
       console.error('Error initializing data:', error);
     }
-    // console.log('items after favorites:', this.items);
+    console.log('items after favorites:', this.items);
   }
 
-  toggleViewMode() {
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+ toggleViewMode() {
     this.viewMode = this.viewMode === 'grid' ? 'list' : 'grid'; // שינוי תצוגה
   }
-
   getUserTypeFromToken(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const token = localStorage.getItem('access_token');
@@ -519,4 +537,16 @@ export class ItemsListComponent implements OnInit {
       return [5, 10, 15, 20];
     }
   }
+  
+  isNewItem(item: Item): boolean {
+    const currentDate = new Date();
+    const publicationDate = new Date(item.publicationDate);
+    const differenceInTime = currentDate.getTime() - publicationDate.getTime();
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24); // המרה לימים
+
+    return differenceInDays < 30; // אם ההפרש פחות מ-30 ימים, אז זה נחשב ל"חדש"
+  }
+
 }
+
+
