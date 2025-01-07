@@ -22,8 +22,7 @@ import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog
 // import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { catchError, Subscription, switchMap, takeUntil } from 'rxjs';
 import { Subject, combineLatest, of } from 'rxjs';
- import { debounceTime, switchMap, takeUntil, catchError } from 'rxjs/operators';
- import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-items-list',
@@ -37,7 +36,7 @@ import { Subject, combineLatest, of } from 'rxjs';
     MatSnackBarModule,
     MatCardModule,
     MatIconModule,
-    RouterOutlet,
+    // RouterOutlet,
     MatPaginatorModule,
   ],
 })

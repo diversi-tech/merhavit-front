@@ -3,7 +3,6 @@
   max-width: 75rem;
   margin: auto;
   font-family: Arial, sans-serif;
-  /* direction: rtl; */
   color: #333;
 }
 
@@ -188,33 +187,21 @@
   .filter-buttons {
     flex-wrap: wrap;
   }
-  /* .pagination-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: "Roboto", sans-serif;
-    font-size: 14px;
-    color: #444;
-    margin: 10px 0;
-    position: fixed; 
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000; 
-    background-color: white; 
-    padding: 10px; 
-  } */
 
   .pagination-container {
+    left: 0vw;
+    width:86vw;
+    top: 92vh;
+    z-index:2;
+    position: absolute;
+    direction: ltr;
     display: flex;
-    position: fixed; /* מציב את ה-div בתחתית המסך */
+    /* position: fixed; */
     bottom: 0; /* מציב את ה-div בתחתית */
     left: 0;
     right: 0;
-    z-index: 1000; /* ודאי שה-div יהיה מעל אלמנטים אחרים */
     background-color: white; /* רקע כדי להפריד אותו מהתוכן */
-    padding: 10px; /* ריווח פנימי אם צריך */
-    direction: ltr
+    padding: 5rem; /* ריווח פנימי אם צריך */
 }
 
 
@@ -228,7 +215,7 @@
 
   .pagination-container .arrow:hover {
     color: #000;
-    cursor: pointer; /
+    cursor: pointer; 
   }
 }
 
@@ -291,6 +278,7 @@
   gap: 0.5rem; 
   width: 80vw; 
   margin: 0 auto; 
+  z-index: 1;
 }
 
 @media (max-width: 1200px) {
@@ -554,4 +542,13 @@ mat-icon {
   font-weight: bold;
   font-size: 14px;
   z-index: 1; 
+}
+.matPagin
+{
+  left: 0vw;
+  width:86vw;
+  top: 92vh;
+  z-index: 2;
+  position: absolute;
+  direction: ltr;
 }
