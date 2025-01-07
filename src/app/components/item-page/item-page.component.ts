@@ -77,7 +77,11 @@ export class ItemPageComponent implements OnInit {
   }
   this.cdr.detectChanges();
 }
-borrowItem(){}
+borrowItem(){
+
+}
+
+
 fetchItemDetails(itemId: string) {
   if (!itemId) {
     console.error('Invalid item ID');
