@@ -159,7 +159,7 @@ mat-form-field {
   flex-direction: column;
   justify-content: flex-start;
   /* הצמדת הטקסט לתחילת הפרטים */
-  align-items: flex-end;
+  align-items: flex-start;
   direction: rtl;
 
   /* הצמדת הטקסט לימין */

@@ -42,8 +42,8 @@ export class AppComponent {
   ngOnInit() {
     this.router.events.subscribe(() => {
       // נתיבים שבהם לא נרצה להציג את הקומפוננטה
-      const excludedRoutes = ['/login', '/registration', '/welcome', '/', '/reset-password', '/forgot-password', '/success-registration'];
-      const excludedRoutesForSeaech = ['/upload-resource'];
+     const excludedRoutes = ['/login', '/registration', '/welcome','/','/item-page','/reset-password','/forgot-password','/success-registration'];
+        const excludedRoutesForSeaech=['/upload-resource','/personal-details']
   
       const currentRoute = this.router.url.split('?')[0]; // הסרת שאילתות במידת הצורך
   
