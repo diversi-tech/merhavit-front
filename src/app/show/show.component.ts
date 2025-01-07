@@ -11,18 +11,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ItemsService } from '../items.service';
 import { MatDialog } from '@angular/material/dialog';
-import { log } from 'console';
+ import { log } from 'console';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
-import { ChangeDetectionStrategy } from '@angular/core';
+// import { ChangeDetectionStrategy } from '@angular/core';
 import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
-import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
-import { Subscription } from 'rxjs';
+// import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
+import { catchError, Subscription, switchMap, takeUntil } from 'rxjs';
 import { Subject, combineLatest, of } from 'rxjs';
-import { debounceTime, switchMap, takeUntil, catchError } from 'rxjs/operators';
+ import { debounceTime, switchMap, takeUntil, catchError } from 'rxjs/operators';
+ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-items-list',
@@ -36,7 +37,7 @@ import { debounceTime, switchMap, takeUntil, catchError } from 'rxjs/operators';
     MatSnackBarModule,
     MatCardModule,
     MatIconModule,
-    // RouterOutlet,
+    RouterOutlet,
     MatPaginatorModule,
   ],
 })
@@ -67,6 +68,13 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
+    this.itemsService.typeFilter = 'all'; // עדכון הסינון ב-service
+    this.itemsService.fetchItems(); // שליחת בקשה לשרת עם הסינון החדש
+     // ביצוע הבדיקה בטעינת הדף
+     this.subscription = this.itemsService.ifArrIsEmty$.subscribe((isEmpty) => {
+      this.ifArrIsEmty = isEmpty;
+      this.showNoDataMessage = isEmpty; // קיצור לוגיקה
+    });
   // קריאה לשרת כשמשתנה פרמטר
     this.route.queryParams // האזנה לפרמטרים ב-URL
   .pipe(
@@ -78,9 +86,9 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
         this.itemsService.page = 0; // התחלה מחדש
         this.itemsService.getItems(0,10, '', type)
       }
-      
-      // return this.itemsService.items$; // האזנה לזרם הנתונים
+      //return this.itemsService.items$; // האזנה לזרם הנתונים
       return combineLatest([this.itemsService.items$, this.itemsService.totalItems$]);
+
      }),
         catchError((err) => {
           console.error('Error fetching items:', err);
@@ -88,18 +96,15 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
     }),
   )
   .subscribe(([items, totalItems]
-  ) => {
+) => {
     this.items = items;
     this.totalItems=totalItems;
 
     this.cdr.detectChanges();
   });
+  await this.initializeData();
+  }
 
-await this.initializeData();
-}
-
-   
-  
    async initializeData() {
     try {
       console.log('items before favorites:', this.items);
@@ -149,7 +154,7 @@ await this.initializeData();
   
   async getItems(
     page: number = 0,
-    limit: number = 100,
+    limit: number = 10,
     searchTerm: string = '',
     typeFilter: string = ''
   ): Promise<void> {

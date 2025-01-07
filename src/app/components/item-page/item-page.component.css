@@ -249,3 +249,62 @@ input {
 .chip-container::-webkit-scrollbar-thumb:hover {
   background: #555; /* צבע הידית בעת ריחוף */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+strong{  direction: rtl;
+  text-align: right;}
+.date-picker-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 300px;
+  margin: auto;
+}
+/* mat-form-field {
+  width: 100%;
+} */
+
+
+
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+section {
+  display: table;
+}
+.example-label {
+  display: table-cell;
+  font-size: 14px;
+  margin-left: 8px;
+  min-width: 120px;
+}
+.example-button-row {
+  display: table-cell;
+  max-width: 600px;
+}
+.example-button-row .mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
+}
+.example-flex-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.example-button-container {
+  display: flex;
+  justify-content: center;
+  width: 140px;
+}
