@@ -13,6 +13,7 @@ import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { signal } from '@angular/core';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {ChangeDetectionStrategy, model} from '@angular/core';
 import {MatCardModule} from '@angular/material/card';
 import {provideNativeDateAdapter} from '@angular/material/core';
@@ -20,6 +21,11 @@ import {JsonPipe} from '@angular/common';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { ChangeDetectorRef } from '@angular/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatButtonModule} from '@angular/material/button';
+
 
 @Component({
   selector: 'app-item-page',
@@ -27,7 +33,7 @@ import { ChangeDetectorRef } from '@angular/core';
   styleUrls: ['./item-page.component.css'],
   standalone: true,
   providers: [provideNativeDateAdapter()],
-  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule,MatCardModule, MatDatepickerModule
+  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatInputModule,MatNativeDateModule,MatDividerModule, MatButtonModule,  MatIconModule,MatCardModule,MatDialogModule, MatDatepickerModule
     ,MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, JsonPipe ], // ייבוא המודולים
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
@@ -42,9 +48,12 @@ export class ItemPageComponent implements OnInit {
   isCreation = false;
   isAudio = false;
   isVideo = false;
-  isBook = false;
+  digitalBook = false;
+  physicalBook = false;
   isDocument = false; // ניהול הצגת המסמך
   inputValue: string = '';
+  startDate: Date | null = null;
+  endDate: Date | null = null;
   readonly addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   announcer = inject(LiveAnnouncer); // שימוש ב-inject להזרקת ה-LiveAnnouncer
@@ -63,7 +72,8 @@ export class ItemPageComponent implements OnInit {
     private apiService: ApiService,
     private sanitizer: DomSanitizer,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private dialog: MatDialog // הוספת MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -95,6 +105,8 @@ fetchItemDetails(itemId: string) {
       // כאן נעדכן את ה-tags מתוך פרטי הפריט
       this.tags.set(response.tags || []);
       this.setPreviewUrl(response);
+       // סימון שהמידע השתנה ויש לעדכן את התצוגה
+       this.cdr.markForCheck();
     },
     error: (err) => {
       console.error('Error fetching item details', err);
@@ -113,6 +125,8 @@ fetchSimilarItems(itemId: string) {
     next: (response) => {
       console.log('Similar items received:', response);
       this.similarItems = response;
+       // סימון שהמידע השתנה ויש לעדכן את התצוגה
+       this.cdr.markForCheck();
     },
     error: (err) => {
       console.error('Error fetching similar items', err);
@@ -148,17 +162,20 @@ fetchSimilarItems(itemId: string) {
     } else if (fileType.includes('pdf') || fileType.includes('מערך')) {
       this.clearPreviewsExcept('מערך');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
-    } else if (fileType.includes('pdf') || fileType.includes('ספר') || fileType.includes('book')) {
-      this.clearPreviewsExcept('ספר');
+    } else if (fileType.includes('pdf') || fileType.includes('ספר דיגיטלי') || fileType.includes('digitalBook')) {
+      this.clearPreviewsExcept('ספר דיגיטלי');
+      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
+    }else if (fileType.includes('ספר להשאלה') || fileType.includes('physicalBook')) {
+      this.clearPreviewsExcept('ספר להשאלה');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
     } else {
       console.error('Unknown file type:', fileType);
       this.previewUrl = null;
     }
     console.log('Cover image URL:', this.item?.coverImage);
-  }
+  }  
 
-  clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'ספר' | 'שיר') {
+  clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'ספר דיגיטלי' | 'ספר להשאלה' | 'שיר') {
     this.isPoster = type === 'כרזה';
     this.isWorksheet = type === 'דף עבודה';
     this.isPainting = type === 'איור';
@@ -166,7 +183,8 @@ fetchSimilarItems(itemId: string) {
     this.isAudio = type === 'שיר';
     this.isVideo = type === 'סרטון';
     this.isDocument = type === 'מערך';
-    this.isBook = type === 'ספר';
+    this.digitalBook = type === 'ספר דיגיטלי';
+    this.physicalBook = type === 'ספר להשאלה';
   }
 
   navigateToItem(itemId: string) {
@@ -190,6 +208,8 @@ fetchSimilarItems(itemId: string) {
           console.error('Unexpected response format:', response);
           this.reactiveKeywords.set([]); // מוודא שאין שגיאה בקונסול
         }
+         // סימון שהמידע השתנה ויש לעדכן את התצוגה
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Error fetching tags from server:', err);
@@ -249,6 +269,18 @@ fetchSimilarItems(itemId: string) {
         console.error('Error updating tags on the server:', err);
       },
     });
+  }
+
+  validateDates(): void {
+    const today = new Date();
+    if (this.startDate && this.startDate < today) {
+      alert('תאריך ההתחלה חייב להיות מאוחר או שווה להיום!');
+      this.startDate = null; // איפוס התאריך
+    }
+    if (this.endDate && this.endDate > new Date(today.setFullYear(today.getFullYear() + 1))) {
+      alert('תאריך הסיום לא יכול להיות רחוק יותר משנה מהתאריך הנוכחי!');
+      this.endDate = null; // איפוס התאריך
+    }
   }
   
 }

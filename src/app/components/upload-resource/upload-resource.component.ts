@@ -73,7 +73,7 @@ export class UploadResourceComponent {
   isPDF: boolean = false;
   isImage: boolean = true
   isAudio: boolean = false
-  fileTypes: Array<string> = ['ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
+  fileTypes: Array<string> = ['ספר להשאלה' ,'ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
   userId: string = ''
   purchaseLocations: Array<string> = ["חנות ספרים", "פוטומן"];
 
@@ -258,7 +258,6 @@ export class UploadResourceComponent {
 
   //חסימת אפשרות להעלאת כמה סוגי קבצים
   handleClick(event: Event, option: string): void {
-    console.log("option", this.contentOption);
 
     const modeAble = Object.keys(this.disabledOptions).find(k => this.disabledOptions[k])
     if (!this.disabledOptions[option] && modeAble) {
@@ -278,7 +277,7 @@ export class UploadResourceComponent {
       edit: 'עריכת תוכן',
       add: 'העלאת תוכן',
       addLink: 'קישורים',
-      book: 'ספר להשאלה'
+      physicalBook: 'ספר להשאלה'
     };
     return labels[option] || option;
   }
@@ -306,7 +305,6 @@ export class UploadResourceComponent {
     // ולידציה בסיסית לקישור
     const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
     this.isValidLink = urlRegex.test(this.link);
-    console.log("link:", this.link);
     this.disabledOptions['addLink'] = this.link && this.isValidLink ? true : false;
     this.errorMessage = this.disabledOptions['addLink'] ? null : this.errorMessage;
     if (this.link) {
@@ -424,7 +422,7 @@ export class UploadResourceComponent {
     this.coverImageErrorMessage = "חסר תמונת תצוגה מקדימה לקובץ"
     if(this.contentOption=='physicalBook')
       {
-       this.disabledOptions['book'] = this.coverImage ? true : false
+       this.disabledOptions['physicalBook'] = this.coverImage ? true : false
       }
   }
 
@@ -442,6 +440,7 @@ export class UploadResourceComponent {
 
   //בעת בחירת תמונת שער
   onImageSelected(event: Event): void {
+    
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       this.coverImage = input.files[0];
@@ -464,7 +463,7 @@ export class UploadResourceComponent {
 
     if(this.contentOption=='physicalBook')
        {
-        this.disabledOptions['book'] = this.coverImage ? true : false
+        this.disabledOptions['physicalBook'] = this.coverImage ? true : false
        }
   }
 
@@ -478,7 +477,6 @@ export class UploadResourceComponent {
 
   //כאשר מקלידים באפשרות עריכת תוכן
   onEditFileSelected() {
-    console.log("content", this.content);
     this.disabledOptions['edit'] = this.content ? true : false//חסימה של שאר האפשרויות
     if (this.content) {
       this.fileErrorMessage = null
@@ -491,7 +489,6 @@ export class UploadResourceComponent {
 
   //יצירת קובץ HTML המכיל את התוכן שהמשתמש הקליד
   createTextFile(): File {
-    console.log("content", this.content);
     const tempDiv = document.createElement('div');
     // הכנסת תוכן ה-HTML לתוך האלמנט
     tempDiv.innerHTML = this.content;
@@ -499,8 +496,6 @@ export class UploadResourceComponent {
     const text = tempDiv.textContent || tempDiv.innerText || '';
     const lines = text.split('</p>').map(line => line.trim());//חלוקה לשורות
     const firstLine = lines.find(line => this.isValidText(line) && line !== '');
-    console.log("first line", firstLine);
-
     // הגדרת שם הקובץ
     const fileName = firstLine ? `${firstLine}.html` : 'default.html';//שם הקובץ לפי השורה הראשונ
     this.fileForm.patchValue({ type: 'טקסט' }); // הגדרת ערך ברירת מחדל לסוג
@@ -617,7 +612,6 @@ export class UploadResourceComponent {
       next: (response) => {
         if (Array.isArray(response)) {
           this.multipleChoiceFields[fieldKey].allOption = response;
-          console.log("dataTags: ", this.multipleChoiceFields[fieldKey].allOption);
         } else {
           this.multipleChoiceFields[fieldKey].allOption = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
         }
@@ -725,7 +719,7 @@ export class UploadResourceComponent {
       edit: 'text',
       add: 'file',
       addLink: 'link',
-      physicalBook: 'book'
+      physicalBook: 'physicalBook'
     }
 
     const reverseOptions = Object.fromEntries(
@@ -749,7 +743,6 @@ export class UploadResourceComponent {
       try {
         const decodedToken: any = jwtDecode(token);
         this.userId = decodedToken.sub || '';
-        console.log("userId", this.userId);
       } catch (error) {
         console.error('Error decoding token:', error);
       }
@@ -766,7 +759,7 @@ export class UploadResourceComponent {
     }
 
     if (this.contentOption == 'physicalBook') {
-      this.fileForm.patchValue({ type: 'ספר פיזי' }); // הגדרת ערך ברירת מחדל
+      this.fileForm.patchValue({ type: 'ספר להשאלה' }); // הגדרת ערך ברירת מחדל
       this.updateTypeValidator(false);
     } else {
       this.fileForm.patchValue({ approved: '' })
@@ -777,7 +770,7 @@ export class UploadResourceComponent {
       this.fileForm.patchValue({ copies: '' })
       this.fileForm.patchValue({ libraryLocation: '' })
     }
-    if (this.fileForm.valid && (this.file || this.link || this.contentOption == 'physicalBook') && ((!this.isImage && this.coverImage) || this.isImage)) //ולידציה של השדות
+    if (this.fileForm.valid && (this.file || this.link || (this.contentOption == 'physicalBook' && this.coverImage)) && ((!this.isImage && this.coverImage) || this.isImage)) //ולידציה של השדות
     {
       const formData = new FormData();
 
@@ -790,32 +783,26 @@ export class UploadResourceComponent {
       }
 
       let str: string = JSON.stringify(metadata)
-      console.log("string data: " + str)
       formData.append('metadata', str) //הכנסת אוביקט של הנתונים לאוביקט שליחה
       if (this.file) {
         const rename = this.renameFile(this.file)
-        console.log(rename);
-
         formData.append('resource', rename)//הכנסת הקובץ לאוביקט לשליחה
       }
 
-      if (this.isImage) {
-        this.coverImage = this.file //אם סוג תמונה תמונת השער היא אותה תמונה
+      if (this.isImage && this.contentOption!=='physicalBook') {
+        this.coverImage = this.file //אם סוג תמונה -תמונת השער היא אותה תמונה
       }
 
+     
 
       if (this.coverImage && this.contentOption !== 'edit')//הכנסת תמונת שער לאוביקט לשליחה
       {
-        console.log("image " + this.coverImage);
 
         formData.append('coverImage', this.renameFile(this.coverImage))
       }
 
-      console.log(" נתונים" + formData.get('metaData'));
-
       this.apiService.Post('/EducationalResource', formData).subscribe({
         next: (response) => {
-          console.log('טופס נשלח בהצלחה:', this.fileForm.value);
           Swal.fire({ //הודעה למשתמש
             title: 'טופס נשלח בהצלחה!',
             icon: 'success',
@@ -854,7 +841,6 @@ export class UploadResourceComponent {
       });
       this.formErrorMessage = null;
     } else {
-      console.log("טופס לא תקין");
       this.isSubmitting = false;
 
       if (this.file || this.link || this.content) {

@@ -1,5 +1,5 @@
 import { ItemsService } from './../../../items.service';
-import {  EventEmitter,Component,OnInit, HostListener, Input,Output } from '@angular/core';
+import { EventEmitter, Component, OnInit, HostListener, Input, Output } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router'; // ייבוא Router
 import { filter } from 'rxjs/operators'; // ייבוא filter
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,6 +13,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SearchService } from '../../../shared/search.service';
 import { Item } from '../../../item.inteface';
+import {MatDividerModule} from '@angular/material/divider';
+
+
 
 @Component({
   selector: 'app-search',
@@ -20,11 +23,24 @@ import { Item } from '../../../item.inteface';
   styleUrls: ['./search.component.css'],
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule,
-    MatFormFieldModule,MatInputModule,MatIconModule,MatButtonModule,],
+    MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule,
+    MatButtonModule, MatDividerModule, MatIconModule],
 })
 export class SearchComponent implements OnInit {
-  @Output() search: EventEmitter<string | null> = new EventEmitter<string | null>(); 
-  searchControl: FormControl = new FormControl(''); 
+  @Output() search: EventEmitter<string | null> = new EventEmitter<string | null>();
+  searchControl: FormControl = new FormControl('');
+  typeControl: FormControl = new FormControl('');
+  titleControl: FormControl = new FormControl('');
+  authorControl: FormControl = new FormControl('');
+  borrowedControl: FormControl = new FormControl('');
+  publicationDateControl: FormControl = new FormControl('');
+  languageControl: FormControl = new FormControl('');
+  subjectControl: FormControl = new FormControl('');
+  agesControl: FormControl = new FormControl('');
+  levelControl: FormControl = new FormControl('');
+  createdByControl: FormControl = new FormControl('');
+  isnewControl: FormControl = new FormControl('');
+  durationControl: FormControl = new FormControl('');
   // יצירת תיבת קלט עם ערך התחלתי ריק
   selectedFileType: string = 'all';
   showFilterOptions: boolean = false;
@@ -33,12 +49,12 @@ export class SearchComponent implements OnInit {
   public firstName: string = ''; // משתנה לשם פרטי (אות ראשונה)
   isUserManagementComponent = false;
   isSearchHistoryVisible: boolean = false;
-  searchResults:any[]=[];
+  searchResults: any[] = [];
   userId: string = '';
- selectedFilter: string = ''; 
+  selectedFilter: string = '';
   searchTerm = '';
   typeFilter = '';
-items:Item[]=[];
+  items: Item[] = [];
   filters = {
     email: '',
     class: '',
@@ -53,8 +69,8 @@ items:Item[]=[];
 
   searchHistories: { [key: string]: string[] } = {}; // מילון לאחסון היסטוריות חיפוש
 
- 
-  constructor(private router: Router, private itemsService: ItemsService,private searchService:SearchService, private cdr: ChangeDetectorRef,private route: ActivatedRoute) { }
+
+  constructor(private router: Router, private itemsService: ItemsService, private searchService: SearchService, private cdr: ChangeDetectorRef, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.searchControl.valueChanges
@@ -66,49 +82,50 @@ items:Item[]=[];
       .subscribe(() => {
         this.checkIfUserManagementRoute(); // בדיקה מחדש בכל שינוי ניווט
       });
-        this.searchControl.valueChanges.subscribe(value => {
-        if (!value?.trim()) {
-          console.log('The searchControl is empty or contains only whitespace');
-        } else {
-          console.log('The searchControl has a value:', value);
-        }
-      });
-    
-     this.getUserTypeFromToken();
+    // this.searchControl.valueChanges.subscribe(value => {
+    //   if (!value?.trim()) {
+    //     console.log('The searchControl is empty or contains only whitespace');
+    //   } else {
+    //     console.log('The searchControl has a value:', value);
+    //   }
+    // });
 
-      this.loadSearchHistory(); // טוען את היסטוריית החיפושים
-  
-      this.searchControl.valueChanges.subscribe(value => {
-        if (!value?.trim()) {
-          console.log('The searchControl is empty or contains only whitespace');
-        } else {
-          console.log('The searchControl has a value:', value);
-        }
+    this.getUserTypeFromToken();
 
-        this.searchControl.valueChanges
+    this.loadSearchHistory(); // טוען את היסטוריית החיפושים
+
+    this.searchControl.valueChanges.subscribe(value => {
+      if (!value?.trim()) {
+        console.log('The searchControl is empty or contains only whitespace');
+      } else {
+        console.log('The searchControl has a value:', value);
+      }
+
+      this.searchControl.valueChanges
         .pipe(debounceTime(300), distinctUntilChanged()) // מצמצם קריאות
         .subscribe(() => {
           this.loadSearchHistory(); // עדכון תיבת ההיסטוריה לפי הערך החדש
-        }); 
-      });
+        });
+    });
   }
 
 
 
   onSearchChange(): void {
     if (this.isUserManagementComponent) {
-     this.onSearchChangeUsers();}
+      this.onSearchChangeUsers();
+    }
     console.log('onSearchChange called with searchTerm:', this.searchTerm);
     if (this.searchControl.value === '' || this.searchControl.value === null) {
-    //if (this.searchTerm === '') {
       console.log('Search term is empty, fetching all items...');
       this.itemsService.getItems().subscribe((items) => {
         this.items = items;
         console.log('Items fetched:', items);
       });
-    }}
+    }
+  }
 
-  
+
   // פענוח ה-JWT וקבלת האות הראשונה של השם
   extractUserDetailsFromToken(): void {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -130,9 +147,9 @@ items:Item[]=[];
     }
   }
 
-  
 
-  onSearch(searchTerm:string = this.searchControl.value): void {
+
+  onSearch(searchTerm: string = this.searchControl.value): void {
     this.searchControl.setValue(searchTerm);
     // לוקח את הערך שנכנס בשדה הקלט
     console.log("searchTerm", searchTerm);
@@ -148,7 +165,7 @@ items:Item[]=[];
         }
       );
     } else {
-      console.log('לא הוזנה מילה לחיפוש');
+      this.onExtraFilter();
     }
   }
 
@@ -172,27 +189,28 @@ items:Item[]=[];
   updateSearchHistory(searchTerm: string): void {
     // שליפת ה- userId מה-token
     this.getUserIdFromToken();
-      if (!this.userId) {
+    if (!this.userId) {
       console.error('User ID not found. Unable to update search history.');
-      return;}
-      // שליפת היסטוריית כל המשתמשים מה-localStorage או יצירת אובייקט ריק
+      return;
+    }
+    // שליפת היסטוריית כל המשתמשים מה-localStorage או יצירת אובייקט ריק
     const storedHistories: { [key: string]: string[] } = JSON.parse(localStorage.getItem('searchHistories') || '{}');
-        // שליפת ההיסטוריה של המשתמש הנוכחי או יצירת רשימה ריקה
+    // שליפת ההיסטוריה של המשתמש הנוכחי או יצירת רשימה ריקה
     const userHistory = storedHistories[this.userId] || [];
-        // הסרת מופעים קודמים של החיפוש הנוכחי
+    // הסרת מופעים קודמים של החיפוש הנוכחי
     const updatedHistory = userHistory.filter(term => term !== searchTerm);
-        // הוספת החיפוש הנוכחי לראש הרשימה
+    // הוספת החיפוש הנוכחי לראש הרשימה
     updatedHistory.unshift(searchTerm);
-        // הגבלת ההיסטוריה ל-7 חיפושים בלבד
+    // הגבלת ההיסטוריה ל-7 חיפושים בלבד
     const trimmedHistory = updatedHistory.slice(0, 7);
-        // עדכון ההיסטוריה של המשתמש הנוכחי ב-dictionary
+    // עדכון ההיסטוריה של המשתמש הנוכחי ב-dictionary
     storedHistories[this.userId] = trimmedHistory;
-        // שמירת היסטוריית כל המשתמשים ב-localStorage
+    // שמירת היסטוריית כל המשתמשים ב-localStorage
     localStorage.setItem('searchHistories', JSON.stringify(storedHistories));
-        // עדכון הרשימה המקומית (לדוגמה, לעדכון תצוגת היסטוריית החיפושים של המשתמש הנוכחי)
+    // עדכון הרשימה המקומית (לדוגמה, לעדכון תצוגת היסטוריית החיפושים של המשתמש הנוכחי)
     this.searchResults = trimmedHistory;
   }
-  
+
   // הצגת תיבת ההיסטוריה
   showSearchHistory() {
     this.isSearchHistoryVisible = true;
@@ -205,21 +223,21 @@ items:Item[]=[];
     }, 600); // השהיה קטנה כדי לאפשר לחיצה על פריטים
   }
 
-  loadSearchHistory(): void {  
+  loadSearchHistory(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       // שליפת ה- userId מה-token
       this.getUserIdFromToken();
-  
+
       if (!this.userId) {
         console.error('User ID not found. Unable to load search history.');
         return;
       }
       // שליפת היסטוריית כל המשתמשים מה-localStorage או יצירת אובייקט ריק
       const storedHistories: { [key: string]: string[] } = JSON.parse(localStorage.getItem('searchHistories') || '{}');
-            // שליפת ההיסטוריה של המשתמש הנוכחי או יצירת רשימה ריקה
+      // שליפת ההיסטוריה של המשתמש הנוכחי או יצירת רשימה ריקה
       const userHistory = storedHistories[this.userId] || [];
       const searchTerm = this.searchControl.value.toLowerCase(); // האותיות שנכתבו בשורת החיפוש
-       if (searchTerm) {
+      if (searchTerm) {
         // סינון לפי הערך בשורת החיפוש
         this.searchResults = userHistory.filter((term: string) =>
           term.toLowerCase().includes(searchTerm)
@@ -232,35 +250,9 @@ items:Item[]=[];
       console.error('localStorage is not available on the server.');
     }
   }
-  
 
 
-  
-  //onSearch(): void {
-    //const searchTerm = this.searchControl.value;  
-//     console.log("searchTerm",searchTerm)
-  //  if (searchTerm) {
-    //  this.itemsService.searchItems(searchTerm).subscribe(
-      //  (response) => {
-        //  this.items=response;
-          //console.log('התקבלו התוצאות:', response);
-//        },
-  //      (error) => {
-    //      console.error('שגיאה בשרת:', error);
-      //  }
-//      );
-  //  } else {
-    //  alert('לא הוזנה מילה לחיפוש')
-//      console.log('לא הוזנה מילה לחיפוש');
-  //  }
-  //}
-  
-  
-  
-
-
-
- private checkIfUserManagementRoute(): void {
+  private checkIfUserManagementRoute(): void {
     const currentUrl = this.router.url; // מקבל את ה-URL הנוכחי
     this.isUserManagementComponent = currentUrl.includes('/user-management');
   }
@@ -331,9 +323,9 @@ items:Item[]=[];
       this.showFilterOptions = false;
 
 
-  if (filterDetailsBox && !filterDetailsBox.contains(target) && !target.classList.contains('fa-filter')) {
-    this.showDetails = false;
-  }
+      if (filterDetailsBox && !filterDetailsBox.contains(target) && !target.classList.contains('fa-filter')) {
+        this.showDetails = false;
+      }
       // איפוס השדות באובייקט filters
       this.resetFilters();
     }
@@ -375,18 +367,49 @@ items:Item[]=[];
     // שולח את מילת החיפוש לשירות החיפוש
     this.searchService.setFilterOption(filterText);
   }
- // onSearchChange() {
-   // if (this.isUserManagementComponent) {
-     // this.onSearchChangeUsers();
-   // }
- // }
 
   onSearchChangeUsers() {
     this.searchService.setSearchTerm(this.searchTerm);
   }
 
-
-
+  onExtraFilter() {
+    console.log("in onExtraFilter")
+    this.typeFilter = this.typeControl.value;
+    this.itemsService.title = this.titleControl.value;
+    this.itemsService.author = this.authorControl.value;
+    this.itemsService.borrowed = this.borrowedControl.value;
+    this.itemsService.publicationDate = this.publicationDateControl.value;
+    this.itemsService.language = this.languageControl.value;
+    this.itemsService.subject = this.subjectControl.value;
+    this.itemsService.ages = this.agesControl.value;
+    this.itemsService.level = this.levelControl.value;
+    this.itemsService.createdBy = this.createdByControl.value;
+    this.itemsService.isnew = this.isnewControl.value;
+    this.itemsService.duration = this.durationControl.value;
+    console.log('Type:', this.typeControl.value);
+    console.log('Title:', this.titleControl.value);
+    this.itemsService.fetchItems()
+  }
+  onClear(){
+    this.selectedFileType = 'all';
+    this.selectedFilter='all';
+    this.itemsService.typeFilter = ''; 
+    this.searchControl.setValue('');
+    this.typeControl.setValue('');
+    this.borrowedControl.setValue('');
+    this.languageControl.setValue('');
+    this.subjectControl.setValue('');
+    this.durationControl.setValue('');
+    this.titleControl.setValue('');
+    this.createdByControl.setValue('');
+    this.publicationDateControl.setValue('');
+    this.levelControl.setValue('');
+    this.isnewControl.setValue('');
+    this.itemsService.getItems().subscribe((items) => {
+      this.items = items;
+      console.log('Items fetched:', items);
+    });
+  }
 }
 
 
