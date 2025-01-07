@@ -70,8 +70,9 @@ export class OrdersComponent {
                       borrowRequests.forEach((borrowRequest: any) => {
                         const resourceId = borrowRequest.resourceId;
                         const status = borrowRequest.status;
+                        const requestDate = borrowRequest.requestDate;
                         console.log('resourceId', resourceId);
-                        this.fetchResourceDetails(resourceId, status);
+                        this.fetchResourceDetails(resourceId, status,requestDate);
                       });
                     } else {
                       console.log('No borrow requests found for this user.');
@@ -98,7 +99,7 @@ export class OrdersComponent {
     }
   }
 
-  fetchResourceDetails(resourceId: string, status: string): void {
+  fetchResourceDetails(resourceId: string, status: string, requestDate:string): void {
     this.apiService.Read(`/EducationalResource/${resourceId}`).subscribe({
       next: (resourceData) => {
         console.log('resourceData', resourceData);
@@ -111,6 +112,7 @@ export class OrdersComponent {
           publicationDate: resourceData.publicationDate,
           resourceId: resourceData._id,
           status: status,
+          requestDate: requestDate,
         });
       },
       error: (error) =>

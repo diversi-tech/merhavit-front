@@ -81,3 +81,10 @@
   align-items: center; /* יישור אנכי */
 }
 
+.request-date {
+  margin-right: auto; /* דוחף את התאריך לצד שמאל */
+  padding: 0 1rem;
+  color: #666;
+  font-size: 0.9rem;
+  white-space: nowrap; /* מונע שבירת שורה */
+}

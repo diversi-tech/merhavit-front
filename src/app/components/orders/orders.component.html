@@ -58,6 +58,9 @@
           }}</span>
         </div>
       </div>
+      <div class="request-date">
+        {{ order.requestDate | date : "dd/MM/yyyy" }}
+      </div>
     </div>
     <div class="action-buttons">
       <button
