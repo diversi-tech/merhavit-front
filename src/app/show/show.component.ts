@@ -121,7 +121,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
 await this.initializeData();
 }
 
-  
   async initializeData() {
     try {
       console.log('items before favorites:', this.items);
