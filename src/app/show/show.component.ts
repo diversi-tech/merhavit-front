@@ -522,7 +522,7 @@ export class ItemsListComponent implements OnInit {
         const decodedToken: any = jwtDecode(token);
         const userId = decodedToken.idNumber;
         // פתיחת דיאלוג אישור
-        const dialogRef = this.dialog.open(ConfirmDialogComponent1, {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
           width: '350px',
         });
         // המתנה לתשובת המשתמש
