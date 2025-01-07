@@ -2,7 +2,6 @@
   <div class="borrow-request-header">
     <div class="borrow-request-cell">מוצר</div>
     <div class="borrow-request-cell">תלמיד</div>
-    <div class="borrow-request-cell">סטטוס</div>
     <div class="borrow-request-cell">תאריך בקשה</div>
     <div class="borrow-request-cell">מתאריך:</div>
     <div class="borrow-request-cell">עד:</div>
@@ -12,7 +11,6 @@
   <div class="borrow-request-row" *ngFor="let borrowRequest of borrowRequests">
     <div class="borrow-request-cell">{{ borrowRequest.resourceName }}</div>
     <div class="borrow-request-cell">{{ borrowRequest.studentName }}</div>
-    <div class="borrow-request-cell">{{ borrowRequest.status }}</div>
     <div class="borrow-request-cell">{{ borrowRequest.requestDate | date: 'short' }}</div>
     <div class="borrow-request-cell">{{ borrowRequest.fromDate | date: 'short' }}</div>
     <div class="borrow-request-cell">{{ borrowRequest.toDate | date: 'short' }}</div>
