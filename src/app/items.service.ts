@@ -204,6 +204,7 @@ export class ItemsService {
         console.log("response: ",response)
         this.items = response.data || []; // מבטיח שהמערך יתעדכן רק אם יש נתונים
 	  this.ifArrIsEmtySubject.next(this.items.length === 0); // עדכון הערך
+    this.itemsSubject.next(this.items);
       },
       (error) => {
         console.error('Error fetching items:', error);
