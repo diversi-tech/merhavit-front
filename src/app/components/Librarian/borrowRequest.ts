@@ -71,7 +71,6 @@ export class BorrowRequestManagementComponent implements OnInit {
     };
     this.apiService.Put('/borrowRequests/approve-or-reject', data).subscribe({
       next: (response) => {
-        console.log(`${this.actionType} borrow request:`, response);
         this.getBorrowRequests();
         this.closeConfirmation();
       },
