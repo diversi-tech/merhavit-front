@@ -22,23 +22,6 @@ import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog
 import { Subscription } from 'rxjs';
 
 
-
-// interface Item {
-//   _id: string;
-//  description: string;
-//   title: string;
-//  type: string;
-//   author: string;
-//  publicationDate: Date;
-//   Tags: Array<string>;
-//  createdBy: string;
-//   ApprovedBy: string;
-//   coverImage: string;
-//   filePath: string;
-//   isFavorite?: boolean;
-// }
-
-
 @Component({
   selector: 'app-items-list',
   templateUrl: './show.component.html',
@@ -48,8 +31,8 @@ import { Subscription } from 'rxjs';
 
 export class ItemsListComponent implements OnInit {
   public items: Item[] = []; //מערך המוצרים של הספריה
-public typeFilter: string = '';
-public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
+  public typeFilter: string = '';
+  public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public showNoDataMessage: boolean = false; // משתנה לשליטה בהצגת ההודעה
   public favorites: { itemId: string }[] = [];
@@ -59,14 +42,9 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
   public searchTerm: string = '';
   public ifArrIsEmty: boolean = false;
   private subscription: Subscription = new Subscription();
-    viewMode: 'grid' | 'list' = 'grid';  // ברירת המחדל היא כרטיסיות
-    
-  
-  
+  viewMode: 'grid' | 'list' = 'grid';  // ברירת המחדל היא כרטיסיות
   
   constructor(private http: HttpClient, private _snackBar: MatSnackBar ,private snackBar: MatSnackBar,private dialog: MatDialog, private apiService: ApiService, private router: Router,private ro: Router,private itemsService: ItemsService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
-
-
 
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
@@ -154,63 +132,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
     ).then(() => this.updateFavoriteStatus());
   }
   
-  
-  // async getItems(page: number = 0,limit: number = 100,searchTerm: string = '',typeFilter: string = ''): Promise<void> {
-  //   this.searchTerm = searchTerm;
-  //   this.typeFilter = typeFilter;
-
-  //   this.showNoDataMessage = false;
-  //   const url = `/EducationalResource/getAll?page=${page}&limit=${limit}`;
-  //   console.log(`Requesting URL: ${url}`);
-  //   return new Promise((resolve, reject) => {
-  //     this.apiService.Read(url).subscribe({
-  //       next: (response: { data: any[]; totalCount: number }) => {
-  //         console.log('API Response: ', response);
-
-  //         if (Array.isArray(response)) {
-  //           this.itemsFromServer = response.data;
-  //           console.log('Items received from server:', this.itemsFromServer);
-  //           // מבצע סינון לפי סוג
-  //           this.filterItemsByType(searchTerm, typeFilter);
-  //         } else {
-  //           this.itemsFromServer = response.data;
-  //           this.filterItemsByType(searchTerm, typeFilter);
-  //           // this.items = [];
-  //           // this.showNoDataMessage = true;
-  //         }
-  //         this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
-  //         resolve();
-  //       },
-  //       error: (err) => {
-  //         console.error('Error fetching items', err);
-  //         this.items = [];
-  //         this.showNoDataMessage = true;
-  //         this.totalItems = 0; // משתמשים ב-totalCount מהשרת
-  //         reject(err);
-  //       },
-  //     });
-  //   });
-  // }
-
-
-  //בכלל לא מגיע לפה
-//  getItems(page: number = 0, limit: number = 100, searchTerm: string = '', typeFilter: string = '') {
-//    console.log("enter to getItems in show component")
-  //  const params: any = { page, limit };
-//    if (searchTerm) params.searchTerm = searchTerm;
-//    if (typeFilter) params.typeFilter = typeFilter;
-  
-//    this.apiService.Read(`/EducationalResource/getAll${ params }`).subscribe({
-  //    next: (response) => {
-    //    this.items = response.data || [];
-      //  console.log("items in show.component.ts",this.items)
-//      },
-  //    error: (err) => {
-    //    console.error('Error fetching items:', err);
-     // },
- //   });
- // }
-
   async getItems(
     page: number = 0,
     limit: number = 100,
@@ -236,13 +157,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
           } else {
             this.itemsFromServer = response.data;
             this.filterItemsByType(searchTerm, typeFilter);
-            // this.items = [];
-            // this.showNoDataMessage = true;
-            
-          
-
-        
-
           }
           
           this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
@@ -250,7 +164,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
         },
         error: (err) => {
           console.error('Error fetching items', err);
-          // this.items = [];
           this.showNoDataMessage = true;
           this.totalItems = 0; // משתמשים ב-totalCount מהשרת
           reject(err);
@@ -284,12 +197,6 @@ public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספ
 
     this.items = filteredItems;
     console.log('Final filtered items:', this.items);
-
-    // if (this.items.length === 0) {
-    //   setTimeout(() => {
-    //     this.showNoDataMessage = true;
-    //   }, 100);
-    // }
   }
   async editItem(item1: Item) {
     this.router.navigate(['/upload-resource', item1._id], {
