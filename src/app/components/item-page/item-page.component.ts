@@ -21,6 +21,11 @@ import {JsonPipe} from '@angular/common';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { ChangeDetectorRef } from '@angular/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatButtonModule} from '@angular/material/button';
+
 
 @Component({
   selector: 'app-item-page',
@@ -28,7 +33,7 @@ import { ChangeDetectorRef } from '@angular/core';
   styleUrls: ['./item-page.component.css'],
   standalone: true,
   providers: [provideNativeDateAdapter()],
-  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule,MatCardModule,MatDialogModule, MatDatepickerModule
+  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatInputModule,MatNativeDateModule,MatDividerModule, MatButtonModule,  MatIconModule,MatCardModule,MatDialogModule, MatDatepickerModule
     ,MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, JsonPipe ], // ייבוא המודולים
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
@@ -47,6 +52,8 @@ export class ItemPageComponent implements OnInit {
   physicalBook = false;
   isDocument = false; // ניהול הצגת המסמך
   inputValue: string = '';
+  startDate: Date | null = null;
+  endDate: Date | null = null;
   readonly addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   announcer = inject(LiveAnnouncer); // שימוש ב-inject להזרקת ה-LiveAnnouncer
@@ -262,6 +269,18 @@ fetchSimilarItems(itemId: string) {
         console.error('Error updating tags on the server:', err);
       },
     });
+  }
+
+  validateDates(): void {
+    const today = new Date();
+    if (this.startDate && this.startDate < today) {
+      alert('תאריך ההתחלה חייב להיות מאוחר או שווה להיום!');
+      this.startDate = null; // איפוס התאריך
+    }
+    if (this.endDate && this.endDate > new Date(today.setFullYear(today.getFullYear() + 1))) {
+      alert('תאריך הסיום לא יכול להיות רחוק יותר משנה מהתאריך הנוכחי!');
+      this.endDate = null; // איפוס התאריך
+    }
   }
   
 }
