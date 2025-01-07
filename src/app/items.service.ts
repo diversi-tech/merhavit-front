@@ -1,11 +1,11 @@
-
-
 import { Injectable } from '@angular/core';
+import { catchError } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { Item } from './components/interfaces/item.model';
 import { BehaviorSubject } from 'rxjs';
+import { error } from 'node:console';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +23,7 @@ export class ItemsService {
   public title: string = '';
   public  author: string = '';
   public borrowed: string = '';
-  public  publicationDate: string="01-01-2021";//אמור ליהיות מסוג date 
+  public  publicationDate: string='';//אמור ליהיות מסוג date 
   public language: string = '';
   public subject: string = '';
   public ages: number = 0;
@@ -143,39 +143,102 @@ export class ItemsService {
   }
 
   fetchItems(): void {
-    if(this.isFetching){
-      return
-    }
-    this.isFetching=true
+    console.log("in fetchItems");
+    console.log(this.title);
+    this.isFetching = true;
+    
     let params = new HttpParams()
       .set('page', this.page.toString())
       .set('limit', this.limit.toString());
-
+  
     if (this.searchTerm) {
       params = params.set('searchTerm', this.searchTerm);
     }
-console.log("type in service",this.typeFilter);
-
+    console.log("type in service", this.typeFilter);
+  
     if (this.typeFilter && this.typeFilter !== 'all') {
-      // אם נבחר סוג סינון
       params = params.set('filterType', this.typeFilter);
     }
+    if (this.title) {
+      params = params.set('title', this.title);
+    }
+    if (this.author) {
+      params = params.set('author', this.author);
+    }
+    if (this.borrowed) {
+      params = params.set('borrowed', this.borrowed);
+    }
+    if (this.publicationDate) {
+      params = params.set('publicationDate', this.publicationDate);
+    }
+    if (this.language) {
+      params = params.set('language', this.language);
+    }
+    if (this.subject) {
+      params = params.set('subject', this.subject);
+    }
+    if (this.ages) {
+      params = params.set('ages', this.ages);
+    }
+    if (this.level) {
+      params = params.set('level', this.level);
+    }
+    if (this.createdBy) {
+      params = params.set('createdBy', this.createdBy);
+    }
+    if (this.isnew) {
+      params = params.set('isnew', this.isnew);
+    }
+    if (this.duration) {
+      params = params.set('duration', this.duration);
+    }
+  
+    console.log("URL with parameters:", `/EducationalResource/getAll?${params.toString()}`);
+    console.log("params",params)
+    console.log("params.toString",params.toString)
+    this.apiService.Read(`/EducationalResource/getAll?${params.toString()}`).subscribe(
+      (response: any) => {
+        console.log("response: ",response)
+        this.items = response.data || []; // מבטיח שהמערך יתעדכן רק אם יש נתונים
+      },
+      (error) => {
+        console.error('Error fetching items:', error); // לוג טעות אם יש בעיה בהבאת הנתונים
+      }
+    );
+  }
 
-    this.apiService
+  //   return this.apiService.Read(`/EducationalResource/getAll?${params.toString()}`).pipe(
+  //     map((response: { data: any, totalCount: number }) => {
+  //       this.items = response.data || [];
+  //       this.itemsSubject.next(this.items);
+  //       this.totalItems = response.totalCount;
+  //       console.log('total items:--------', this.totalItems);
+  //       this.isFetching = false;
+  //       return this.items;
+  //     }),
+  //     catchError((err) => {
+  //       console.error('Error fetching items from server', err);
+  //       this.isFetching = false;
+  //       throw err; // חובה להחזיר שגיאה אם לא רוצים שה-Observable יתנהג כרגיל
+  //     })
+  //   );
+  // }
+  getAllItemsAlways(
+    page: number = this.page,
+    limit: number = this.limit,): Observable<Item[]> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+    
+    return this.apiService
       .Read(`/EducationalResource/getAll?${params.toString()}`)
-      .subscribe(
-        (response: { data: any, totalCount: number }) => {
-          this.items = response.data || []; // מבטיח שהמערך יתעדכן רק אם יש נתונים
-          this.itemsSubject.next(this.items);
-          console.log('items after favorites:', this.items);
-          this.totalItems = response.totalCount
-          console.log('total items:--------', this.totalItems);
-        this.isFetching = false;
-        },
-        (error) => {
-          console.error('Error fetching items:', error); // לוג טעות אם יש בעיה בהבאת הנתונים
-          this.isFetching = false;
-        }
+      .pipe(
+        map((response: any) => {
+          this.items = response.data || [];
+          this.itemsSubject.next(this.items); // עדכון ה-BehaviorSubject
+          return this.items;
+        })
       );
   }
+
 }
