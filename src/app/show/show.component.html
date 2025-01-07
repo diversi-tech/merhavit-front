@@ -24,12 +24,10 @@
   >
     <div class="item-content">
       <div class="item-container">
-        <!-- אם יש תמונה, הצג אותה -->
         <ng-container *ngIf="item.coverImage; else fileExtensionTemplate">
           <img [src]="item.coverImage" alt="Item Image" class="item-image" />
         </ng-container>
 
-        <!-- אם אין תמונה, הצג את סיומת הקובץ -->
         <ng-template #fileExtensionTemplate>
           <div class="file-extension-container">
             <ng-container [ngSwitch]="getFileExtension(item.filePath)">
@@ -45,11 +43,7 @@
         </ng-template>
       </div>
 
-      <!-- <img
-        [src]="item.coverImage || 'image/file-not-found'"
-        alt="Item Image"
-        class="item-image"
-      /> -->
+  
       <div class="item-details">
         <div class="item-title">{{ item.title }}</div>
         <div class="item-description">{{ item.description }}</div>

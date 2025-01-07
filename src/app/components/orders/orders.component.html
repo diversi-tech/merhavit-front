@@ -42,24 +42,20 @@
   <div class="row" *ngFor="let order of orders">
     <div class="item-content">
       <img
-        [src]="order.coverImage || 'image/file-not-found'"
+        [src]="order.coverImage || '.jpg'"
         alt="Item Image"
         class="item-image"
       />
       <div class="item-details">
         <div class="item-title">{{ order.title }}</div>
-        <div class="item-description">{{ order.description }}</div>
         <div class="item-meta">
           <span class="meta-label">מחבר: </span>
           <span class="meta-value">{{ order.Author }}</span> |
-          <span class="meta-label">תאריך העלאה:</span>
+          <span class="meta-label">תאריך בקשה:</span>
           <span class="meta-value">{{
-            order.publicationDate | date : "dd/MM/yyyy"
+            order.requestDate | date : "dd/MM/yyyy"
           }}</span>
         </div>
-      </div>
-      <div class="request-date">
-        {{ order.requestDate | date : "dd/MM/yyyy" }}
       </div>
     </div>
     <div class="action-buttons">

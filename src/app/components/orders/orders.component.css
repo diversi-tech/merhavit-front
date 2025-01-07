@@ -55,7 +55,7 @@
 }
 
 .status-rejected:hover {
-  background-color: #8B0000; /* אדום כהה יותר */
+  background-color: #8b0000; /* אדום כהה יותר */
 }
 
 .status-pending {
@@ -73,7 +73,6 @@
   background-color: #505050; /* אפור כהה יותר */
 }
 
-
 .action-buttons {
   display: flex;
   gap: 0.5rem; /* ריווח בין הכפתורים */
@@ -81,10 +80,50 @@
   align-items: center; /* יישור אנכי */
 }
 
-.request-date {
-  margin-right: auto; /* דוחף את התאריך לצד שמאל */
-  padding: 0 1rem;
-  color: #666;
-  font-size: 0.9rem;
-  white-space: nowrap; /* מונע שבירת שורה */
+.container {
+  width: 100%;
+  max-width: 75rem;
+  margin: auto;
+  font-family: Arial, sans-serif;
+  direction: rtl;
+  color: #333;
+  padding: 0 2rem 0 15rem; /* מוסיף ריווח של 15rem מצד שמאל עבור ה-sidebar */
+}
+
+.table-container {
+  direction: rtl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  margin-right: 2rem; /* מוסיף ריווח מצד ימין */
+  padding-left: 2rem; /* מוסיף ריווח מצד שמאל */
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  max-width: 50rem;
+  padding: 2vh 2rem; /* מוסיף ריווח פנימי */
+  border-bottom: 0.1em solid #dcdcdc;
+  margin: 0 2rem; /* מוסיף ריווח מהצדדים */
+}
+
+/* התאמה למסכים קטנים */
+@media (max-width: 48rem) {
+  .container {
+    padding: 0 1rem; /* מקטין את הריווח במסכים קטנים */
+  }
+
+  .table-container {
+    margin-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .row {
+    margin: 0 1rem;
+    padding: 2vh 1rem;
+  }
 }

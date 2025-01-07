@@ -107,7 +107,7 @@ export class OrdersComponent {
         this.orders.push({
           coverImage: 'path-to-default-image.jpg', // או התמונה האמיתית אם קיימת
           title: resourceData.title,
-          description: resourceData.description || ' ',
+          // description: resourceData.description || ' ',
           Author: resourceData.author,
           publicationDate: resourceData.publicationDate,
           resourceId: resourceData._id,
