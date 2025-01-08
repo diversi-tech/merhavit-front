@@ -2,32 +2,27 @@
   <!-- קובץ הפריט -->
   <div *ngIf="item" class="grid-item item-1">
     <ng-container *ngIf="previewUrl; else noFile" class="ng-container">
-      <div *ngIf="isPoster || isWorksheet || isPainting || isCreation">
+      <div *ngIf="isPoster || isWorksheet || isPainting || isCreation" class="img-item">
         <img [src]="previewUrl" [alt]="item.title || 'Image not found'">
+      </div>
+      <div *ngIf="physicalBook">
+        <img [src]="item.coverImage" class="document-cover-image" [alt]="item.title || 'Image not found'">
       </div>
       <div *ngIf="isVideo">
         <video [src]="previewUrl" controls></video>
       </div>
-      <div *ngIf="isDocument || isBook">
+      <div *ngIf="isDocument || digitalBook">
         <!-- הצגת תמונת הכריכה -->
-        <a 
-          *ngIf="item.coverImage" 
-          [href]="previewUrl" 
-          target="_blank" 
-          rel="noopener noreferrer"
-        >
-          <img 
-            [src]="item.coverImage" 
-            [alt]="'Cover image for ' + (item.title || 'מערך')" 
-            class="document-cover-image" 
-          >
+        <a *ngIf="item.coverImage" [href]="previewUrl" target="_blank" rel="noopener noreferrer">
+          <img [src]="item.coverImage" [alt]="'Cover image for ' + (item.title || 'מערך')" class="document-cover-image">
         </a>
         <p>לחצי 👆 על הכריכה להצגת המסמך*</p>
       </div>
-      
+
       <div *ngIf="isAudio">
         <!-- הצגת תמונת הכריכה מעל השיר -->
-        <img *ngIf="item.coverImage" [src]="item.coverImage" [alt]="'Cover image for ' + (item.title || 'שיר')" id="audio-cover-image">
+        <img *ngIf="item.coverImage" [src]="item.coverImage" [alt]="'Cover image for ' + (item.title || 'שיר')"
+          id="audio-cover-image">
         <audio [src]="previewUrl" controls></audio>
       </div>
     </ng-container>
@@ -46,110 +41,126 @@
     <p><strong>שפה:</strong> {{ item.language || '' }}</p>
     <p><strong>שנת הוצאה לאור:</strong> {{ item.releaseYear || '' }}</p>
     <p><strong>מחבר:</strong> {{ item.author || '' }}</p>
+    <p *ngIf="item.physicalBook==true"><strong>מיקום בסיפריה:</strong> {{ item.filePath || '' }}</p>
     <p><strong>תיאור:</strong> {{ item.description || '' }}</p>
     <!-- הצגת התגיות -->
     <section>
-      <mat-form-field class="example-form-field">
+      <mat-form-field class="tags">
         <mat-chip-grid #reactiveChipGrid aria-label="Enter reactive form keywords" [formControl]="formControl">
-          <mat-chip-row *ngFor="let keyword of reactiveKeywords()">
-            {{ keyword }}
-            <button matChipRemove (click)="removeReactiveKeyword(keyword)" aria-label="'remove reactive form ' + keyword">
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip-row>
+          <div class="chip-container">
+            <mat-chip-row *ngFor="let keyword of reactiveKeywords()">
+              {{ keyword }}
+              <button matChipRemove (click)="removeReactiveKeyword(keyword)"
+                aria-label="'remove reactive form ' + keyword">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+          </div>
         </mat-chip-grid>
-        <input
-          maxlength="10"
-          placeholder="הוסיפי פידבק על התוכן"
-          [matChipInputFor]="reactiveChipGrid"
-          (matChipInputTokenEnd)="addReactiveKeyword($event)"
-        />
+        <input maxlength="12" placeholder="הוסיפי תגית" [matChipInputFor]="reactiveChipGrid"
+          (matChipInputTokenEnd)="addReactiveKeyword($event)" />
       </mat-form-field>
+      <div class="scroll-wrapper">
+        <div class="chip-container">
+        </div>
+      </div>
+    </section>
+
+
+      <!--  <div class="calender">
+     <mat-form-field appearance="fill" class="mat-form-field" *ngIf="isBook">
+        <mat-label>בחרי טווח תאריכים</mat-label>
+          <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" (dateChange)="validateDates()" />
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+          <input matStartDate formControlName="start" placeholder="תאריך התחלה">
+          <input matEndDate formControlName="end" placeholder="תאריך סיום">
+        </mat-date-range-input>
+        <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+          <mat-label>תאריך סיום</mat-label>
+          <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" (dateChange)="validateDates()" />
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field> -->
+      <div class="calender">
+      <mat-form-field appearance="fill">
+        <mat-label>תאריך התחלה</mat-label>
+        <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" (dateChange)="validateDates()" />
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+     
+      <mat-form-field appearance="fill">
+        <mat-label>תאריך סיום</mat-label>
+        <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" (dateChange)="validateDates()" />
+        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+        <!-- הודעת שגיאה -->
+        <div *ngIf="range.controls.start.errors?.['matDatepickerParse']">
+          <mat-error>תאריך התחלה לא תקין</mat-error>
+        </div>
+        <div *ngIf="range.controls.end.errors?.['matDatepickerParse']">
+          <mat-error>תאריך סיום לא תקין</mat-error>
+        </div>
+      <!-- כפתור להשאלה -->
+    <section>
+          <div class="example-button-row">
+            <button mat-button>להשאלה</button>
+
+      </div>
     </section>
   </div>
-
-
-
-
-<!-- פריטים דומים -->
+  <!-- פריטים דומים -->
   <div class="grid-item item-3">
     <h3>פריטים דומים</h3>
     <div class="similar-items">
       <div *ngFor="let similarItem of similarItems" class="similar-item" (click)="navigateToItem(similarItem._id)">
         <div class="image-container">
-        <!-- התמונה -->
-        <img 
-            *ngIf="similarItem.coverImage" 
-          [src]="getCoverImageSimilarItem(similarItem)" 
-            [alt]="similarItem.title || 'Cover image not found'"
-        >
+          <!-- התמונה -->
+          <img *ngIf="similarItem.coverImage" [src]="getCoverImageSimilarItem(similarItem)"
+            [alt]="similarItem.title || 'Cover image not found'">
           <p *ngIf="!similarItem?.coverImage" class="file-not-found">הקובץ לא נמצא</p>
 
           <!-- אייקון מבוסס סוג -->
           <ng-container *ngIf="similarItem.type">
             <!-- אייקון תמונה -->
-            <svg 
+            <svg
               *ngIf="similarItem.type === 'כרזה' || similarItem.type === 'דף עבודה' || similarItem.type === 'איור' || similarItem.type === 'יצירה'"
-              class="overlay-svg" 
-              height="6vh" 
-              viewBox="0 -960 960 960" 
-              width="7vw" 
-              fill="#FFFFFF"
-              >
-              <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Z"/>
+              class="overlay-svg" height="6vh" viewBox="0 -960 960 960" width="7vw" fill="#FFFFFF">
+              <path
+                d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Z" />
             </svg>
             <!-- אייקון שמע -->
-            <svg 
-              *ngIf="similarItem.type === 'שיר'"
-              class="overlay-svg" 
-              height="6vh" 
-              viewBox="0 -960 960 960" 
-              width="7vw" 
-              fill="#FFFFFF"
-              >
-              <path d="M430.14-290Q468-290 494-316.5t26-63.5v-218h108v-72H484v216q-10-7-25.5-11.5T430-470q-37.8 0-63.9 26.5T340-380q0 37 26.14 63.5t64 26.5ZM140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm0-60h680v-520H140v520Zm0 0v-520 520Z"/>
+            <svg *ngIf="similarItem.type === 'שיר'" class="overlay-svg" height="6vh" viewBox="0 -960 960 960"
+              width="7vw" fill="#FFFFFF">
+              <path
+                d="M430.14-290Q468-290 494-316.5t26-63.5v-218h108v-72H484v216q-10-7-25.5-11.5T430-470q-37.8 0-63.9 26.5T340-380q0 37 26.14 63.5t64 26.5ZM140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm0-60h680v-520H140v520Zm0 0v-520 520Z" />
             </svg>
 
             <!-- אייקון וידאו -->
-            <svg 
-              *ngIf="similarItem.type === 'סרטון'" 
-              class="overlay-svg" 
-              height="6vh" 
-              viewBox="0 0 24 24" 
-              width="7vw" 
-              fill="#FFFFFF"
-            >
-              <path d="M8 5v14l11-7z"/>
+            <svg *ngIf="similarItem.type === 'סרטון'" class="overlay-svg" height="6vh" viewBox="0 0 24 24" width="7vw"
+              fill="#FFFFFF">
+              <path d="M8 5v14l11-7z" />
             </svg>
 
             <!-- אייקון ספר -->
-            <svg 
-              *ngIf=" similarItem.type === 'ספר'" 
-              class="overlay-svg" 
-              height="6vh" 
-              viewBox="0 -960 960 960" 
-              width="7vw" 
-              fill="#FFFFFF"
-              >
-              <path d="M290-80q-53.86 0-91.93-38.07Q160-156.14 160-210v-540q0-53.86 38.07-91.93Q236.14-880 290-880h510v600q-26 0-43 21t-17 49q0 28 17 49t43 21v60H290Zm-70-240q15-10 32.5-15t37.5-5h30v-480h-30q-29.17 0-49.58 20.42Q220-779.17 220-750v430Zm160-20h360v-480H380v480Zm-160 20v-500 500Zm69.54 180H699q-9-15-14-33t-5-37q0-20 5-37.5t15-32.5H289.61q-28.61 0-49.11 20.42Q220-239.17 220-210q0 29 20.5 49.5t49.04 20.5Z"/>
+            <svg *ngIf=" similarItem.type === 'ספר'" class="overlay-svg" height="6vh" viewBox="0 -960 960 960"
+              width="7vw" fill="#FFFFFF">
+              <path
+                d="M290-80q-53.86 0-91.93-38.07Q160-156.14 160-210v-540q0-53.86 38.07-91.93Q236.14-880 290-880h510v600q-26 0-43 21t-17 49q0 28 17 49t43 21v60H290Zm-70-240q15-10 32.5-15t37.5-5h30v-480h-30q-29.17 0-49.58 20.42Q220-779.17 220-750v430Zm160-20h360v-480H380v480Zm-160 20v-500 500Zm69.54 180H699q-9-15-14-33t-5-37q0-20 5-37.5t15-32.5H289.61q-28.61 0-49.11 20.42Q220-239.17 220-210q0 29 20.5 49.5t49.04 20.5Z" />
             </svg>
 
             <!-- איקון מערך -->
-            <svg 
-            *ngIf="similarItem.type === 'מערך'" 
-            class="overlay-svg" 
-             height="6vh" 
-             viewBox="0 -960 960 960" 
-             width="7vw" 
-             fill="#FFFFFF"
-             >
-             <path d="M320-460h320v-60H320v60Zm0 120h320v-60H320v60Zm0 120h200v-60H320v60ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z"/>
+            <svg *ngIf="similarItem.type === 'מערך'" class="overlay-svg" height="6vh" viewBox="0 -960 960 960"
+              width="7vw" fill="#FFFFFF">
+              <path
+                d="M320-460h320v-60H320v60Zm0 120h320v-60H320v60Zm0 120h200v-60H320v60ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z" />
             </svg>
           </ng-container>
         </div>
-        
+
       </div>
     </div>
   </div>
 </div>
-
