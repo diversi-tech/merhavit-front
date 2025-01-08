@@ -49,10 +49,6 @@
   cursor: pointer;
 }
 /* שינוי הרקע במעבר העכבר על הפריט */
-.row:hover {
-  background-color: #F5F5F5;
-  cursor: pointer;
-}
 .item-image {
   width: 5vw;
   height: 5vw;
@@ -85,10 +81,10 @@
   background-color: #D4F5D4;
   color: #007B00;
 }
-.actions {
+/* .actions {
   display: flex;
   gap: 1rem;
-}
+} */
 .action-button {
   border: none;
   padding: 0.5em 1em;
@@ -146,6 +142,9 @@
   .actions {
     justify-content: space-between;
     width: 100%;
+    display: flex;
+    gap: 1rem;
+    align-items: self-start;
   }
   .filter-buttons {
     flex-wrap: wrap;
@@ -234,7 +233,7 @@
   }
 }
 /* עיצוב הכרטיסיות */
-.card-container .item-card {
+/* .card-container .item-card {
   display: flex;
   top: 1rem;
   justify-content: center;
@@ -247,15 +246,16 @@
   max-height: 30vh;
   min-width: 19vw;
   min-height: 30vh;
-}
+} */
 .card-container .item-card .item-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  max-width: 19vw;
+  max-width: 20vw;
   max-height: 30vh;
-  min-width: 19vw;
+  min-width: 20vh;
   min-height: 30vh;
+  border-radius: 1rem;
 }
 @media (max-width: 1200px) {
   .card-container .item-card .item-image {
@@ -341,10 +341,36 @@ mat-icon {
   direction: rtl;
   background-color: #FFFFFF;
 }
-.item-card-header:hover {
+
+.item-card-content {
+  display: none;
+  position: absolute;
+  background: rgba(133, 130, 130, 0.9);
+  padding: 1rem;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  /* justify-content: center; */
+  align-items: self-start;
+  justify-content: space-between;
+  /* text-align: end; */
+  /* box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1); */
+}
+
+.item-card:hover .item-card-content {
+  display: flex;
+  max-width: 17.5vw;
+  max-height: 25vh;
+  border-radius: 1rem;
+
+}
+
+/* .item-card-header:hover {
   position: relative;
   cursor: pointer;
-}
+} */
 .item-image:hover {
   width: 100%;
   height: auto;
@@ -389,20 +415,20 @@ mat-icon {
 .item-details {
   flex: 1;
 }
-.item-title {
+/* .item-title {
   font-size: 1.25rem;
   font-weight: bold;
   color: #007BFF;
   margin-bottom: 0.3em;
-}
-.item-description {
+} */
+/* .item-title {
   font-size: 1rem;
   color: #666;
-}
+} */
 .item-meta {
   font-size: 0.9rem;
-  color: #999;
-  margin-top: 0.5em;
+  color: #FFFF;
+  line-height: 20rem;
 }
 .no-data-message{
   display: flex;
@@ -444,4 +470,8 @@ mat-icon {
   font-weight: bold;
   font-size: 14px;
   z-index: 1;
+}
+
+.matPagin{
+  direction: ltr;
 }
