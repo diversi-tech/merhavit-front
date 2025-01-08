@@ -7,7 +7,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
-import { map, Observable, startWith, tap } from 'rxjs';
+import { lastValueFrom, map, Observable, startWith, tap } from 'rxjs';
 import { ApiService } from '../../api.service';
 import { title } from 'process';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -87,7 +87,7 @@ export class UploadResourceComponent {
       Ctrl: FormControl<string | null | any>;
       optionSelected: string[] | any[];
       allOption: string[] | any[];
-      filteredOption$: Observable<string[] | any[]> | null;
+      filteredOption$: Observable<string[] | any[]> | null|undefined;
     };
   } = {
       'specializations': {
@@ -183,17 +183,16 @@ export class UploadResourceComponent {
       })
     }
 
-    Object.keys(this.multipleChoiceFields).forEach((key) => {
+    const requests: Promise<void>[]  =Object.keys(this.multipleChoiceFields).map((key) => {
       const Array = this.fileForm.get(key) as FormArray;
       //console.log("Array:",Array);
 
       while (Array?.length > 0) {
         Array.removeAt(0);
       }
-
         console.log("path", this.createPath(key));
-        this.getfromServer(`/${this.createPath(key)}`, key);
-      
+
+      return this.getfromServer(`/${this.createPath(key)}`, key);
     })
 
     if (this.formMode == 'edit') {
@@ -223,6 +222,46 @@ export class UploadResourceComponent {
           this.isFirstEdit = true
           this.contentOption = this.getContentOption(this.resourceItem.contentOption)
 
+          // Object.entries(this.multipleChoiceFields).forEach(([key, value]) => {
+          //   if (this.resourceItem[key]) {
+          //     // עדכון המערך במפה
+          //     console.log("מערך",key, this.resourceItem[key]);
+              
+          //     // value.optionSelected = Array.isArray(this.resourceItem[key]) 
+          //     //   ? [...this.resourceItem[key]] 
+          //     //   : [this.resourceItem[key]];
+          //       }
+          //        console.log("array in map",key,value.allOption);
+                
+          //   })
+          Promise.all(requests).then(() => {
+            // עכשיו כל הקריאות הושלמו, תוכל לבצע את ההדפסה בבטחה
+            Object.entries(this.multipleChoiceFields).forEach(([key, value]) => {
+              console.log("array in map", key, value.allOption);
+              
+              if (this.resourceItem[key]) {
+                this.resourceItem[key].forEach((element:string) => {
+                   value.optionSelected.push(element)
+                  value.filteredOption$ = value.filteredOption$?.pipe(
+                    map(options => {
+                      
+                      // בודקת אם האובייקט הוא מערך, ואם כן מוסיפה את הערך החדש
+                      if (Array.isArray(options)) {
+                        return [...options];
+                      }
+                      return options; // מחזירה את המחרוזת במקרה שזה לא מערך
+                    })
+                  );
+                });
+
+                }
+                    
+            });
+          }).catch((err) => {
+            console.error("Error in one of the requests", err);
+          });
+          
+          
           // עדכון optionSelected
           //  this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
           //  this.multipleChoiceFields['tags'].optionSelected = this.resourceItem.tags;
@@ -607,29 +646,50 @@ export class UploadResourceComponent {
   }
 
   //יבוא תגיות מטבלת תגיות
-  getfromServer(path: string, fieldKey: string) {
-    this.apiService.Read(path).subscribe({
-      next: (response) => {
-        if (Array.isArray(response)) {
-          this.multipleChoiceFields[fieldKey].allOption = response;
-        } else {
-          this.multipleChoiceFields[fieldKey].allOption = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
-        }
-      },
-      error: (err) => {
-        console.error(`Error fetching ${fieldKey}`, err);
-      },
+  // getfromServer(path: string, fieldKey: string) {
+  //   this.apiService.Read(path).subscribe({
+  //     next: (response) => {
+  //       if (Array.isArray(response)) {
+  //         this.multipleChoiceFields[fieldKey].allOption = response;
+  //       } else {
+  //         this.multipleChoiceFields[fieldKey].allOption = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error(`Error fetching ${fieldKey}`, err);
+  //     },
+  //   });
+  // }
+  getfromServer(path: string, fieldKey: string): Promise<void> {
+    return lastValueFrom(this.apiService.Read(path)).then((response) => {
+      if (Array.isArray(response)) {
+        this.multipleChoiceFields[fieldKey].allOption = response;
+      } else {
+        this.multipleChoiceFields[fieldKey].allOption = response.data || [];
+      }
+    }).catch((err) => {
+      console.error(`Error fetching ${fieldKey}`, err);
+      return
     });
   }
 
 
 
+//קבלת התגית לפי ה_id שלה
+getOptionById(optionId: string, fieldKey: string)
+  {
+    console.log("OptionById",this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
+    
+    return this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId)
+  }
 
 
   //קבלת שם התגית לפי ה_id שלה
-  getOptionById(optionId: string, fieldKey: string) {
-    return this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId).name
+  getOptionNameById(optionId: string, fieldKey: string) {
+    return this.getOptionById(optionId,fieldKey)?.name
   }
+
+  
 
   paramsForDialog(fieldKey: string) {
     const params: Record<string, {}> = {
