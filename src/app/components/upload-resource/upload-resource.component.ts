@@ -233,6 +233,11 @@ export class UploadResourceComponent {
             this.downloadFile(this.resourceItem.filePath)
           if(this.contentOption=='add' || this.contentOption=='physicalBook')
              this.isFirstEdit = true
+            if(this.contentOption=='addLink')
+            {  
+              this.link=this.resourceItem.filePath
+              this.disabledOptions['addLink'] = this.link && this.isValidLink ? true : false;
+            }
           
         },
         error: (err) => {
@@ -322,7 +327,9 @@ export class UploadResourceComponent {
 
   //בעת בחירת קובץ ממחשב
   downloadFile(filePath: string) {
-   
+    
+    if(this.contentOption!='addLink')
+    {
     console.log("path in download "+filePath)
     this.apiService
       .Read(`/EducationalResource/presigned-url?filePath=${filePath}`)
@@ -350,11 +357,19 @@ export class UploadResourceComponent {
 
             } catch (error) {
               console.error('Error fetching the file:', error);
-              alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
+              this.snackBar.open('שגיאה בהורדת הקובץ', 'סגור', {
+                duration: 3000,
+                panelClass: ['error-snackbar'],
+                direction: 'rtl',
+              });
             }
           } else {
             console.error('Invalid response for download URL.');
-            alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
+            this.snackBar.open('לא ניתן להוריד את הקובץ', 'סגור', {
+              duration: 3000,
+              panelClass: ['error-snackbar'],
+              direction: 'rtl',
+            });
           }
         },
         error: (err) => {
@@ -362,11 +377,13 @@ export class UploadResourceComponent {
           alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
         },
       });
-
+    }
   }
 
 
   onFileSelected(event?: Event, filePath?: string): void {
+    if(this.contentOption!='Link')
+    {
     if (this.isFirstEdit === false) {
       if (event) {
         const input = event.target as HTMLInputElement;
@@ -417,6 +434,7 @@ export class UploadResourceComponent {
       this.formErrorMessage = null
     }
   }
+}
 
   //מחיקת הקובץ הנבחר
   removeSelectedFile() {

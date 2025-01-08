@@ -153,6 +153,11 @@ export class ItemsService {
           this.items = response.data || [];
           this.itemsSubject.next(this.items);
           this.totalItems = response.totalCount;  // עדכון של totalItems לפי התוצאות שסוננו
+          console.log("total ",this.totalItems);
+          console.log("limit ",limit);
+          console.log('total items:--------', this.totalItems);
+
+          
           this.totalSubject.next(this.totalItems)
           return this.items;
         })
