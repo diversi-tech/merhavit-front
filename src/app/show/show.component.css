@@ -5,7 +5,6 @@
   font-family: Arial, sans-serif;
   color: #333;
 }
-
 .header {
   display: flex;
   justify-content: space-between;
@@ -14,17 +13,14 @@
   border-bottom: 0.1em solid #ddd;
   font-size: 1.2rem;
 }
-
 .header span {
   font-size: 1rem;
   color: #777;
 }
-
 .filter-buttons {
   display: flex;
   gap: 1rem;
 }
-
 .filter-button {
   padding: 0.5em 1em;
   border: 0.1em solid #ddd;
@@ -35,13 +31,11 @@
   cursor: pointer;
   transition: 0.3s;
 }
-
 .filter-button.active,
 .filter-button:hover {
   background-color: #007bff;
   color: #fff;
 }
-
 .table-container {
   padding-bottom: 60px; 
   direction: rtl;
@@ -50,7 +44,6 @@
   align-items: center;
   background-color: #ffffff;
 }
-
 .row {
   display: flex;
   justify-content: space-between;
@@ -62,29 +55,22 @@
   transition: background-color 0.3s; 
   cursor: pointer; 
 }
-
-
 .row:hover {
   background-color: #f5f5f5; 
   cursor: pointer; 
 }
-
-
 .item-image {
   width: 5vw;
   height: 5vw;
   border-radius: 0.5rem;
   object-fit: cover;
 }
-
 .meta-label {
   font-weight: bold;
 }
-
 .meta-value {
   font-weight: normal;
 }
-
 .status {
   font-size: 0.9rem;
   font-weight: bold;
@@ -93,27 +79,22 @@
   color: #fff;
   text-align: center;
 }
-
 .status.sold {
   background-color: #ffcccc;
   color: #d80000;
 }
-
 .status.unique {
   background-color: #fff4cc;
   color: #d4a017;
 }
-
 .status.published {
   background-color: #d4f5d4;
   color: #007b00;
 }
-
 .actions {
   display: flex;
   gap: 1rem;
 }
-
 .action-button {
   border: none;
   padding: 0.5em 1em;
@@ -123,71 +104,57 @@
   transition: all 0.3s;
   background-color: transparent;
 }
-
 .action-button.edit {
   border: 0.1em solid #28a745;
   color: #28a745;
 }
-
 .action-button.edit:hover {
   background-color: #28a745;
   color: #fff;
 }
-
 .action-button.delete {
   border: none;
   background-color: transparent;
   color: black;
   cursor: pointer;
 }
-
 .action-button.delete:hover {
   background-color: #f3f7fd;
   cursor: pointer;
   color: red;
 }
-
 .action-button.favorite {
   color: red;
 }
-
 .action-button.not-favorite:hover,
 .action-button.download:hover {
   color: #218838;
 }
-
 .action-button.order {
   background-color: #28a745;
   color: #fff;
   border-radius: 2em;
 }
-
 .action-button.order:hover {
   background-color: #218838;
   cursor: pointer; 
 }
-
-
 @media (max-width: 48rem) {
   .row {
     flex-direction: column;
     align-items: flex-start;
   }
-
   .item-image {
     width: 20vw;
     height: 20vw;
   }
-
   .actions {
     justify-content: space-between;
     width: 100%;
   }
-
   .filter-buttons {
     flex-wrap: wrap;
   }
-
   .pagination-container {
     left: 0vw;
     width:86vw;
@@ -203,8 +170,6 @@
     background-color: white; 
     padding: 5rem; 
 }
-
-
   .pagination-container .arrow {
     font-size: 18px;
     margin: 0 10px;
@@ -212,13 +177,11 @@
     color: #888;
     transition: color 0.3s;
   }
-
   .pagination-container .arrow:hover {
     color: #000;
     cursor: pointer; 
   }
 }
-
 .file-extension-container {
   direction: ltr;
   display: flex;
@@ -234,33 +197,26 @@
   border-radius: 0.5rem; 
   object-fit: cover; 
 }
-
 .file-icon {
   font-size: 1rem; 
 }
-
 .pdf-icon {
   color: red;
 }
-
 .doc-icon {
   color: blue;
 }
-
 .jpg-icon,
 .png-icon {
   color: green;
 }
-
 .default-icon {
   color: gray;
 }
-
 .my-custom-snackbar {
   background-color: green;
   color: white;
 }
-
 .error-snackbar {
   background-color: red;
   color: white;
