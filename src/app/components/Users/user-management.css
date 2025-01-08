@@ -20,7 +20,7 @@ body {
 /* כותרת המשתמש */
 .user-header, .user-row {
   display: flex;
-  flex-wrap: wrap; /* מאפשר לגורמים להתיישר על פני מספר שורות אם הם לא נכנסים */
+  flex-wrap: nowrap; /* מאפשר לגורמים להתיישר על פני מספר שורות אם הם לא נכנסים */
   align-items: center;
   padding: 1vh 0; /* padding מקוצר */
   border-bottom: 0.1rem solid #dcdcdc;
@@ -29,7 +29,7 @@ body {
 
 .user-header {
   margin-top: 0.5rem;
-  font-size: 1.2rem; /* קטן את גודל הפונט */
+  font-size: 1rem; /* קטן את גודל הפונט */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f3f7fd;
   font-weight: bold;
@@ -45,7 +45,7 @@ body {
   text-align: center;
   padding: 0 1vw; /* padding מקוצר */
   box-sizing: border-box;
-  min-width: 150px; /* הגבלת רוחב מינימלי */
+  min-width: 3.375rem;
 }
 
 .user-header .user-cell {
