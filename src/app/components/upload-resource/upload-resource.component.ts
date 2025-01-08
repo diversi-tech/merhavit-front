@@ -178,7 +178,7 @@ export class UploadResourceComponent {
 
     
 
-    Object.keys(this.multipleChoiceFields).forEach((key) => {
+    const requests:Promise<void>[]= Object.keys(this.multipleChoiceFields).map((key) => {
       const Array = this.fileForm.get(key) as FormArray;
       //console.log("Array:",Array);
 
