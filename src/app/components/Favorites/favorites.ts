@@ -5,6 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import { ApiService } from '../../api.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatCardModule } from '@angular/material/card';
 
 
 @Component({
@@ -12,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './favorites.html',
   styleUrls: ['./favorites.css'],
   standalone: true,
-  imports: [RouterModule, CommonModule, MatSnackBarModule],
+  imports: [RouterModule, CommonModule, MatSnackBarModule, MatCardModule],
 })
 export class FavoritesComponent implements OnInit {
   favorites: any[] = [];
