@@ -227,13 +227,14 @@
     </div>
   </div>
 
-  <div class="pagination-container">
-    <mat-paginator
-      [length]="totalItems"
-      [pageSize]="10"
-      [pageSizeOptions]="getPageSizeOptions()"
-      (page)="onPageChange($event)"
-      showFirstLastButtons
-    >
-    </mat-paginator>
+ <div class="pagination-container">
+<mat-paginator class="matPagin"
+  [length]="totalItems"
+  [pageSize]="limit"
+  [pageSizeOptions]="getPageSizeOptions()"
+  (page)="onPageChange($event)"
+  showFirstLastButtons
+>
+</mat-paginator>
 </div>
+

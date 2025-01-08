@@ -7,7 +7,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
-import { map, Observable, startWith, tap } from 'rxjs';
+import { lastValueFrom, map, Observable, startWith, tap } from 'rxjs';
 import { ApiService } from '../../api.service';
 import { title } from 'process';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -87,7 +87,7 @@ export class UploadResourceComponent {
       Ctrl: FormControl<string | null | any>;
       optionSelected: string[] | any[];
       allOption: string[] | any[];
-      filteredOption$: Observable<string[] | any[]> | null;
+      filteredOption$: Observable<string[] | any[]> | null|undefined;
     };
   } = {
       'specializations': {
@@ -176,53 +176,88 @@ export class UploadResourceComponent {
       this.formMode = additionalParam !== null ? additionalParam : this.formMode; // הצבת הערך לתוך formMode או שמירה על ברירת המחדל
     });
 
-    if (this.formMode == 'edit') {
-      this.me.params.subscribe(p => {
-        this.itemID = p['_id']
-        console.log("Received resource ID: ", this.itemID);
-      })
-    }
+    
 
-    Object.keys(this.multipleChoiceFields).forEach((key) => {
+    const requests:Promise<void>[]= Object.keys(this.multipleChoiceFields).map((key) => {
       const Array = this.fileForm.get(key) as FormArray;
       //console.log("Array:",Array);
 
       while (Array?.length > 0) {
         Array.removeAt(0);
       }
-
         console.log("path", this.createPath(key));
-        this.getfromServer(`/${this.createPath(key)}`, key);
-      
+
+      return this.getfromServer(`/${this.createPath(key)}`, key);
     })
 
     if (this.formMode == 'edit') {
-      //i added 
+
+      this.me.params.subscribe(p => {
+        this.itemID = p['_id']
+        console.log("Received resource ID: ", this.itemID);
+      })
+
       this.apiService.Read(`/EducationalResource/${this.itemID}`).subscribe({
         next: (response: any) => {
           console.log("This is the response: ", response);
           // שמירת האובייקט במשתנה חדש
           this.resourceItem = response; // resourceItem הוא משתנה חדש בקומפוננטה שלך
+           this.contentOption = this.getContentOption(this.resourceItem.contentOption)
+           console.log("file "+this.resourceItem.filePath);
 
           this.fileForm.patchValue({
             title: this.resourceItem.title || "",
-            tags: this.resourceItem.tags || "",
             description: this.resourceItem.description || "",
             author: this.resourceItem.author || "",
             releaseYear: this.resourceItem.releaseYear || "",
             language: this.resourceItem.language || "",
             level: this.resourceItem.level || "",
-            classes: this.resourceItem.classes || "",
             type: this.resourceItem.type || "",
-            specializations: this.resourceItem.specializations || "",
-            subjects: this.resourceItem.subjects || "",
             
+            approved:this.resourceItem.approved||"",
+            loanValidity:this.resourceItem.loanValidity||"",
+            purchaseLocation:this.resourceItem.purchaseLocation ||"",
+            price:this.resourceItem.price ||"",
+            catalogNumber:this.resourceItem.catalogNumber ||"",
+            copies:this.resourceItem.copies ||"",
+            libraryLocation:this.resourceItem.libraryLocation ||"",
+            subjects: Array.isArray(this.resourceItem.subjects) ? this.resourceItem.subjects : [],
+            tags: Array.isArray(this.resourceItem.tags) ? this.resourceItem.tags : [],
+            specializations: Array.isArray(this.resourceItem.specializations) ? this.resourceItem.specializations : [],
+            classes: Array.isArray(this.resourceItem.classes) ? this.resourceItem.classes : [],
           });
-
+          
+          
           this.downloadFile(this.resourceItem.filePath)
-          this.isFirstEdit = true
-          this.contentOption = this.getContentOption(this.resourceItem.contentOption)
+          if(this.contentOption=='add' || this.contentOption=='physicalBook')
+             this.isFirstEdit = true
+Promise.all(requests).then(() => {
+            // עכשיו כל הקריאות הושלמו, תוכל לבצע את ההדפסה בבטחה
+            Object.entries(this.multipleChoiceFields).forEach(([key, value]) => {
+              console.log("array in map", key, value.allOption);
+              
+              if (this.resourceItem[key]) {
+                this.resourceItem[key].forEach((element:string) => {
+                   value.optionSelected.push(element)
+                  value.filteredOption$ = value.filteredOption$?.pipe(
+                    map(options => {
+                      
+                      // בודקת אם האובייקט הוא מערך, ואם כן מוסיפה את הערך החדש
+                      if (Array.isArray(options)) {
+                        return [...options];
+                      }
+                      return options; // מחזירה את המחרוזת במקרה שזה לא מערך
+                    })
+                  );
+                });
 
+                }
+                    
+            });
+          }).catch((err) => {
+            console.error("Error in one of the requests", err);
+          });
+          
           // עדכון optionSelected
           //  this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
           //  this.multipleChoiceFields['tags'].optionSelected = this.resourceItem.tags;
@@ -607,29 +642,50 @@ export class UploadResourceComponent {
   }
 
   //יבוא תגיות מטבלת תגיות
-  getfromServer(path: string, fieldKey: string) {
-    this.apiService.Read(path).subscribe({
-      next: (response) => {
-        if (Array.isArray(response)) {
-          this.multipleChoiceFields[fieldKey].allOption = response;
-        } else {
-          this.multipleChoiceFields[fieldKey].allOption = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
-        }
-      },
-      error: (err) => {
-        console.error(`Error fetching ${fieldKey}`, err);
-      },
+  // getfromServer(path: string, fieldKey: string) {
+  //   this.apiService.Read(path).subscribe({
+  //     next: (response) => {
+  //       if (Array.isArray(response)) {
+  //         this.multipleChoiceFields[fieldKey].allOption = response;
+  //       } else {
+  //         this.multipleChoiceFields[fieldKey].allOption = response.data || []; // ברירת מחדל למערך ריק אם אין נתונים
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error(`Error fetching ${fieldKey}`, err);
+  //     },
+  //   });
+  // }
+  getfromServer(path: string, fieldKey: string): Promise<void> {
+    return lastValueFrom(this.apiService.Read(path)).then((response) => {
+      if (Array.isArray(response)) {
+        this.multipleChoiceFields[fieldKey].allOption = response;
+      } else {
+        this.multipleChoiceFields[fieldKey].allOption = response.data || [];
+      }
+    }).catch((err) => {
+      console.error(`Error fetching ${fieldKey}`, err);
+      return
     });
   }
 
 
 
+//קבלת התגית לפי ה_id שלה
+getOptionById(optionId: string, fieldKey: string)
+  {
+    console.log("OptionById",this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
+    
+    return this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId)
+  }
 
 
   //קבלת שם התגית לפי ה_id שלה
-  getOptionById(optionId: string, fieldKey: string) {
-    return this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId).name
+  getOptionNameById(optionId: string, fieldKey: string) {
+    return this.getOptionById(optionId,fieldKey)?.name
   }
+
+  
 
   paramsForDialog(fieldKey: string) {
     const params: Record<string, {}> = {
@@ -862,19 +918,7 @@ export class UploadResourceComponent {
   }
 
   onSubmitEdit(): void {
-    console.log("**************subject " + JSON.stringify(this.fileForm.value.subjects));
-    console.log("*************title " + JSON.stringify(this.fileForm.value.title));
-    console.log("*************author  " + JSON.stringify(this.fileForm.value.author));
-    console.log("*************tags " + JSON.stringify(this.fileForm.value.tags));
-    console.log("*************spec: " + JSON.stringify(this.fileForm.value.specializations));
-    console.log("*************age: " + JSON.stringify(this.fileForm.value.classes));
-    console.log("*************level: " + JSON.stringify(this.fileForm.value.level));
-    console.log("*************description: " + JSON.stringify(this.fileForm.value.description));
-    console.log("*************releaseYear: " + JSON.stringify(this.fileForm.value.releaseYear));
-    console.log("*************language: " + JSON.stringify(this.fileForm.value.language));
-    console.log("*************file " + this.file);
-    console.log("*************link " + this.link);
-    console.log("*************image " + this.isImage);
+    
 
 
     if (this.content && !this.file)//אם הקובץ הוא של העלאת תוכן שמירה שלו במשתנה
@@ -887,9 +931,8 @@ export class UploadResourceComponent {
 
       const metadata = {
         ...this.fileForm.value,
-        createdBy: localStorage.getItem('idNumber'),
-        // filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
-        // contentOption:this.getContentOption(this.contentOption)//מצב הטופס
+         filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
+        contentOption:this.getContentOption(this.contentOption)//מצב הטופס
       }
 
       let str: string = JSON.stringify(metadata)
@@ -929,6 +972,7 @@ export class UploadResourceComponent {
             duration: 3000,
             panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
           });
+          this.itemService.fetchItems()
         },
         error: (err) => {
           console.log('תקלה בשליחת טופס', err);

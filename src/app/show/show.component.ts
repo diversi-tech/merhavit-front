@@ -1,4 +1,4 @@
-import { Component, Injectable, OnInit, OnDestroy} from '@angular/core';
+import { Component, Injectable, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
@@ -11,18 +11,18 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ItemsService } from '../items.service';
 import { MatDialog } from '@angular/material/dialog';
-// import { log } from 'console';
+ import { log } from 'console';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 // import { ChangeDetectionStrategy } from '@angular/core';
 import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
 // import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { catchError, Subscription, switchMap, takeUntil } from 'rxjs';
 import { Subject, combineLatest, of } from 'rxjs';
-// import { debounceTime, switchMap, takeUntil, catchError } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-items-list',
@@ -36,7 +36,7 @@ import { Subject, combineLatest, of } from 'rxjs';
     MatSnackBarModule,
     MatCardModule,
     MatIconModule,
-    RouterOutlet,
+    // RouterOutlet,
     MatPaginatorModule,
   ],
 })
@@ -44,9 +44,7 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   private destroy$ = new Subject<void>();
   private refresh$ = new Subject<void>();
   public items: Item[] = []; //מערך המוצרים של הספריה
-  public typeFilter: string = '';
-  private page: number=0;
-  private limit: number=10;
+  
   public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public showNoDataMessage: boolean = false; // משתנה לשליטה בהצגת ההודעה
@@ -54,13 +52,19 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   itemsFromServer: any[] = []; // משתנה לשמירת כל הפריטים שהתקבלו מהשרת
   public allItems: Item[] = []; // מערך המכיל את כל הפריטים
   private itemsInterval: any;
+  public page: number=0;
+  public limit: number=10;
+  public typeFilter: string = '';
   public searchTerm: string = '';
   public ifArrIsEmty: boolean = false;
   private subscription: Subscription = new Subscription();
   viewMode: 'grid' | 'list' = 'grid';  // ברירת המחדל היא כרטיסיות
+ 
+  @ViewChild(MatPaginator) paginator!: MatPaginator; 
   
   constructor(private http: HttpClient, private _snackBar: MatSnackBar ,private snackBar: MatSnackBar,private dialog: MatDialog, private apiService: ApiService, private router: Router,private ro: Router,private itemsService: ItemsService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
+  
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
     this.itemsService.typeFilter = 'all'; // עדכון הסינון ב-service
@@ -79,17 +83,22 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
       if (this.itemsService.typeFilter !== type) {
         this.itemsService.typeFilter = type; // עדכון סוג הסינון בשירות
         this.itemsService.page = 0; // התחלה מחדש
-        this.itemsService.getItems(0, 100, '', type)
+        this.itemsService.getItems(0,10, '', type)
       }
-      return this.itemsService.items$; // האזנה לזרם הנתונים
+      //return this.itemsService.items$; // האזנה לזרם הנתונים
+      return combineLatest([this.itemsService.items$, this.itemsService.totalItems$]);
+
      }),
         catchError((err) => {
           console.error('Error fetching items:', err);
           return of([]); // במקרה של טעות
     }),
   )
-  .subscribe((items) => {
+  .subscribe(([items, totalItems]
+) => {
     this.items = items;
+    this.totalItems=totalItems;
+
     this.cdr.detectChanges();
   });
   await this.initializeData();
@@ -130,18 +139,21 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
       console.warn('Code is running on the server. Skipping token check.');
     }
   }
+  
+  resetPaginator(): void { if (this.paginator) { this.paginator.pageIndex = this.page; this.paginator.pageSize = this.limit; } }
+  
   onPageChange(event: PageEvent) {
-    this.getItems(
-      event.pageIndex,
-      event.pageSize,
-      this.searchTerm,
-      this.typeFilter
-    ).then(() => this.updateFavoriteStatus());
+    this.page = event.pageIndex;
+    this.limit = event.pageSize;
+    // this.getItems(this.page, this.limit).then(() => this.updateFavoriteStatus());
+    this.itemsService.fetchItems(this.page, this.limit)
+    this.updateFavoriteStatus();
   }
+  
   
   async getItems(
     page: number = 0,
-    limit: number = 100,
+    limit: number = 10,
     searchTerm: string = '',
     typeFilter: string = ''
   ): Promise<void> {
@@ -158,15 +170,17 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
 
           if (Array.isArray(response)) {
             this.itemsFromServer = response.data;
+            this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
+
             console.log('Items received from server:', this.itemsFromServer);
+            
             // מבצע סינון לפי סוג
-            this.filterItemsByType(searchTerm, typeFilter);
+                 this.filterItemsByType(searchTerm, typeFilter);
           } else {
             this.itemsFromServer = response.data;
             this.filterItemsByType(searchTerm, typeFilter);
           }
           
-          this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
           resolve();
         },
         error: (err) => {
@@ -204,7 +218,11 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
 
     this.items = filteredItems;
     console.log('Final filtered items:', this.items);
+    // this.totalItems=this.items.length
   }
+
+
+
   async editItem(item1: Item) {
     this.router.navigate(['/upload-resource', item1._id], {
       queryParams: { additionalParam: 'edit' },
@@ -516,18 +534,16 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
       }
     }
   }
-
+  
   getPageSizeOptions(): number[] {
-    if (this.totalItems <= 5) {
-      return [];
-    } else if (this.totalItems >= 11) {
-      return [5, 10];
-    } else {
-      return [5, 10, 15, 20];
-    }
+    this.resetPaginator()
+
+    const options = [5, 10, 15, 20];
+    return options.filter(option => option <= this.totalItems);
+    
   }
   
-  isNewItem(item: Item): boolean {
+ isNewItem(item: Item): boolean {
     const currentDate = new Date();
     const publicationDate = new Date(item.publicationDate);
     const differenceInTime = currentDate.getTime() - publicationDate.getTime();
@@ -535,7 +551,4 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
 
     return differenceInDays < 30; // אם ההפרש פחות מ-30 ימים, אז זה נחשב ל"חדש"
   }
-
 }
-
-

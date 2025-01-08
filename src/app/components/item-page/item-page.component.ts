@@ -27,14 +27,16 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
 
 
+
 @Component({
   selector: 'app-item-page',
   templateUrl:'./item-page.component.html', //'./item-page.component.html',
   styleUrls: ['./item-page.component.css'],
   standalone: true,
   providers: [provideNativeDateAdapter()],
-  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatInputModule,MatNativeDateModule,MatDividerModule, MatButtonModule,  MatIconModule,MatCardModule,MatDialogModule, MatDatepickerModule
-    ,MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, JsonPipe ], // ייבוא המודולים
+  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule,MatCardModule, MatFormFieldModule,
+    FormsModule, ReactiveFormsModule, JsonPipe, MatDatepickerModule,MatInputModule,MatNativeDateModule,
+     MatButtonModule, MatDividerModule, ], // ייבוא המודולים
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
@@ -54,6 +56,7 @@ export class ItemPageComponent implements OnInit {
   inputValue: string = '';
   startDate: Date | null = null;
   endDate: Date | null = null;
+
   readonly addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   announcer = inject(LiveAnnouncer); // שימוש ב-inject להזרקת ה-LiveAnnouncer
@@ -87,7 +90,11 @@ export class ItemPageComponent implements OnInit {
   }
   this.cdr.detectChanges();
 }
-borrowItem(){}
+borrowItem(){
+
+}
+
+
 fetchItemDetails(itemId: string) {
   if (!itemId) {
     console.error('Invalid item ID');
@@ -277,6 +284,7 @@ fetchSimilarItems(itemId: string) {
       alert('תאריך ההתחלה חייב להיות מאוחר או שווה להיום!');
       this.startDate = null; // איפוס התאריך
     }
+
     if (this.endDate && this.endDate > new Date(today.setFullYear(today.getFullYear() + 1))) {
       alert('תאריך הסיום לא יכול להיות רחוק יותר משנה מהתאריך הנוכחי!');
       this.endDate = null; // איפוס התאריך

@@ -122,12 +122,12 @@
                 (matChipInputTokenEnd)="add($event,'subjects')"
                 [matAutocomplete]="subjectsAuto"
                 (focusout)="markFieldAsTouched('subjects')"
-                [value]="formMode === 'edit' ? multipleChoiceFields['subjects'].optionSelected.join(', ') : ''"
+                [value]="formMode === 'edit' ? '' : ''"
                 [placeholder]="formMode === 'edit' ? '' : ''"
               />
             </div>
               <mat-chip-row *ngFor="let subject of multipleChoiceFields['subjects'].optionSelected" [removable]="true" (removed)="remove(subject,'subjects')">
-                {{getOptionById(subject,'subjects')}}
+                {{getOptionNameById(subject,'subjects')}}
                 <button matChipRemove>×</button>
               </mat-chip-row>
             </mat-chip-grid>
@@ -166,12 +166,12 @@
               (matChipInputTokenEnd)="add($event,'specializations')"
               [matAutocomplete]="specializationsAuto"
               (focusout)="markFieldAsTouched('specializations')"
-              [value]="formMode === 'edit' ? multipleChoiceFields['specializations'].optionSelected.join(', ') : ''"
+              [value]="formMode === 'edit' ? '' : ''"
               [placeholder]="formMode === 'edit' ? '' : ''"
             />
           </div>
             <mat-chip-row *ngFor="let specialization of multipleChoiceFields['specializations'].optionSelected" [removable]="true" (removed)="remove(specialization,'specializations')">
-              {{getOptionById(specialization,'specializations')}}
+              {{getOptionNameById(specialization,'specializations')}}
               <button matChipRemove>×</button>
             </mat-chip-row>
           </mat-chip-grid>
@@ -207,12 +207,13 @@
               (matChipInputTokenEnd)="add($event,'classes')"
               [matAutocomplete]="agesAuto"
               (focusout)="markFieldAsTouched('classes')"
-              [value]="formMode === 'edit' ? multipleChoiceFields['classes'].optionSelected.join(', ') : ''"
-              [placeholder]="formMode === 'edit' ? '' : ''"
+              [value]="formMode === 'edit' ? '': ''"
+              [placeholder]="formMode === 'edit' ? '' : ''"                
+              [formArrayName]="'classes'"
             />
           </div>
             <mat-chip-row *ngFor="let class of multipleChoiceFields['classes'].optionSelected" [removable]="true" (removed)="remove(class,'classes')">
-              {{getOptionById(class,'classes')}}
+              {{getOptionNameById(class,'classes')}}
               <button matChipRemove>×</button>
             </mat-chip-row>
           </mat-chip-grid>
@@ -261,27 +262,27 @@
           <h2>אודות הקובץ</h2>
           <div class="form-group" *ngIf="contentOption=='physicalBook'">
           <label for="purchaseLocation">איפה נקנה</label>
-          <select class="input_fields" id="purchaseLocation" formControlName="purchaseLocation">
+          <select class="input_fields" id="pLocation" formControlName="purchaseLocation">
             <option *ngFor="let pLocation of purchaseLocations" [value]="pLocation">{{ pLocation }}</option>
           </select>
         </div>
         <div class="form-group" *ngIf="contentOption=='physicalBook'">
           <label for="price">כמה עלה</label>
-          <input class="input_fields" type="number" id="price" formControlName="price" />
+          <input class="input_fields" type="number" id="price" formControlName="price" [placeholder]="formMode === 'edit' ? fileForm.get('price')?.value : ''"/>
         <!-- <div class="error-fields" *ngIf="fileForm.get('price')?.invalid && fileForm.get('price')?.touched">
             <small *ngIf="fileForm.get('price')?.errors?.['required']">יש להזין מחיר</small>
           </div> -->
         </div>
         <div class="form-group" *ngIf="contentOption=='physicalBook'">
           <label for="catalogNumber">מק"ט</label>
-          <input class="input_fields" type="number" id="catalogNumber" formControlName="catalogNumber" />
+          <input class="input_fields" type="number" id="catalogNumber" formControlName="catalogNumber" [placeholder]="formMode === 'edit' ? fileForm.get('catalogNumber')?.value : ''"/>
        <!-- <div class="error-fields" *ngIf="fileForm.get('catalogNumber')?.invalid && fileForm.get('catalogNumber')?.touched">
             <small *ngIf="fileForm.get('titcatalogNumberle')?.errors?.['required']">יש להזין מק"ט</small>
           </div> -->
         </div>
         <div class="form-group" *ngIf="contentOption=='physicalBook'">
           <label for="copies">*מס עותקים</label>
-          <input class="input_fields" type="number" id="copies" formControlName="copies" />
+          <input class="input_fields" type="number" id="copies" formControlName="copies" [placeholder]="formMode === 'edit' ? fileForm.get('copies')?.value : ''" />
         <!-- <div class="error-fields" *ngIf="fileForm.get('copies')?.invalid && fileForm.get('copies')?.touched">
             <small *ngIf="fileForm.get('copies')?.errors?.['required']">יש להזין מס עותקים</small>
           </div> -->
@@ -289,7 +290,7 @@
         
           <div *ngIf="contentOption!=='edit'" class="form-group">
             <label for="releaseYear">שנת הוצאה</label>
-            <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" />
+            <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" [placeholder]="formMode === 'edit' ? fileForm.get('releaseYear')?.value : ''" />
             <!-- <div class="error-fields" *ngIf="fileForm.get('releaseYear')?.invalid && fileForm.get('releaseYear')?.touched">
               <small *ngIf="fileForm.get('releaseYear')?.errors?.['required']">יש להזין שנת הוצאה</small>
             </div> -->
@@ -304,7 +305,7 @@
 
           <div class="form-group" *ngIf="contentOption=='physicalBook'">
             <label for="libraryLocation">מיקום בספרייה</label>
-            <input class="input_fields" type="text" id="libraryLocation" formControlName="libraryLocation" [placeholder]="formMode === 'edit' ? fileForm.get('libraryLocation')?.value : ''"/>
+            <input class="input_fields" type="text" id="libraryLocation" formControlName="libraryLocation" [placeholder]="formMode === 'edit' ? this.resourceItem.filePath : ''"/>
           </div>
         </div>
         <!-- כותרת: סטטוס -->
@@ -323,7 +324,7 @@
         </div>
         <div class="form-group">
           <label for="loanValidity">משך השאלה</label>
-          <input class="input_fields" type="text" id="loanValidity" formControlName="loanValidity" />
+          <input class="input_fields" type="text" id="loanValidity" formControlName="loanValidity" [placeholder]="formMode === 'edit' ? fileForm.get('loanValidity')?.value : ''"/>
         <!-- <div class="error-fields" *ngIf="fileForm.get('loanValidity')?.invalid && fileForm.get('loanValidity')?.touched">
             <small *ngIf="fileForm.get('loanValidity')?.errors?.['required']">יש להזין תוקף</small>
           </div> -->
@@ -353,7 +354,7 @@
               />
               </div>
               <mat-chip-row *ngFor="let tag of multipleChoiceFields['tags'].optionSelected" [removable]="true" (removed)="remove(tag,'tags')">
-                {{getOptionById(tag,'tags')}}
+                {{getOptionNameById(tag,'tags')}}
                 <button matChipRemove>×</button>
               </mat-chip-row>
             </mat-chip-grid>

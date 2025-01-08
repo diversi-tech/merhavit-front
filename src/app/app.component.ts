@@ -41,12 +41,21 @@ export class AppComponent {
   constructor(private router: Router) {}
   ngOnInit() {
     this.router.events.subscribe(() => {
-        // נתיבים שבהם לא נרצה להציג את הקומפוננטה
-        const excludedRoutes = ['/login', '/registration', '/welcome','/','/item-page','/reset-password','/forgot-password','/success-registration'];
+      // נתיבים שבהם לא נרצה להציג את הקומפוננטה
+     const excludedRoutes = ['/login', '/registration', '/welcome','/','/item-page','/reset-password','/forgot-password','/success-registration'];
         const excludedRoutesForSeaech=['/upload-resource','/personal-details']
-        this.showSearchComponent = !excludedRoutes.includes(this.router.url) && !excludedRoutesForSeaech.includes(this.router.url);
-        this.navigationBar = !excludedRoutes.includes(this.router.url);
-    });
+  
+      const currentRoute = this.router.url.split('?')[0]; // הסרת שאילתות במידת הצורך
+  
+      // בדיקה אם הנתיב מתחיל ב-/item-page ואחריו תוכן נוסף
+      const isSpecificItemPage = /^\/item-page\/.+/.test(currentRoute);
+  
+      this.showSearchComponent = !excludedRoutes.includes(currentRoute) 
+                                  && !excludedRoutesForSeaech.includes(currentRoute) 
+                                  && !isSpecificItemPage;
+      this.navigationBar = !excludedRoutes.includes(currentRoute);
+  });
+  
   }
   activeSubMenu: string | null = null;
 toggleSubMenu(menu: string): void {

@@ -1,31 +1,27 @@
 .container {
   width: 100%;
-  max-width: 75rem; /* 1200px = 75rem עם root 16px */
+  max-width: 75rem;
   margin: auto;
   font-family: Arial, sans-serif;
   direction: rtl;
   color: #333;
 }
-
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2vh 2%; /* מרווח יחסי */
+  padding: 2vh 2%;
   border-bottom: 0.1em solid #ddd;
   font-size: 1.2rem;
 }
-
 .header span {
   font-size: 1rem;
   color: #777;
 }
-
 .filter-buttons {
   display: flex;
   gap: 1rem;
 }
-
 .filter-button {
   padding: 0.5em 1em;
   border: 0.1em solid #ddd;
@@ -36,13 +32,11 @@
   cursor: pointer;
   transition: 0.3s;
 }
-
 .filter-button.active,
 .filter-button:hover {
-  background-color: #007bff;
+  background-color: #007BFF;
   color: #fff;
 }
-
 .row {
   display: flex;
   justify-content: space-between;
@@ -50,32 +44,27 @@
   width: 90%;
   max-width: 50rem;
   padding: 2vh 0;
-  border-bottom: 0.1em solid #dcdcdc;
-  transition: background-color 0.3s; /* אנימציה רכה לשינוי הצבע */
-  cursor: pointer; /* שינוי הסמן לצורת יד */
+  border-bottom: 0.1em solid #DCDCDC;
+  transition: background-color 0.3s;
+  cursor: pointer;
 }
-
-/* שינוי צבע הרקע כאשר מעבירים את העכבר על הפריט */
+/* שינוי הרקע במעבר העכבר על הפריט */
 .row:hover {
-  background-color: #f5f5f5; /* צבע רקע בהיר יותר */
-  cursor: pointer; /* שינוי הסמן לצורת יד */
+  background-color: #F5F5F5;
+  cursor: pointer;
 }
-
 .item-image {
   width: 5vw;
   height: 5vw;
   border-radius: 0.5rem;
   object-fit: cover;
 }
-
 .meta-label {
   font-weight: bold;
 }
-
 .meta-value {
   font-weight: normal;
 }
-
 .status {
   font-size: 0.9rem;
   font-weight: bold;
@@ -84,27 +73,22 @@
   color: #fff;
   text-align: center;
 }
-
 .status.sold {
-  background-color: #ffcccc;
-  color: #d80000;
+  background-color: #FFCCCC;
+  color: #D80000;
 }
-
 .status.unique {
-  background-color: #fff4cc;
-  color: #d4a017;
+  background-color: #FFF4CC;
+  color: #D4A017;
 }
-
 .status.published {
-  background-color: #d4f5d4;
-  color: #007b00;
+  background-color: #D4F5D4;
+  color: #007B00;
 }
-
 .actions {
   display: flex;
   gap: 1rem;
 }
-
 .action-button {
   border: none;
   padding: 0.5em 1em;
@@ -114,68 +98,55 @@
   transition: all 0.3s;
   background-color: transparent;
 }
-
 .action-button.edit {
-  border: 0.1em solid #28a745;
-  color: #28a745;
+  border: 0.1em solid #28A745;
+  color: #28A745;
 }
-
 .action-button.edit:hover {
-  background-color: #28a745;
+  background-color: #28A745;
   color: #fff;
 }
-
 .action-button.delete {
   border: none;
   background-color: transparent;
   color: black;
   cursor: pointer;
 }
-
 .action-button.delete:hover {
-  background-color: #f3f7fd;
-  cursor: pointer; /* שינוי הסמן לצורת יד */
+  background-color: #F3F7FD;
+  cursor: pointer;
   color: red;
 }
-
 .action-button.favorite {
   color: red;
 }
-
 .action-button.not-favorite:hover,
 .action-button.download:hover {
   color: #218838;
 }
-
 .action-button.order {
-  background-color: #28a745;
+  background-color: #28A745;
   color: #fff;
   border-radius: 2em;
 }
-
 .action-button.order:hover {
   background-color: #218838;
-  cursor: pointer; /* שינוי הסמן לצורת יד */
+  cursor: pointer;
 }
-
 /* מדיה קווריס לריספונסיביות במסכים קטנים */
 @media (max-width: 48rem) {
-  /* 768px = 48rem */
   .row {
     flex-direction: column;
     align-items: flex-start;
   }
-
   .item-image {
     width: 20vw;
     height: 20vw;
   }
-
   .actions {
     justify-content: space-between;
     width: 100%;
   }
-
   .filter-buttons {
     flex-wrap: wrap;
   }
@@ -188,7 +159,6 @@
     color: #444;
     margin: 10px 0;
   }
-
   .pagination-container .arrow {
     font-size: 18px;
     margin: 0 10px;
@@ -196,243 +166,195 @@
     color: #888;
     transition: color 0.3s;
   }
-
   .pagination-container .arrow:hover {
     color: #000;
-    cursor: pointer; /* שינוי הסמן לצורת יד */
+    cursor: pointer; /
   }
 }
-
 .file-extension-container {
   direction: ltr;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 5vw; /* תואם לגובה התמונה */
-  width: 5vw; /* תואם לרוחב התמונה */
-  background-color: #f8f8f8;
+  height: 5vw;
+  width: 5vw;
+  background-color: #F8F8F8;
   border: 1px solid #ddd;
-  font-size: 1.2rem; /* גודל טקסט יותר ברור */
-  font-weight: bold; /* טקסט בולט יותר */
+  font-size: 1.2rem;
+  font-weight: bold;
   color: #555;
-  border-radius: 0.5rem; /* מתאים לעיגול הפינות של התמונה */
-  object-fit: cover; /* שומר על מיקום בתוך הריבוע */
+  border-radius: 0.5rem;
+  object-fit: cover;
 }
-
 .file-icon {
-  font-size: 1rem; /* מתאים לפרופורציה */
+  font-size: 1rem;
 }
-
 .pdf-icon {
   color: red;
 }
-
 .doc-icon {
   color: blue;
 }
-
 .jpg-icon,
 .png-icon {
   color: green;
 }
-
 .default-icon {
   color: gray;
 }
-
 .my-custom-snackbar {
   background-color: green;
   color: white;
 }
-
 .error-snackbar {
   background-color: red;
   color: white;
 }
-
-
-
-
-
-
 /* עיצוב הגריד של הכרטיסיות */
 .card-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 כרטיסיות בשורה */
-  gap: 0.5rem; /* מרווח בין כרטיסיות */
-  width: 80vw; /* הגבלת רוחב הגריד ל-90% מרוחב המסך */
-  margin: 0 auto; /* ממרכז את הגריד */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  width: 80vw;
+  margin: 0 auto;
 }
-
 @media (max-width: 1200px) {
   .card-container {
-    grid-template-columns: repeat(3, 1fr); /* 3 כרטיסיות בשורה */
+    grid-template-columns: repeat(3, 1fr);
   }
 }
-
 @media (max-width: 768px) {
   .card-container {
-    grid-template-columns: repeat(2, 1fr); /* 2 כרטיסיות בשורה */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
-
 @media (max-width: 480px) {
   .card-container {
-    grid-template-columns: 1fr; /* כרטיסיה אחת בשורה */
+    grid-template-columns: 1fr;
   }
 }
-
 /* עיצוב הכרטיסיות */
 .card-container .item-card {
   display: flex;
   top: 1rem;
   justify-content: center;
   align-items: center;
-  height: 100%; /* הכרטיסיה תתפוס את כל הגובה */
-  width: 100%; /* הכרטיסיה תתפוס את כל הרוחב */
-  padding: 0; /* להסיר ריפוד פנימי */
-  overflow: hidden; /* להסתיר את יתר התוכן */
-  max-width: 19vw; /* תמונה לא תחרוג מהרוחב הקבוע */
-  max-height: 30vh; /* תמונה לא תחרוג מהגובה הקבוע */
-  min-width: 19vw; /* תמונה לא תחרוג מהרוחב הקבוע */
-  min-height: 30vh; /* תמונה לא תחרוג מהגובה הקבוע */
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  max-width: 19vw;
+  max-height: 30vh;
+  min-width: 19vw;
+  min-height: 30vh;
 }
-
 .card-container .item-card .item-image {
-  width: 100%; /* התמונה תתפוס את כל רוחב הכרטיסיה */
-  height: 100%; /* התמונה תתפוס את כל גובה הכרטיסיה */
-  object-fit: cover; /* התמונה תכסה את כל הכרטיסיה מבלי לעוות את הפרופורציות */
-  max-width: 19vw; /* תמונה לא תחרוג מהרוחב הקבוע */
-  max-height: 30vh; /* תמונה לא תחרוג מהגובה הקבוע */
-  min-width: 19vw; /* תמונה לא תחרוג מהרוחב הקבוע */
-  min-height: 30vh; /* תמונה לא תחרוג מהגובה הקבוע */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  max-width: 19vw;
+  max-height: 30vh;
+  min-width: 19vw;
+  min-height: 30vh;
 }
-
 @media (max-width: 1200px) {
   .card-container .item-card .item-image {
     width: 100%;
     height: 100%;
   }
 }
-
 @media (max-width: 768px) {
   .card-container .item-card .item-image {
     width: 100%;
     height: 100%;
   }
 }
-
 @media (max-width: 480px) {
   .card-container .item-card .item-image {
     width: 100%;
     height: 100%;
   }
 }
-
 /* עיצוב הרשימה */
 .list-container {
-  display: block; /* רשימה */
+  display: block;
   top: 1rem;
-  width: 70vw; /* הגבלת רוחב הגריד ל-70% מרוחב המסך */
+  width: 70vw;
 }
-
 .item-row {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-bottom: 1.5rem; /* מרווח בין פריטים */
+  margin-bottom: 1.5rem;
   cursor: pointer;
   border-bottom: 0.2vh solid #ccc;
-  padding: 1rem; /* ריפוד פנימי */
+  padding: 1rem;
 }
-
-
 .item-image {
-  width: 10rem; /* גודל התמונה ב-REM */
+  width: 10rem;
   height: 10rem;
   object-fit: cover;
-  border-radius: 0.1rem; /* רדיוס פינות */
-  object-fit: cover; /* לוודא שהתמונה לא תשתנה באופן לא פרופורציונלי */
-  max-width: 20vw; /* תמונה לא תחרוג מהרוחב הקבוע */
-  max-height: 30vh; /* תמונה לא תחרוג מהגובה הקבוע */
-  min-width: 20vw; /* תמונה לא תחרוג מהרוחב הקבוע */
-  min-height: 30vh; /* תמונה לא תחרוג מהגובה הקבוע */
+  border-radius: 0.1rem;
+  object-fit: cover;
+  max-width: 20vw;
+  max-height: 30vh;
+  min-width: 20vw;
+  min-height: 30vh;
 }
-
 .mat-mdc-card-header {
-  padding: 0 !important; /* ביטול ה-padding */
+  padding: 0 !important;
 }
-
-
 /* עיצוב לרשימה בלבד */
 .list-container .item-row {
-  height: 5rem; /* הגבלת גובה הפריט ברשימה */
-  padding: 0.75rem 1rem; /* ריפוד קטן יותר */
-  display: flex; /* כדי שהעיצוב יהיה בצורה של row */
-  align-items: center; /* למרכז את התוכן */
+  height: 5rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
 }
-
 .list-container .item-row .item-image {
-  height: 4rem; /* גובה התמונה ברשימה */
-  width: auto; /* כדי לשמור על פרופורציות התמונה */
-  object-fit: cover; /* לוודא שהתמונה לא תשתנה באופן לא פרופורציונלי */
-  max-width: 7vw; /* תמונה לא תחרוג מהרוחב הקבוע */
-  max-height: 12vh; /* תמונה לא תחרוג מהגובה הקבוע */
-  min-width: 7vw; /* תמונה לא תחרוג מהרוחב הקבוע */
-  min-height: 12vh; /* תמונה לא תחרוג מהגובה הקבוע */
+  height: 4rem;
+  width: auto;
+  object-fit: cover;
+  max-width: 7vw;
+  max-height: 12vh;
+  min-width: 7vw;
+  min-height: 12vh;
 }
-
-@media (max-width: 768px) {
-  .list-container .item-row {
-    height: 7rem; /* גובה פריט קטן יותר במובייל */
-  }
-
-  .list-container .item-row .item-image {
-    height: 3rem; /* גובה התמונה במובייל */
-  }
-}
-
 .view-toggle-button {
-  margin-bottom: 1.5rem; /* מרווח מתחת לכפתור */
-  position: absolute; /* מאפשר מיקום מוחלט */
-  top: 11.2vh; /* מרחק מהחלק העליון */
-  left: 0.5vw; /* מרחק מהצד השמאלי */
-  z-index: 1000; /* מבטיח שהאייקון יהיה מעל האלמנטים האחרים */
-  background: none; /* מסיר רקע ברירת מחדל */
-  border: none; /* מסיר גבול ברירת מחדל */
-  cursor: pointer; /* הופך את הכפתור לקליקבילי */
+  margin-bottom: 1.5rem;
+  position: absolute;
+  top: 11.2vh;
+  left: 0.5vw;
+  z-index: 1000;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
-
 mat-icon {
-  font-size: 1.5rem; /* גודל האייקון ב-REM */
+  font-size: 1.5rem;
 }
-
 /* עיצוב של המפצל בין כרטיסיות לרשימה */
 .table-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   direction: rtl;
-  background-color: #ffffff;
+  background-color: #FFFFFF;
 }
-
 .item-card-header:hover {
-  position: relative; /* מאפשר מיקום מוחלט של אייקון בתוך כרטיס */
-  cursor: pointer; /* שינוי הסמן לצורת יד */
+  position: relative;
+  cursor: pointer;
 }
-
 .item-image:hover {
   width: 100%;
   height: auto;
   display: block;
   position: relative;
-  cursor: pointer; /* שינוי הסמן לצורת יד */
+  cursor: pointer;
 }
-
 .overlay-svg:hover{
-  cursor: pointer; /* שינוי הסמן לצורת יד */
+  cursor: pointer;
 }
-
 .overlay-svg {
   position: absolute;
   top: 50%;
@@ -442,7 +364,6 @@ mat-icon {
   width: 15vw;
   fill: #FFFF;
 }
-
 .item-image-list {
   width: 100px;
   height: 100px;
@@ -450,96 +371,77 @@ mat-icon {
   border-radius: 8px;
   position: relative;
 }
-
 .overlay-svg-list {
   position: absolute;
-  top: 4.5vh; /* מרחק מלמעלה */
-  left: 53vw; /* מרחק משמאל */
-  width: 3rem; /* גודל האייקון */
+  top: 4.5vh;
+  left: 53vw;
+  width: 3rem;
   height: 3rem;
-  fill: #fff; /* צבע האייקון */
-
+  fill: #fff;
 }
-
 .item-content {
   display: flex;
   flex: 1;
   align-items: center;
   gap: 1rem;
-  position: relative; /* כדי שהאייקון ימוקם יחסית לתמונה */
+  position: relative;
 }
-
 .item-details {
   flex: 1;
 }
-
 .item-title {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #007bff;
+  color: #007BFF;
   margin-bottom: 0.3em;
 }
-
 .item-description {
   font-size: 1rem;
   color: #666;
 }
-
 .item-meta {
   font-size: 0.9rem;
   color: #999;
   margin-top: 0.5em;
 }
-
-
-
-
-
-
-
-
-
 .no-data-message{
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #f8f9fa; /* צבע רקע עדין */
-  border: 0.5vh dashed #11457b; /* גבול עם קווקוו */
-  border-radius: 1rem; /* קצוות מעוגלים */
-  padding: 2vw; /* ריווח פנימי */
-  margin: 20vh auto; /* מרכז ההודעה */
-  font-size: 2rem; /* גודל טקסט */
-  max-width: 400vw; /* רוחב מקסימלי */
-  box-shadow: 0 4vh 6vh rgba(0, 0, 0, 0.1); /* הצללה קלה */
+  background-color: #F8F9FA;
+  border: 0.5vh dashed #11457B;
+  border-radius: 1rem;
+  padding: 2vw;
+  margin: 20vh auto;
+  font-size: 2rem;
+  max-width: 400vw;
+  box-shadow: 0 4vh 6vh rgba(0, 0, 0, 0.1);
 }
-
 .no-data-message p{
   margin-top: 6vh;
-  color: #6c757d; /* צבע טקסט אפור עדין */
-  text-align: center; /* מרכז הטקסט */
-  font-weight: 500; /* עיצוב טקסט מודגש במידה בינונית */
+  color: #6C757D;
+  text-align: center;
+  font-weight: 500;
 }
-
 .icon-no-data-message {
   margin-top: 6vh;
-  font-size: 2rem; /* גודל אייקון */
-  color: #11457b; /* צבע כחול */
-  margin-bottom: 10vh; /* ריווח מתחת לאייקון */
+  font-size: 2rem;
+  color: #11457B;
+  margin-bottom: 10vh;
 }
 .item-content {
-  position: relative; /* דרוש להנחת התווית על התמונה */
+  position: relative;
 }
-
 .new-label {
   position: absolute;
   top: 1px;
   left: -100px;
-  background-color: #359149; /* צבע בולט */
+  background-color: #359149;
   color: white;
-  padding: 2px 6px; /* הקטנה של padding */
+  padding: 2px 6px;
   border-radius: 5px;
   font-weight: bold;
   font-size: 14px;
-  z-index: 1; /* מוודא שהתווית תוצג מעל התמונה */
+  z-index: 1;
 }
