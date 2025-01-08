@@ -254,7 +254,7 @@ export class SearchComponent implements OnInit {
 
   private checkIfUserManagementRoute(): void {
     const currentUrl = this.router.url; // מקבל את ה-URL הנוכחי
-    this.isUserManagementComponent = currentUrl.includes('/user-management');
+    this.isUserManagementComponent = currentUrl.includes('/management/users');
   }
 
   // פונקציה להצגת אפשרויות
