@@ -5,12 +5,12 @@
   </div>
   <ul class="sidebar-menu">
     <li>
-      <a (click)="onSelectFilter('all',false)">
+      <a (click)="onSelectFilter('all')">
         <i class="far fa-calendar-alt"></i> הכל
       </a>
     </li>
     <li>
-      <a (click)="onSelectFilter('מערך',false)">
+      <a (click)="onSelectFilter('מערך')">
         <i class="fas fa-layer-group"></i> מערכים
       </a>
     </li>
@@ -24,33 +24,42 @@
         ></i>
       </a>
       <ul class="submenu" *ngIf="activeSubMenu === 'images'">
-        <li><a (click)="onSelectFilter('כרזה',false)">כרזות</a></li>
-        <li><a (click)="onSelectFilter('דף עבודה',false)">דפי עבודה</a></li>
-        <li><a (click)="onSelectFilter('איור',false)">איורים</a></li>
-        <li><a (click)="onSelectFilter('יצירה',false)">יצירות</a></li>
+        <li><a (click)="onSelectFilter('כרזה')">כרזות</a></li>
+        <li><a (click)="onSelectFilter('דף עבודה')">דפי עבודה</a></li>
+        <li><a (click)="onSelectFilter('איור')">איורים</a></li>
+        <li><a (click)="onSelectFilter('יצירה')">יצירות</a></li>
       </ul>
     </li>
 
     <li>
-      <a (click)="onSelectFilter('סרטון',false)">
+      <a (click)="onSelectFilter('סרטון')">
         <i class="fas fa-play"></i> סרטונים
       </a>
     </li>
 
     <li>
-      <a (click)="onSelectFilter('שיר',false)">
+      <a (click)="onSelectFilter('שיר')">
         <i class="fas fa-music"></i> שירים
       </a>
     </li>
 
     <li>
-      <a (click)="onSelectFilter('ספר',false)">
+      <a (click)="toggleSubMenu('books')">
         <i class="fas fa-book"></i> ספרים
+        <i
+          class="fas fa-chevron-down submenu-icon"
+          [ngClass]="{ open: activeSubMenu === 'books' }"
+        ></i>
       </a>
+      <ul class="submenu" *ngIf="activeSubMenu === 'books'">
+        <li><a (click)="onSelectFilter('ספר דיגיטלי')">ספר דיגיטלי</a></li>
+        <li><a (click)="onSelectFilter('ספר להשאלה')">ספר להשאלה</a></li>
+      </ul>
     </li>
+
     <!-- כפתור ניהול תגיות - מוצג לכל תפקיד שאינו STUDENT -->
       <li *ngIf="userType !== 'Student'">
-        <a (click)="onSelectFilter('management',true)">
+        <a (click)="tagManagementButton('management')">
           <i class="fas fa-user-cog"></i> ניהול
         </a>
       </li>

@@ -2,178 +2,129 @@
   display: flex;
   padding: 2vh;
   background-color: #ffff;
-  align-items: flex-start;
-  justify-content: flex-end;
-  direction: rtl;
+  align-items: flex-start; /* הצמדת הפרטים והתמונה לימין והעלאת הטקסט לראש התמונה */
+  justify-content: flex-end; /* הצמדת התמונה לפרטים */
 }
-
-strong{  direction: rtl;
-  text-align: right;}
-
-.date-picker-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  max-width: 300px;
-  margin: auto;
-}
-
-mat-form-field {
-  width: 100%;
-}
-
-
 
 .item-1 {
-  width: 25vw;
-  height: 55vh;
+  width: 25vw; /* קביעת רוחב קבוע */
+  height: 55vh; /* קביעת גובה קבוע */
   display: flex;
   justify-content: center;
   align-items: center;
   grid-area: item-1;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-end; /* הצמדת התמונה לימין */
+}
+.ng-container{
+  max-width: 100%; /* תמונה לא תחרוג מהרוחב הקבוע */
+  max-height: 100%; /* תמונה לא תחרוג מהגובה הקבוע */
+  object-fit: scale-down; /* שמירה על יחס גובה-רוחב */
 }
 
-.ng-container {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: scale-down;
-}
-
-.item-1 img {
+.item-1 img{
   margin-top: 14vh;
-  width: 25vw;
+  width: 25vw; 
   height: 55vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.item-1 video {
+.item-1 video{
   width: 25vw;
-  height: 40vh;
+  height: 40vh; 
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.item-1 audio {
+.item-1 audio{
   width: 25vw;
 }
 
 .item-1 .document-cover-image {
   margin-top: 17vh;
-  width: 25vw;
-  /* שומר על פרופורציות ברוחב */
-  height: 67vh;
-  /* שומר על פרופורציות בגובה */
+  width: 25vw; /* שומר על פרופורציות ברוחב */
+  height: 67vh; /* שומר על פרופורציות בגובה */
 }
 
 .item-details img {
-  max-width: 15vw;
-  /* הגדלת גודל התמונה */
-  margin-left: 1vw;
-  /* ריווח בין התמונה לפרטים */
+  max-width: 15vw; /* הגדלת גודל התמונה */
+  margin-left: 1vw; /* ריווח בין התמונה לפרטים */
 }
 
-.item-details h1,
-.item-details p {
+.item-details h1, .item-details p {
   margin: 0 2vw 1vw;
-  text-align: right;
-  /* הצמדת הטקסט לימין */
+  text-align: right; /* הצמדת הטקסט לימין */
 }
 
 .similar-items {
   margin-top: 2vh;
   overflow-x: auto;
   white-space: nowrap;
-  text-align: right;
-  /* הצמדת הכותרת והספרים לימין */
+  text-align: right; /* הצמדת הכותרת והספרים לימין */
 }
 
 .similar-items h2 {
   margin-bottom: 1vh;
-  text-align: right;
-  /* הצמדת הכותרת לימין */
+  text-align: right; /* הצמדת הכותרת לימין */
 }
 
 .similar-item {
   display: inline-block;
   margin-right: 0.5vw;
-  vertical-align: top;
-  /* כדי ליישר תמונות ברוחב שווה */
+  vertical-align: top; /* כדי ליישר תמונות ברוחב שווה */
 }
 
 .similar-item img {
-  max-width: 10vw;
-  /* הגבלת גודל התמונה */
+  max-width: 10vw; /* הגבלת גודל התמונה */
   margin-bottom: 2vh;
 }
 
-.item-3 video,
-.item-3 img,
-.item-3 embed,
-.item-3 audio {
-  max-width: 20vw;
-  /* תמונה לא תחרוג מהרוחב הקבוע */
-  max-height: 20vh;
-  /* תמונה לא תחרוג מהגובה הקבוע */
+.item-3 video, .item-3 img, .item-3 embed, .item-3 audio {
+  max-width: 20vw; /* תמונה לא תחרוג מהרוחב הקבוע */
+  max-height: 20vh; /* תמונה לא תחרוג מהגובה הקבוע */
   /* object-fit: cover; שמירה על יחס גובה-רוחב */
 }
 
 
 .grid-container {
-  /* display: grid;מיטל עשתה את זה שיניתי וכלום לא השתנה */
-  display: flex;
-  grid-template-areas:
+  display: grid;
+  grid-template-areas: 
     "item-2 item-1"
     "item-3 item-3";
-  grid-template-columns: 1fr auto;
-  /* קביעה ידנית של רוחב העמודות */
-  gap: 0.5vw;
-  direction: rtl;
-  display: flex; /* יוצר פריסה אופקית */
-  flex-direction: row; /* שומר על פריסה מימין לשמאל */
-  align-items: flex-start; /* כל הכיתובים יהיו מיושרים למעלה */
-  gap: 20px; /* רווח בין התמונה לכיתובים */
-  /* ריווח בין האלמנטים */
+  grid-template-columns: 1fr auto; /* קביעה ידנית של רוחב העמודות */
+  gap: 0.5vw; /* ריווח בין האלמנטים */
 }
 
 .grid-item {
-  /* padding-left: 0em;
-  padding-right: 30em; */
-  margin-left: 0em;
-  text-align: right;
-  direction: rtl;
+  padding: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1rem;
   font-weight: bold;
-} 
+}
+
+
 
 .item-2 {
   grid-area: item-2;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  /* הצמדת הטקסט לתחילת הפרטים */
-  align-items: flex-start;
-  direction: rtl;
-
-  /* הצמדת הטקסט לימין */
+  justify-content: flex-start; /* הצמדת הטקסט לתחילת הפרטים */
+  align-items: flex-end; /* הצמדת הטקסט לימין */
 }
 
 .item-3 {
   grid-area: item-3;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  /* הצמדת הכותרת והספרים לימין */
+  align-items: flex-end; /* הצמדת הכותרת והספרים לימין */
 }
 
-.file-not-found {
+.file-not-found{
   margin-top: 0vh;
   max-width: 13vw;
   max-height: 20vh;
@@ -188,14 +139,10 @@ mat-form-field {
 #audio-cover-image {
   display: block;
   margin: 15vh auto 1vh;
-  width: 50vw;
-  /* קביעת רוחב קבוע */
-  height: 50vh;
-  /* קביעת גובה קבוע */
-  max-width: 25vw;
-  /* גבול מקסימלי לרוחב */
-  border-radius: 1rem;
-  /* עיגול קצוות */
+  width: 50vw; /* קביעת רוחב קבוע */
+  height: 50vh; /* קביעת גובה קבוע */
+  max-width: 25vw; /* גבול מקסימלי לרוחב */
+  border-radius: 1rem; /* עיגול קצוות */
 }
 
 .image-container {
@@ -218,94 +165,185 @@ mat-form-field {
 
 .overlay-svg {
   position: absolute;
-  top: 1vh;
-  /* מרחק מהחלק העליון */
-  left: 6rem;
-  /* מרחק מהחלק השמאלי */
+  top: 1vh; /* מרחק מהחלק העליון */
+  left: 6rem; /* מרחק מהחלק השמאלי */
   z-index: 1;
-  pointer-events: none;
-  /* כדי שה-SVG לא יחסום לחיצות */
+  pointer-events: none; /* כדי שה-SVG לא יחסום לחיצות */
 }
 
 
 /* הצגת מסמך */
-.item-1 p {
+.item-1 p{
   text-align: center;
 }
 
 /* תגיות */
-.example-form-field {
+.tags {
   width: 20vw;
-  background-color: white;
-}
-
-.mat-form-field {
+  background-color: white; 
   direction: rtl;
-  width: 20vw;
+  overflow-x: auto;
+  white-space: nowrap;
+  overflow-y: hidden;
+  text-align: center;
 }
 
-.section {
-  direction: rtl;
-  /* overflow: scroll; */
-
+.chip-container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-items: center;
 }
 
-.big-div {
+mat-chip-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin: 0 5px;
+  position: relative;
+  box-sizing: border-box;
+  padding: 4px 8px; /* להוסיף רווחים פנימיים */
+}
 
+.mat-mdc-standard-chip .mdc-evolution-chip__text-label {
+  margin: 0; /* לוודא שאין מרווחים נוספים */
+  padding: 0;
+}
+
+.mat-mdc-standard-chip.mdc-evolution-chip--with-trailing-action .mdc-evolution-chip__action--primary {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+}
+
+/* עיצוב פס גלילה */
+.chip-container::-webkit-scrollbar {
+  height: 6px; /* עובי הפס גלילה */
+}
+
+.chip-container::-webkit-scrollbar-track {
+  background: #f1f1f1; /* צבע הרקע של פס הגלילה */
+  border-radius: 10px;
+}
+
+.chip-container::-webkit-scrollbar-thumb {
+  background: #888; /* צבע הידית של פס הגלילה */
+  border-radius: 10px;
+}
+
+.chip-container::-webkit-scrollbar-thumb:hover {
+  background: #555; /* צבע הידית בעת ריחוף */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+strong{  direction: rtl;
+  text-align: right;}
+.date-picker-container {
   display: flex;
   flex-direction: column;
-  /* align-content: center; */
-  justify-content: space-evenly;
-  direction: rtl;
-  text-align: right;
-  padding-left: 40em;
- 
+  gap: 1rem;
+  max-width: 300px;
+  margin: auto;
+}
+/* mat-form-field {
+  width: 100%;
+} */
+
+
+
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+section {
+  display: table;
+}
+.example-label {
+  display: table-cell;
+  font-size: 14px;
+  margin-left: 8px;
+  min-width: 120px;
+}
+.example-button-row {
+  display: table-cell;
+  max-width: 600px;
+}
+.example-button-row .mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
+}
+.example-flex-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.example-button-container {
+  display: flex;
+  justify-content: center;
+  width: 140px;
+}
+mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
 }
 
-.mat-chip-grid {
-  /* width: 20vw;
-  height: 10vh;*/
-  overflow-x: hidden;
-  overflow-y: scroll;
-  white-space: nowrap;
-  flex: 0 0 auto;
-  width: 20vw;
-  /* הגדרה מותאמת אישית */
-  height: 10vh;
-  /* הגדרה מותאמת אישית */
-
+section {
+  display: table;
 }
 
-button {
-  width: 20vw;
+.example-label {
+  display: table-cell;
+  font-size: 14px;
+  margin-left: 8px;
+  min-width: 120px;
 }
 
-.img-item{flex-shrink: 0; /* מונע מהתמונה לקטון */
-  max-width: 250px; /* גודל מקסימלי לתמונה */}
-
-  .item-image img {
-    width: 100%; /* התמונה תתאים לגודל הקונטיינר */
-    height: auto; /* שמירה על יחס התמונה */
-  }
-
-  /* הכיתובים */
-.grid-item item-2 item-details {
-  flex: 1; /* נותן לכיתובים את כל השטח הנותר */
-  text-align: right; /* טקסט מיושר לשמאל */
-  line-height: 1.6; /* ריווח שורות קריא */
+.example-button-row {
+  display: table-cell;
+  max-width: 600px;
 }
 
-.grid-item item-2 item-details h1 {
-  margin-bottom: 20px; /* רווח מתחת לכותרת */
+.example-button-row .mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
 }
 
-.grid-item item-2 item-details p {
-  margin: 5px 0; /* רווח בין שורות */
+.example-flex-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
-
-.description-items{
-  direction: rtl;
-  
+.example-button-container {
+  display: flex;
+  justify-content: center;
+  width: 140px;
 }
+
+.calender{width: 20vw;}
 
