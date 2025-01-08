@@ -310,7 +310,7 @@
       <!-- חיפוש כללי -->
       <div *ngIf="!isUserManagementComponent">
         <!-- תיבת היסטוריית החיפושים -->
-        <div class="search-history-box" *ngIf="isSearchHistoryVisible">
+        <div class="search-history-box" *ngIf="isSearchHistoryVisible && searchResults.length > 0 ">
           <div
             *ngFor="let item of searchResults"
             class="search-history-item"
