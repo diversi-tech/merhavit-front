@@ -97,6 +97,7 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   .subscribe(([items, totalItems]
 ) => {
     this.items = items;
+    
     this.totalItems=totalItems;
 
     this.cdr.detectChanges();

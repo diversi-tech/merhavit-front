@@ -227,17 +227,13 @@ export class UploadResourceComponent {
             specializations: Array.isArray(this.resourceItem.specializations) ? this.resourceItem.specializations : [],
             classes: Array.isArray(this.resourceItem.classes) ? this.resourceItem.classes : [],
           });
-          
-          
-          this.downloadFile(this.resourceItem.filePath)
+          if(this.resourceItem.contentOption=='book')  
+            this.downloadFile(this.resourceItem.coverImage)
+          else
+            this.downloadFile(this.resourceItem.filePath)
           if(this.contentOption=='add' || this.contentOption=='physicalBook')
              this.isFirstEdit = true
-          // עדכון optionSelected
-          //  this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
-          //  this.multipleChoiceFields['tags'].optionSelected = this.resourceItem.tags;
-          //  this.multipleChoiceFields['specializations'].optionSelected = this.resourceItem.specializations;
-          //  this.multipleChoiceFields['classes'].optionSelected = this.resourceItem.classes;
-
+          
         },
         error: (err) => {
           console.error('Error fetching resource by ID', err);
@@ -326,16 +322,21 @@ export class UploadResourceComponent {
 
   //בעת בחירת קובץ ממחשב
   downloadFile(filePath: string) {
-    console.log('Query URL:', filePath);
-
+   
+    console.log("path in download "+filePath)
     this.apiService
-      .Read(`/EducationalResource/presigned-url?filePath=${encodeURIComponent(filePath)}`)
+      .Read(`/EducationalResource/presigned-url?filePath=${filePath}`)
       .subscribe({
         next: async (response) => {
           const presignedUrl = response.url;
           if (response && response.url) {
+            console.log("response====",response);
+            console.log("9999999999 "+presignedUrl);
+            
             try {
               const fileResponse = await fetch(presignedUrl);
+              console.log("file response----",fileResponse.ok);
+              
               if (!fileResponse.ok) {
                 throw new Error('Network response was not ok');
               }
@@ -377,11 +378,13 @@ export class UploadResourceComponent {
 
     }
     this.isFirstEdit = false
-
+    
     if (this.file) {
       const fileType = this.file.type;
+      console.log("type----",fileType);
+      
       const fileName = this.file.name.toLowerCase();
-
+      
 
       if (fileType.startsWith('video/')) {
         this.clearPreviewsExcept('video');
@@ -401,7 +404,10 @@ export class UploadResourceComponent {
         const reader = new FileReader();
         reader.onload = () => {
           this.previewImage = reader.result; //  שמירת התצוגה המקדימה לתמונה 
+          console.log("reder.result "+reader.result);
         };
+        console.log('this.file',this.file);
+        
         reader.readAsDataURL(this.file);
       }
     }
@@ -563,17 +569,9 @@ export class UploadResourceComponent {
       field.optionSelected.splice(index, 1);
       array.removeAt(index);
     }
-    // const updatedValues = field.optionSelected.join(', ');
-    // this.fileForm.get(fieldKey)?.setValue(updatedValues);
+  
   }
-  // updateFormattedFields(fieldKey: string): void {
-  //   // עדכן את formattedTags או שדות אחרים לפי הצורך
-  //   if (fieldKey === 'tags') {
-  //     this.formattedTags = this.multipleChoiceFields['tags'].optionSelected.map(tagId => this.getTagById(tagId)).join(', ');
-  //   }
-  //   // הוסף כאן לוגיקה לשדות אחרים במידת הצורך
-  // }
-
+  
   //טיפול בהכנסת הערך הנבחר למערכים
   toggleSelection(option: any, fieldKey: string) {
     const field = this.multipleChoiceFields[fieldKey];
@@ -872,21 +870,26 @@ export class UploadResourceComponent {
 
   onSubmitEdit(): void {
     
-
-
     if (this.content && !this.file)//אם הקובץ הוא של העלאת תוכן שמירה שלו במשתנה
     {
       this.file = this.createTextFile();
     }
-    if (this.fileForm.valid && (this.file || this.link) && ((!this.isImage && this.coverImage) || this.isImage)) //ולידציה של השדות
+    if (this.fileForm.valid && (this.file || this.link|| (this.contentOption == 'physicalBook' && this.coverImage)) && ((!this.isImage && this.coverImage) || this.isImage))//ולידציה של השדות
     {
       const formData = new FormData();
-
+      
+      const { libraryLocation, ...form } = this.fileForm.value;
       const metadata = {
-        ...this.fileForm.value,
-         filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
-        contentOption:this.getContentOption(this.contentOption)//מצב הטופס
+        ...form,
+        filePath: libraryLocation || this.link, //אם לא הוכנס קישור או מיקום נכנס מחרוזת ריקה
+        contentOption: this.getContentOption(this.contentOption)//מצב הטופס
       }
+
+      // const metadata = {
+      //   ...this.fileForm.value,
+      //    filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
+      //   contentOption:this.getContentOption(this.contentOption)//מצב הטופס
+      // }
 
       let str: string = JSON.stringify(metadata)
       console.log("string data: " + str)
@@ -898,7 +901,7 @@ export class UploadResourceComponent {
         formData.append('files', rename)//הכנסת הקובץ לאוביקט לשליחה
       }
 
-      if (this.isImage) {
+      if (this.isImage && this.contentOption!=='physicalBook') {
         this.coverImage = this.file //אם סוג תמונה תמונת השער היא אותה תמונה
       }
 

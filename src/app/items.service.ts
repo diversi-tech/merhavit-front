@@ -76,6 +76,8 @@ export class ItemsService {
     isnew: string = this.isnew,
     duration: number = this.duration
   ): Observable<Item[]> {
+    console.log("in get items ");
+    
     let params = new HttpParams()
       // .set('page', page.toString())
       // .set('limit', limit.toString());
@@ -127,7 +129,6 @@ export class ItemsService {
           this.itemsSubject.next(this.items); // עדכון ה-BehaviorSubject
           this.totalItems=response.totalCount
           this.totalSubject.next(this.totalItems)
-          console.log("items************** "+this.items);
           
           return this.items;
         })
