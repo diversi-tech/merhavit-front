@@ -54,6 +54,7 @@ export class ItemPageComponent implements OnInit {
   inputValue: string = '';
   startDate: Date | null = null;
   endDate: Date | null = null;
+  public isHeaderDisplayed = false;
   readonly addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   announcer = inject(LiveAnnouncer); // שימוש ב-inject להזרקת ה-LiveAnnouncer
@@ -125,6 +126,10 @@ fetchSimilarItems(itemId: string) {
     next: (response) => {
       console.log('Similar items received:', response);
       this.similarItems = response;
+      if(this.similarItems.length == 0)
+        this.isHeaderDisplayed = false;
+      else
+        this.isHeaderDisplayed = true;
        // סימון שהמידע השתנה ויש לעדכן את התצוגה
        this.cdr.markForCheck();
     },

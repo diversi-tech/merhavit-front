@@ -99,9 +99,12 @@
   </div>
   <!-- פריטים דומים -->
   <div class="grid-item item-3">
-    <h3>פריטים דומים</h3>
     <div class="similar-items">
+      <ng-container *ngIf="this.isHeaderDisplayed">
+        <h3>פריטים דומים</h3>
+      </ng-container>
       <div *ngFor="let similarItem of similarItems" class="similar-item" (click)="navigateToItem(similarItem._id)">
+        <!-- <h3>פריטים דומים</h3> -->
         <div class="image-container">
           <!-- התמונה -->
           <img *ngIf="similarItem.coverImage" [src]="getCoverImageSimilarItem(similarItem)"
