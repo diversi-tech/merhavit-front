@@ -132,3 +132,28 @@
   border-bottom: 0.125rem solid #000; /* 2px -> 0.125rem */
   color: #000;
 }
+
+.no-data-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #f8f9fa; /* צבע רקע עדין */
+  border: 0.3vh dashed #11457b; /* גבול דק יותר */
+  border-radius: 0.5rem; /* קצוות מעוגלים */
+  padding: 1vw; /* ריווח פנימי קטן יותר */
+  margin: 10vh auto; /* מקטין את הריווח החיצוני */
+  color: #6c757d; /* צבע טקסט אפור עדין */
+  font-size: 1.5rem; /* גודל טקסט קטן יותר */
+  font-weight: 500; /* עיצוב טקסט מודגש במידה בינונית */
+  max-width: 300vw; /* מקטין את הרוחב המקסימלי */
+  box-shadow: 0 2vh 4vh rgba(0, 0, 0, 0.1); /* הצללה קטנה יותר */
+  text-align: center; /* מרכז הטקסט */
+}
+
+.icon-no-data-message {
+  margin-top: 3vh; /* ריווח קטן יותר מעל האייקון */
+  font-size: 1.5rem; /* גודל אייקון קטן יותר */
+  color: #11457b; /* צבע כחול */
+  margin-bottom: 5vh; /* ריווח קטן יותר מתחת לאייקון */
+}
