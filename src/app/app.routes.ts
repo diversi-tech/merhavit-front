@@ -20,6 +20,7 @@ import { SeminaryComponent } from './components/seminary/seminary.component';
 import { SubjectManagementComponent } from './components/Librarian/subject-management';
 import { ClassManagementComponent } from './components/Librarian/class-management';
 import { BorrowRequestManagementComponent } from './components/Librarian/borrowRequest';
+import { OrdersComponent } from './components/orders/orders.component';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -29,7 +30,6 @@ export const routes: Routes = [
   { path: 'registration', component: RegistrationComponent },
   { path: 'personal-details', component: PersonalDetailsComponent },
   { path: 'change-password', component: PasswordChangeComponent },
-  
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'success-registration', component: SuccessRegistrationComponent },
@@ -38,6 +38,10 @@ export const routes: Routes = [
   { path: 'upload-resource/:_id', component: UploadResourceComponent },
   { path: 'upload-resource', component: UploadResourceComponent },
   { path: 'favorites', component: FavoritesComponent },
+  { path: 'orders', component: OrdersComponent },
+ 
+
+
   { path: 'management', component: ManagementComponent,
     children: [
       { path: 'tags', component: TagManagementComponent },

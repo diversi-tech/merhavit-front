@@ -24,8 +24,10 @@
 
     <!-- אייקון פעמון ריק (Font Awesome) -->
     <i
+      *ngIf="userType == 'Librarian'"
       class="far fa-bell"
       style="color: #434343; font-size: 3vh; width: 2vw"
+      [routerLink]="['/borrowRequests']"
     ></i>
     <button
       *ngIf="userType !== 'Student'"
@@ -74,55 +76,115 @@
           <div class="filter-column">
             <div class="filter-row">
               <label for="file-type">סוג קובץ</label>
-              <input id="file-type" type="text" placeholder="סוג קובץ"  [formControl]="typeControl"/>
+              <input
+                id="file-type"
+                type="text"
+                placeholder="סוג קובץ"
+                [formControl]="typeControl"
+              />
             </div>
             <div class="filter-row">
               <label for="borrowable">ניתן להשאלה</label>
-              <input id="borrowable" type="text" placeholder="ניתן להשאלה" [formControl]="borrowedControl" />
+              <input
+                id="borrowable"
+                type="text"
+                placeholder="ניתן להשאלה"
+                [formControl]="borrowedControl"
+              />
             </div>
             <div class="filter-row">
               <label for="language">שפה:</label>
-              <input id="language" type="text" placeholder="שפה" [formControl]="languageControl" />
+              <input
+                id="language"
+                type="text"
+                placeholder="שפה"
+                [formControl]="languageControl"
+              />
             </div>
             <div class="filter-row">
               <label for="subjects">נושאים</label>
-              <input id="subjects" type="text" placeholder="נושאים" [formControl]="subjectControl" />
+              <input
+                id="subjects"
+                type="text"
+                placeholder="נושאים"
+                [formControl]="subjectControl"
+              />
             </div>
             <div class="filter-row">
               <label for="sku">מק"ט</label>
               <!-- מה עושים במקט? -->
-              <input id="sku" type="text" placeholder="מקט" [formControl]="searchControl"/>
+              <input
+                id="sku"
+                type="text"
+                placeholder="מקט"
+                [formControl]="searchControl"
+              />
             </div>
             <div class="filter-row">
               <label for="borrow-time">משך השאלה</label>
-              <input id="borrow-time" type="text" placeholder="משך השאלה" [formControl]="durationControl" />
+              <input
+                id="borrow-time"
+                type="text"
+                placeholder="משך השאלה"
+                [formControl]="durationControl"
+              />
             </div>
           </div>
           <!-- עמודה ראשונה - צד ימין -->
           <div class="filter-column">
             <div class="filter-row">
               <label for="title">כותר</label>
-              <input id="title" type="text" placeholder="כותר" [formControl]="titleControl" />
+              <input
+                id="title"
+                type="text"
+                placeholder="כותר"
+                [formControl]="titleControl"
+              />
             </div>
             <div class="filter-row">
               <label for="publisher">מו"ל</label>
-              <input id="publisher" type="text" placeholder="מול" [formControl]="createdByControl" />
+              <input
+                id="publisher"
+                type="text"
+                placeholder="מול"
+                [formControl]="createdByControl"
+              />
             </div>
             <div class="filter-row">
               <label for="hebrew-year">שנת הוצאה עברי</label>
-              <input id="hebrew-year" type="text" placeholder="שנת הוצאה עברי" [formControl]="publicationDateControl" />
+              <input
+                id="hebrew-year"
+                type="text"
+                placeholder="שנת הוצאה עברי"
+                [formControl]="publicationDateControl"
+              />
             </div>
             <div class="filter-row">
               <label for="latin-year">שנת הוצאה לועזי</label>
-              <input id="latin-year" type="text" placeholder="שנת הוצאה לועזי" [formControl]="publicationDateControl" />
+              <input
+                id="latin-year"
+                type="text"
+                placeholder="שנת הוצאה לועזי"
+                [formControl]="publicationDateControl"
+              />
             </div>
             <div class="filter-row">
               <label for="level">גיל/רמה</label>
-              <input id="level" type="text" placeholder="גיל/רמה" [formControl]="levelControl" />
+              <input
+                id="level"
+                type="text"
+                placeholder="גיל/רמה"
+                [formControl]="levelControl"
+              />
             </div>
             <div class="filter-row">
               <label for="new-in-database">חדש במאגר</label>
-              <input id="new-in-database" type="text" placeholder="חדש במאגר" [formControl]="isnewControl" />
+              <input
+                id="new-in-database"
+                type="text"
+                placeholder="חדש במאגר"
+                [formControl]="isnewControl"
+              />
             </div>
           </div>
         </div>
@@ -131,55 +193,124 @@
           <div class="filter-column">
             <div class="filter-row">
               <label for="email">מייל</label>
-              <input id="email" type="text" placeholder="מייל" [(ngModel)]="filters.email" (input)="onFilterChangeUsers()" [formControl]="searchControl" (input)="onSearch()"/>
+              <input
+                id="email"
+                type="text"
+                placeholder="מייל"
+                [(ngModel)]="filters.email"
+                (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
+              />
             </div>
             <div class="filter-row">
               <label for="class">כיתה</label>
-              <input id="class" type="text" placeholder="כיתה" [(ngModel)]="filters.class" (input)="onFilterChangeUsers()" [formControl]="searchControl" (input)="onSearch()"/>
+              <input
+                id="class"
+                type="text"
+                placeholder="כיתה"
+                [(ngModel)]="filters.class"
+                (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
+              />
             </div>
             <div class="filter-row">
               <label for="specialization">התמחות</label>
-              <input id="specialization" type="text" placeholder="התמחות" [(ngModel)]="filters.specialization" (input)="onFilterChangeUsers()" [formControl]="searchControl" (input)="onSearch()"/>
+              <input
+                id="specialization"
+                type="text"
+                placeholder="התמחות"
+                [(ngModel)]="filters.specialization"
+                (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
+              />
             </div>
             <div class="filter-row">
               <label for="userType">תפקיד</label>
-              <input id="userType" type="text" placeholder="תפקיד" [(ngModel)]="filters.userType" (input)="onFilterChangeUsers()" [formControl]="searchControl" (input)="onSearch()"/>
+              <input
+                id="userType"
+                type="text"
+                placeholder="תפקיד"
+                [(ngModel)]="filters.userType"
+                (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
+              />
             </div>
           </div>
           <div class="filter-column">
             <div class="filter-row">
               <label for="first-name">שם פרטי</label>
-              <input id="first-name" type="text" placeholder="שם פרטי" [(ngModel)]="filters.firstName" (input)="onFilterChangeUsers()" [formControl]="searchControl" (input)="onSearch()"/>
+              <input
+                id="first-name"
+                type="text"
+                placeholder="שם פרטי"
+                [(ngModel)]="filters.firstName"
+                (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
+              />
             </div>
             <div class="filter-row">
               <label for="last-name">שם משפחה</label>
-              <input id="last-name" type="text" placeholder="שם משפחה" [(ngModel)]="filters.lastName" (input)="onFilterChangeUsers()" [formControl]="searchControl" (input)="onSearch()" />
+              <input
+                id="last-name"
+                type="text"
+                placeholder="שם משפחה"
+                [(ngModel)]="filters.lastName"
+                (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
+              />
             </div>
             <div class="filter-row">
               <label for="id-number">תעודת זהות</label>
-              <input id="id-number" type="text" placeholder="תעודת זהות" [(ngModel)]="filters.idNumber" (input)="onFilterChangeUsers()" [formControl]="searchControl" (input)="onSearch()"/>
+              <input
+                id="id-number"
+                type="text"
+                placeholder="תעודת זהות"
+                [(ngModel)]="filters.idNumber"
+                (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
+              />
             </div>
             <div class="filter-row">
               <label for="address">כתובת</label>
-              <input id="address" type="text" placeholder="כתובת" [(ngModel)]="filters.address" (input)="onFilterChangeUsers()" [formControl]="searchControl" (input)="onSearch()"/>
+              <input
+                id="address"
+                type="text"
+                placeholder="כתובת"
+                [(ngModel)]="filters.address"
+                (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
+              />
             </div>
             <div class="filter-row">
               <label for="phone">טלפון</label>
-              <input id="phone" type="text" placeholder="טלפון" [(ngModel)]="filters.phone" (input)="onFilterChangeUsers()" [formControl]="searchControl" (input)="onSearch()"/>
+              <input
+                id="phone"
+                type="text"
+                placeholder="טלפון"
+                [(ngModel)]="filters.phone"
+                (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
 
-  
     <div class="search-input-container">
       <!-- חיפוש כללי -->
       <div *ngIf="!isUserManagementComponent">
-      
-        
         <!-- תיבת היסטוריית החיפושים -->
-        <div class="search-history-box" *ngIf="isSearchHistoryVisible">
+        <div class="search-history-box" *ngIf="isSearchHistoryVisible && searchResults.length > 0 ">
           <div
             *ngFor="let item of searchResults"
             class="search-history-item"
@@ -191,22 +322,28 @@
         </div>
       </div>
 
-      <div *ngIf="isUserManagementComponent" class="user-management-search">
-            </div>
- <input type="text"  type="text" 
- [(ngModel)]="searchTerm" 
- (input)="onSearchChange()" class="search-input"  [formControl]="searchControl"  placeholder="הקלד מילת חיפוש..." 
- (focus)="showSearchHistory()"
- (blur)="hideSearchHistory()"/>
- <button mat-icon-button (click)="onSearch()">
-  <mat-icon>search</mat-icon>
-</button>
-<section>
- 
-    <button mat-button (click)="onClear()">נקה הכל</button>
- 
-</section>
-<mat-divider></mat-divider>
+      <div
+        *ngIf="isUserManagementComponent"
+        class="user-management-search"
+      ></div>
+      <input
+        type="text"
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+        class="search-input"
+        [formControl]="searchControl"
+        placeholder="הקלד מילת חיפוש..."
+        (focus)="showSearchHistory()"
+        (blur)="hideSearchHistory()"
+      />
+      <button mat-icon-button (click)="onSearch()">
+        <mat-icon>search</mat-icon>
+      </button>
+      <section>
+        <button mat-button (click)="onClear()">נקה הכל</button>
+      </section>
+      <mat-divider></mat-divider>
     </div>
   </div>
-
+</div>

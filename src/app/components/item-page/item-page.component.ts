@@ -27,14 +27,16 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
 
 
+
 @Component({
   selector: 'app-item-page',
   templateUrl:'./item-page.component.html', //'./item-page.component.html',
   styleUrls: ['./item-page.component.css'],
   standalone: true,
   providers: [provideNativeDateAdapter()],
-  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatInputModule,MatNativeDateModule,MatDividerModule, MatButtonModule,  MatIconModule,MatCardModule,MatDialogModule, MatDatepickerModule
-    ,MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, JsonPipe ], // ייבוא המודולים
+  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule,MatCardModule, MatFormFieldModule,
+    FormsModule, ReactiveFormsModule, JsonPipe, MatDatepickerModule,MatInputModule,MatNativeDateModule,
+     MatButtonModule, MatDividerModule, ], // ייבוא המודולים
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })

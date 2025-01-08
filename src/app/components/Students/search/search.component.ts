@@ -82,25 +82,12 @@ export class SearchComponent implements OnInit {
       .subscribe(() => {
         this.checkIfUserManagementRoute(); // בדיקה מחדש בכל שינוי ניווט
       });
-    // this.searchControl.valueChanges.subscribe(value => {
-    //   if (!value?.trim()) {
-    //     console.log('The searchControl is empty or contains only whitespace');
-    //   } else {
-    //     console.log('The searchControl has a value:', value);
-    //   }
-    // });
 
     this.getUserTypeFromToken();
 
     this.loadSearchHistory(); // טוען את היסטוריית החיפושים
 
     this.searchControl.valueChanges.subscribe(value => {
-      if (!value?.trim()) {
-        console.log('The searchControl is empty or contains only whitespace');
-      } else {
-        console.log('The searchControl has a value:', value);
-      }
-
       this.searchControl.valueChanges
         .pipe(debounceTime(300), distinctUntilChanged()) // מצמצם קריאות
         .subscribe(() => {
@@ -250,11 +237,9 @@ export class SearchComponent implements OnInit {
       console.error('localStorage is not available on the server.');
     }
   }
-
-
   private checkIfUserManagementRoute(): void {
     const currentUrl = this.router.url; // מקבל את ה-URL הנוכחי
-    this.isUserManagementComponent = currentUrl.includes('/user-management');
+    this.isUserManagementComponent = currentUrl.includes('/management/users');
   }
 
   // פונקציה להצגת אפשרויות
