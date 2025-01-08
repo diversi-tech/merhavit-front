@@ -62,7 +62,10 @@ body {
   background-color: #f0f0f0;
   cursor: pointer;
 }
-
+.user-row .user-cell:nth-child(6) { /* 6 זה המיקום של המייל בשורה */
+  font-size: 0.9rem; /* שים כאן את הגודל הרצוי */
+  word-wrap: break-word; /* אם המייל ארוך מדי הוא ישבר לשורה חדשה */
+}
 /* עיצוב כפתורי הפעולות */
 .user-actions {
   display: flex;
@@ -153,8 +156,8 @@ body {
   margin-top: 0.5rem;
   padding: 0;
   list-style: none;
-  width: 12rem;
-  right: 0;
+  width: 6rem;
+  right: 1rem; /* שינוי מ-right: 0 ל-right: 1rem כדי להזיז פנימה */
 }
 
 .role-menu button {
@@ -165,7 +168,7 @@ body {
   background: none;
   border: none;
   outline: none;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   cursor: pointer;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   transition: background-color 0.2s ease-in-out;

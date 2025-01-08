@@ -298,7 +298,6 @@ if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       !target.classList.contains('fa-filter')
     ) {
       this.showDetails = false;
-      this.resetFilters();
     }
   }
   // פונקציה לאיפוס השדות באובייקט filters
