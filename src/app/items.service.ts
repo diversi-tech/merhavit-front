@@ -36,6 +36,7 @@ export class ItemsService {
   public ifArrIsEmty$ = this.ifArrIsEmtySubject.asObservable(); // Observable
   private totalSubject = new BehaviorSubject<number>(0); // Subject לניהול המספר 
   totalItems$ = this.totalSubject.asObservable(); // Observable שניתן להאזין לו
+  type: any;
 
   constructor(private apiService: ApiService) { }
   ngOnInit(): void {
