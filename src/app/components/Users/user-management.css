@@ -1,20 +1,35 @@
+/* הגדרת viewport */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* עוזר למנוע גלילה אופקית */
+}
+
+/* קונטיינר עיצוב המשתמש */
 .user-management-container {
   width: 100%;
   font-family: Arial, sans-serif;
   direction: rtl;
   border-collapse: collapse;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto; /* אפשר לגלול אם התוכן לא נכנס למסך */
+  padding: 1rem;
 }
 
+/* כותרת המשתמש */
 .user-header, .user-row {
   display: flex;
+  flex-wrap: wrap; /* מאפשר לגורמים להתיישר על פני מספר שורות אם הם לא נכנסים */
   align-items: center;
-  padding: 3vh 0; /* הגדלתי את ה-padding להגדיל את הרווח בין השורות */
+  padding: 1vh 0; /* padding מקוצר */
   border-bottom: 0.1rem solid #dcdcdc;
+  width: 100%;
 }
 
 .user-header {
   margin-top: 0.5rem;
-  font-size: 1.4rem;
+  font-size: 1.2rem; /* קטן את גודל הפונט */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f3f7fd;
   font-weight: bold;
@@ -24,11 +39,13 @@
   border-bottom: none;
 }
 
+/* עיצוב תאי המשתמש */
 .user-cell {
   flex: 1;
   text-align: center;
-  padding: 0 1.5vw;
+  padding: 0 1vw; /* padding מקוצר */
   box-sizing: border-box;
+  min-width: 150px; /* הגבלת רוחב מינימלי */
 }
 
 .user-header .user-cell {
@@ -36,7 +53,7 @@
 }
 
 .user-row .user-cell {
-  font-size: 1.4rem;
+  font-size: 1.2rem; /* קטן את גודל הפונט */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #2d3748;
 }
@@ -46,81 +63,85 @@
   cursor: pointer;
 }
 
+/* עיצוב כפתורי הפעולות */
 .user-actions {
   display: flex;
-  gap: 10px;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
 .action-button {
   background-color: transparent;
   color: #2d3748;
   border: none;
-  font-size: 1.4rem;
+  font-size: 1.2rem; /* קטן את גודל הפונט */
   cursor: pointer;
   transition: background-color 0.3s ease;
   display: flex;
   align-items: center;
-  padding: 5px 10px; /* הוספתי padding כדי להוסיף רווח סביב האייקון */
+  padding: 5px 10px;
 }
 
 .action-button:hover {
-  background-color: #9f9f9f; /* צבע אפור בהיר יותר עבור הרקע */
+  background-color: #9f9f9f;
   border-radius: 0.375rem;
-
 }
 
+/* עיצוב דיאלוג אישור */
 .confirmation-dialog {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #f9f9f9; /* צבע רקע עדין */
-  border: 0.2rem solid #b9cff0; /* גבול כחול בולט */
-  border-radius: 0.5rem; /* פינות מעוגלות */
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3); /* הצללה חזקה יותר */
+  background: #f9f9f9;
+  border: 0.2rem solid #b9cff0;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
   padding: 2rem;
   z-index: 1000;
-  width: 25rem; /* הגדלת רוחב */
-  max-width: 90%; /* התאמה למסכים קטנים */
+  width: 25rem;
+  max-width: 90%;
 }
 
 .dialog-content {
   text-align: center;
-  font-family: 'Arial', sans-serif; /* גופן מודרני */
-  color: #333; /* צבע טקסט כהה */
+  font-family: 'Arial', sans-serif;
+  color: #333;
 }
 
 .dialog-content p {
-  font-size: 1.2rem; /* גודל טקסט גדול יותר */
-  font-weight: bold; /* טקסט מודגש */
-  margin-bottom: 2rem; /* ריווח גדול יותר מתחת לטקסט */
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
 }
 
 .dialog-content button {
-  background: #3a83f1; /* צבע רקע כחול */
-  color: white; /* צבע טקסט לבן */
-  border: none; /* ללא גבול */
-  border-radius: 0.3rem; /* פינות מעוגלות */
-  padding: 0.7rem 1.5rem; /* ריווח פנימי */
-  font-size: 1rem; /* גודל גופן */
-  cursor: pointer; /* מצביע עכבר */
-  margin: 0 0.3rem; /* רווח אופקי בין הכפתורים */
-  transition: background 0.3s ease; /* אפקט מעבר */
+  background: #3a83f1;
+  color: white;
+  border: none;
+  border-radius: 0.3rem;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 0 0.3rem;
+  transition: background 0.3s ease;
 }
 
 .dialog-content button:hover {
-  background: #0056b3; /* צבע כהה יותר בעת ריחוף */
+  background: #0056b3;
 }
 
 .dialog-content button.cancel {
-  background: #6c757d; /* צבע אפור לכפתור ביטול */
+  background: #6c757d;
 }
 
 .dialog-content button.cancel:hover {
-  background: #5a6268; /* צבע כהה יותר בעת ריחוף */
+  background: #5a6268;
 }
+
 /* עיצוב התפריט של בחירת התפקידים */
 .role-menu {
   position: absolute;
@@ -129,19 +150,18 @@
   border-radius: 0.3rem;
   box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  margin-top: 0.5rem; /* מרווח קטן מתחת לכפתור */
+  margin-top: 0.5rem;
   padding: 0;
   list-style: none;
-  width: 12rem; /* רוחב מותאם */
-  right: 0; /* מיושר לימין */
+  width: 12rem;
+  right: 0;
 }
 
-/* עיצוב הכפתורים בתוך התפריט */
 .role-menu button {
   display: block;
   width: 100%;
-  padding: 0.8rem; /* גודל מותאם */
-  text-align: right; /* יישור לימין */
+  padding: 0.8rem;
+  text-align: right;
   background: none;
   border: none;
   outline: none;
@@ -152,17 +172,14 @@
   direction: rtl;
 }
 
-/* אפקט ריחוף על כפתורים */
 .role-menu button:hover {
-  background-color: #f0f0f0; /* אפור עדין */
+  background-color: #f0f0f0;
 }
 
-/* פס מפריד בין תפקידים */
 .role-menu button:not(:last-child) {
   border-bottom: 0.1rem solid #ddd;
 }
 
-/* מיקום התפריט מתחת לתפקיד */
 .user-actions {
   position: relative;
 }
