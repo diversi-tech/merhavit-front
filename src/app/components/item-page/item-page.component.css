@@ -189,6 +189,11 @@
 }
 
 .chip-container {
+  width: 20vw;
+  background-color: white; 
+  direction: rtl;
+  white-space: nowrap;
+  text-align: center;
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;

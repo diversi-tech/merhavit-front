@@ -44,30 +44,15 @@
     <p *ngIf="item.physicalBook==true"><strong>מיקום בסיפריה:</strong> {{ item.filePath || '' }}</p>
     <p><strong>תיאור:</strong> {{ item.description || '' }}</p>
     <!-- הצגת התגיות -->
-    <section>
-      <mat-form-field class="tags">
-        <mat-chip-grid #reactiveChipGrid aria-label="Enter reactive form keywords" [formControl]="formControl">
+     <section>
           <div class="chip-container">
-            <mat-chip-row *ngFor="let keyword of reactiveKeywords()">
+            <mat-chip-row *ngFor="let keyword of tags()">
               {{ keyword }}
-              <button matChipRemove (click)="removeReactiveKeyword(keyword)"
-                aria-label="'remove reactive form ' + keyword">
-                <mat-icon>cancel</mat-icon>
-              </button>
             </mat-chip-row>
           </div>
-        </mat-chip-grid>
-        <input maxlength="12" placeholder="הוסיפי תגית" [matChipInputFor]="reactiveChipGrid"
-          (matChipInputTokenEnd)="addReactiveKeyword($event)" />
-      </mat-form-field>
-      <div class="scroll-wrapper">
-        <div class="chip-container">
-        </div>
-      </div>
     </section>
-
-
-  
+    
+ 
       <div class="calender">
         <mat-form-field appearance="fill">
           <mat-label>תאריך התחלה</mat-label>
