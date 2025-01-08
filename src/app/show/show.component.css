@@ -49,6 +49,10 @@
   cursor: pointer;
 }
 /* שינוי הרקע במעבר העכבר על הפריט */
+.row:hover {
+  background-color: #F5F5F5;
+  cursor: pointer;
+}
 .item-image {
   width: 5vw;
   height: 5vw;
@@ -463,8 +467,10 @@ mat-icon {
   position: absolute;
   top: 1px;
   left: -100px;
+  right: -4px;
   background-color: #359149;
   color: white;
+  object-fit: cover;
   padding: 2px 6px;
   border-radius: 5px;
   font-weight: bold;
