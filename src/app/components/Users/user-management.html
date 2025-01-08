@@ -21,13 +21,16 @@
   </div>
 
   <div class="user-row" *ngFor="let user of filteredUsers">
-    <div class="user-cell">{{ user.firstName || 'N/A' }}</div>
-    <div class="user-cell">{{ user.lastName || 'N/A' }}</div>
-    <div class="user-cell">{{ user.idNumber || 'N/A' }}</div>
-    <div class="user-cell">{{ user.address || 'N/A' }}</div>
-    <div class="user-cell">{{ user.phoneNumber || 'N/A' }}</div>
-    <div class="user-cell">{{ user.email || 'N/A' }}</div>
-    <div class="user-cell">
+    <div class="user-cell">{{ user.firstName || '---' }}</div>
+    <div class="user-cell">{{ user.lastName || '---' }}</div>
+    <div class="user-cell">{{ user.idNumber || '---' }}</div>
+    <div class="user-cell">{{ user.address || '---' }}</div>
+    <div class="user-cell">{{ user.phoneNumber || '---' }}</div>
+    <div class="user-cell">{{ user.email || '---' }}</div>
+    <div class="user-cell">{{ user.classId || '---' }}</div>
+    <div class="user-cell">{{ user.assignedSeminaryId || '---' }}</div>
+    <div class="user-cell">{{ user.specialization || '---' }}</div>
+    <!-- <div class="user-cell">
       <div>{{ getEntityName(user.classId, classes) }}</div>
     </div>
 
@@ -36,7 +39,7 @@
     </div>
     <div class="user-cell">
       <div>{{ getEntityName(user.specialization, specializations) }}</div>
-    </div>
+    </div> -->
 
     <div class="user-cell user-actions">
       <!-- אייקון מחיקה -->
@@ -46,7 +49,7 @@
 
       <!-- כפתור שמציג את התפקיד הנוכחי -->
       <button class="action-button" (click)="toggleRoleMenu(user)">
-        {{ user.userType || 'לא הוקצה תפקיד' }}
+        {{ roleTranslations[user.userType] || 'לא הוקצה תפקיד' }}
       </button>
 
       <!-- תפריט הבחירה של התפקיד -->

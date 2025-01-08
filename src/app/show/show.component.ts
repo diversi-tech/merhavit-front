@@ -19,7 +19,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 // import { ChangeDetectionStrategy } from '@angular/core';
 import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
- import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { catchError, Subscription, switchMap, takeUntil } from 'rxjs';
 import { Subject, combineLatest, of } from 'rxjs';
 
@@ -69,7 +69,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
     this.getUserTypeFromToken();
     this.itemsService.typeFilter = 'all'; // עדכון הסינון ב-service
     this.itemsService.fetchItems(); // שליחת בקשה לשרת עם הסינון החדש
-    
      // ביצוע הבדיקה בטעינת הדף
      this.subscription = this.itemsService.ifArrIsEmty$.subscribe((isEmpty) => {
       this.ifArrIsEmty = isEmpty;
@@ -85,8 +84,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
         this.itemsService.typeFilter = type; // עדכון סוג הסינון בשירות
         this.itemsService.page = 0; // התחלה מחדש
         this.itemsService.getItems(0,10, '', type)
-        console.log("total",this.totalItems);
-
       }
       //return this.itemsService.items$; // האזנה לזרם הנתונים
       return combineLatest([this.itemsService.items$, this.itemsService.totalItems$]);
@@ -100,8 +97,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   .subscribe(([items, totalItems]
 ) => {
     this.items = items;
-    if(this.userType=='Student')
-      
     this.totalItems=totalItems;
 
     this.cdr.detectChanges();
@@ -136,7 +131,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
           const decodedToken: any = jwtDecode(token);
           this.userType = decodedToken.userType || '';
           console.log(this.userType);
-
         } catch (error) {
           console.error('Error decoding token:', error);
         }
@@ -273,7 +267,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
               });
             },
             complete: () => {
-              
               // פעולה כאשר הקריאה הסתיימה (אופציונלי)
               console.log('Delete request completed.');
               this.removeFromFavorites(itemToDelete)
