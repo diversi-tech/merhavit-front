@@ -34,7 +34,7 @@ import {MatButtonModule} from '@angular/material/button';
   styleUrls: ['./item-page.component.css'],
   standalone: true,
   providers: [provideNativeDateAdapter()],
-  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule,MatCardModule, MatFormFieldModule
+  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule,MatCardModule, MatFormFieldModule,
     FormsModule, ReactiveFormsModule, JsonPipe, MatDatepickerModule,MatInputModule,MatNativeDateModule,
      MatButtonModule, MatDividerModule, ], // ייבוא המודולים
   changeDetection: ChangeDetectionStrategy.OnPush,
