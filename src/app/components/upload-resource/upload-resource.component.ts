@@ -457,7 +457,7 @@ Promise.all(requests).then(() => {
     this.coverImageErrorMessage = "חסר תמונת תצוגה מקדימה לקובץ"
     if(this.contentOption=='physicalBook')
       {
-       this.disabledOptions['book'] = this.coverImage ? true : false
+       this.disabledOptions['physicalBook'] = this.coverImage ? true : false
       }
   }
 
@@ -498,7 +498,7 @@ Promise.all(requests).then(() => {
 
     if(this.contentOption=='physicalBook')
        {
-        this.disabledOptions['book'] = this.coverImage ? true : false
+        this.disabledOptions['physicalBook'] = this.coverImage ? true : false
        }
   }
 

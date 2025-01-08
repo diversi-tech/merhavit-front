@@ -43,7 +43,7 @@
 }
 
 .table-container {
-  padding-bottom: 60px; /* או גובה ה-paginator */
+  padding-bottom: 60px; 
   direction: rtl;
   display: flex;
   flex-direction: column;
@@ -63,7 +63,7 @@
   cursor: pointer; 
 }
 
-/* שינוי הרקע במעבר העכבר על הפריט */
+
 .row:hover {
   background-color: #f5f5f5; 
   cursor: pointer; 
@@ -167,7 +167,7 @@
   cursor: pointer; 
 }
 
-/* מדיה קווריס לריספונסיביות במסכים קטנים */
+
 @media (max-width: 48rem) {
   .row {
     flex-direction: column;
@@ -196,12 +196,12 @@
     position: absolute;
     direction: ltr;
     display: flex;
-    /* position: fixed; */
-    bottom: 0; /* מציב את ה-div בתחתית */
+    
+    bottom: 0; 
     left: 0;
     right: 0;
-    background-color: white; /* רקע כדי להפריד אותו מהתוכן */
-    padding: 5rem; /* ריווח פנימי אם צריך */
+    background-color: white; 
+    padding: 5rem; 
 }
 
 
@@ -271,7 +271,7 @@
 
 
 
-/* עיצוב הגריד של הכרטיסיות */
+
 .card-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr); 
@@ -299,7 +299,7 @@
   }
 }
 
-/* עיצוב הכרטיסיות */
+
 .card-container .item-card {
   display: flex;
   top: 1rem;
@@ -346,7 +346,7 @@
   }
 }
 
-/* עיצוב הרשימה */
+
 .list-container {
   display: block; 
   top: 1rem;
@@ -381,7 +381,7 @@
 }
 
 
-/* עיצוב לרשימה בלבד */
+
 .list-container .item-row {
   height: 5rem; 
   padding: 0.75rem 1rem; 
@@ -414,7 +414,7 @@ mat-icon {
   font-size: 1.5rem; 
 }
 
-/* עיצוב של המפצל בין כרטיסיות לרשימה */
+
 .table-container {
   display: flex;
   flex-direction: column;
