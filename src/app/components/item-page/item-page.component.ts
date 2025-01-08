@@ -172,8 +172,8 @@ fetchSimilarItems(itemId: string) {
     } else if (fileType.includes('pdf') || fileType.includes('ספר דיגיטלי') || fileType.includes('digitalBook')) {
       this.clearPreviewsExcept('ספר דיגיטלי');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
-    }else if (fileType.includes('ספר להשאלה') || fileType.includes('physicalBook')) {
-      this.clearPreviewsExcept('ספר להשאלה');
+    }else if (fileType.includes('ספר פיזי') || fileType.includes('physicalBook')) {
+      this.clearPreviewsExcept('ספר פיזי');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
     } else {
       console.error('Unknown file type:', fileType);
@@ -182,7 +182,7 @@ fetchSimilarItems(itemId: string) {
     console.log('Cover image URL:', this.item?.coverImage);
   }  
 
-  clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'ספר דיגיטלי' | 'ספר להשאלה' | 'שיר') {
+  clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'ספר דיגיטלי' | 'ספר פיזי' | 'שיר') {
     this.isPoster = type === 'כרזה';
     this.isWorksheet = type === 'דף עבודה';
     this.isPainting = type === 'איור';
@@ -191,7 +191,7 @@ fetchSimilarItems(itemId: string) {
     this.isVideo = type === 'סרטון';
     this.isDocument = type === 'מערך';
     this.digitalBook = type === 'ספר דיגיטלי';
-    this.physicalBook = type === 'ספר להשאלה';
+    this.physicalBook = type === 'ספר פיזי';
   }
 
   navigateToItem(itemId: string) {
