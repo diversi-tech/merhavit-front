@@ -237,8 +237,6 @@ export class SearchComponent implements OnInit {
       console.error('localStorage is not available on the server.');
     }
   }
-
-
   private checkIfUserManagementRoute(): void {
     const currentUrl = this.router.url; // מקבל את ה-URL הנוכחי
     this.isUserManagementComponent = currentUrl.includes('/user-management');
@@ -392,7 +390,7 @@ export class SearchComponent implements OnInit {
     this.publicationDateControl.setValue('');
     this.levelControl.setValue('');
     this.isnewControl.setValue('');
-    this.itemsService.getAllItemsAlways().subscribe((items) => {
+    this.itemsService.getItems().subscribe((items) => {
       this.items = items;
       console.log('Items fetched:', items);
     });

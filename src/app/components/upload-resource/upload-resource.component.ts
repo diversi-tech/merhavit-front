@@ -73,7 +73,7 @@ export class UploadResourceComponent {
   isPDF: boolean = false;
   isImage: boolean = true
   isAudio: boolean = false
-  fileTypes: Array<string> = ['ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
+  fileTypes: Array<string> = ['ספר להשאלה' ,'ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
   userId: string = ''
   purchaseLocations: Array<string> = ["חנות ספרים", "פוטומן"];
 
@@ -176,12 +176,7 @@ export class UploadResourceComponent {
       this.formMode = additionalParam !== null ? additionalParam : this.formMode; // הצבת הערך לתוך formMode או שמירה על ברירת המחדל
     });
 
-    if (this.formMode == 'edit') {
-      this.me.params.subscribe(p => {
-        this.itemID = p['_id']
-        console.log("Received resource ID: ", this.itemID);
-      })
-    }
+    
 
     Object.keys(this.multipleChoiceFields).forEach((key) => {
       const Array = this.fileForm.get(key) as FormArray;
@@ -197,32 +192,46 @@ export class UploadResourceComponent {
     })
 
     if (this.formMode == 'edit') {
-      //i added 
+
+      this.me.params.subscribe(p => {
+        this.itemID = p['_id']
+        console.log("Received resource ID: ", this.itemID);
+      })
+
       this.apiService.Read(`/EducationalResource/${this.itemID}`).subscribe({
         next: (response: any) => {
           console.log("This is the response: ", response);
           // שמירת האובייקט במשתנה חדש
           this.resourceItem = response; // resourceItem הוא משתנה חדש בקומפוננטה שלך
+           this.contentOption = this.getContentOption(this.resourceItem.contentOption)
+           console.log("file "+this.resourceItem.filePath);
 
           this.fileForm.patchValue({
             title: this.resourceItem.title || "",
-            tags: this.resourceItem.tags || "",
             description: this.resourceItem.description || "",
             author: this.resourceItem.author || "",
             releaseYear: this.resourceItem.releaseYear || "",
             language: this.resourceItem.language || "",
             level: this.resourceItem.level || "",
-            classes: this.resourceItem.classes || "",
             type: this.resourceItem.type || "",
-            specializations: this.resourceItem.specializations || "",
-            subjects: this.resourceItem.subjects || "",
             
+            approved:this.resourceItem.approved||"",
+            loanValidity:this.resourceItem.loanValidity||"",
+            purchaseLocation:this.resourceItem.purchaseLocation ||"",
+            price:this.resourceItem.price ||"",
+            catalogNumber:this.resourceItem.catalogNumber ||"",
+            copies:this.resourceItem.copies ||"",
+            libraryLocation:this.resourceItem.libraryLocation ||"",
+            subjects: Array.isArray(this.resourceItem.subjects) ? this.resourceItem.subjects : [],
+            tags: Array.isArray(this.resourceItem.tags) ? this.resourceItem.tags : [],
+            specializations: Array.isArray(this.resourceItem.specializations) ? this.resourceItem.specializations : [],
+            classes: Array.isArray(this.resourceItem.classes) ? this.resourceItem.classes : [],
           });
-
+          
+          
           this.downloadFile(this.resourceItem.filePath)
-          this.isFirstEdit = true
-          this.contentOption = this.getContentOption(this.resourceItem.contentOption)
-
+          if(this.contentOption=='add' || this.contentOption=='physicalBook')
+             this.isFirstEdit = true
           // עדכון optionSelected
           //  this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
           //  this.multipleChoiceFields['tags'].optionSelected = this.resourceItem.tags;
@@ -277,7 +286,7 @@ export class UploadResourceComponent {
       edit: 'עריכת תוכן',
       add: 'העלאת תוכן',
       addLink: 'קישורים',
-      book: 'ספר להשאלה'
+      physicalBook: 'ספר להשאלה'
     };
     return labels[option] || option;
   }
@@ -422,7 +431,7 @@ export class UploadResourceComponent {
     this.coverImageErrorMessage = "חסר תמונת תצוגה מקדימה לקובץ"
     if(this.contentOption=='physicalBook')
       {
-       this.disabledOptions['book'] = this.coverImage ? true : false
+       this.disabledOptions['physicalBook'] = this.coverImage ? true : false
       }
   }
 
@@ -463,7 +472,7 @@ export class UploadResourceComponent {
 
     if(this.contentOption=='physicalBook')
        {
-        this.disabledOptions['book'] = this.coverImage ? true : false
+        this.disabledOptions['physicalBook'] = this.coverImage ? true : false
        }
   }
 
@@ -719,7 +728,7 @@ export class UploadResourceComponent {
       edit: 'text',
       add: 'file',
       addLink: 'link',
-      physicalBook: 'book'
+      physicalBook: 'physicalBook'
     }
 
     const reverseOptions = Object.fromEntries(
@@ -759,7 +768,7 @@ export class UploadResourceComponent {
     }
 
     if (this.contentOption == 'physicalBook') {
-      this.fileForm.patchValue({ type: 'ספר פיזי' }); // הגדרת ערך ברירת מחדל
+      this.fileForm.patchValue({ type: 'ספר להשאלה' }); // הגדרת ערך ברירת מחדל
       this.updateTypeValidator(false);
     } else {
       this.fileForm.patchValue({ approved: '' })
@@ -862,19 +871,7 @@ export class UploadResourceComponent {
   }
 
   onSubmitEdit(): void {
-    console.log("**************subject " + JSON.stringify(this.fileForm.value.subjects));
-    console.log("*************title " + JSON.stringify(this.fileForm.value.title));
-    console.log("*************author  " + JSON.stringify(this.fileForm.value.author));
-    console.log("*************tags " + JSON.stringify(this.fileForm.value.tags));
-    console.log("*************spec: " + JSON.stringify(this.fileForm.value.specializations));
-    console.log("*************age: " + JSON.stringify(this.fileForm.value.classes));
-    console.log("*************level: " + JSON.stringify(this.fileForm.value.level));
-    console.log("*************description: " + JSON.stringify(this.fileForm.value.description));
-    console.log("*************releaseYear: " + JSON.stringify(this.fileForm.value.releaseYear));
-    console.log("*************language: " + JSON.stringify(this.fileForm.value.language));
-    console.log("*************file " + this.file);
-    console.log("*************link " + this.link);
-    console.log("*************image " + this.isImage);
+    
 
 
     if (this.content && !this.file)//אם הקובץ הוא של העלאת תוכן שמירה שלו במשתנה
@@ -887,9 +884,8 @@ export class UploadResourceComponent {
 
       const metadata = {
         ...this.fileForm.value,
-        createdBy: localStorage.getItem('idNumber'),
-        // filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
-        // contentOption:this.getContentOption(this.contentOption)//מצב הטופס
+         filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
+        contentOption:this.getContentOption(this.contentOption)//מצב הטופס
       }
 
       let str: string = JSON.stringify(metadata)
@@ -929,6 +925,7 @@ export class UploadResourceComponent {
             duration: 3000,
             panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
           });
+          this.itemService.fetchItems()
         },
         error: (err) => {
           console.log('תקלה בשליחת טופס', err);

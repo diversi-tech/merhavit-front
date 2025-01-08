@@ -10,7 +10,7 @@ const serverPath = 'https://merhavit-back.onrender.com';
 export class ApiService {
   constructor(private http: HttpClient) {}
   // GET
-  Read(query: string): Observable<any> {
+  Read(query: string, p0?: unknown): Observable<any> {
     console.log("query", query);
 
     let fullpath = serverPath + query;
