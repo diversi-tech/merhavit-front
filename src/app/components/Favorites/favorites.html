@@ -1,5 +1,41 @@
 <div class="favorites-container" dir="rtl">
-  <h2>המועדפים שלי</h2>
+  <!-- <h2>המועדפים שלי</h2> -->
+  <!-- סרגל ניווט -->
+  <div class="nav-tabs">
+    <div
+      [class.active]="activeTab === 'personal-details'"
+      (click)="navigateTo('personal-details')"
+    >
+      פרטים אישיים
+    </div>
+    <!-- <div
+      [class.active]="activeTab === 'returns'"
+      (click)="navigateTo('returns')"
+    >
+      החזרות/חובות
+    </div> -->
+    <!-- <div
+      [class.active]="activeTab === 'activity-questions'"
+      (click)="navigateTo('activity-questions')"
+    >
+      השאלות פעילות
+    </div> -->
+    <div [class.active]="activeTab === 'orders'" (click)="navigateTo('orders')">
+      הזמנות
+    </div>
+    <div
+      [class.active]="activeTab === 'favorites'"
+      (click)="navigateTo('favorites')"
+    >
+      שמירות
+    </div>
+    <!-- <div
+      [class.active]="activeTab === 'notifications'"
+      (click)="navigateTo('notifications')"
+    >
+      הודעות
+    </div> -->
+  </div>
 
   <div *ngIf="favorites.length === 0">
     <p>אין לך פריטים מועדפים.</p>
@@ -11,10 +47,30 @@
       *ngFor="let favorite of favorites"
       (click)="navigateToItemPage(favorite.itemId)"
     >
-      <img
+    <div class="item-container">
+      <ng-container *ngIf="favorite.itemDetail?.coverImage; else fileExtensionTemplate">
+        <img [src]="favorite.itemDetail?.coverImage" alt="Item Image" class="item-image" />
+      </ng-container>
+
+      <ng-template #fileExtensionTemplate>
+        <div class="file-extension-container">
+          <ng-container [ngSwitch]="getFileExtension(favorite.itemDetail?.filePath)">
+            <i *ngSwitchCase="'.pdf'" class="file-icon pdf-icon">PDF</i>
+            <i *ngSwitchCase="'.doc'" class="file-icon doc-icon">DOC</i>
+            <i *ngSwitchCase="'.jpg'" class="file-icon jpg-icon">JPG</i>
+            <i *ngSwitchCase="'.png'" class="file-icon png-icon">PNG</i>
+            <i *ngSwitchDefault class="file-icon default-icon">
+              {{ getFileExtension(favorite.itemDetail?.filePath) || "Unknown" }}
+            </i>
+          </ng-container>
+        </div>
+      </ng-template>
+    </div>
+    
+      <!-- <img
         [src]="favorite.itemDetail?.coverImage || 'assets/default-image.png'"
         alt="Item Image"
-      />
+      /> -->
       <div class="item-details">
         <div class="item-title">{{ favorite.itemDetail?.title }}</div>
         <div class="item-description">

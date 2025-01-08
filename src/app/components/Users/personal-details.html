@@ -7,18 +7,18 @@
     >
       פרטים אישיים
     </div>
-    <div
+    <!-- <div
       [class.active]="activeTab === 'returns'"
       (click)="navigateTo('returns')"
     >
       החזרות/חובות
-    </div>
-    <div
+    </div> -->
+    <!-- <div
       [class.active]="activeTab === 'activity-questions'"
       (click)="navigateTo('activity-questions')"
     >
       השאלות פעילות
-    </div>
+    </div> -->
     <div [class.active]="activeTab === 'orders'" (click)="navigateTo('orders')">
       הזמנות
     </div>
@@ -28,12 +28,12 @@
     >
       שמירות
     </div>
-    <div
+    <!-- <div
       [class.active]="activeTab === 'notifications'"
       (click)="navigateTo('notifications')"
     >
       הודעות
-    </div>
+    </div> -->
   </div>
 
   <!-- טופס הפרטים האישיים -->
@@ -127,6 +127,7 @@
       <button type="button" class="cancel-button" (click)="cancel()">
         ביטול
       </button>
+      <button type="button" class="change-password-button" (click)="goToChangePassword()">שינוי סיסמה</button>
       <button type="submit" class="save-button">שמירת שינויים</button>
     </div>
   </form>

@@ -17,6 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class FavoritesComponent implements OnInit {
   favorites: any[] = [];
   userId: string = '';
+  activeTab = 'favorites';
 
   constructor(private apiService: ApiService, private router: Router, private _snackBar: MatSnackBar) {}
 
@@ -127,4 +128,18 @@ export class FavoritesComponent implements OnInit {
   navigateToItemPage(itemId: string): void {
     this.router.navigate([`/item-page/${itemId}`]);
   }
+
+  navigateTo(tab: string): void {
+    this.activeTab = tab;
+    this.router.navigate([`/${tab}`]);
+  }
+
+  getFileExtension(filePath: string | null | undefined): string | null {
+    if (!filePath || typeof filePath !== 'string') {
+      return null; // מחזיר null אם filePath אינו חוקי
+    }
+    const match = filePath.match(/\.[0-9a-z]+$/i);
+    return match ? match[0] : null;
+  }
+  
 }
