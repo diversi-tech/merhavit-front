@@ -37,6 +37,7 @@
           class="item-image"
           
         />
+        <div *ngIf="isNewItem(item)" class="new-label">חדש</div>
         <!-- אייקון מבוסס סוג -->
         <ng-container *ngIf="item.type">
           <!-- אייקון תמונה -->
