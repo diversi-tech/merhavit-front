@@ -18,12 +18,14 @@ export class FavoritesComponent implements OnInit {
   favorites: any[] = [];
   userId: string = '';
   activeTab = 'favorites';
+  isLoading = true;
 
   constructor(private apiService: ApiService, private router: Router, private _snackBar: MatSnackBar) {}
 
   async ngOnInit(): Promise<void> {
     this.getUserIdFromToken();
     await this.fetchFavorites();
+    this.isLoading = false;
     console.log('favorites', this.favorites);
   }
 
