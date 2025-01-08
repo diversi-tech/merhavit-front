@@ -7,18 +7,6 @@
     >
       פרטים אישיים
     </div>
-    <!-- <div
-      [class.active]="activeTab === 'returns'"
-      (click)="navigateTo('returns')"
-    >
-      החזרות/חובות
-    </div> -->
-    <!-- <div
-      [class.active]="activeTab === 'activity-questions'"
-      (click)="navigateTo('activity-questions')"
-    >
-      השאלות פעילות
-    </div> -->
     <div [class.active]="activeTab === 'orders'" (click)="navigateTo('orders')">
       הזמנות
     </div>
@@ -28,107 +16,116 @@
     >
       שמירות
     </div>
-    <!-- <div
-      [class.active]="activeTab === 'notifications'"
-      (click)="navigateTo('notifications')"
-    >
-      הודעות
-    </div> -->
   </div>
 
-  <!-- טופס הפרטים האישיים -->
-  <form (ngSubmit)="onSubmit()">
-    <div class="form-grid">
-      <div class="form-group">
-        <label>שם פרטי</label>
-        <input
-          type="text"
-          placeholder="מירי"
-          [(ngModel)]="user.firstName"
-          name="firstName"
-          required
-        />
-      </div>
+  <div *ngIf="isLoading" class="loading-container">
+    <p>טוען נתונים...</p>
+  </div>
 
-      <div class="form-group">
-        <label>שם משפחה</label>
-        <input
-          type="text"
-          placeholder="טל"
-          [(ngModel)]="user.lastName"
-          name="lastName"
-          required
-        />
-      </div>
+  <div *ngIf="!isLoading" dir="rtl">
+    <!-- טופס הפרטים האישיים -->
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>שם פרטי</label>
+          <input
+            type="text"
+            placeholder="שרה"
+            [(ngModel)]="user.firstName"
+            name="firstName"
+            required
+          />
+        </div>
 
-      <div class="form-group">
-        <label>טלפון נייד</label>
-        <input
-          type="text"
-          placeholder="05484949216"
-          [(ngModel)]="user.phoneNumber"
-          name="phoneNumber"
-        />
-      </div>
+        <div class="form-group">
+          <label>שם משפחה</label>
+          <input
+            type="text"
+            placeholder="כהן"
+            [(ngModel)]="user.lastName"
+            name="lastName"
+            required
+          />
+        </div>
 
-      <div class="form-group">
-        <label>כתובת</label>
-        <input
-          type="text"
-          placeholder="צהל 16 אופקים"
-          [(ngModel)]="user.address"
-          name="address"
-        />
-      </div>
+        <div class="form-group">
+          <label>טלפון נייד</label>
+          <input
+            type="text"
+            placeholder="054-..."
+            [(ngModel)]="user.phoneNumber"
+            name="phoneNumber"
+          />
+        </div>
 
-      <div class="form-group">
-        <label>מייל</label>
-        <input
-          type="text"
-          placeholder="g@gmail.com"
-          [(ngModel)]="user.email"
-          name="email"
-        />
-      </div>
+        <div class="form-group">
+          <label>כתובת</label>
+          <input
+            type="text"
+            placeholder="הכתובת שלי"
+            [(ngModel)]="user.address"
+            name="address"
+          />
+        </div>
 
-      <div class="form-group">
-        <label>כיתה</label>
-        <select [(ngModel)]="user.classId" name="class">
-          <option *ngFor="let class of classes" [value]="class._id">
-            {{ class.name }}
-          </option>
-        </select>
-      </div>
+        <div class="form-group">
+          <label>מייל</label>
+          <input
+            type="text"
+            placeholder="g@gmail.com"
+            [(ngModel)]="user.email"
+            name="email"
+          />
+        </div>
 
-      <div class="form-group">
-        <label>התמחות</label>
-        <select [(ngModel)]="user.specialization" name="specialization">
-          <option
-            *ngFor="let specialization of specializations"
-            [value]="specialization._id"
+        <div class="form-group">
+          <label>כיתה</label>
+          <select [(ngModel)]="user.classId" name="class">
+            <option *ngFor="let class of classes" [value]="class._id">
+              {{ class.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>התמחות</label>
+          <select [(ngModel)]="user.specialization" name="specialization">
+            <option
+              *ngFor="let specialization of specializations"
+              [value]="specialization._id"
+            >
+              {{ specialization.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>סמינר</label>
+          <select
+            [(ngModel)]="user.assignedSeminaryId"
+            name="assignedSeminaryId"
           >
-            {{ specialization.name }}
-          </option>
-        </select>
+            <option *ngFor="let seminary of seminaries" [value]="seminary._id">
+              {{ seminary.name }}
+            </option>
+          </select>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>סמינר</label>
-        <select [(ngModel)]="user.assignedSeminaryId" name="assignedSeminaryId">
-          <option *ngFor="let seminary of seminaries" [value]="seminary._id">
-            {{ seminary.name }}
-          </option>
-        </select>
+      <!-- כפתורים -->
+      <div class="button-group">
+        <button type="button" class="cancel-button" (click)="cancel()">
+          ביטול
+        </button>
+        <button
+          type="button"
+          class="change-password-button"
+          (click)="goToChangePassword()"
+        >
+          שינוי סיסמה
+        </button>
+        <button type="submit" class="save-button">שמירת שינויים</button>
       </div>
-    </div>
-
-    <!-- כפתורים -->
-    <div class="button-group">
-      <button type="button" class="cancel-button" (click)="cancel()">
-        ביטול
-      </button>
-      <button type="button" class="change-password-button" (click)="goToChangePassword()">שינוי סיסמה</button>
-      <button type="submit" class="save-button">שמירת שינויים</button>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>

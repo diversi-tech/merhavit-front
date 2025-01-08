@@ -31,6 +31,7 @@ export class PersonalDetailsComponent implements OnInit {
   seminaries: any[] = [];
   specializations: any[] = [];
   classes: any[] = [];
+  isLoading: boolean = true;
 
   constructor(
     private apiService: ApiService,
@@ -87,6 +88,7 @@ export class PersonalDetailsComponent implements OnInit {
                     console.log('User data from server:', userData);
                     this.user = userData; // עדכון כל הנתונים של המשתמש
                     this.originalUser = userData;
+                    this.isLoading = false;
                   },
                   (error) => {
                     console.error('Error fetching user data:', error);
