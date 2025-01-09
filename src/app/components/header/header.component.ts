@@ -12,7 +12,8 @@ import { TopIconsComponent } from '../top-icons/top-icons.component';
   styleUrl: './header.component.css',
 })
 export class HeaderComponent {
-  showSearchBar: boolean = true;
+  showSearchBar: boolean = false; // התחלה ב-false
+
   constructor(private router: Router) {
     // רשימת דפים שבהם אין צורך להציג את החיפוש
     const hiddenSearchRoutes = [
@@ -20,21 +21,35 @@ export class HeaderComponent {
       '/personal-details',
       '/orders',
       '/favorites',
+      '/login',
+      '/management/tags',
+      '/management/seminaries',
+      '/management/subjects',
+      '/management/specializations',
+      '/management/classes',
+
+
     ];
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        const currentRoute = this.router.url.split('?')[0]; // הסרת שאילתות
+        // אחרי כל ניתוב, בדוק אם הוא בדף שלא צריך להציג בו חיפוש
+        setTimeout(() => {
+          const currentRoute = this.router.url.split('?')[0]; // הסרת שאילתות
+          const isHiddenRoute = hiddenSearchRoutes.includes(currentRoute);
+          const isSpecificItemPage = /^\/item-page\/[^/]+$/.test(currentRoute);
 
-        // בדיקה האם הנתיב הוא בדיוק אחד מהנתיבים החסומים
-        const isHiddenRoute = hiddenSearchRoutes.includes(currentRoute);
+          // אם הדף לא נמצא ברשימה, הצג את בר החיפוש
+          this.showSearchBar = !isHiddenRoute && !isSpecificItemPage;
 
-        // בדיקה האם הנתיב תואם לתבנית /item-page/:id
-        const isSpecificItemPage = /^\/item-page\/[^/]+$/.test(currentRoute);
-
-        // עדכון האם להציג את החיפוש
-        this.showSearchBar = !isHiddenRoute && !isSpecificItemPage;
+          // console.log('Current route:', currentRoute);
+          // console.log('Is hidden route:', isHiddenRoute);
+          // console.log('Is specific item page:', isSpecificItemPage);
+          console.log('Show search bar:', this.showSearchBar);
+        });
       }
     });
   }
 }
+
+  
