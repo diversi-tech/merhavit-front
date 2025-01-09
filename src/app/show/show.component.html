@@ -103,7 +103,9 @@
       *ngFor="let item of items"
       class="item-row"
       (click)="navigateToItemPage(item)"
+      
     >
+    <!-- <div *ngIf="(userType=='Student' && item.approved=='לא')" class="approved-label">לא ניתן להשאיל את הספר</div> -->
       <div class="item-content">
 		<div *ngIf="isNewItem(item)" class="new-label">חדש</div>
         <img
@@ -220,6 +222,7 @@
           class="action-button order"
           *ngIf=" item.type === 'ספר דיגיטלי' || item.type === 'ספר להשאלה'"
           (click)="$event.stopPropagation()"
+          [class.disabled]="(userType=='Student' && item.approved=='לא') "
         >
           להזמנה
         </button>
