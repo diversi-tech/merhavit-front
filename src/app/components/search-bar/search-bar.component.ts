@@ -337,7 +337,7 @@ export class SearchBarComponent {
       !target.classList.contains('fa-filter')
     ) {
       this.showDetails = false;
-      this.resetFilters();
+      // this.resetFilters();
     }
   }
 
