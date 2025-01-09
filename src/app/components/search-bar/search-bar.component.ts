@@ -79,14 +79,15 @@ export class SearchBarComponent {
   items: Item[] = [];
   filters = {
     email: '',
-    class: '',
+    classId: '',
+    assignedSeminaryId:'',
     specialization: '',
     userType: '',
     firstName: '',
     lastName: '',
     idNumber: '',
     address: '',
-    phone: '',
+    phoneNumber: '',
   };
 
   searchHistories: { [key: string]: string[] } = {}; // מילון לאחסון היסטוריות חיפוש
@@ -326,7 +327,7 @@ export class SearchBarComponent {
         this.showDetails = false;
       }
       // איפוס השדות באובייקט filters
-      this.resetFilters();
+      // this.resetFilters();
     }
 
     // בדיקה אם הלחיצה הייתה מחוץ לאזור הסינון
@@ -344,14 +345,15 @@ export class SearchBarComponent {
     resetFilters() {
       this.filters = {
         email: '',
-        class: '',
+        classId: '',
+        assignedSeminaryId:'',
         specialization: '',
         userType: '',
         firstName: '',
         lastName: '',
         idNumber: '',
         address: '',
-        phone: '',
+        phoneNumber: '',
       };
       this.onFilterChangeUsers();
     }
