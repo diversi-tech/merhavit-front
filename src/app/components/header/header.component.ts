@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { SearchBarComponent } from '../search-bar/search-bar.component'; // עדכון הנתיב לפי מיקום SearchBarComponent
-import { TopIconsComponent } from '../top-icons/top-icons.component'; // עדכן את הנתיב לפי מיקום הקובץ
+import { Router, NavigationEnd } from '@angular/router';
+import { SearchBarComponent } from '../search-bar/search-bar.component';
+import { TopIconsComponent } from '../top-icons/top-icons.component';
 
 @Component({
   selector: 'app-header',
@@ -22,9 +22,19 @@ export class HeaderComponent {
       '/favorites',
     ];
 
-    // בדיקה האם הנתיב הנוכחי שייך לרשימה
-    this.router.events.subscribe(() => {
-      this.showSearchBar = !hiddenSearchRoutes.includes(this.router.url);
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        const currentRoute = this.router.url.split('?')[0]; // הסרת שאילתות
+
+        // בדיקה האם הנתיב הוא בדיוק אחד מהנתיבים החסומים
+        const isHiddenRoute = hiddenSearchRoutes.includes(currentRoute);
+
+        // בדיקה האם הנתיב תואם לתבנית /item-page/:id
+        const isSpecificItemPage = /^\/item-page\/[^/]+$/.test(currentRoute);
+
+        // עדכון האם להציג את החיפוש
+        this.showSearchBar = !isHiddenRoute && !isSpecificItemPage;
+      }
     });
   }
 }

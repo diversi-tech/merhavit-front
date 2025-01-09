@@ -11,11 +11,8 @@ import { ItemsListModule } from './show/items-list.module';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-// import { materialize } from 'rxjs';
-import { SearchComponent } from './components/Students/search/search.component';
 import { ItemPageComponent } from './components/item-page/item-page.component';
 import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { HeaderComponent } from './components/header/header.component';
 
@@ -30,7 +27,6 @@ import { HeaderComponent } from './components/header/header.component';
     ItemsListComponent,
     MatDialogModule,
     ItemsListModule,
-    SearchComponent,
     ItemPageComponent,
     FormsModule,
     ReactiveFormsModule,
@@ -44,8 +40,7 @@ import { HeaderComponent } from './components/header/header.component';
 })
 export class AppComponent {
   title = 'routing-app';
-  showSearchComponent: boolean = true; // ברירת מחדל: להציג את SearchComponent
-  showHeaderComponent: boolean = true; 
+  showHeaderComponent: boolean = true;
 
   navigationBar: boolean = true;
   constructor(private router: Router) {}
@@ -57,7 +52,6 @@ export class AppComponent {
         '/registration',
         '/welcome',
         '/',
-        '/item-page',
         '/reset-password',
         '/forgot-password',
         '/success-registration',
@@ -65,20 +59,10 @@ export class AppComponent {
 
       const currentRoute = this.router.url.split('?')[0]; // הסרת שאילתות במידת הצורך
 
-      // בדיקה אם הנתיב מתחיל ב-/item-page ואחריו תוכן נוסף
-      const isSpecificItemPage = /^\/item-page\/.+/.test(currentRoute);
 
-      this.showSearchComponent =
-        !excludedRoutes.includes(currentRoute) &&
-        // !excludedRoutesForSeaech.includes(currentRoute) &&
-        !isSpecificItemPage;
+      this.showHeaderComponent = !excludedRoutes.includes(currentRoute);
+
       this.navigationBar = !excludedRoutes.includes(currentRoute);
-
-      this.showHeaderComponent =
-      !excludedRoutes.includes(currentRoute) &&
-      // !excludedRoutesForSeaech.includes(currentRoute) &&
-      !isSpecificItemPage;
-    this.navigationBar = !excludedRoutes.includes(currentRoute);
     });
   }
   activeSubMenu: string | null = null;
