@@ -35,9 +35,9 @@ export class HeaderComponent {
           // אם הדף לא נמצא ברשימה, הצג את בר החיפוש
           this.showSearchBar = !isHiddenRoute && !isSpecificItemPage;
 
-          console.log('Current route:', currentRoute);
-          console.log('Is hidden route:', isHiddenRoute);
-          console.log('Is specific item page:', isSpecificItemPage);
+          // console.log('Current route:', currentRoute);
+          // console.log('Is hidden route:', isHiddenRoute);
+          // console.log('Is specific item page:', isSpecificItemPage);
           console.log('Show search bar:', this.showSearchBar);
         });
       }
