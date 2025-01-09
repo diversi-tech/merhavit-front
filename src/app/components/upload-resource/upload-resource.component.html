@@ -122,6 +122,7 @@
                 (matChipInputTokenEnd)="add($event,'subjects')"
                 [matAutocomplete]="subjectsAuto"
                 (focusout)="markFieldAsTouched('subjects')"
+                (focus)="updateFilteredOptions('subjects')"
                 [value]="formMode === 'edit' ? '' : ''"
                 [placeholder]="formMode === 'edit' ? '' : ''"
               />
@@ -166,6 +167,7 @@
               (matChipInputTokenEnd)="add($event,'specializations')"
               [matAutocomplete]="specializationsAuto"
               (focusout)="markFieldAsTouched('specializations')"
+              (focus)="updateFilteredOptions('specializations')"
               [value]="formMode === 'edit' ? '' : ''"
               [placeholder]="formMode === 'edit' ? '' : ''"
             />
@@ -192,7 +194,7 @@
       </div>
 
       <div class="form-group">
-        <label for="agesInput">לאיזה גיל מיועד הקובץ*</label>
+        <label for="agesInput">כיתה*</label>
          <mat-form-field  class="autocomplete-container">
           <mat-chip-grid #agesChipList  aria-label="רשימת גילאים">
             <div class="input-container">
@@ -207,6 +209,7 @@
               (matChipInputTokenEnd)="add($event,'classes')"
               [matAutocomplete]="agesAuto"
               (focusout)="markFieldAsTouched('classes')"
+              (focus)="updateFilteredOptions('classes')"
               [value]="formMode === 'edit' ? '': ''"
               [placeholder]="formMode === 'edit' ? '' : ''"                
               [formArrayName]="'classes'"
@@ -275,19 +278,12 @@
         </div>
         <div class="form-group" *ngIf="contentOption=='physicalBook'">
           <label for="catalogNumber">מק"ט</label>
-          <input class="input_fields" type="number" id="catalogNumber" formControlName="catalogNumber" [placeholder]="formMode === 'edit' ? fileForm.get('catalogNumber')?.value : ''"/>
+          <input class="input_fields" type="text" id="catalogNumber" formControlName="catalogNumber" [placeholder]="formMode === 'edit' ? fileForm.get('catalogNumber')?.value : ''"/>
        <!-- <div class="error-fields" *ngIf="fileForm.get('catalogNumber')?.invalid && fileForm.get('catalogNumber')?.touched">
             <small *ngIf="fileForm.get('titcatalogNumberle')?.errors?.['required']">יש להזין מק"ט</small>
           </div> -->
         </div>
-        <div class="form-group" *ngIf="contentOption=='physicalBook'">
-          <label for="copies">*מס עותקים</label>
-          <input class="input_fields" type="number" id="copies" formControlName="copies" [placeholder]="formMode === 'edit' ? fileForm.get('copies')?.value : ''" />
-        <!-- <div class="error-fields" *ngIf="fileForm.get('copies')?.invalid && fileForm.get('copies')?.touched">
-            <small *ngIf="fileForm.get('copies')?.errors?.['required']">יש להזין מס עותקים</small>
-          </div> -->
-        </div>
-        
+
           <div *ngIf="contentOption!=='edit'" class="form-group">
             <label for="releaseYear">שנת הוצאה</label>
             <input class="input_fields" type="text" id="releaseYear" formControlName="releaseYear" [placeholder]="formMode === 'edit' ? fileForm.get('releaseYear')?.value : ''" />
@@ -325,9 +321,9 @@
         <div class="form-group">
           <label for="loanValidity">משך השאלה</label>
           <input class="input_fields" type="text" id="loanValidity" formControlName="loanValidity" [placeholder]="formMode === 'edit' ? fileForm.get('loanValidity')?.value : ''"/>
-        <!-- <div class="error-fields" *ngIf="fileForm.get('loanValidity')?.invalid && fileForm.get('loanValidity')?.touched">
+        <div class="error-fields" *ngIf="fileForm.get('loanValidity')?.invalid && fileForm.get('loanValidity')?.touched">
             <small *ngIf="fileForm.get('loanValidity')?.errors?.['required']">יש להזין תוקף</small>
-          </div> -->
+          </div>
         </div>
       </div>
       </div>
@@ -348,7 +344,7 @@
                 [matChipInputAddOnBlur]="true"
                 (matChipInputTokenEnd)="add($event,'tags')"
                 [matAutocomplete]="tagsAuto"
-                
+                (focus)="updateFilteredOptions('tags')"
                 [placeholder]="formMode === 'edit' ? '' : ''"                
                 [formArrayName]="'tags'"
               />

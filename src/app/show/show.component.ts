@@ -54,11 +54,11 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   private itemsInterval: any;
   public page: number=0;
   public limit: number=10;
-  public typeFilter: string = '';
+  public typeFilter: string = 'all';
   public searchTerm: string = '';
   public ifArrIsEmty: boolean = false;
   private subscription: Subscription = new Subscription();
-  viewMode: 'grid' | 'list' = 'grid';  // ברירת המחדל היא כרטיסיות
+  viewMode: 'list' |'grid' = 'list';  // ברירת המחדל היא כרטיסיות
  
   @ViewChild(MatPaginator) paginator!: MatPaginator; 
   
@@ -67,7 +67,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
-    this.itemsService.typeFilter = 'all'; // עדכון הסינון ב-service
     this.itemsService.page = 0;
     this.itemsService.limit = 10;
 
@@ -76,6 +75,7 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
      this.subscription = this.itemsService.ifArrIsEmty$.subscribe((isEmpty) => {
       this.ifArrIsEmty = isEmpty;
       this.showNoDataMessage = isEmpty; // קיצור לוגיקה
+      this.defultViewMode()
     });
   // קריאה לשרת כשמשתנה פרמטר
     this.route.queryParams // האזנה לפרמטרים ב-URL
@@ -123,6 +123,14 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
     this.destroy$.next();
     this.destroy$.complete();
   }
+defultViewMode() {
+  if (this.itemsService.typeFilter || this.typeFilter != 'all') {
+    this.viewMode = 'grid'; // שינוי תצוגה לרשימה כאשר הסוג הוא 'all'
+  } else {
+    this.viewMode = 'list'; // שינוי תצוגה לגריד כאשר הסוג שונה מ-'all'
+  }
+}
+
  toggleViewMode() {
     this.viewMode = this.viewMode === 'grid' ? 'list' : 'grid'; // שינוי תצוגה
   }

@@ -51,12 +51,12 @@
         <button *ngIf="Seminar.isEditing" (click)="removeLibrarian(Seminar,librarian)" >X</button>
         <div >{{ getLibrarianById(librarian) }}</div>
       </div>
-      <mat-form-field *ngIf="Seminar.isEditing">
+      <!-- <mat-form-field *ngIf="Seminar.isEditing">
         <mat-label>הוסיפי ספרנית</mat-label>
       <mat-select>
         <mat-option *ngFor="let librarian of filterLibrarianBySeminar(Seminar)" (click)="addLibrarian(Seminar,librarian._id)">{{librarian.firstName}} {{librarian.lastName}}</mat-option>
       </mat-select>
-    </mat-form-field>
+    </mat-form-field> -->
       <!-- <button *ngIf="Seminar.isEditing" (click)="onChangeFieldsSeminar(Seminar)">+</button> -->
     </div>
       <div class="Seminar-cell Seminar-actions">

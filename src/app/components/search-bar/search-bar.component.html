@@ -1,48 +1,4 @@
-<div class="search-bar-container">
-  <div class="top-icons">
-    <!-- כפתור ההתנתקות -->
-    <button class="logout-button" (click)="logout()">
-      <span>Logout</span>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24px"
-        viewBox="0 -960 960 960"
-        width="24px"
-        fill="#434343"
-      >
-        <path
-          d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v80h-80v-80H200v560h560v-80h80v80q0 33-23.5 56.5T760-120H200Zm480-160-56-56 103-104H360v-80h367L624-624l56-56 200 200-200 200Z"
-        />
-      </svg>
-    </button>
-    <!-- אייקון לב ריק (Font Awesome) -->
-    <i
-      class="far fa-heart"
-      style="color: #434343; font-size: 3vh; width: 2vw"
-      [routerLink]="['/favorites']"
-      title="מועדפים"
-    ></i>
-    <!-- אייקון פעמון ריק (Font Awesome) -->
-    <i
-      *ngIf="userType == 'Librarian'"
-      [routerLink]="'/borrowRequests'"
-
-      class="far fa-bell"
-      style="color: #434343; font-size: 3vh; width: 2vw"
-    ></i>
-    <button
-      *ngIf="userType !== 'Student'"
-      [routerLink]="'/upload-resource'"
-      class="upload-button"
-    >
-      העלאת קובץ
-    </button>
-    <!-- אייקון המשתמש עם האות הראשונה -->
-    <div class="user-icon" [routerLink]="['/personal-details']">
-      {{ firstName }}
-    </div>
-  </div>
-  <div class="white-box">
+<div class="white-box">
     <div class="white-box-icons">
       <div *ngIf="!isUserManagementComponent" class="dropdown-container">
         <div class="dropdown-header" (click)="toggleFilterOptions()">
@@ -58,16 +14,18 @@
           <li (click)="onSelectFilter('סרטון')">סרטונים</li>
           <li (click)="onSelectFilter('שיר')">שירים</li>
           <li (click)="onSelectFilter('ספר דיגיטלי')">ספר דיגיטלי</li>
-          <li (click)="onSelectFilter('ספר פיזי')">ספר להשאלה</li>
-          <li (click)="onSelectFilter('טקסט')">טקסט</li>
+          <li (click)="onSelectFilter('ספר להשאלה')">ספר להשאלה</li>
         </ul>
       </div>
+
       <!-- אייקון פילטר -->
       <i
         (click)="toggleDetails()"
         class="fas fa-filter"
         style="color: #434343; font-size: 4vh; cursor: pointer"
       ></i>
+      <!-- <i (click)="toggleDetails()" class="fas fa-sliders-h" style="color:#000; font-size:4vh; cursor:pointer;"></i> -->
+
       <div class="filter-details-container" *ngIf="showDetails">
         <div *ngIf="!isUserManagementComponent" class="filter-details-box">
           <!-- עמודה שנייה - צד שמאל -->
@@ -110,6 +68,7 @@
             </div>
             <div class="filter-row">
               <label for="sku">מק"ט</label>
+              <!-- מה עושים במקט? -->
               <input
                 id="sku"
                 type="text"
@@ -196,6 +155,8 @@
                 placeholder="מייל"
                 [(ngModel)]="filters.email"
                 (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
               />
             </div>
             <div class="filter-row">
@@ -204,18 +165,10 @@
                 id="class"
                 type="text"
                 placeholder="כיתה"
-                [(ngModel)]="filters.classId"
+                [(ngModel)]="filters.class"
                 (input)="onFilterChangeUsers()"
-              />
-            </div>
-            <div class="filter-row">
-              <label for="class">סמינר</label>
-              <input
-                id="class"
-                type="text"
-                placeholder="סמינר"
-                [(ngModel)]="filters.assignedSeminaryId"
-                (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
               />
             </div>
             <div class="filter-row">
@@ -226,6 +179,8 @@
                 placeholder="התמחות"
                 [(ngModel)]="filters.specialization"
                 (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
               />
             </div>
             <div class="filter-row">
@@ -236,6 +191,8 @@
                 placeholder="תפקיד"
                 [(ngModel)]="filters.userType"
                 (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
               />
             </div>
           </div>
@@ -248,6 +205,8 @@
                 placeholder="שם פרטי"
                 [(ngModel)]="filters.firstName"
                 (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
               />
             </div>
             <div class="filter-row">
@@ -258,6 +217,8 @@
                 placeholder="שם משפחה"
                 [(ngModel)]="filters.lastName"
                 (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
               />
             </div>
             <div class="filter-row">
@@ -268,6 +229,8 @@
                 placeholder="תעודת זהות"
                 [(ngModel)]="filters.idNumber"
                 (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
               />
             </div>
             <div class="filter-row">
@@ -278,6 +241,8 @@
                 placeholder="כתובת"
                 [(ngModel)]="filters.address"
                 (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
               />
             </div>
             <div class="filter-row">
@@ -286,19 +251,22 @@
                 id="phone"
                 type="text"
                 placeholder="טלפון"
-                [(ngModel)]="filters.phoneNumber"
+                [(ngModel)]="filters.phone"
                 (input)="onFilterChangeUsers()"
+                [formControl]="searchControl"
+                (input)="onSearch()"
               />
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <div class="search-input-container">
       <!-- חיפוש כללי -->
       <div *ngIf="!isUserManagementComponent">
         <!-- תיבת היסטוריית החיפושים -->
-        <div class="search-history-box" *ngIf="isSearchHistoryVisible">
+        <div class="search-history-box" *ngIf="isSearchHistoryVisible && searchResults.length > 0 ">
           <div
             *ngFor="let item of searchResults"
             class="search-history-item"
@@ -309,6 +277,7 @@
           </div>
         </div>
       </div>
+
       <div
         *ngIf="isUserManagementComponent"
         class="user-management-search"
@@ -333,4 +302,3 @@
       <mat-divider></mat-divider>
     </div>
   </div>
-</div>
