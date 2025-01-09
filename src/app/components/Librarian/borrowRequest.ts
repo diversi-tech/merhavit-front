@@ -70,8 +70,15 @@ export class BorrowRequestManagementComponent implements OnInit {
       status: this.actionType,
     };
     this.apiService.Put('/borrowRequests/approve-or-reject', data).subscribe({
-      next: (response) => {
-        this.getBorrowRequests();
+      next: (response: { success: boolean; data: BorrowRequest }) => {
+        console.log(response);
+        
+        if (response.success && response.data) {
+          // מחיקת הבקשה מהרשימה
+          this.borrowRequests = this.borrowRequests.filter(
+            (request) => request.id !== response.data.id
+          );
+        }
         this.closeConfirmation();
       },
       error: (err) => {
@@ -83,4 +90,5 @@ export class BorrowRequestManagementComponent implements OnInit {
       },
     });
   }
-}
+  }
+
