@@ -26,6 +26,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { lastValueFrom, Observable } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -54,6 +55,7 @@ export class ItemPageComponent implements OnInit {
   digitalBook = false;
   physicalBook = false;
   isDocument = false; // ניהול הצגת המסמך
+  text = false;
   inputValue: string = '';
   startDate: Date | null = null;
   endDate: Date | null = null;
@@ -108,7 +110,8 @@ export class ItemPageComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private dialog: MatDialog // הוספת MatDialog
+    private dialog: MatDialog, // הוספת MatDialog
+    private _snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -134,7 +137,7 @@ export class ItemPageComponent implements OnInit {
     else
       return key
   }
-  
+
   borrowItem() { }
   fetchItemDetails(itemId: string) {
     if (!itemId) {
@@ -214,6 +217,9 @@ export class ItemPageComponent implements OnInit {
     } else if (fileType.includes('pdf') || fileType.includes('מערך')) {
       this.clearPreviewsExcept('מערך');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
+    } else if (fileType.includes('text') || fileType.includes('טקסט')) {
+      this.clearPreviewsExcept('טקסט');
+      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
     } else if (fileType.includes('pdf') || fileType.includes('ספר דיגיטלי') || fileType.includes('digitalBook')) {
       this.clearPreviewsExcept('ספר דיגיטלי');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
@@ -227,7 +233,7 @@ export class ItemPageComponent implements OnInit {
     console.log('Cover image URL:', this.item?.coverImage);
   }
 
-  clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'ספר דיגיטלי' | 'ספר פיזי' | 'שיר') {
+  clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'טקסט' | 'ספר דיגיטלי' | 'ספר פיזי' | 'שיר') {
     this.isPoster = type === 'כרזה';
     this.isWorksheet = type === 'דף עבודה';
     this.isPainting = type === 'איור';
@@ -235,8 +241,72 @@ export class ItemPageComponent implements OnInit {
     this.isAudio = type === 'שיר';
     this.isVideo = type === 'סרטון';
     this.isDocument = type === 'מערך';
+    this.text = type === 'טקסט';
     this.digitalBook = type === 'ספר דיגיטלי';
     this.physicalBook = type === 'ספר פיזי';
+  }
+
+    downloadResource(item: Item): void {
+    if (!item._id) {
+      console.error('Item ID is missing.');
+      // alert('לא ניתן להוריד את הקובץ. חסר ID');
+      this._snackBar.open('לא ניתן להוריד את הקובץ. חסר ID', 'סגור', {
+        duration: 3000,
+        panelClass: ['error-snackbar'],
+        direction: 'rtl',
+      });
+      return;
+    }
+    if (!item.filePath) {
+      console.error('File path is missing.');
+      // alert('לא ניתן להוריד את הקובץ. חסר ניתוב');
+      this._snackBar.open('לא ניתן להוריד את הקובץ. חסר ניתוב', 'סגור', {
+        duration: 3000,
+        panelClass: ['error-snackbar'],
+        direction: 'rtl',
+      });
+      return;
+    }
+    this.apiService
+      .Read(
+        `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
+          item.filePath
+        )}`
+      )
+      .subscribe({
+        next: (response) => {
+          const presignedUrl = response.url;
+          if (response && response.url) {
+            const downloadLink = document.createElement('a');
+            downloadLink.href = response.url;
+            downloadLink.download = item.title; // אפשר להוסיף כאן סיומת אם יש צורך
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+          } else {
+            console.error('Invalid response for download URL.');
+            // alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
+            this._snackBar.open(
+              'לא ניתן להוריד את הקובץ. אנא נסה שוב.',
+              'סגור',
+              {
+                duration: 3000,
+                panelClass: ['error-snackbar'],
+                direction: 'rtl',
+              }
+            );
+          }
+        },
+        error: (err) => {
+          console.error('Error fetching presigned URL:', err);
+          // alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
+          this._snackBar.open('שגיאה בהורדת הקובץ. אנא נסה שוב.', 'סגור', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+            direction: 'rtl',
+          });
+        },
+      });
   }
 
   navigateToItem(itemId: string) {
