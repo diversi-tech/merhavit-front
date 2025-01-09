@@ -287,7 +287,6 @@ defultViewMode() {
   downloadResource(item: Item): void {
     if (!item._id) {
       console.error('Item ID is missing.');
-      // alert('לא ניתן להוריד את הקובץ. חסר ID');
       this._snackBar.open('לא ניתן להוריד את הקובץ. חסר ID', 'סגור', {
         duration: 3000,
         panelClass: ['error-snackbar'],
@@ -297,7 +296,6 @@ defultViewMode() {
     }
     if (!item.filePath) {
       console.error('File path is missing.');
-      // alert('לא ניתן להוריד את הקובץ. חסר ניתוב');
       this._snackBar.open('לא ניתן להוריד את הקובץ. חסר ניתוב', 'סגור', {
         duration: 3000,
         panelClass: ['error-snackbar'],
@@ -323,7 +321,6 @@ defultViewMode() {
             document.body.removeChild(downloadLink);
           } else {
             console.error('Invalid response for download URL.');
-            // alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
             this._snackBar.open(
               'לא ניתן להוריד את הקובץ. אנא נסה שוב.',
               'סגור',
@@ -337,7 +334,6 @@ defultViewMode() {
         },
         error: (err) => {
           console.error('Error fetching presigned URL:', err);
-          // alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
           this._snackBar.open('שגיאה בהורדת הקובץ. אנא נסה שוב.', 'סגור', {
             duration: 3000,
             panelClass: ['error-snackbar'],

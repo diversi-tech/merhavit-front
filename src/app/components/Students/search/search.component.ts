@@ -240,6 +240,7 @@ if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
     this.itemsService.createdBy = this.createdByControl.value;
     this.itemsService.isnew = this.isnewControl.value;
     this.itemsService.duration = this.durationControl.value;
+
     this.itemsService.fetchItems(); // שולח את הבקשה לשרת עם הסינון החדש
   }
   // פונקציה לטיפול בשינוי סוג קובץ
