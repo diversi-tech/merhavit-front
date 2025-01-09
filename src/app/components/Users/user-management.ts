@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchService } from '../../shared/search.service';
 import { jwtDecode } from 'jwt-decode';
 
-
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.html',
@@ -15,15 +14,18 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class UserManagementComponent implements OnInit {
   users: any[] = [];
+  filteredUsers = [...this.users];
   selectedUser: any = null; // המשתמש שתפריט התפקיד שלו פתוח
   confirmUser: any = null;
-  filteredUsers = [...this.users];
-  seminaries: any[] = [];
-  specializations: any[] = [];
-  classes: any[] = [];
-  loggedInUserRole: any = null; // המשתמש שתפריט התפקיד שלו פתוח
+  loggedInUserRole: any = null; // התפקיד של המשתמש המחובר
   searchTerm: string = 'all';
   filterOption: string = '';
+  readonly roleTranslations: { [key: string]: string } = {
+    'Admin': 'מנהל',
+    'Site Manager': 'מנהל סמינר',
+    'Librarian': 'ספרנית',
+    'Student': 'סטודנט'
+  };
 
   constructor(
     private apiService: ApiService,
@@ -31,27 +33,11 @@ export class UserManagementComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-   this.loadData();
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      this.setUserRole();
-    } else {
-      console.error('localStorage is not available on the server.');
-    }
-    // Subscribe לשינויים בנתונים מהשירות
-    this.searchService.searchTerm$.subscribe((term) => {
-      this.searchTerm = term;
-
-      this.filterUsers();
-    });
-
-    this.searchService.filterOption$.subscribe((option) => {
-      this.filterOption = option;
-      console.log('ההסינון', this.filterOption);
-
-      this.filterUsers();
-    });
+    this.getUsers();
+    this.setUserRole();
+    this.subscribeToSearchService();
   }
-  // פונקציה לקבלת התפקיד מתוך ה-Token
+
   private setUserRole(): void {
     const token = localStorage.getItem('access_token');
     if (token) {
@@ -65,46 +51,11 @@ export class UserManagementComponent implements OnInit {
     }
   }
 
-  loadData() {
-    // טוען סמינרים, התמחויות וכיתות תחילה
-    this.apiService.Read('/seminaries').subscribe(
-      (seminariesData: any[]) => {
-        this.seminaries = seminariesData;
-
-        this.apiService.Read('/specializations').subscribe(
-          (specializationsData: any[]) => {
-            this.specializations = specializationsData;
-
-            this.apiService.Read('/classes').subscribe(
-              (classesData: any[]) => {
-                this.classes = classesData;
-
-                // כעת טוען את פרטי המשתמש
-                this.getUsers();
-
-              },
-              (error) => {
-                console.error('Error fetching classes:', error);
-              }
-            );
-          },
-          (error) => {
-            console.error('Error fetching specializations:', error);
-          }
-        );
-      },
-      (error) => {
-        console.error('Error fetching seminaries:', error);
-      }
-    );
-  }
-
-
-  getUsers() {
+  getUsers(): void {
     this.apiService.Read('/users/all').subscribe({
-      next: (response) => {
+      next: (response: any[]) => {
         this.users = response;
-        this.filterUsers(); // סינון המשתמשים גם לאחר קבלת הנתונים
+        this.filterUsers(); // עדכון הרשימה המסוננת לאחר קבלת הנתונים
       },
       error: (err) => {
         console.error('Error fetching users', err);
@@ -112,12 +63,13 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  deleteUser(user: any) {
+  deleteUser(user: any): void {
     const data = { idNumber: user.idNumber };
     this.apiService.Delete('/users/deleteUser', data).subscribe({
       next: () => {
         console.log('User deleted:', user);
-        this.users = this.users.filter((u) => u.idNumber !== user.idNumber); // הסרת המשתמש מהרשימה
+        this.users = this.users.filter((u) => u.idNumber !== user.idNumber);
+        this.filterUsers(); // עדכון הרשימה המסוננת לאחר מחיקת משתמש
       },
       error: (err) => {
         console.error('Error deleting user', err);
@@ -125,62 +77,47 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  toggleRoleMenu(user: any) {
-    if (user.userType === 'Admin'||this.loggedInUserRole==='Librarian'||this.loggedInUserRole==='Student'||(this.loggedInUserRole==='Site Manager'&&user.userType==='Site Manager')) {
-      console.log('Cannot change role for Admin users.');
-      return; // אל תפתח את התפריט
+  toggleRoleMenu(user: any): void {
+    if (user.userType === 'Admin' || this.loggedInUserRole === 'Librarian' || this.loggedInUserRole === 'Student' || (this.loggedInUserRole === 'Site Manager' && user.userType === 'Site Manager')) {
+      console.log('Cannot change role for this user.');
+      return;
     }
     this.selectedUser = this.selectedUser === user ? null : user;
   }
 
-  changeRole(user: any, newRole: string) {
-    // בקרת הרשאות לשינוי תפקידים
-    if (this.loggedInUserRole === 'Admin') {
-      // Admin יכול לשנות לכל תפקיד
-      if (['Site Manager', 'Librarian', 'Student'].includes(newRole)) {
-        this.executeRoleChange(user, newRole);
-      } else {
-        console.error('Admin cannot assign this role:', newRole);
-      }
-    } else if (this.loggedInUserRole === 'Site Manager') {
-      // Site Manager יכול לשנות רק ל-Librarian ו-Site Manager
-      if (['Librarian', 'Site Manager'].includes(newRole)) {
-        this.executeRoleChange(user, newRole);
-      } else {
-        console.error('Site Manager cannot assign this role:', newRole);
-      }
+  changeRole(user: any, newRole: string): void {
+    if (this.loggedInUserRole === 'Admin' && ['Site Manager', 'Librarian', 'Student'].includes(newRole)) {
+      this.executeRoleChange(user, newRole);
+    } else if (this.loggedInUserRole === 'Site Manager' && ['Librarian', 'Site Manager'].includes(newRole)) {
+      this.executeRoleChange(user, newRole);
     } else {
-      // משתמשים אחרים לא יכולים לשנות תפקידים
       console.error('User is not authorized to change roles.');
     }
   }
 
-  executeRoleChange(user: any, newRole: string) {
-    const data = {
-      idNumber: user.idNumber,
-      newRole: newRole,
-    };
-
-    this.apiService.Put(`/users/updateRole`, data).subscribe({
-      next: (response) => {
+  executeRoleChange(user: any, newRole: string): void {
+    const data = { idNumber: user.idNumber, newRole };
+    this.apiService.Put('/users/updateRole', data).subscribe({
+      next: () => {
         console.log(`Role updated to ${newRole} for user:`, user);
-        user.userType = newRole; // עדכון התפקיד בממשק
-        this.selectedUser = null; // סגירת תפריט התפקידים
+        user.userType = newRole;
+        this.selectedUser = null;
       },
       error: (err) => {
         console.error('Error updating role', err);
       },
     });
   }
-  showConfirmation(user: any) {
+
+  showConfirmation(user: any): void {
     this.confirmUser = user;
   }
 
-  closeConfirmation() {
+  closeConfirmation(): void {
     this.confirmUser = null;
   }
 
-  confirmDeleteUser() {
+  confirmDeleteUser(): void {
     if (this.confirmUser) {
       this.deleteUser(this.confirmUser);
       this.closeConfirmation();
@@ -188,68 +125,58 @@ export class UserManagementComponent implements OnInit {
   }
 
   @HostListener('document:click', ['$event'])
-  handleClickOutside(event: MouseEvent) {
+  handleClickOutside(event: MouseEvent): void {
     const target = event.target as HTMLElement;
     if (!target.closest('.role-menu') && !target.closest('.action-button')) {
-      this.selectedUser = null; // סגור את התפריט אם לוחצים מחוצה לו
+      this.selectedUser = null;
     }
   }
 
-  filterUsers() {
-    console.log('on filter users');
-
+  filterUsers(): void {
     let tempUsers = [...this.users];
-
-    // אם יש מילת חיפוש
+  
     if (this.filterOption) {
-      const filterOption = this.filterOption.split(' '); // מפצל את ה-filterOption למילים בודדות
-
-      tempUsers = tempUsers.filter((user) => {
-        return filterOption.every((term) => {
-          // נוודא שכל מילה תתאים לשדה המתאים שלה (key:value)
-          const [key, value] = term.split(':'); // מפרק כל מילה למפתח וערך
+      const filterOption = this.filterOption.split(' ');
+      tempUsers = tempUsers.filter((user) =>
+        filterOption.every((term) => {
+          const [key, value] = term.split(':');
           if (key && value) {
-            // אם יש מפתח וערך, נבדוק אם השדה של המשתמש מכיל את הערך הזה
-            return (
-              user[key] &&
-              user[key].toString().toLowerCase().includes(value.toLowerCase())
-            );
+            const fieldValue = user[key]?.toString().toLowerCase();
+  
+            // אם המפתח הוא userType, יש לתרגם את הערך מאנגלית לעברית
+            if (key === 'userType') {
+              const translatedValue = this.roleTranslations[user[key]]?.toLowerCase();
+              return translatedValue?.includes(value.toLowerCase());
+            }
+  
+            return fieldValue?.includes(value.toLowerCase());
           }
-          return true; // אם אין מפתח וערך, לא משפיע על הסינון
-        });
-      });
-
-      console.log('tempUsers after filterOption filter', tempUsers);
-
-      // אם לא נמצא שום תוצאה אחרי הסינון, הצג את כל המשתמשים
-      if (tempUsers.length === 0) {
-        tempUsers = [...this.users];
-      }
+          return true;
+        })
+      );
     }
-
-    // סינון לפי אופציית הסינון (אם לא 'all')
+  
     if (this.searchTerm !== 'all') {
-      tempUsers = tempUsers.filter((user) => {
-        return Object.values(user).some((field) => {
-          if (typeof field === 'string') {
-            return field
-              .toString()
-              .toLowerCase()
-              .includes(this.searchTerm.toLowerCase());
-          }
-          return false; // התעלם משדות שאינם מסוג string או number
-        });
-      });
+      tempUsers = tempUsers.filter((user) =>
+        Object.values(user).some((field) =>
+          typeof field === 'string' && field.toLowerCase().includes(this.searchTerm.toLowerCase())
+        )
+      );
     }
-
-    // עדכון רשימת המשתמשים המסוננים
+  
     this.filteredUsers = tempUsers;
   }
+  
 
-  getEntityName(entityId: string, entities: any[]): string {
-    const entity = entities.find(ent => ent._id === entityId);
-    return entity ? entity.name : 'N/A';
+  private subscribeToSearchService(): void {
+    this.searchService.searchTerm$.subscribe((term) => {
+      this.searchTerm = term;
+      this.filterUsers();
+    });
+
+    this.searchService.filterOption$.subscribe((option) => {
+      this.filterOption = option;
+      this.filterUsers();
+    });
   }
-  
-  
 }

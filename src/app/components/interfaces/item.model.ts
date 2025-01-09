@@ -11,4 +11,5 @@ export interface Item {
   ApprovedBy: string;
   coverImage: string;
   filePath: string;
+  approved:string;
 }

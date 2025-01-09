@@ -73,7 +73,7 @@ export class UploadResourceComponent {
   isPDF: boolean = false;
   isImage: boolean = true
   isAudio: boolean = false
-  fileTypes: Array<string> = ['ספר להשאלה' ,'ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
+  fileTypes: Array<string> = ['ספר פיזי' ,'ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
   userId: string = ''
   purchaseLocations: Array<string> = ["חנות ספרים", "פוטומן"];
 
@@ -128,7 +128,7 @@ export class UploadResourceComponent {
       type: ['', Validators.required],
       subjects: this.fb.array([], [Validators.required]),
       approved: [''],
-      loanValidity: [''],
+      loanValidity: ['',[Validators.required]],
       specializations: this.fb.array([], [Validators.required]),
       classes: this.fb.array([], [Validators.required]),
       level: ['', Validators.required],
@@ -136,7 +136,6 @@ export class UploadResourceComponent {
       purchaseLocation: [''],
       price: [''],
       catalogNumber: [''],
-      copies: [''],
       releaseYear: [''],
       author: ['', Validators.required],
       description: [''],
@@ -157,6 +156,10 @@ export class UploadResourceComponent {
     const field = this.multipleChoiceFields[fieldKey]
     const filterValue = value.toLowerCase();
 
+    if (!filterValue) {
+      return field.allOption;
+    }
+
     return field.allOption.filter(option => {
       if (typeof option === 'string') {
         return option.toLowerCase().includes(filterValue);
@@ -167,7 +170,11 @@ export class UploadResourceComponent {
     });
   }
 
-
+  updateFilteredOptions(fieldKey: string): void {
+    const field = this.multipleChoiceFields[fieldKey];
+    // קובע את הערך ל-'' כדי להפעיל את המנגנון של סינון האופציות
+    field.Ctrl.setValue('');
+  }
 
   //מאתחלת את כל הערכים של בחירה מרובה בטופס לריקים
   ngOnInit(): void {
@@ -219,7 +226,6 @@ export class UploadResourceComponent {
             purchaseLocation:this.resourceItem.purchaseLocation ||"",
             price:this.resourceItem.price ||"",
             catalogNumber:this.resourceItem.catalogNumber ||"",
-            copies:this.resourceItem.copies ||"",
             libraryLocation:this.resourceItem.libraryLocation ||"",
             subjects: Array.isArray(this.resourceItem.subjects) ? this.resourceItem.subjects : [],
             tags: Array.isArray(this.resourceItem.tags) ? this.resourceItem.tags : [],
@@ -312,7 +318,7 @@ Promise.all(requests).then(() => {
       edit: 'עריכת תוכן',
       add: 'העלאת תוכן',
       addLink: 'קישורים',
-      physicalBook: 'ספר להשאלה'
+      physicalBook: 'ספר פיזי'
     };
     return labels[option] || option;
   }
@@ -815,18 +821,17 @@ getOptionById(optionId: string, fieldKey: string)
     }
 
     if (this.contentOption == 'physicalBook') {
-      this.fileForm.patchValue({ type: 'ספר להשאלה' }); // הגדרת ערך ברירת מחדל
+      this.fileForm.patchValue({ type: 'ספר פיזי' }); // הגדרת ערך ברירת מחדל
       this.updateTypeValidator(false);
     } else {
       this.fileForm.patchValue({ approved: '' })
-      this.fileForm.patchValue({ loanValidity: '' })
+      // this.fileForm.patchValue({ loanValidity: '' })
       this.fileForm.patchValue({ purchaseLocation: '' })
       this.fileForm.patchValue({ price: '' })
       this.fileForm.patchValue({ catalogNumber: '' })
-      this.fileForm.patchValue({ copies: '' })
       this.fileForm.patchValue({ libraryLocation: '' })
     }
-    if (this.fileForm.valid && (this.file || this.link || (this.contentOption == 'physicalBook' && this.coverImage)) && ((!this.isImage && this.coverImage) || this.isImage)) //ולידציה של השדות
+    if ((this.fileForm.valid || (this.contentOption!== 'physicalBook' && this.fileForm.value.loanValidity=='')) && (this.file || this.link || (this.contentOption == 'physicalBook' && this.coverImage)) && ((!this.isImage && this.coverImage) || this.isImage)) //ולידציה של השדות
     {
       const formData = new FormData();
 
@@ -878,7 +883,7 @@ getOptionById(optionId: string, fieldKey: string)
         error: (err) => {
           console.log('תקלה בשליחת טופס', err);
           Swal.fire({ //הודעה למשתמש
-            title: 'תקלה בשליחת הטופס!',
+            title: '!תקלה בשליחת הטופס',
             text: 'שגיאה ' + err.status,
             icon: 'error',
             showCancelButton: false,
