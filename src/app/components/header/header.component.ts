@@ -21,7 +21,14 @@ export class HeaderComponent {
       '/personal-details',
       '/orders',
       '/favorites',
-      '/login'
+      '/login',
+      '/management/tags',
+      '/management/seminaries',
+      '/management/subjects',
+      '/management/specializations',
+      '/management/classes',
+
+
     ];
 
     this.router.events.subscribe((event) => {
@@ -44,3 +51,5 @@ export class HeaderComponent {
     });
   }
 }
+
+  
