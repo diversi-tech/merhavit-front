@@ -45,7 +45,7 @@
       <div class="subjects-wrapper"> 
         <div class="subjects-container">
           <p class="subjects-design" *ngFor="let subject of item.subjects">
-            {{ getOptionNameById(subject, 'subjects') }}
+            {{ getOptionNameById(subject, 'subjects') || 'לא ידוע' }}
           </p>
         </div>
         <p><strong>נושא:</strong></p>
@@ -61,7 +61,7 @@
      <section>
           <div class="chip-container">
             <mat-chip-row *ngFor="let keyword of tags()">
-              {{ getOptionNameById(keyword, 'tags') }}
+              {{ getOptionNameById(keyword, 'tags') || 'אין תגיות ' }}
             </mat-chip-row>
           </div>
     </section>
