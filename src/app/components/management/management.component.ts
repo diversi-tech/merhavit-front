@@ -28,6 +28,7 @@ export class ManagementComponent {
       'ניהול תגיות': 'tags',
       'ניהול התמחויות': 'specializations',
       'ניהול נושאים': 'subjects',
+      "ניהול כיתות":'classes'
     };
     this.router.navigate([`/management/${tabs[event.tab.textLabel]}`]);
   }
