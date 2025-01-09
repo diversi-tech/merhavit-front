@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormField, MatLabel, MatOption, MatSelect } from '@angular/material/select';
 import { jwtDecode } from 'jwt-decode';
+import { Observable } from 'rxjs';
 
 interface Seminar {
   _id: string;
@@ -26,6 +27,7 @@ interface Seminar {
 export class SeminaryComponent implements OnInit {
   seminaries: Array<any> = []
   librarians: Array<any> = []
+  librarians$: Observable<any[]> | undefined;
   users:Array<any>=[]
   confirmSeminar: any = null;
   isAddingSeminar: boolean = false; // משתנה לצורך הוספת סמינר חדש
@@ -43,7 +45,7 @@ export class SeminaryComponent implements OnInit {
   ngOnInit(): void {
     this.loadSeminaries();
     this.getUsers();
-    this.librarians = this.users.filter(user => user.userType === "Librarian");
+    //this.librarians = this.users.filter(user => user.userType === "Librarian");
     this.getUserTypeFromToken();
   }
 
@@ -99,10 +101,10 @@ export class SeminaryComponent implements OnInit {
     seminar.isChanging = true
   }
 
-  addLibrarian(seminar: Seminar, librarianId: string) {
-    this.onChangeFieldsSeminar(seminar);
-    seminar.librarianIds.push(librarianId)
-  }
+  // addLibrarian(seminar: Seminar, librarianId: string) {
+  //   this.onChangeFieldsSeminar(seminar);
+  //   seminar.librarianIds.push(librarianId)
+  // }
 
   removeLibrarian(seminar: Seminar, librarianId: string) {
     this.onChangeFieldsSeminar(seminar);
@@ -198,16 +200,14 @@ export class SeminaryComponent implements OnInit {
     }
   }
 
-  getLibrarianById(librarianId: string): string {
-
-    const findLibrarian=this.librarians.find(lib=>lib._id===librarianId)
-    console.log("librarian",findLibrarian);
-    
-    if(findLibrarian)
-    {
-      return findLibrarian.firstName+" "+findLibrarian.lastName
+getLibrarianById(librarianId: string): string {
+    if (!this.librarians || this.librarians.length === 0) {
+      return 'Unknown'; // החזר ערך ברירת מחדל אם הנתונים עדיין לא נטענו
     }
-    return 'Unknown'
+    const findLibrarian=this.librarians.find(lib=>lib._id===librarianId)
+    
+    return findLibrarian ? `${findLibrarian.firstName} ${findLibrarian.lastName}` : 'Unknown';
+    
   }
 
 
@@ -215,6 +215,7 @@ export class SeminaryComponent implements OnInit {
     this.apiService.Read('/users/all').subscribe({
       next: (response: any[]) => {
         this.users=response;
+        this.librarians = this.users.filter(user => user.userType === "Librarian");
       },
       error: (err) => {
         console.error('Error fetching users', err);
@@ -222,11 +223,11 @@ export class SeminaryComponent implements OnInit {
     });
   }
 
-  filterLibrarianBySeminar(seminar: Seminar): any[] {
+  // filterLibrarianBySeminar(seminar: Seminar): any[] {
 
-    const filterArray = this.librarians.filter(lib => lib.assignedSeminaryId === seminar._id)
-    return filterArray
-  }
+  //   const filterArray = this.librarians.filter(lib => lib.assignedSeminaryId === seminar._id)
+  //   return filterArray
+  // }
 
   getStudentsBySeminar(seminar:Seminar):any[]{
     return this.users.filter(user=>user.assignedSeminaryId===seminar._id)

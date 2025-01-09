@@ -191,7 +191,7 @@
           " (click)="downloadResource(item); $event.stopPropagation()">
           <i class="fas fa-download"></i>
         </button>
-        <button class="action-button order" *ngIf="item.type === 'ספר פיזי'" (click)="navigateToItemPage(item)">
+        <button class="action-button order" *ngIf="item.type === 'ספר פיזי'" (click)="navigateToItemPage(item)" [class.disabled]="(userType=='Student' && item.approved=='לא') ">
           הזמנה
         </button>
       </div>
