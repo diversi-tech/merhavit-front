@@ -14,9 +14,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { SearchService } from '../../../shared/search.service';
 import { Item } from '../../../item.inteface';
 import {MatDividerModule} from '@angular/material/divider';
-
-
-
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -57,21 +54,18 @@ export class SearchComponent implements OnInit {
   items: Item[] = [];
   filters = {
     email: '',
-    class: '',
+    classId: '',
+    assignedSeminaryId:'',
     specialization: '',
     userType: '',
     firstName: '',
     lastName: '',
     idNumber: '',
     address: '',
-    phone: '',
+    phoneNumber: '',
   };
-
   searchHistories: { [key: string]: string[] } = {}; // מילון לאחסון היסטוריות חיפוש
-
-
   constructor(private router: Router, private itemsService: ItemsService, private searchService: SearchService, private cdr: ChangeDetectorRef, private route: ActivatedRoute) { }
-
   ngOnInit(): void {
     this.searchControl.valueChanges
     this.extractUserDetailsFromToken(); // קריאה לפונקציה בעת טעינת הרכיב
@@ -82,11 +76,8 @@ export class SearchComponent implements OnInit {
       .subscribe(() => {
         this.checkIfUserManagementRoute(); // בדיקה מחדש בכל שינוי ניווט
       });
-
     this.getUserTypeFromToken();
-
     this.loadSearchHistory(); // טוען את היסטוריית החיפושים
-
     this.searchControl.valueChanges.subscribe(value => {
       this.searchControl.valueChanges
         .pipe(debounceTime(300), distinctUntilChanged()) // מצמצם קריאות
@@ -95,9 +86,6 @@ export class SearchComponent implements OnInit {
         });
     });
   }
-
-
-
   onSearchChange(): void {
     if (this.isUserManagementComponent) {
       this.onSearchChangeUsers();
@@ -111,8 +99,6 @@ export class SearchComponent implements OnInit {
       });
     }
   }
-
-
   // פענוח ה-JWT וקבלת האות הראשונה של השם
   extractUserDetailsFromToken(): void {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -133,9 +119,6 @@ export class SearchComponent implements OnInit {
       console.warn('localStorage is not available');
     }
   }
-
-
-
   onSearch(searchTerm: string = this.searchControl.value): void {
     this.searchControl.setValue(searchTerm);
     // לוקח את הערך שנכנס בשדה הקלט
@@ -155,7 +138,6 @@ export class SearchComponent implements OnInit {
       this.onExtraFilter();
     }
   }
-
   getUserIdFromToken(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const token = localStorage.getItem('access_token');
@@ -197,24 +179,20 @@ export class SearchComponent implements OnInit {
     // עדכון הרשימה המקומית (לדוגמה, לעדכון תצוגת היסטוריית החיפושים של המשתמש הנוכחי)
     this.searchResults = trimmedHistory;
   }
-
   // הצגת תיבת ההיסטוריה
   showSearchHistory() {
     this.isSearchHistoryVisible = true;
   }
-
   // הסתרת תיבת ההיסטוריה
   hideSearchHistory() {
     setTimeout(() => {
       this.isSearchHistoryVisible = false;
     }, 600); // השהיה קטנה כדי לאפשר לחיצה על פריטים
   }
-
   loadSearchHistory(): void {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       // שליפת ה- userId מה-token
       this.getUserIdFromToken();
-
       if (!this.userId) {
         console.error('User ID not found. Unable to load search history.');
         return;
@@ -239,35 +217,39 @@ export class SearchComponent implements OnInit {
   }
   private checkIfUserManagementRoute(): void {
     const currentUrl = this.router.url; // מקבל את ה-URL הנוכחי
-    this.isUserManagementComponent = currentUrl.includes('/user-management');
+    this.isUserManagementComponent = currentUrl.includes('/management/user');
   }
-
   // פונקציה להצגת אפשרויות
   toggleFilterOptions() {
     this.showFilterOptions = !this.showFilterOptions;
   }
-
-
   onSelectFilter(filterType: string): void {
     this.selectedFilter = filterType;
     this.selectedFileType = filterType;
     this.showFilterOptions = false;
-    console.log('סוג הקובץ שנבחר:', filterType);
     this.itemsService.typeFilter = filterType; // מעדכן את הסינון ב-service
+    this.itemsService.searchTerm = this.searchControl.value;
+    this.itemsService.type = this.typeControl.value;
+    this.itemsService.title = this.titleControl.value;
+    this.itemsService.borrowed = this.borrowedControl.value;
+    this.itemsService.publicationDate = this.publicationDateControl.value;
+    this.itemsService.language = this.languageControl.value;
+    this.itemsService.subject = this.subjectControl.value;
+    this.itemsService.ages = this.agesControl.value;
+    this.itemsService.level = this.levelControl.value;
+    this.itemsService.createdBy = this.createdByControl.value;
+    this.itemsService.isnew = this.isnewControl.value;
+    this.itemsService.duration = this.durationControl.value;
     this.itemsService.fetchItems(); // שולח את הבקשה לשרת עם הסינון החדש
   }
-
   // פונקציה לטיפול בשינוי סוג קובץ
   onFilterChange(event: any) {
     this.selectedFileType = event.target.value;
     console.log('סוג הקובץ שנבחר:', this.selectedFileType);
   }
-
-
   toggleDetails() {
     this.showDetails = !this.showDetails;
   }
-
   getUserTypeFromToken(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const token = localStorage.getItem('access_token');
@@ -284,7 +266,6 @@ export class SearchComponent implements OnInit {
       console.error('localStorage is not available on the server.');
     }
   }
-
   // פונקציה לניווט לעמוד הראשי
   logout(): void {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
@@ -293,7 +274,6 @@ export class SearchComponent implements OnInit {
     } else {
     }
   }
-
   @HostListener('document:click', ['$event.target'])
   onDocumentClick(target: HTMLElement) {
     const dropdownContainer = document.querySelector(
@@ -302,19 +282,15 @@ export class SearchComponent implements OnInit {
     const filterDetailsBox = document.querySelector(
       '.filter-details-box'
     ) as HTMLElement;
-
     // בדיקה אם הלחיצה הייתה מחוץ לאזור התפריט
     if (dropdownContainer && !dropdownContainer.contains(target)) {
       this.showFilterOptions = false;
-
-
       if (filterDetailsBox && !filterDetailsBox.contains(target) && !target.classList.contains('fa-filter')) {
         this.showDetails = false;
       }
       // איפוס השדות באובייקט filters
       this.resetFilters();
     }
-
     // בדיקה אם הלחיצה הייתה מחוץ לאזור הסינון
     if (
       filterDetailsBox &&
@@ -322,41 +298,38 @@ export class SearchComponent implements OnInit {
       !target.classList.contains('fa-filter')
     ) {
       this.showDetails = false;
-      this.resetFilters();
     }
   }
-
   // פונקציה לאיפוס השדות באובייקט filters
   resetFilters() {
     this.filters = {
       email: '',
-      class: '',
+      classId: '',
+      assignedSeminaryId:'',
       specialization: '',
       userType: '',
       firstName: '',
       lastName: '',
       idNumber: '',
       address: '',
-      phone: '',
+      phoneNumber: '',
     };
     this.onFilterChangeUsers();
   }
-
   onFilterChangeUsers() {
     // צור את מילת החיפוש מתוך כל השדות (אם הם מלאים)
     const filterText = Object.keys(this.filters) // מקבל את שמות השדות
       .filter((key) => this.filters[key as keyof typeof this.filters] !== '') // מסנן את השדות שאינם ריקים
       .map((key) => `${key}:${this.filters[key as keyof typeof this.filters]}`) // מצרף את שם השדה ואת הערך
       .join(' '); // מצרף את כל השדות לשורת חיפוש אחת
-
     // שולח את מילת החיפוש לשירות החיפוש
+    console.log("filterText",filterText);
+    
     this.searchService.setFilterOption(filterText);
   }
-
   onSearchChangeUsers() {
     this.searchService.setSearchTerm(this.searchTerm);
   }
-
   onExtraFilter() {
     console.log("in onExtraFilter")
     this.typeFilter = this.typeControl.value;
@@ -378,7 +351,7 @@ export class SearchComponent implements OnInit {
   onClear(){
     this.selectedFileType = 'all';
     this.selectedFilter='all';
-    this.itemsService.typeFilter = ''; 
+    this.itemsService.typeFilter = '';
     this.searchControl.setValue('');
     this.typeControl.setValue('');
     this.borrowedControl.setValue('');
@@ -396,5 +369,3 @@ export class SearchComponent implements OnInit {
     });
   }
 }
-
-

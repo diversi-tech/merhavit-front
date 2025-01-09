@@ -73,7 +73,7 @@ export class UploadResourceComponent {
   isPDF: boolean = false;
   isImage: boolean = true
   isAudio: boolean = false
-  fileTypes: Array<string> = ['ספר להשאלה' ,'ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
+  fileTypes: Array<string> = ['ספר פיזי' ,'ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
   userId: string = ''
   purchaseLocations: Array<string> = ["חנות ספרים", "פוטומן"];
 
@@ -318,7 +318,7 @@ Promise.all(requests).then(() => {
       edit: 'עריכת תוכן',
       add: 'העלאת תוכן',
       addLink: 'קישורים',
-      physicalBook: 'ספר להשאלה'
+      physicalBook: 'ספר פיזי'
     };
     return labels[option] || option;
   }
@@ -821,7 +821,7 @@ getOptionById(optionId: string, fieldKey: string)
     }
 
     if (this.contentOption == 'physicalBook') {
-      this.fileForm.patchValue({ type: 'ספר להשאלה' }); // הגדרת ערך ברירת מחדל
+      this.fileForm.patchValue({ type: 'ספר פיזי' }); // הגדרת ערך ברירת מחדל
       this.updateTypeValidator(false);
     } else {
       this.fileForm.patchValue({ approved: '' })

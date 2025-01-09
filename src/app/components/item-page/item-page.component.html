@@ -44,58 +44,29 @@
     <p *ngIf="item.physicalBook==true"><strong>מיקום בסיפריה:</strong> {{ item.filePath || '' }}</p>
     <p><strong>תיאור:</strong> {{ item.description || '' }}</p>
     <!-- הצגת התגיות -->
-    <section>
-      <mat-form-field class="tags">
-        <mat-chip-grid #reactiveChipGrid aria-label="Enter reactive form keywords" [formControl]="formControl">
+     <section>
           <div class="chip-container">
-            <mat-chip-row *ngFor="let keyword of reactiveKeywords()">
+            <mat-chip-row *ngFor="let keyword of tags()">
               {{ keyword }}
-              <button matChipRemove (click)="removeReactiveKeyword(keyword)"
-                aria-label="'remove reactive form ' + keyword">
-                <mat-icon>cancel</mat-icon>
-              </button>
             </mat-chip-row>
           </div>
-        </mat-chip-grid>
-        <input maxlength="12" placeholder="הוסיפי תגית" [matChipInputFor]="reactiveChipGrid"
-          (matChipInputTokenEnd)="addReactiveKeyword($event)" />
-      </mat-form-field>
-      <div class="scroll-wrapper">
-        <div class="chip-container">
-        </div>
-      </div>
     </section>
-
-
-      <!--  <div class="calender">
-     <mat-form-field appearance="fill" class="mat-form-field" *ngIf="isBook">
-        <mat-label>בחרי טווח תאריכים</mat-label>
+    
+ 
+      <div class="calender">
+        <mat-form-field appearance="fill">
+          <mat-label>תאריך התחלה</mat-label>
           <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" (dateChange)="validateDates()" />
-        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-          <input matStartDate formControlName="start" placeholder="תאריך התחלה">
-          <input matEndDate formControlName="end" placeholder="תאריך סיום">
-        </mat-date-range-input>
-        <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
           <mat-label>תאריך סיום</mat-label>
           <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" (dateChange)="validateDates()" />
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-      </mat-form-field> -->
-      <div class="calender">
-      <mat-form-field appearance="fill">
-        <mat-label>תאריך התחלה</mat-label>
-        <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" (dateChange)="validateDates()" />
-        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-        <mat-datepicker #startPicker></mat-datepicker>
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
         </mat-form-field>
-     
-      <mat-form-field appearance="fill">
-        <mat-label>תאריך סיום</mat-label>
-        <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" (dateChange)="validateDates()" />
-        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-        <mat-datepicker #endPicker></mat-datepicker>
-      </mat-form-field>
-    </div>
+      </div>
         <!-- הודעת שגיאה -->
         <div *ngIf="range.controls.start.errors?.['matDatepickerParse']">
           <mat-error>תאריך התחלה לא תקין</mat-error>
@@ -103,18 +74,20 @@
         <div *ngIf="range.controls.end.errors?.['matDatepickerParse']">
           <mat-error>תאריך סיום לא תקין</mat-error>
         </div>
-      <!-- כפתור להשאלה -->
-    <section>
+        <!-- כפתור להזמנה -->
+        <section>
           <div class="example-button-row">
-            <button mat-button>להשאלה</button>
+            <button mat-button>להזמנה</button>
+          </div>
+        </section>
 
-      </div>
-    </section>
   </div>
   <!-- פריטים דומים -->
   <div class="grid-item item-3">
-    <h3>פריטים דומים</h3>
     <div class="similar-items">
+      <ng-container *ngIf="this.isHeaderDisplayed">
+        <h3>פריטים דומים</h3>
+      </ng-container>
       <div *ngFor="let similarItem of similarItems" class="similar-item" (click)="navigateToItem(similarItem._id)">
         <div class="image-container">
           <!-- התמונה -->

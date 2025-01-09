@@ -9,6 +9,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { ApiService } from '../../api.service';
+import { israeliIdValidator } from './id-validator';
+
 
 @Component({
   selector: 'app-registration',
@@ -33,14 +35,7 @@ export class RegistrationComponent {
       {
         firstName: ['', Validators.required],
         lastName: ['', Validators.required],
-        idNumber: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(9),
-            Validators.maxLength(9),
-          ],
-        ],
+        idNumber: ['', [Validators.required, israeliIdValidator()]],
         address: ['', Validators.required],
         phone: ['', [Validators.required, Validators.pattern(/^05\d{8}$/)]],
         email: ['', [Validators.email]],
@@ -60,10 +55,14 @@ export class RegistrationComponent {
     return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
+  get idNumber() {
+    return this.registrationForm.get('idNumber');
+  }
+
   ngOnInit(): void {
     this.apiService.Read('/seminaries').subscribe((data: any[]) => {
       this.seminaries = data;
-      this.registrationForm.get('seminar')?.enable(); 
+      this.registrationForm.get('seminar')?.enable();
     });
 
     this.apiService.Read('/specializations').subscribe((data: any[]) => {
@@ -73,7 +72,7 @@ export class RegistrationComponent {
 
     this.apiService.Read('/classes').subscribe((data: any[]) => {
       this.classes = data;
-      this.registrationForm.get('class')?.enable(); 
+      this.registrationForm.get('class')?.enable();
     });
   }
 
@@ -81,6 +80,7 @@ export class RegistrationComponent {
     if (this.registrationForm.invalid) {
       console.log('הרשמה נכשלה. אנא בדוק את כל השדות ונסה שוב.');
       this.errorMessage = 'הרשמה נכשלה. אנא בדוק את כל השדות ונסה שוב.';
+      console.log('Form Submitted:', this.registrationForm.value);
       return;
     }
     this.errorMessage = null;
@@ -92,6 +92,9 @@ export class RegistrationComponent {
           console.log(response);
           localStorage.setItem('access_token', response.access_token);
           this.registrationForm.reset();
+          this.registrationForm.get('class')?.disable();
+          this.registrationForm.get('specialization')?.disable();
+          this.registrationForm.get('seminar')?.disable();
           this.router.navigate(['/success-registration']);
         },
         error: (error) => {

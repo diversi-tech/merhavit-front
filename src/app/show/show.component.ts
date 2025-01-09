@@ -19,7 +19,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 // import { ChangeDetectionStrategy } from '@angular/core';
 import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
-// import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { catchError, Subscription, switchMap, takeUntil } from 'rxjs';
 import { Subject, combineLatest, of } from 'rxjs';
 
@@ -496,7 +496,7 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
         const decodedToken: any = jwtDecode(token);
         const userId = decodedToken.idNumber;
         // פתיחת דיאלוג אישור
-        const dialogRef = this.dialog.open(ConfirmDialogComponent1, {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
           width: '350px',
         });
         // המתנה לתשובת המשתמש
