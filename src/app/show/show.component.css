@@ -37,7 +37,6 @@
   background-color: #007BFF;
   color: #fff;
 }
-  padding-bottom: 60px; /* או גובה ה-paginator */
 .row {
   display: flex;
   justify-content: space-between;
@@ -85,10 +84,6 @@
   background-color: #D4F5D4;
   color: #007B00;
 }
-/* .actions {
-  display: flex;
-  gap: 1rem;
-} */
 .action-button {
   border: none;
   padding: 0.5em 1em;
@@ -235,20 +230,7 @@
     grid-template-columns: 1fr;
   }
 }
-/* .card-container .item-card {
-  display: flex;
-  top: 1rem;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  overflow: hidden;
-  max-width: 19vw;
-  max-height: 30vh;
-  min-width: 19vw;
-  min-height: 30vh;
-} */
+
 .card-container .item-card .item-image {
   width: 100%;
   height: 100%;
@@ -366,6 +348,7 @@ mat-icon {
   max-width: 17.5vw;
   max-height: 25vh;
   border-radius: 1rem;
+  z-index: 0;
 
 }
 
@@ -474,9 +457,13 @@ mat-icon {
   border-radius: 5px;
   font-weight: bold;
   font-size: 14px;
-  z-index: 1;
+  z-index: 0;
 }
 
 .matPagin{
   direction: ltr;
+}
+.disabled {
+  pointer-events: none;
+  opacity: 0.6; 
 }

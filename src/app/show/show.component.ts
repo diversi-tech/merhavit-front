@@ -54,11 +54,11 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   private itemsInterval: any;
   public page: number=0;
   public limit: number=10;
-  public typeFilter: string = '';
+  public typeFilter: string = 'all';
   public searchTerm: string = '';
   public ifArrIsEmty: boolean = false;
   private subscription: Subscription = new Subscription();
-  viewMode: 'grid' | 'list' = 'grid';  // ברירת המחדל היא כרטיסיות
+  viewMode: 'list' |'grid' = 'list';  // ברירת המחדל היא כרטיסיות
  
   @ViewChild(MatPaginator) paginator!: MatPaginator; 
   
@@ -67,12 +67,12 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
-    this.itemsService.typeFilter = 'all'; // עדכון הסינון ב-service
     this.itemsService.fetchItems(); // שליחת בקשה לשרת עם הסינון החדש
      // ביצוע הבדיקה בטעינת הדף
      this.subscription = this.itemsService.ifArrIsEmty$.subscribe((isEmpty) => {
       this.ifArrIsEmty = isEmpty;
       this.showNoDataMessage = isEmpty; // קיצור לוגיקה
+      this.defultViewMode()
     });
   // קריאה לשרת כשמשתנה פרמטר
     this.route.queryParams // האזנה לפרמטרים ב-URL
@@ -84,6 +84,7 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
         this.itemsService.typeFilter = type; // עדכון סוג הסינון בשירות
         this.itemsService.page = 0; // התחלה מחדש
         this.itemsService.getItems(0,10, '', type)
+
       }
       //return this.itemsService.items$; // האזנה לזרם הנתונים
       return combineLatest([this.itemsService.items$, this.itemsService.totalItems$]);
@@ -120,6 +121,14 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
     this.destroy$.next();
     this.destroy$.complete();
   }
+defultViewMode() {
+  if (this.itemsService.typeFilter || this.typeFilter != 'all') {
+    this.viewMode = 'grid'; // שינוי תצוגה לרשימה כאשר הסוג הוא 'all'
+  } else {
+    this.viewMode = 'list'; // שינוי תצוגה לגריד כאשר הסוג שונה מ-'all'
+  }
+}
+
  toggleViewMode() {
     this.viewMode = this.viewMode === 'grid' ? 'list' : 'grid'; // שינוי תצוגה
   }
@@ -278,7 +287,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   downloadResource(item: Item): void {
     if (!item._id) {
       console.error('Item ID is missing.');
-      // alert('לא ניתן להוריד את הקובץ. חסר ID');
       this._snackBar.open('לא ניתן להוריד את הקובץ. חסר ID', 'סגור', {
         duration: 3000,
         panelClass: ['error-snackbar'],
@@ -288,7 +296,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
     }
     if (!item.filePath) {
       console.error('File path is missing.');
-      // alert('לא ניתן להוריד את הקובץ. חסר ניתוב');
       this._snackBar.open('לא ניתן להוריד את הקובץ. חסר ניתוב', 'סגור', {
         duration: 3000,
         panelClass: ['error-snackbar'],
@@ -314,7 +321,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
             document.body.removeChild(downloadLink);
           } else {
             console.error('Invalid response for download URL.');
-            // alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
             this._snackBar.open(
               'לא ניתן להוריד את הקובץ. אנא נסה שוב.',
               'סגור',
@@ -328,7 +334,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
         },
         error: (err) => {
           console.error('Error fetching presigned URL:', err);
-          // alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
           this._snackBar.open('שגיאה בהורדת הקובץ. אנא נסה שוב.', 'סגור', {
             duration: 3000,
             panelClass: ['error-snackbar'],
