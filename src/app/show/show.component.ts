@@ -68,7 +68,10 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
     this.itemsService.typeFilter = 'all'; // עדכון הסינון ב-service
-    this.itemsService.fetchItems(); // שליחת בקשה לשרת עם הסינון החדש
+    this.itemsService.page = 0;
+    this.itemsService.limit = 10;
+
+    this.itemsService.fetchItems(this.itemsService.page, this.itemsService.limit); // שליחת בקשה לשרת עם הסינון החדש
      // ביצוע הבדיקה בטעינת הדף
      this.subscription = this.itemsService.ifArrIsEmty$.subscribe((isEmpty) => {
       this.ifArrIsEmty = isEmpty;
@@ -83,7 +86,7 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
       if (this.itemsService.typeFilter !== type) {
         this.itemsService.typeFilter = type; // עדכון סוג הסינון בשירות
         this.itemsService.page = 0; // התחלה מחדש
-        this.itemsService.getItems(0,10, '', type)
+        this.itemsService.getItems(this.itemsService.page, this.itemsService.limit, '', type);
       }
       //return this.itemsService.items$; // האזנה לזרם הנתונים
       return combineLatest([this.itemsService.items$, this.itemsService.totalItems$]);
@@ -271,37 +274,39 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
               console.log('Delete request completed.');
               this.removeFromFavorites(itemToDelete)
               
-              if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-                const token = localStorage.getItem('access_token');
-                if (!token) return;
+//               if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+//                 const token = localStorage.getItem('access_token');
+//                 if (!token) return;
               
               
-              const decodedToken: any = jwtDecode(token);
-              const userId = decodedToken.idNumber;
-              const status='Rejected'
-              const idb=itemToDelete._id
+//               const decodedToken: any = jwtDecode(token);
+//               const userId = decodedToken.idNumber;
+//               const status='Rejected'
+//               const idb=itemToDelete._id
 
-              const data={idb,userId,status}  
-              console.log("data",data)
+//               const data={idb,userId,status}  
+//               console.log("data",data)
  
-              //
-              this.apiService.Put('/borrowRequests/approve-or-reject', data).subscribe({
-                next: (response) => {
-                  console.log("response!!!!",response);
+//               //
+//               this.apiService.Put('/borrowRequests/approve-or-reject', data).subscribe({
+//                 next: (response) => {
+//                   console.log("response!!!!",response);
                   
-                  // this.getBorrowRequests();  // לשאול את מוריה מה זה? 
-                },
-                error: (err) => {
-                  console.error(
-                    `Error processing borrow request :`,
-                    err
-                  );
-                },
-              });
-              //
-}
-            },
-          });
+//                   // this.getBorrowRequests();  // לשאול את מוריה מה זה? 
+//                 },
+//                 error: (err) => {
+//                   console.error(
+//                     `Error processing borrow request :`,
+//                     err
+//                   );
+//                 },
+//               });
+//               //
+// }
+
+
+           },
+        });
       }
     });
   }

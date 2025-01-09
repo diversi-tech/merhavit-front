@@ -39,7 +39,7 @@
 }
 
 .table-container {
-  padding-bottom: 60px; /* או גובה ה-paginator */
+  padding-bottom: 6vw; /* או גובה ה-paginator */
   direction: rtl;
   display: flex;
   flex-direction: column;
@@ -178,8 +178,8 @@
 
 
   .pagination-container .arrow {
-    font-size: 18px;
-    margin: 0 10px;
+    font-size: 1.8vw;
+    margin: 0 1vw;
     cursor: pointer;
     color: #888;
     transition: color 0.3s;

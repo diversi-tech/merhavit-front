@@ -221,18 +221,42 @@ export class UploadResourceComponent {
             catalogNumber:this.resourceItem.catalogNumber ||"",
             copies:this.resourceItem.copies ||"",
             libraryLocation:this.resourceItem.libraryLocation ||"",
-            subjects: Array.isArray(this.resourceItem.subjects) ? this.resourceItem.subjects : [],
-            tags: Array.isArray(this.resourceItem.tags) ? this.resourceItem.tags : [],
-            specializations: Array.isArray(this.resourceItem.specializations) ? this.resourceItem.specializations : [],
-            classes: Array.isArray(this.resourceItem.classes) ? this.resourceItem.classes : [],
+            // subjects: Array.isArray(this.resourceItem.subjects) ? this.resourceItem.subjects : [],
+            // tags: Array.isArray(this.resourceItem.tags) ? this.resourceItem.tags : [],
+            // specializations: Array.isArray(this.resourceItem.specializations) ? this.resourceItem.specializations : [],
+            // classes: Array.isArray(this.resourceItem.classes) ? this.resourceItem.classes : [],
           });
-          if(this.resourceItem.contentOption=='book')  
+// הוסף את הערכים ל-FormArray
+          const subjectsArray = this.fileForm.get('subjects') as FormArray;
+          this.resourceItem.subjects.forEach((subject:any) => {
+            subjectsArray.push(this.fb.control(subject));
+          });
+          const classesArray = this.fileForm.get('classes') as FormArray;
+          this.resourceItem.classes.forEach((classItem: any) => {
+            classesArray.push(this.fb.control(classItem));
+          });
+
+          
+          const tagsArray = this.fileForm.get('tags') as FormArray;
+          this.resourceItem.tags.forEach((tag:any) => {
+            tagsArray.push(this.fb.control(tag));
+          });
+
+          const specializationsArray = this.fileForm.get('specializations') as FormArray;
+          this.resourceItem.specializations.forEach((specialization:any) => {
+            specializationsArray.push(this.fb.control(specialization));
+          });
+
+          console.log("fileForm",this.fileForm.value);
+          
+          if(this.resourceItem.contentOption=='physicalBook')  
             this.downloadFile(this.resourceItem.coverImage)
           else
-            this.downloadFile(this.resourceItem.filePath)
-          if(this.contentOption=='add' || this.contentOption=='physicalBook')
+               this.downloadFile(this.resourceItem.filePath)
+          if(this.contentOption=='add' || this.contentOption=='edit')  //?
              this.isFirstEdit = true
-Promise.all(requests).then(() => {
+
+          Promise.all(requests).then(() => {
             // עכשיו כל הקריאות הושלמו, תוכל לבצע את ההדפסה בבטחה
             Object.entries(this.multipleChoiceFields).forEach(([key, value]) => {
               console.log("array in map", key, value.allOption);
@@ -352,58 +376,71 @@ Promise.all(requests).then(() => {
 
   //בעת בחירת קובץ ממחשב
   downloadFile(filePath: string) {
-    
-    if(this.contentOption!='addLink')
-    {
-    console.log("path in download "+filePath)
-    this.apiService
-      .Read(`/EducationalResource/presigned-url?filePath=${filePath}`)
-      .subscribe({
-        next: async (response) => {
-          const presignedUrl = response.url;
-          if (response && response.url) {
-           
-            
-            try {
-              const fileResponse = await fetch(presignedUrl);
-              console.log("file response----",fileResponse.ok);
-              
-              if (!fileResponse.ok) {
-                throw new Error('Network response was not ok');
+    if (this.contentOption != 'addLink') {
+      console.log("path in download " + filePath);
+      this.apiService
+        .Read(`/EducationalResource/presigned-url?filePath=${filePath}`)
+        .subscribe({
+          next: async (response) => {
+            const presignedUrl = response.url;
+            if (response && response.url) {
+              try {
+                const fileResponse = await fetch(presignedUrl);
+                console.log("file response----", fileResponse.ok);
+  
+                if (!fileResponse.ok) {
+                  throw new Error('Network response was not ok');
+                }
+                const blob = await fileResponse.blob();
+                const file = new File([blob], this.resourceItem.title, { type: blob.type });
+                console.log('File received:', file, this.file);
+
+              if(this.contentOption=='add')
+              {
+                this.file = file;
+                this.onFileSelected();
               }
-              const blob = await fileResponse.blob();
-              const file = new File([blob], this.resourceItem.title, { type: blob.type });
-              this.file = file
-
-              // כאן תוכל להשתמש במשתנה file כפי שצריך
-              console.log('File received:', file, this.file);
-              this.onFileSelected();
-
-            } catch (error) {
-              console.error('Error fetching the file:', error);
-              this.snackBar.open('שגיאה בהורדת הקובץ', 'סגור', {
+              else
+              {
+                this.coverImage=file;
+                this.onImageSelected()
+              }
+               
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                  if (event.target) {
+                    this.content = event.target.result as string; // שמירת התוכן במשתנה content
+                  } else {
+                    console.error('FileReader event target is null.');
+                  }
+                };
+                reader.readAsText(file); // קריאה כטקסט (אם זה קובץ טקסט)
+              // }
+              } catch (error) {
+                console.error('Error fetching the file:', error);
+                this.snackBar.open('שגיאה בהורדת הקובץ', 'סגור', {
+                  duration: 3000,
+                  panelClass: ['error-snackbar'],
+                  direction: 'rtl',
+                });
+              }
+            } else {
+              console.error('Invalid response for download URL.');
+              this.snackBar.open('לא ניתן להוריד את הקובץ', 'סגור', {
                 duration: 3000,
                 panelClass: ['error-snackbar'],
                 direction: 'rtl',
               });
             }
-          } else {
-            console.error('Invalid response for download URL.');
-            this.snackBar.open('לא ניתן להוריד את הקובץ', 'סגור', {
-              duration: 3000,
-              panelClass: ['error-snackbar'],
-              direction: 'rtl',
-            });
-          }
-        },
-        error: (err) => {
-          console.error('Error fetching presigned URL:', err);
-          alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
-        },
-      });
+          },
+          error: (err) => {
+            console.error('Error fetching presigned URL:', err);
+            alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
+          },
+        });
     }
   }
-
+  
 
   onFileSelected(event?: Event, filePath?: string): void {
     if(this.contentOption!='Link')
@@ -494,8 +531,11 @@ Promise.all(requests).then(() => {
   }
 
   //בעת בחירת תמונת שער
-  onImageSelected(event: Event): void {
+  onImageSelected(event?: Event,filePath?:string): void {
     
+    
+    if(event)
+    {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       this.coverImage = input.files[0];
@@ -505,8 +545,8 @@ Promise.all(requests).then(() => {
       }
       reader.readAsDataURL(this.coverImage);
       
-      
     }
+  }
     if (this.coverImage) {
       this.coverImageErrorMessage = null
       this.formErrorMessage = null
@@ -515,11 +555,16 @@ Promise.all(requests).then(() => {
       this.coverImageErrorMessage = "חסר תמונת תצוגה מקדימה לקובץ"
     }
       
-
+    
     if(this.contentOption=='physicalBook')
        {
         this.disabledOptions['physicalBook'] = this.coverImage ? true : false
        }
+
+       if (this.coverImage) {
+        const objectUrl = URL.createObjectURL(this.coverImage);
+        this.displayImage = objectUrl; // שמירת התצוגה המקדימה לתמונה
+    }
   }
 
   //שמירה איזה סוג קובץ נבחר
@@ -686,7 +731,7 @@ Promise.all(requests).then(() => {
 //קבלת התגית לפי ה_id שלה
 getOptionById(optionId: string, fieldKey: string)
   {
-    console.log("OptionById",this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
+    // console.log("OptionById",this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
     
     return this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId)
   }
@@ -931,12 +976,29 @@ getOptionById(optionId: string, fieldKey: string)
 
   onSubmitEdit(): void {
     
-    if (this.content && !this.file)//אם הקובץ הוא של העלאת תוכן שמירה שלו במשתנה
+    alert("file"+this.file)
+
+    if (this.content && this.contentOption==='edit')//אם הקובץ הוא של העלאת תוכן שמירה שלו במשתנה
     {
       this.file = this.createTextFile();
     }
+    console.log(this.fileForm.value);
+   
+    if (this.contentOption == 'physicalBook') {
+      this.fileForm.patchValue({ type: 'ספר פיזי' }); // הגדרת ערך ברירת מחדל
+      this.updateTypeValidator(false);
+    } else {
+      this.fileForm.patchValue({ approved: '' })
+      // this.fileForm.patchValue({ loanValidity: '' })
+      this.fileForm.patchValue({ purchaseLocation: '' })
+      this.fileForm.patchValue({ price: '' })
+      this.fileForm.patchValue({ catalogNumber: '' })
+      this.fileForm.patchValue({ libraryLocation: '' })
+    }
+
     if (this.fileForm.valid && (this.file || this.link|| (this.contentOption == 'physicalBook' && this.coverImage)) && ((!this.isImage && this.coverImage) || this.isImage))//ולידציה של השדות
     {
+      
       const formData = new FormData();
       
       const { libraryLocation, ...form } = this.fileForm.value;
@@ -951,33 +1013,39 @@ getOptionById(optionId: string, fieldKey: string)
       //    filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
       //   contentOption:this.getContentOption(this.contentOption)//מצב הטופס
       // }
-
+      
       let str: string = JSON.stringify(metadata)
       console.log("string data: " + str)
       formData.append('metadata', str) //הכנסת אוביקט של הנתונים לאוביקט שליחה
       if (this.file) {
         const rename = this.renameFile(this.file)
         console.log(rename);
-
-        formData.append('files', rename)//הכנסת הקובץ לאוביקט לשליחה
+        
+        formData.append('resource', rename)//הכנסת הקובץ לאוביקט לשליחה
       }
-
+      console.log("this is image "+this.isImage);
+      
       if (this.isImage && this.contentOption!=='physicalBook') {
+        console.log("file",this.file);
+        
         this.coverImage = this.file //אם סוג תמונה תמונת השער היא אותה תמונה
+        console.log("co",this.coverImage);
+
       }
-
-
+      // if (this.coverImage &&(this.contentOption === 'addLink' || this.contentOption === 'edit') )  //?
+      //   this.coverImage=null
+      // else
       if (this.coverImage && this.contentOption !== 'edit')//הכנסת תמונת שער לאוביקט לשליחה
       {
         console.log("image " + this.coverImage);
 
-        formData.append('files', this.renameFile(this.coverImage))
+        formData.append('coverImage', this.renameFile(this.coverImage))
       }
 
       formData.forEach((value, key) => {
         console.log(`${key}: ${value}`);
       });
-
+      
 
       const query = `/EducationalResource/${this.itemID}`;
       console.log("********qeury*** " + query);
@@ -1007,7 +1075,5 @@ getOptionById(optionId: string, fieldKey: string)
       });
     }
     this.location.back()
-
   }
-
 }

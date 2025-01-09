@@ -138,7 +138,7 @@ export class ItemsService {
  
 
   searchItems(searchTerm: string = this.searchTerm,page: number = 0,
-    limit: number = 100): Observable<Item[]> {
+    limit: number = 10): Observable<Item[]> {
     let params = new HttpParams()
       // .set('page', this.page.toString())
       // .set('limit', this.limit.toString());
@@ -168,8 +168,10 @@ export class ItemsService {
   
 
   fetchItems(page: number = 0,
-    limit: number = 100): void {
+    limit: number = 10): void {
     this.isFetching = true;
+    this.page=0
+    this.limit=10
     
   let params = new HttpParams()
     // .set('page', this.page.toString())
