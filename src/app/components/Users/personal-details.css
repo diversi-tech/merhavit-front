@@ -100,3 +100,17 @@ select {
   width: 100%; /* רוחב */
   box-sizing: border-box; /* כולל את הגבולות ברוחב */
 }
+
+.change-password-button {
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+  padding: 0.625rem 1.25rem;
+  border-radius: 1.5625rem;
+}
+
+.change-password-button:hover {
+  background-color: #45a049;
+}

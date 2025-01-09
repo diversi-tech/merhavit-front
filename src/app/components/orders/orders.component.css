@@ -1,0 +1,154 @@
+/* סרגל כרטיסיות */
+.nav-tabs {
+  font-size: 1.125rem; /* 18px -> 1.125rem */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 2.5rem; /* 40px -> 2.5rem */
+}
+
+.nav-tabs div {
+  padding: 0.9375rem 1.5625rem; /* 15px 25px -> 0.9375rem 1.5625rem */
+  cursor: pointer;
+  font-weight: bold;
+  color: #333;
+}
+
+.nav-tabs div.active {
+  border-bottom: 0.125rem solid #000; /* 2px -> 0.125rem */
+  color: #000;
+}
+
+.orders-container {
+  margin-top: 2.5rem; /* 40px -> 2.5rem */
+  direction: rtl; /* כתיבה מימין לשמאל */
+  text-align: right; /* יישור התוכן לשמאל */
+  width: 50%; /* רוחב המיכל */
+  margin-left: auto; /* יידחוף את המיכל לשמאל */
+  margin-right: 4.375rem; /* 70px -> 4.375rem */
+}
+
+.status-approved {
+  background-color: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 2em;
+  padding: 0.5em 1em;
+  font-size: 1rem;
+  transition: background-color 0.3s ease; /* מעבר חלק */
+}
+
+.status-approved:hover {
+  background-color: #006400; /* ירוק כהה יותר */
+}
+
+.status-rejected {
+  background-color: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 2em;
+  padding: 0.5em 1em;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.status-rejected:hover {
+  background-color: #8b0000; /* אדום כהה יותר */
+}
+
+.status-pending {
+  background-color: gray;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 2em;
+  padding: 0.5em 0.8em;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.status-pending:hover {
+  background-color: #505050; /* אפור כהה יותר */
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem; /* ריווח בין הכפתורים */
+  justify-content: flex-start; /* יישור לשמאל */
+  align-items: center; /* יישור אנכי */
+}
+
+.container {
+  width: 100%;
+  max-width: 75rem;
+  margin: auto;
+  font-family: Arial, sans-serif;
+  direction: rtl;
+  color: #333;
+  padding: 0 2rem 0 15rem; /* מוסיף ריווח של 15rem מצד שמאל עבור ה-sidebar */
+}
+
+.table-container {
+  direction: rtl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  margin-right: 2rem; /* מוסיף ריווח מצד ימין */
+  padding-left: 2rem; /* מוסיף ריווח מצד שמאל */
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  max-width: 50rem;
+  padding: 2vh 2rem; /* מוסיף ריווח פנימי */
+  border-bottom: 0.1em solid #dcdcdc;
+  margin: 0 2rem; /* מוסיף ריווח מהצדדים */
+}
+
+/* התאמה למסכים קטנים */
+@media (max-width: 48rem) {
+  .container {
+    padding: 0 1rem; /* מקטין את הריווח במסכים קטנים */
+  }
+
+  .table-container {
+    margin-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .row {
+    margin: 0 1rem;
+    padding: 2vh 1rem;
+  }
+}
+
+.no-data-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #f8f9fa; /* צבע רקע עדין */
+  border: 0.3vh dashed #11457b; /* גבול דק יותר */
+  border-radius: 0.5rem; /* קצוות מעוגלים */
+  padding: 1vw; /* ריווח פנימי קטן יותר */
+  margin: 10vh auto; /* מקטין את הריווח החיצוני */
+  color: #6c757d; /* צבע טקסט אפור עדין */
+  font-size: 1.5rem; /* גודל טקסט קטן יותר */
+  font-weight: 500; /* עיצוב טקסט מודגש במידה בינונית */
+  max-width: 300vw; /* מקטין את הרוחב המקסימלי */
+  box-shadow: 0 2vh 4vh rgba(0, 0, 0, 0.1); /* הצללה קטנה יותר */
+  text-align: center; /* מרכז הטקסט */
+}
+
+.icon-no-data-message {
+  margin-top: 3vh; /* ריווח קטן יותר מעל האייקון */
+  font-size: 1.5rem; /* גודל אייקון קטן יותר */
+  color: #11457b; /* צבע כחול */
+  margin-bottom: 5vh; /* ריווח קטן יותר מתחת לאייקון */
+}

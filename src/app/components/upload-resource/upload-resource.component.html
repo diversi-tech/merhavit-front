@@ -122,12 +122,12 @@
                 (matChipInputTokenEnd)="add($event,'subjects')"
                 [matAutocomplete]="subjectsAuto"
                 (focusout)="markFieldAsTouched('subjects')"
-                [value]="formMode === 'edit' ? multipleChoiceFields['subjects'].optionSelected.join(', ') : ''"
+                [value]="formMode === 'edit' ? '' : ''"
                 [placeholder]="formMode === 'edit' ? '' : ''"
               />
             </div>
               <mat-chip-row *ngFor="let subject of multipleChoiceFields['subjects'].optionSelected" [removable]="true" (removed)="remove(subject,'subjects')">
-                {{getOptionById(subject,'subjects')}}
+                {{getOptionNameById(subject,'subjects')}}
                 <button matChipRemove>×</button>
               </mat-chip-row>
             </mat-chip-grid>
@@ -166,12 +166,12 @@
               (matChipInputTokenEnd)="add($event,'specializations')"
               [matAutocomplete]="specializationsAuto"
               (focusout)="markFieldAsTouched('specializations')"
-              [value]="formMode === 'edit' ? multipleChoiceFields['specializations'].optionSelected.join(', ') : ''"
+              [value]="formMode === 'edit' ? '' : ''"
               [placeholder]="formMode === 'edit' ? '' : ''"
             />
           </div>
             <mat-chip-row *ngFor="let specialization of multipleChoiceFields['specializations'].optionSelected" [removable]="true" (removed)="remove(specialization,'specializations')">
-              {{getOptionById(specialization,'specializations')}}
+              {{getOptionNameById(specialization,'specializations')}}
               <button matChipRemove>×</button>
             </mat-chip-row>
           </mat-chip-grid>
@@ -207,12 +207,13 @@
               (matChipInputTokenEnd)="add($event,'classes')"
               [matAutocomplete]="agesAuto"
               (focusout)="markFieldAsTouched('classes')"
+              [value]="formMode === 'edit' ? '': ''"
               [placeholder]="formMode === 'edit' ? '' : ''"                
               [formArrayName]="'classes'"
             />
           </div>
             <mat-chip-row *ngFor="let class of multipleChoiceFields['classes'].optionSelected" [removable]="true" (removed)="remove(class,'classes')">
-              {{getOptionById(class,'classes')}}
+              {{getOptionNameById(class,'classes')}}
               <button matChipRemove>×</button>
             </mat-chip-row>
           </mat-chip-grid>
@@ -353,7 +354,7 @@
               />
               </div>
               <mat-chip-row *ngFor="let tag of multipleChoiceFields['tags'].optionSelected" [removable]="true" (removed)="remove(tag,'tags')">
-                {{getOptionById(tag,'tags')}}
+                {{getOptionNameById(tag,'tags')}}
                 <button matChipRemove>×</button>
               </mat-chip-row>
             </mat-chip-grid>

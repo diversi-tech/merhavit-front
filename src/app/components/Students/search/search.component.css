@@ -174,7 +174,7 @@
   height: auto;
   overflow-y: auto;
   padding: 8px;
-}
+  }
 .search-history-item {
   display: flex;
   flex-direction: row-reverse; /* האייקון בצד ימין */

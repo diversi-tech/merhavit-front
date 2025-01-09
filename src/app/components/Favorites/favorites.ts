@@ -5,6 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import { ApiService } from '../../api.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatCardModule } from '@angular/material/card';
 
 
 @Component({
@@ -12,17 +13,20 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './favorites.html',
   styleUrls: ['./favorites.css'],
   standalone: true,
-  imports: [RouterModule, CommonModule, MatSnackBarModule],
+  imports: [RouterModule, CommonModule, MatSnackBarModule, MatCardModule],
 })
 export class FavoritesComponent implements OnInit {
   favorites: any[] = [];
   userId: string = '';
+  activeTab = 'favorites';
+  isLoading = true;
 
   constructor(private apiService: ApiService, private router: Router, private _snackBar: MatSnackBar) {}
 
   async ngOnInit(): Promise<void> {
     this.getUserIdFromToken();
     await this.fetchFavorites();
+    this.isLoading = false;
     console.log('favorites', this.favorites);
   }
 
@@ -127,4 +131,18 @@ export class FavoritesComponent implements OnInit {
   navigateToItemPage(itemId: string): void {
     this.router.navigate([`/item-page/${itemId}`]);
   }
+
+  navigateTo(tab: string): void {
+    this.activeTab = tab;
+    this.router.navigate([`/${tab}`]);
+  }
+
+  getFileExtension(filePath: string | null | undefined): string | null {
+    if (!filePath || typeof filePath !== 'string') {
+      return null; // מחזיר null אם filePath אינו חוקי
+    }
+    const match = filePath.match(/\.[0-9a-z]+$/i);
+    return match ? match[0] : null;
+  }
+  
 }

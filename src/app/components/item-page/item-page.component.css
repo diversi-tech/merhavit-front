@@ -1,10 +1,4 @@
-.item-details {
-  display: flex;
-  padding: 2vh;
-  background-color: #ffff;
-  align-items: flex-start; /* הצמדת הפרטים והתמונה לימין והעלאת הטקסט לראש התמונה */
-  justify-content: flex-end; /* הצמדת התמונה לפרטים */
-}
+
 
 .item-1 {
   width: 25vw; /* קביעת רוחב קבוע */
@@ -49,6 +43,14 @@
   height: 67vh; /* שומר על פרופורציות בגובה */
 }
 
+.item-details {
+  display: flex;
+  padding: 2vh;
+  background-color: #ffff;
+  align-items: flex-start; /* הצמדת הפרטים והתמונה לימין והעלאת הטקסט לראש התמונה */
+  justify-content: flex-end; /* הצמדת התמונה לפרטים */
+}
+
 .item-details img {
   max-width: 15vw; /* הגדלת גודל התמונה */
   margin-left: 1vw; /* ריווח בין התמונה לפרטים */
@@ -85,7 +87,6 @@
 .item-3 video, .item-3 img, .item-3 embed, .item-3 audio {
   max-width: 20vw; /* תמונה לא תחרוג מהרוחב הקבוע */
   max-height: 20vh; /* תמונה לא תחרוג מהגובה הקבוע */
-  /* object-fit: cover; שמירה על יחס גובה-רוחב */
 }
 
 
@@ -96,8 +97,8 @@ flex-direction: row-reverse;
   grid-template-areas: 
     "item-2 item-1"
     "item-3 item-3";
-  grid-template-columns: 1fr auto; /* קביעה ידנית של רוחב העמודות */
-  gap: 0.5vw; /* ריווח בין האלמנטים */
+  grid-template-columns: 1fr auto; 
+  gap: 0.5vw; 
 }
 
 .grid-item {
@@ -115,15 +116,15 @@ flex-direction: row-reverse;
   grid-area: item-2;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* הצמדת הטקסט לתחילת הפרטים */
-  align-items: flex-end; /* הצמדת הטקסט לימין */
+  justify-content: flex-start;
+  align-items: flex-end; 
 }
 
 .item-3 {
   grid-area: item-3;
   display: flex;
   flex-direction: column;
-  align-items: flex-end; /* הצמדת הכותרת והספרים לימין */
+  align-items: flex-end; 
 }
 
 .file-not-found{
@@ -141,10 +142,10 @@ flex-direction: row-reverse;
 #audio-cover-image {
   display: block;
   margin: 15vh auto 1vh;
-  width: 50vw; /* קביעת רוחב קבוע */
-  height: 50vh; /* קביעת גובה קבוע */
-  max-width: 25vw; /* גבול מקסימלי לרוחב */
-  border-radius: 1rem; /* עיגול קצוות */
+  width: 50vw; 
+  height: 50vh;
+  max-width: 25vw; 
+  border-radius: 1rem; 
 }
 
 .image-container {
@@ -167,14 +168,14 @@ flex-direction: row-reverse;
 
 .overlay-svg {
   position: absolute;
-  top: 1vh; /* מרחק מהחלק העליון */
-  left: 6rem; /* מרחק מהחלק השמאלי */
+  top: 1vh;
+  left: 6rem;
   z-index: 1;
-  pointer-events: none; /* כדי שה-SVG לא יחסום לחיצות */
+  pointer-events: none; 
 }
 
 
-/* הצגת מסמך */
+
 .item-1 p{
   text-align: center;
 }
@@ -191,6 +192,11 @@ flex-direction: row-reverse;
 }
 
 .chip-container {
+  width: 20vw;
+  background-color: white; 
+  direction: rtl;
+  white-space: nowrap;
+  text-align: center;
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -203,14 +209,14 @@ mat-chip-row {
   align-items: center;
   justify-content: center;
   vertical-align: middle;
-  margin: 0 5px;
+  margin: 0 0.1rem;
   position: relative;
   box-sizing: border-box;
-  padding: 4px 8px; /* להוסיף רווחים פנימיים */
+  padding: 1rem 0.1rem; 
 }
 
 .mat-mdc-standard-chip .mdc-evolution-chip__text-label {
-  margin: 0; /* לוודא שאין מרווחים נוספים */
+  margin: 0; 
   padding: 0;
 }
 
@@ -235,54 +241,29 @@ input {
 
 /* עיצוב פס גלילה */
 .chip-container::-webkit-scrollbar {
-  height: 6px; /* עובי הפס גלילה */
+  height: 0.5vh; 
 }
 
 .chip-container::-webkit-scrollbar-track {
-  background: #f1f1f1; /* צבע הרקע של פס הגלילה */
-  border-radius: 10px;
+  background: #f1f1f1; 
 }
 
 .chip-container::-webkit-scrollbar-thumb {
-  background: #888; /* צבע הידית של פס הגלילה */
-  border-radius: 10px;
+  background: #888; 
+  border-radius: 1rem;
 }
 
 .chip-container::-webkit-scrollbar-thumb:hover {
-  background: #555; /* צבע הידית בעת ריחוף */
+  background: #555;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 strong{  direction: rtl;
-  text-align: right;}
-.date-picker-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  max-width: 300px;
-  margin: auto;
+  text-align: right;
 }
-/* mat-form-field {
-  width: 100%;
-} */
-
-
-
 
 mat-form-field {
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
 }
 section {
   display: table;
@@ -319,32 +300,17 @@ section {
   display: table;
 }
 
-.example-label {
-  display: table-cell;
-  font-size: 14px;
-  margin-left: 8px;
-  min-width: 120px;
-}
-
 .example-button-row {
   display: table-cell;
-  max-width: 600px;
+  max-width: 6vw;
 }
 
 .example-button-row .mat-mdc-button-base {
-  margin: 8px 8px 8px 0;
+  margin: 1rem 1rem 0.1rem 0;
 }
 
-.example-flex-container {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
 
-.example-button-container {
-  display: flex;
-  justify-content: center;
-  width: 140px;
+
 }
 
 .calender{width: 20vw;}

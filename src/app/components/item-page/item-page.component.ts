@@ -72,6 +72,7 @@ export class ItemPageComponent implements OnInit {
   public startDate: Date | null = null;
   public endDate: Date | null = null;
   dateRange: DateRange<Date> | null = null;
+  public isHeaderDisplayed = false;
   readonly addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   announcer = inject(LiveAnnouncer); // שימוש ב-inject להזרקת ה-LiveAnnouncer
@@ -109,24 +110,20 @@ export class ItemPageComponent implements OnInit {
     }
     this.cdr.detectChanges();
   }
-
-  // עדכון תאריך התחלה
-  onStartDateChange(event: MatDatepickerInputEvent<Date>) {
-    // נוודא שתאריך הסיום לא לפני תאריך ההתחלה
-    if (this.startDate && this.endDate && this.endDate < this.startDate) {
-      this.endDate = null; // מאפס את תאריך הסיום אם הוא לפני תאריך ההתחלה
-    }
-  }
-
+// borrowItem(){
+//   עדכון תאריך התחלה
+//   onStartDateChange(event: MatDatepickerInputEvent<Date>) {
+//     // נוודא שתאריך הסיום לא לפני תאריך ההתחלה
+//     if (this.startDate && this.endDate && this.endDate < this.startDate) {
+//       this.endDate = null; // מאפס את תאריך הסיום אם הוא לפני תאריך ההתחלה
+//     }}
+//   }
   // עדכון תאריך סיום
   onEndDateChange(event: MatDatepickerInputEvent<Date>) {
     // לא מאפשר לבחור תאריך סיום לפני תאריך התחלה
     if (this.startDate && this.endDate && this.endDate < this.startDate) {
       this.endDate = null; // מאפס את תאריך הסיום אם הוא לפני תאריך ההתחלה
-    }
-  }
-
-
+    }}
   fetchItemDetails(itemId: string) {
     if (!itemId) {
       console.error('Invalid item ID');
@@ -164,6 +161,10 @@ export class ItemPageComponent implements OnInit {
       next: (response) => {
         console.log('Similar items received:', response);
         this.similarItems = response;
+      if(this.similarItems.length == 0)
+        this.isHeaderDisplayed = false;
+      else
+        this.isHeaderDisplayed = true;
         // סימון שהמידע השתנה ויש לעדכן את התצוגה
         this.cdr.markForCheck();
       },
@@ -204,8 +205,8 @@ export class ItemPageComponent implements OnInit {
     } else if (fileType.includes('pdf') || fileType.includes('ספר דיגיטלי') || fileType.includes('digitalBook')) {
       this.clearPreviewsExcept('ספר דיגיטלי');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
-    } else if (fileType.includes('ספר להשאלה') || fileType.includes('physicalBook')) {
-      this.clearPreviewsExcept('ספר להשאלה');
+    }else if (fileType.includes('ספר פיזי') || fileType.includes('physicalBook')) {
+      this.clearPreviewsExcept('ספר פיזי');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
     } else {
       console.error('Unknown file type:', fileType);
@@ -214,7 +215,7 @@ export class ItemPageComponent implements OnInit {
     console.log('Cover image URL:', this.item?.coverImage);
   }
 
-  clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'ספר דיגיטלי' | 'ספר להשאלה' | 'שיר') {
+  clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'ספר דיגיטלי' | 'ספר פיזי' | 'שיר') {
     this.isPoster = type === 'כרזה';
     this.isWorksheet = type === 'דף עבודה';
     this.isPainting = type === 'איור';
@@ -223,7 +224,7 @@ export class ItemPageComponent implements OnInit {
     this.isVideo = type === 'סרטון';
     this.isDocument = type === 'מערך';
     this.digitalBook = type === 'ספר דיגיטלי';
-    this.physicalBook = type === 'ספר להשאלה';
+    this.physicalBook = type === 'ספר פיזי';
   }
 
   navigateToItem(itemId: string) {
@@ -316,7 +317,6 @@ export class ItemPageComponent implements OnInit {
       alert('תאריך ההתחלה חייב להיות מאוחר או שווה להיום!');
       this.startDate = null; // איפוס התאריך
     }
-
     if (this.endDate && this.endDate > new Date(today.setFullYear(today.getFullYear() + 1))) {
       alert('תאריך הסיום לא יכול להיות רחוק יותר משנה מהתאריך הנוכחי!');
       this.endDate = null; // איפוס התאריך
@@ -394,4 +394,3 @@ export class ItemPageComponent implements OnInit {
       data: { message },
     });
   }}
-

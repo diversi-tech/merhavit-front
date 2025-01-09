@@ -27,7 +27,7 @@
       <small>שדה חובה</small>
     </div>
 
-    <label for="idNumber">תעודת זהות</label>
+    <!-- <label for="idNumber">תעודת זהות</label>
     <input formControlName="idNumber" type="text" placeholder="123456789" />
     <div
       *ngIf="registrationForm.get('idNumber')?.touched && registrationForm.get('idNumber')?.invalid"
@@ -42,6 +42,17 @@
       <small *ngIf="registrationForm.get('idNumber')?.errors?.['maxlength']">
         ת.ז חייבת לכלול בדיוק 9 תווים
       </small>
+    </div> -->
+
+    <div>
+      <label for="idNumber">תעודת זהות:</label>
+      <input id="idNumber" formControlName="idNumber" />
+      <div *ngIf="idNumber?.hasError('required') && idNumber?.touched">
+        תעודת זהות היא שדה חובה.
+      </div>
+      <div *ngIf="idNumber?.hasError('invalidId') && idNumber?.touched">
+        תעודת זהות אינה תקינה.
+      </div>
     </div>
 
     <label for="address">כתובת</label>
@@ -134,16 +145,7 @@
           {{ class.name }}
         </option>
       </select>
-      <!-- <select
-        id="class"
-        formControlName="class"
-        [disabled]="classes.length === 0"
-      >
-        <option *ngIf="classes.length === 0" disabled>אין כיתה זמינה</option>
-        <option *ngFor="let class of classes" [value]="class._id">
-          {{ class.name }}
-        </option>
-      </select> -->
+    
     </div>
 
     <div>
@@ -175,18 +177,7 @@
 
     <div>
       <label for="seminar">סמינר</label>
-      <!-- <select
-        id="seminar"
-        formControlName="seminar"
-        [disabled]="seminaries.length === 0"
-      >
-        <option *ngIf="seminaries.length === 0" disabled>
-          אין סמינר זמין
-        </option>
-        <option *ngFor="let seminary of seminaries" [value]="seminary._id">
-          {{ seminary.name }}
-        </option>
-      </select> -->
+ 
       <select id="seminar" formControlName="seminar">
         <option *ngIf="seminaries.length === 0" disabled>
           אין סמינר זמין
