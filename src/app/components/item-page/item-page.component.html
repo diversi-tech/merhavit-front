@@ -54,32 +54,34 @@
     
  
       <div class="calender">
-        <mat-form-field appearance="fill">
-          <mat-label>תאריך התחלה</mat-label>
-          <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" (dateChange)="validateDates()" />
-          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-          <mat-datepicker #startPicker></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>תאריך סיום</mat-label>
-          <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" (dateChange)="validateDates()" />
-          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-          <mat-datepicker #endPicker></mat-datepicker>
-        </mat-form-field>
-      </div>
-        <!-- הודעת שגיאה -->
-        <div *ngIf="range.controls.start.errors?.['matDatepickerParse']">
-          <mat-error>תאריך התחלה לא תקין</mat-error>
-        </div>
-        <div *ngIf="range.controls.end.errors?.['matDatepickerParse']">
-          <mat-error>תאריך סיום לא תקין</mat-error>
-        </div>
         <!-- כפתור להזמנה -->
         <section>
           <div class="example-button-row">
             <button mat-button>להזמנה</button>
           </div>
         </section>
+        <mat-form-field appearance="fill">
+          <mat-label>תאריך סיום</mat-label>
+          <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" (dateChange)="validateDates()" />
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>תאריך התחלה</mat-label>
+          <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" (dateChange)="validateDates()" />
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+          <!-- הודעת שגיאה -->
+          <div *ngIf="range.controls.start.errors?.['matDatepickerParse']">
+            <mat-error>תאריך התחלה לא תקין</mat-error>
+          </div>
+          <div *ngIf="range.controls.end.errors?.['matDatepickerParse']">
+            <mat-error>תאריך סיום לא תקין</mat-error>
+          </div>
+
+      </div>
+      
 
   </div>
   <!-- פריטים דומים -->
