@@ -283,3 +283,32 @@ section {
   display: flex;
 }
 
+
+
+.subjects-wrapper {
+  display: flex;
+  justify-content: flex-start; /* מקם את כל התוכן בצד ימין */
+  align-items: center; /* לוודא שהכותרת והנושאים יהיו באותו גובה */
+}
+
+.subjects-wrapper p {
+  direction: rtl;
+  margin: 0 2vw 2vh 0;
+}
+
+.subjects-container {
+  display: flex; /* מציג את הנושאים בשורה אחת */
+  flex-wrap: wrap; /* אם יש יותר מדי נושאים, הם יעברו לשורה הבאה */
+}
+
+.subjects-design:not(:last-child)::before {
+  content: ','; /* פסיק אחרי כל נושא מלבד האחרון */
+  margin-left: 0.1vw;
+}
+
+.subjects-design {
+  margin-left: 0.1vw; /* קטנה את המרווח בין הנושאים */
+  margin-right: 0.1vw; /* קטנה את המרווח בין הנושאים */
+}
+
+

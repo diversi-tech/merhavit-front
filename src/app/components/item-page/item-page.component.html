@@ -34,20 +34,27 @@
   <!-- פרטי הפריט -->
   <div *ngIf="item" class="grid-item item-2 item-details">
     <h2>{{ item.title || '' }}</h2>
-    <p><strong>תאריך פרסום:</strong> {{ item.publicationDate || '' }}</p>
-    <p><strong>נושא:</strong> {{ item.subjects.join(', ') || '' }}</p>
-    <p><strong>גיל:</strong> {{ item.ages || '' }}</p>
-    <p><strong>רמה:</strong> {{ item.level || '' }}</p>
-    <p><strong>שפה:</strong> {{ item.language || '' }}</p>
-    <p><strong>שנת הוצאה לאור:</strong> {{ item.releaseYear || '' }}</p>
-    <p><strong>מחבר:</strong> {{ item.author || '' }}</p>
-    <p *ngIf="item.physicalBook==true"><strong>מיקום בסיפריה:</strong> {{ item.filePath || '' }}</p>
-    <p><strong>תיאור:</strong> {{ item.description || '' }}</p>
+    <p><strong>תאריך פרסום:</strong> {{ item.publicationDate || 'לא ידוע' }}</p>
+      <div class="subjects-wrapper"> 
+        <div class="subjects-container">
+          <p class="subjects-design" *ngFor="let subject of item.subjects">
+            {{ getOptionNameById(subject, 'subjects') }}
+          </p>
+        </div>
+        <p><strong>נושא:</strong></p>
+      </div>
+      <p><strong>גיל:</strong> {{ item.ages || 'לא ידוע' }}</p>
+    <p><strong>רמה:</strong> {{ item.level || 'לא ידוע' }}</p>
+    <p><strong>שפה:</strong> {{ item.language || 'לא ידוע' }}</p>
+    <p><strong>שנת הוצאה לאור:</strong> {{ item.releaseYear || 'לא ידוע' }}</p>
+    <p><strong>מחבר:</strong> {{ item.author || 'לא ידוע' }}</p>
+    <p *ngIf="item.physicalBook==true"><strong>מיקום בסיפריה:</strong> {{ item.filePath || 'לא ידוע' }}</p>
+    <p><strong>תיאור:</strong> {{ item.description || 'לא ידוע' }}</p>
     <!-- הצגת התגיות -->
      <section>
           <div class="chip-container">
             <mat-chip-row *ngFor="let keyword of tags()">
-              {{ keyword }}
+              {{ getOptionNameById(keyword, 'tags') }}
             </mat-chip-row>
           </div>
     </section>

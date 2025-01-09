@@ -8,37 +8,38 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { COMMA, ENTER, I } from '@angular/cdk/keycodes';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { signal } from '@angular/core';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import {ChangeDetectionStrategy, model} from '@angular/core';
-import {MatCardModule} from '@angular/material/card';
-import {provideNativeDateAdapter} from '@angular/material/core';
-import {JsonPipe} from '@angular/common';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import { ChangeDetectionStrategy, model } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { JsonPipe } from '@angular/common';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatButtonModule} from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
+import { lastValueFrom, Observable } from 'rxjs';
 
 
 
 @Component({
   selector: 'app-item-page',
-  templateUrl:'./item-page.component.html', //'./item-page.component.html',
+  templateUrl: './item-page.component.html', //'./item-page.component.html',
   styleUrls: ['./item-page.component.css'],
   standalone: true,
   providers: [provideNativeDateAdapter()],
-  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule,MatCardModule, MatFormFieldModule,
-    FormsModule, ReactiveFormsModule, JsonPipe, MatDatepickerModule,MatInputModule,MatNativeDateModule,
-     MatButtonModule, MatDividerModule, ], // ייבוא המודולים
+  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule, MatCardModule, MatFormFieldModule,
+    FormsModule, ReactiveFormsModule, JsonPipe, MatDatepickerModule, MatInputModule, MatNativeDateModule,
+    MatButtonModule, MatDividerModule,], // ייבוא המודולים
   changeDetection: ChangeDetectionStrategy.OnPush,
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class ItemPageComponent implements OnInit {
   item: Item | null = null;
@@ -56,6 +57,7 @@ export class ItemPageComponent implements OnInit {
   inputValue: string = '';
   startDate: Date | null = null;
   endDate: Date | null = null;
+  allOptions: any[] = []; // שמירת כל האפשרויות
   public isHeaderDisplayed = false;
   readonly addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
@@ -68,6 +70,36 @@ export class ItemPageComponent implements OnInit {
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
+  multipleChoiceFields: { //מפה לשמירת המשתנים לכל שדה שיש בו בחירה מרובה מתוך רשימה
+    [key: string]: {
+      Ctrl: FormControl<string | null | any>;
+      optionSelected: string[] | any[];
+      allOption: string[] | any[];
+      filteredOption$: Observable<string[] | any[]> | null | undefined;
+    };
+  } = {
+      'classes': {
+        Ctrl: new FormControl(''),
+        optionSelected: [] as string[],
+        allOption: [],
+        filteredOption$: null as Observable<string[]> | null
+      },
+      'subjects': {
+        Ctrl: new FormControl(''),
+        optionSelected: [] as string[],
+        allOption: [],
+        // ["סבלנות","מרחביות","סטודיו","מקצועי","הר געש","פסח","מדעים","עונות השנה","מעבדות לחרות"
+        //   ,"גיל ההתבגרות","ואהבת לרעך כמוך","עבודת המידות","חסד","נתינה","הפרפר והגולם","מתמטיקה","גאוגרפיה",
+        // "גשם","חורף","צונאמי","גדולי ישראל"],
+        filteredOption$: null as Observable<string[]> | null
+      },
+      'tags': {
+        Ctrl: new FormControl(''),
+        optionSelected: [],
+        allOption: [''],
+        filteredOption$: null as Observable<[]> | null
+      }
+    }
 
 
   constructor(
@@ -77,69 +109,82 @@ export class ItemPageComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog // הוספת MatDialog
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-  const itemId = this.route.snapshot.paramMap.get('id');
-  if (itemId) {
-    this.fetchItemDetails(itemId);
-    this.fetchSimilarItems(itemId);
-    this.fetchTagsFromServer(itemId); // טעינת התגיות מהשרת
-  } else {
-    console.error('Item ID not found in route');
+    const itemId = this.route.snapshot.paramMap.get('id');
+    if (itemId) {
+      this.fetchItemDetails(itemId);
+      this.fetchSimilarItems(itemId);
+      this.fetchTagsFromServer(itemId); // טעינת התגיות מהשרת
+      const requests: Promise<void>[] = Object.keys(this.multipleChoiceFields).map((key) => {
+        return this.getfromServer(`/${this.createPath(key)}`, key);
+      })
+    } else {
+      console.error('Item ID not found in route');
+    }
+    this.cdr.detectChanges();
   }
-  this.cdr.detectChanges();
-}
-borrowItem(){}
-fetchItemDetails(itemId: string) {
-  if (!itemId) {
-    console.error('Invalid item ID');
-    return;
+  createPath(key: string): string {
+    console.log("hi");
+    if (key == 'tags')
+      return 'tags/getAll'
+    else if (key == 'subjects')
+      return 'subjects/getAll'
+    else
+      return key
+  }
+  
+  borrowItem() { }
+  fetchItemDetails(itemId: string) {
+    if (!itemId) {
+      console.error('Invalid item ID');
+      return;
+    }
+
+    console.log('Fetching item details for ID:', itemId);
+    this.apiService.Read(`/item-page/${itemId}`).subscribe({
+      next: (response) => {
+        console.log('Item details received:', response);
+        if (!Array.isArray(response.tags)) {
+          response.tags = [];
+        }
+        this.item = response;
+        // כאן נעדכן את ה-tags מתוך פרטי הפריט
+        this.tags.set(response.tags || []);
+        this.setPreviewUrl(response);
+        // סימון שהמידע השתנה ויש לעדכן את התצוגה
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error fetching item details', err);
+      },
+    });
   }
 
-  console.log('Fetching item details for ID:', itemId);
-  this.apiService.Read(`/item-page/${itemId}`).subscribe({
-    next: (response) => {
-      console.log('Item details received:', response);
-      if (!Array.isArray(response.tags)) {
-        response.tags = [];
-      }
-      this.item = response;
-      // כאן נעדכן את ה-tags מתוך פרטי הפריט
-      this.tags.set(response.tags || []);
-      this.setPreviewUrl(response);
-       // סימון שהמידע השתנה ויש לעדכן את התצוגה
-       this.cdr.markForCheck();
-    },
-    error: (err) => {
-      console.error('Error fetching item details', err);
-    },
-  });
-}
+  fetchSimilarItems(itemId: string) {
+    if (!itemId) {
+      console.error('Invalid item ID');
+      return;
+    }
 
-fetchSimilarItems(itemId: string) {
-  if (!itemId) {
-    console.error('Invalid item ID');
-    return;
+    console.log('Fetching similar items for ID:', itemId);
+    this.apiService.Read(`/item-page/${itemId}/similar`).subscribe({
+      next: (response) => {
+        console.log('Similar items received:', response);
+        this.similarItems = response;
+        if (this.similarItems.length == 0)
+          this.isHeaderDisplayed = false;
+        else
+          this.isHeaderDisplayed = true;
+        // סימון שהמידע השתנה ויש לעדכן את התצוגה
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error fetching similar items', err);
+      },
+    });
   }
-
-  console.log('Fetching similar items for ID:', itemId);
-  this.apiService.Read(`/item-page/${itemId}/similar`).subscribe({
-    next: (response) => {
-      console.log('Similar items received:', response);
-      this.similarItems = response;
-      if(this.similarItems.length == 0)
-        this.isHeaderDisplayed = false;
-      else
-        this.isHeaderDisplayed = true;
-       // סימון שהמידע השתנה ויש לעדכן את התצוגה
-       this.cdr.markForCheck();
-    },
-    error: (err) => {
-      console.error('Error fetching similar items', err);
-    },
-  });
-}
 
   setPreviewUrl(item: Item) {
     const fileType = item?.type?.toLowerCase() ?? '';
@@ -172,7 +217,7 @@ fetchSimilarItems(itemId: string) {
     } else if (fileType.includes('pdf') || fileType.includes('ספר דיגיטלי') || fileType.includes('digitalBook')) {
       this.clearPreviewsExcept('ספר דיגיטלי');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
-    }else if (fileType.includes('ספר פיזי') || fileType.includes('physicalBook')) {
+    } else if (fileType.includes('ספר פיזי') || fileType.includes('physicalBook')) {
       this.clearPreviewsExcept('ספר פיזי');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
     } else {
@@ -180,7 +225,7 @@ fetchSimilarItems(itemId: string) {
       this.previewUrl = null;
     }
     console.log('Cover image URL:', this.item?.coverImage);
-  }  
+  }
 
   clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'ספר דיגיטלי' | 'ספר פיזי' | 'שיר') {
     this.isPoster = type === 'כרזה';
@@ -215,7 +260,7 @@ fetchSimilarItems(itemId: string) {
           console.error('Unexpected response format:', response);
           this.reactiveKeywords.set([]); // מוודא שאין שגיאה בקונסול
         }
-         // סימון שהמידע השתנה ויש לעדכן את התצוגה
+        // סימון שהמידע השתנה ויש לעדכן את התצוגה
         this.cdr.markForCheck();
       },
       error: (err) => {
@@ -224,49 +269,49 @@ fetchSimilarItems(itemId: string) {
       },
     });
   }
-  
-  
+
+
 
   addReactiveKeyword(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
-  
+
     if (value) {
       this.reactiveKeywords.update((keywords) => {
         const updatedKeywords = [...keywords, value];
-  
+
         // שליחת התגיות המעודכנות לשרת
         this.updateTagsOnServer(updatedKeywords);
-  
+
         return updatedKeywords;
       });
-  
+
       // ניקוי שדה הקלט
       event.chipInput!.clear();
     }
   }
-  
-  
+
+
   removeReactiveKeyword(keyword: string): void {
     this.reactiveKeywords.update((keywords) => {
       const updatedKeywords = keywords.filter((tag) => tag !== keyword);
-  
+
       // עדכון התגיות בשרת
       this.updateTagsOnServer(updatedKeywords);
-  
+
       return updatedKeywords;
     });
-  
+
     this.announcer.announce(`Removed tag: ${keyword}`);
   }
-  
-  
-  
+
+
+
   updateTagsOnServer(tags: string[]): void {
     if (!this.item?._id) {
       console.error('Item ID is missing. Cannot update tags.');
       return;
     }
-  
+
     const url = `/item-page/${this.item._id}/tags`;
     this.apiService.Put(url, { tags }).subscribe({
       next: () => {
@@ -289,5 +334,65 @@ fetchSimilarItems(itemId: string) {
       this.endDate = null; // איפוס התאריך
     }
   }
-  
+
+  // async getFromServer(path: string): Promise<void> {
+  //   try {
+  //     const response = await lastValueFrom(this.apiService.Read(path));
+  //     console.log('Response from server:', response); // לוג של התשובה
+  //     if (Array.isArray(response)) {
+  //       this.allOptions = response;
+  //     } else {
+  //       this.allOptions = response.data || [];
+  //     }
+  //   } catch (err) {
+  //     console.error(`Error fetching options from ${path}:`, err);
+  //   }
+  // }
+
+
+
+
+  // getOptionById(optionId: string): any | undefined {
+  //   const option = this.allOptions.find(opt => opt._id === optionId);
+  //   if (!option) {
+  //     console.warn(`Option with ID ${optionId} not found`);
+  //   }
+  //   return option;
+  // }
+
+
+
+  //   //קבלת שם התגית לפי ה_id שלה
+  //   getOptionNameById(optionId: string) {
+  //     return this.getOptionById(optionId)?.name
+  //   }
+  getfromServer(path: string, fieldKey: string): Promise<void> {
+    return lastValueFrom(this.apiService.Read(path)).then((response) => {
+      if (Array.isArray(response)) {
+        this.multipleChoiceFields[fieldKey].allOption = response;
+      } else {
+        this.multipleChoiceFields[fieldKey].allOption = response.data || [];
+      }
+    }).catch((err) => {
+      console.error(`Error fetching ${fieldKey}`, err);
+      return
+    });
+  }
+
+
+
+  //קבלת התגית לפי ה_id שלה
+  getOptionById(optionId: string, fieldKey: string) {
+    console.log("OptionById", this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
+
+    return this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId)
+  }
+
+
+  //קבלת שם התגית לפי ה_id שלה
+  getOptionNameById(optionId: string, fieldKey: string) {
+    return this.getOptionById(optionId, fieldKey)?.name
+  }
+
+
 }
