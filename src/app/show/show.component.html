@@ -6,6 +6,7 @@
   <div class="card-container" *ngIf="viewMode === 'grid'">
     <mat-card *ngFor="let item of items" (click)="navigateToItemPage(item)" class="item-card">
       <img [src]="item.coverImage || 'image/file-not-found'" alt="Item Image" class="item-image" />
+      <div *ngIf="isNewItem(item)" class="new-label">חדש</div>
       <div class="item-card-content">
         <div class="actions" *ngIf="userType === 'Student'">
           <button class="action-button favorite" [ngClass]="{
@@ -31,7 +32,6 @@
             הזמנה
           </button>
         </div>
-		<div *ngIf="isNewItem(item)" class="new-label">חדש</div>
         <!-- אייקון מבוסס סוג -->
         <ng-container *ngIf="item.type">
           <!-- אייקון תמונה -->
@@ -82,7 +82,6 @@
       </div>
     </mat-card>
   </div>
-  <!-- ---------------------------------------------------- -->
   <!-- הצגת כל פריט כרשימה -->
   <div class="list-container" *ngIf="viewMode === 'list'">
     <div *ngFor="let item of items" class="item-row" (click)="navigateToItemPage(item)">
@@ -155,9 +154,7 @@
             <span class="meta-label">מחבר: </span>
             <span class="meta-value">{{ item.Author }}</span> |
             <span class="meta-label">תאריך העלאה:</span>
-            <span class="meta-value">{{
-              item.publicationDate | date : "dd/MM/yyyy"
-              }}</span>
+            <span class="meta-value">{{ item.publicationDate | date: 'dd/MM/yyyy' }}</span>
           </div>
         </div>
       </div>
@@ -193,7 +190,7 @@
           " (click)="downloadResource(item); $event.stopPropagation()">
           <i class="fas fa-download"></i>
         </button>
-        <button class="action-button order" *ngIf="item.type === 'ספר פיזי'" (click)="navigateToItemPage(item)">
+        <button class="action-button order" *ngIf="item.type === 'ספר פיזי'" (click)="navigateToItemPage(item)" [class.disabled]="(userType=='Student' && item.approved=='לא') ">
           הזמנה
         </button>
       </div>

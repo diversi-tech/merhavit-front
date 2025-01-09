@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { COMMA, ENTER, I } from '@angular/cdk/keycodes';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { signal } from '@angular/core';
@@ -32,6 +32,8 @@ import { jwtDecode } from 'jwt-decode';
 import { from } from 'rxjs';
 import { DialogComponent } from '../dialog/dialog.component';
 import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
+import { lastValueFrom, Observable } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -66,6 +68,7 @@ export class ItemPageComponent implements OnInit {
   digitalBook = false;
   physicalBook = false;
   isDocument = false; // ניהול הצגת המסמך
+  text = false;
   inputValue: string = '';
   startDate!: Date; // משתנה לתאריך התחלה
   endDate!: Date;   // משתנה לתאריך סיום
@@ -75,6 +78,7 @@ export class ItemPageComponent implements OnInit {
   borrowRequests: BorrowRequests[] = [];
   userId: string = '';
   dateRange: DateRange<Date> | null = null;
+  allOptions: any[] = []; // שמירת כל האפשרויות
   public isHeaderDisplayed = false;
   readonly addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
@@ -87,6 +91,36 @@ export class ItemPageComponent implements OnInit {
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
+  multipleChoiceFields: { //מפה לשמירת המשתנים לכל שדה שיש בו בחירה מרובה מתוך רשימה
+    [key: string]: {
+      Ctrl: FormControl<string | null | any>;
+      optionSelected: string[] | any[];
+      allOption: string[] | any[];
+      filteredOption$: Observable<string[] | any[]> | null | undefined;
+    };
+  } = {
+      'classes': {
+        Ctrl: new FormControl(''),
+        optionSelected: [] as string[],
+        allOption: [],
+        filteredOption$: null as Observable<string[]> | null
+      },
+      'subjects': {
+        Ctrl: new FormControl(''),
+        optionSelected: [] as string[],
+        allOption: [],
+        // ["סבלנות","מרחביות","סטודיו","מקצועי","הר געש","פסח","מדעים","עונות השנה","מעבדות לחרות"
+        //   ,"גיל ההתבגרות","ואהבת לרעך כמוך","עבודת המידות","חסד","נתינה","הפרפר והגולם","מתמטיקה","גאוגרפיה",
+        // "גשם","חורף","צונאמי","גדולי ישראל"],
+        filteredOption$: null as Observable<string[]> | null
+      },
+      'tags': {
+        Ctrl: new FormControl(''),
+        optionSelected: [],
+        allOption: [''],
+        filteredOption$: null as Observable<[]> | null
+      }
+    }
 
 
   constructor(
@@ -96,6 +130,7 @@ export class ItemPageComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog, // הוספת MatDialog
+    private _snackBar: MatSnackBar
     private errordialog: MatDialog
   ) { const today = new Date();
     this.minDate = new Date(today); // תאריך מינימלי הוא היום
@@ -109,11 +144,24 @@ export class ItemPageComponent implements OnInit {
       this.fetchItemDetails(itemId);
       this.fetchSimilarItems(itemId);
       this.fetchTagsFromServer(itemId); // טעינת התגיות מהשרת
+      const requests: Promise<void>[] = Object.keys(this.multipleChoiceFields).map((key) => {
+        return this.getfromServer(`/${this.createPath(key)}`, key);
+      })
     } else {
       console.error('Item ID not found in route');
     }
     this.cdr.detectChanges();
   }
+  createPath(key: string): string {
+    console.log("hi");
+    if (key == 'tags')
+      return 'tags/getAll'
+    else if (key == 'subjects')
+      return 'subjects/getAll'
+    else
+      return key
+  }
+
 
   
   // עדכון תאריך סיום
@@ -159,10 +207,10 @@ export class ItemPageComponent implements OnInit {
       next: (response) => {
         console.log('Similar items received:', response);
         this.similarItems = response;
-      if(this.similarItems.length == 0)
-        this.isHeaderDisplayed = false;
-      else
-        this.isHeaderDisplayed = true;
+        if (this.similarItems.length == 0)
+          this.isHeaderDisplayed = false;
+        else
+          this.isHeaderDisplayed = true;
         // סימון שהמידע השתנה ויש לעדכן את התצוגה
         this.cdr.markForCheck();
       },
@@ -200,10 +248,13 @@ export class ItemPageComponent implements OnInit {
     } else if (fileType.includes('pdf') || fileType.includes('מערך')) {
       this.clearPreviewsExcept('מערך');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
+    } else if (fileType.includes('text') || fileType.includes('טקסט')) {
+      this.clearPreviewsExcept('טקסט');
+      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
     } else if (fileType.includes('pdf') || fileType.includes('ספר דיגיטלי') || fileType.includes('digitalBook')) {
       this.clearPreviewsExcept('ספר דיגיטלי');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
-    }else if (fileType.includes('ספר פיזי') || fileType.includes('physicalBook')) {
+    } else if (fileType.includes('ספר פיזי') || fileType.includes('physicalBook')) {
       this.clearPreviewsExcept('ספר פיזי');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
     } else {
@@ -213,7 +264,7 @@ export class ItemPageComponent implements OnInit {
     console.log('Cover image URL:', this.item?.coverImage);
   }
 
-  clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'ספר דיגיטלי' | 'ספר פיזי' | 'שיר') {
+  clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'טקסט' | 'ספר דיגיטלי' | 'ספר פיזי' | 'שיר') {
     this.isPoster = type === 'כרזה';
     this.isWorksheet = type === 'דף עבודה';
     this.isPainting = type === 'איור';
@@ -221,8 +272,72 @@ export class ItemPageComponent implements OnInit {
     this.isAudio = type === 'שיר';
     this.isVideo = type === 'סרטון';
     this.isDocument = type === 'מערך';
+    this.text = type === 'טקסט';
     this.digitalBook = type === 'ספר דיגיטלי';
     this.physicalBook = type === 'ספר פיזי';
+  }
+
+    downloadResource(item: Item): void {
+    if (!item._id) {
+      console.error('Item ID is missing.');
+      // alert('לא ניתן להוריד את הקובץ. חסר ID');
+      this._snackBar.open('לא ניתן להוריד את הקובץ. חסר ID', 'סגור', {
+        duration: 3000,
+        panelClass: ['error-snackbar'],
+        direction: 'rtl',
+      });
+      return;
+    }
+    if (!item.filePath) {
+      console.error('File path is missing.');
+      // alert('לא ניתן להוריד את הקובץ. חסר ניתוב');
+      this._snackBar.open('לא ניתן להוריד את הקובץ. חסר ניתוב', 'סגור', {
+        duration: 3000,
+        panelClass: ['error-snackbar'],
+        direction: 'rtl',
+      });
+      return;
+    }
+    this.apiService
+      .Read(
+        `/EducationalResource/presigned-url?filePath=${encodeURIComponent(
+          item.filePath
+        )}`
+      )
+      .subscribe({
+        next: (response) => {
+          const presignedUrl = response.url;
+          if (response && response.url) {
+            const downloadLink = document.createElement('a');
+            downloadLink.href = response.url;
+            downloadLink.download = item.title; // אפשר להוסיף כאן סיומת אם יש צורך
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+          } else {
+            console.error('Invalid response for download URL.');
+            // alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
+            this._snackBar.open(
+              'לא ניתן להוריד את הקובץ. אנא נסה שוב.',
+              'סגור',
+              {
+                duration: 3000,
+                panelClass: ['error-snackbar'],
+                direction: 'rtl',
+              }
+            );
+          }
+        },
+        error: (err) => {
+          console.error('Error fetching presigned URL:', err);
+          // alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
+          this._snackBar.open('שגיאה בהורדת הקובץ. אנא נסה שוב.', 'סגור', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+            direction: 'rtl',
+          });
+        },
+      });
   }
 
   navigateToItem(itemId: string) {
@@ -309,18 +424,6 @@ export class ItemPageComponent implements OnInit {
     });
   }
 
-  // validateDates(): void {
-  //   const today = new Date();
-  //   if (this.startDate && this.startDate < today) {
-  //     alert('תאריך ההתחלה חייב להיות מאוחר או שווה להיום!');
-  //     this.startDate = null; // איפוס התאריך
-  //   }
-  //   if (this.endDate && this.endDate > new Date(today.setFullYear(today.getFullYear() + 1))) {
-  //     alert('תאריך הסיום לא יכול להיות רחוק יותר משנה מהתאריך הנוכחי!');
-  //     this.endDate = null; // איפוס התאריך
-  //   }
-  // }
-
   onDateRangeChange() {
     if (this.dateRange) {
       const startDate = this.dateRange.start;
@@ -330,10 +433,6 @@ export class ItemPageComponent implements OnInit {
       console.log('תאריך סיום:', endDate);
     }
   }
-  // const newClass = {
-  //   name: this.newClassName,
-  //   createdByIdNumber: createdByIdNumber, // מוסיף את ה-ID שנמצא ב-LocalStorage
-  // };
 
 
   onBorrow() {
@@ -391,11 +490,39 @@ export class ItemPageComponent implements OnInit {
   });
     }
     
-  
-  validateDateRange() {
-    if (this.startDate && (this.startDate < this.minDate || this.startDate > this.maxDate)) {
-      this.showDialog('Invalid start date');
-      // this.minDate = null;
+
+
+
+
+  getfromServer(path: string, fieldKey: string): Promise<void> {
+    return lastValueFrom(this.apiService.Read(path)).then((response) => {
+      if (Array.isArray(response)) {
+        this.multipleChoiceFields[fieldKey].allOption = response;
+      } else {
+        this.multipleChoiceFields[fieldKey].allOption = response.data || [];
+      }
+    }).catch((err) => {
+      console.error(`Error fetching ${fieldKey}`, err);
+      return
+    });
+  }
+
+
+
+  //קבלת התגית לפי ה_id שלה
+  getOptionById(optionId: string, fieldKey: string) {
+    console.log("OptionById", this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
+
+    return this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId)
+  }
+
+
+  //קבלת שם התגית לפי ה_id שלה
+  getOptionNameById(optionId: string, fieldKey: string) {
+    return this.getOptionById(optionId, fieldKey)?.name
+  }
+
+
     }
 
     if (this.endDate && (this.endDate < this.minDate || this.endDate > this.maxDate)) {
