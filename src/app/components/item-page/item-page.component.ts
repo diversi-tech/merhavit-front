@@ -1,3 +1,4 @@
+import { error } from 'node:console';
 import { Component, OnInit, inject } from '@angular/core';
 import { ApiService } from '../../api.service';
 import { Item } from '../interfaces/item-page.interface';
@@ -30,6 +31,7 @@ import { DateRange } from '@angular/material/datepicker';
 import { jwtDecode } from 'jwt-decode';
 import { from } from 'rxjs';
 import { DialogComponent } from '../dialog/dialog.component';
+import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
 
 
 
@@ -65,12 +67,13 @@ export class ItemPageComponent implements OnInit {
   physicalBook = false;
   isDocument = false; // ניהול הצגת המסמך
   inputValue: string = '';
-  public maxDate: Date = new Date();
-  public minDate: Date = new Date();
+  startDate!: Date; // משתנה לתאריך התחלה
+  endDate!: Date;   // משתנה לתאריך סיום
+  minDate = new Date(); // לדוגמה, מינימום תאריך (אופציונלי)
+  maxDate = new Date(); 
+  maxdays=this.item!.loanValidity;
   borrowRequests: BorrowRequests[] = [];
   userId: string = '';
-  public startDate: Date | null = null;
-  public endDate: Date | null = null;
   dateRange: DateRange<Date> | null = null;
   public isHeaderDisplayed = false;
   readonly addOnBlur = true;
@@ -92,7 +95,8 @@ export class ItemPageComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private dialog: MatDialog // הוספת MatDialog
+    private dialog: MatDialog, // הוספת MatDialog
+    private errordialog: MatDialog
   ) { const today = new Date();
     this.minDate = new Date(today); // תאריך מינימלי הוא היום
     this.maxDate = new Date(today); 
@@ -110,20 +114,14 @@ export class ItemPageComponent implements OnInit {
     }
     this.cdr.detectChanges();
   }
-// borrowItem(){
-//   עדכון תאריך התחלה
-//   onStartDateChange(event: MatDatepickerInputEvent<Date>) {
-//     // נוודא שתאריך הסיום לא לפני תאריך ההתחלה
-//     if (this.startDate && this.endDate && this.endDate < this.startDate) {
-//       this.endDate = null; // מאפס את תאריך הסיום אם הוא לפני תאריך ההתחלה
-//     }}
-//   }
+
+  
   // עדכון תאריך סיום
-  onEndDateChange(event: MatDatepickerInputEvent<Date>) {
-    // לא מאפשר לבחור תאריך סיום לפני תאריך התחלה
-    if (this.startDate && this.endDate && this.endDate < this.startDate) {
-      this.endDate = null; // מאפס את תאריך הסיום אם הוא לפני תאריך ההתחלה
-    }}
+  // onEndDateChange(event: MatDatepickerInputEvent<Date>) {
+  //   // לא מאפשר לבחור תאריך סיום לפני תאריך התחלה
+  //   if (this.startDate && this.endDate && this.endDate < this.startDate) {
+  //     this.endDate = null; // מאפס את תאריך הסיום אם הוא לפני תאריך ההתחלה
+  //   }}
   fetchItemDetails(itemId: string) {
     if (!itemId) {
       console.error('Invalid item ID');
@@ -311,17 +309,17 @@ export class ItemPageComponent implements OnInit {
     });
   }
 
-  validateDates(): void {
-    const today = new Date();
-    if (this.startDate && this.startDate < today) {
-      alert('תאריך ההתחלה חייב להיות מאוחר או שווה להיום!');
-      this.startDate = null; // איפוס התאריך
-    }
-    if (this.endDate && this.endDate > new Date(today.setFullYear(today.getFullYear() + 1))) {
-      alert('תאריך הסיום לא יכול להיות רחוק יותר משנה מהתאריך הנוכחי!');
-      this.endDate = null; // איפוס התאריך
-    }
-  }
+  // validateDates(): void {
+  //   const today = new Date();
+  //   if (this.startDate && this.startDate < today) {
+  //     alert('תאריך ההתחלה חייב להיות מאוחר או שווה להיום!');
+  //     this.startDate = null; // איפוס התאריך
+  //   }
+  //   if (this.endDate && this.endDate > new Date(today.setFullYear(today.getFullYear() + 1))) {
+  //     alert('תאריך הסיום לא יכול להיות רחוק יותר משנה מהתאריך הנוכחי!');
+  //     this.endDate = null; // איפוס התאריך
+  //   }
+  // }
 
   onDateRangeChange() {
     if (this.dateRange) {
@@ -355,39 +353,58 @@ export class ItemPageComponent implements OnInit {
       console.warn('Code is running on the server. Skipping token check.');
     }
 
-    
+    if (!this.startDate || !this.endDate) {
+      this.openErrorDialog();
+    } 
+
+    // if(this.endDate-this.startDate)
     const newClass = {
       resourceId: this.item?._id,
       studentId: this.userId,
-      fromDate: this.minDate,
-      toDate: this.maxDate
+      fromDate: this.startDate,
+      toDate: this.endDate
     }
     this.apiService
-      .Post('/borrowRequests/addBorrowRequest', newClass)
+      .Post('/borrowRequests', newClass)
       .subscribe({
         next: (response) => {
           console.log("responce of borrowRequests",response)
           this.borrowRequests.push({
             resourceId: response.insertedId,
             studentId: this.userId ,
-            fromDate:this.minDate, 
-            toDate:  this.maxDate, 
+            fromDate:this.startDate, 
+            toDate:  this.endDate, 
           });
 
         }
       });
+    
   }
+
+
+  openErrorDialog() {
+      const dialogRef = this.dialog.open(ErrorDialogComponent);
+    
+      
+  dialogRef.afterClosed().subscribe(() => {
+    console.log('הדיאלוג נסגר');
+  });
+    }
+    
+  
   validateDateRange() {
     if (this.startDate && (this.startDate < this.minDate || this.startDate > this.maxDate)) {
       this.showDialog('Invalid start date');
-      this.startDate = null;
+      // this.minDate = null;
     }
 
     if (this.endDate && (this.endDate < this.minDate || this.endDate > this.maxDate)) {
       this.showDialog('Invalid end date');
-      this.endDate = null;
+      // this.endDate = null;
     }
   }
+
+
 
   showDialog(message: string) {
     this.dialog.open(DialogComponent, {
