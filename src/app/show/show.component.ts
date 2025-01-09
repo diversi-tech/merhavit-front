@@ -67,7 +67,6 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
-    this.itemsService.typeFilter = 'all'; // עדכון הסינון ב-service
     this.itemsService.fetchItems(); // שליחת בקשה לשרת עם הסינון החדש
      // ביצוע הבדיקה בטעינת הדף
      this.subscription = this.itemsService.ifArrIsEmty$.subscribe((isEmpty) => {
