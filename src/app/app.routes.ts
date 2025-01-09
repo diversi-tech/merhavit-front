@@ -21,11 +21,14 @@ import { SubjectManagementComponent } from './components/Librarian/subject-manag
 import { ClassManagementComponent } from './components/Librarian/class-management';
 import { BorrowRequestManagementComponent } from './components/Librarian/borrowRequest';
 import { OrdersComponent } from './components/orders/orders.component';
+import { SearchBarComponent } from './components/search-bar/search-bar.component';
+import { TopIconsComponent } from './components/top-icons/top-icons.component';
+import { HeaderComponent } from './components/header/header.component';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'students', component: SearchComponent },
+  { path: 'students', component: HeaderComponent },
   { path: 'show-details', component: ItemsListComponent },
   { path: 'registration', component: RegistrationComponent },
   { path: 'personal-details', component: PersonalDetailsComponent },
@@ -40,7 +43,6 @@ export const routes: Routes = [
   { path: 'favorites', component: FavoritesComponent },
   { path: 'orders', component: OrdersComponent },
  
-
 
   { path: 'management', component: ManagementComponent,
     children: [

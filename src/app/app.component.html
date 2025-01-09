@@ -3,8 +3,11 @@
     <app-navigation-bar></app-navigation-bar>
   </div>
   <div class="main-container">
-    <div class="header" *ngIf="showSearchComponent">
+    <!-- <div class="header" *ngIf="showSearchComponent">
       <app-search ></app-search>
+    </div> -->
+    <div class="header" *ngIf="showHeaderComponent">
+      <app-header ></app-header>
     </div>
     <div class="content">
       <router-outlet></router-outlet>
