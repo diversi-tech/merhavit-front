@@ -178,7 +178,7 @@
   height: 5vw;
   width: 5vw;
   background-color: #F8F8F8;
-  border: 1px solid #ddd;
+  border: 0.5rem solid #ddd;
   font-size: 1.2rem;
   font-weight: bold;
   color: #555;
@@ -379,20 +379,13 @@ mat-icon {
   fill: #FFFF;
 }
 .item-image-list {
-  width: 100px;
-  height: 100px;
+  width: 10vw;
+  height: 10vh;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 1rem;
   position: relative;
 }
-.overlay-svg-list {
-  position: absolute;
-  top: 2vh;
-  left: 53.5vw;
-  width: 3rem;
-  height: 3rem;
-  fill: #fff;
-}
+
 .item-content {
   display: flex;
   flex: 1;
@@ -403,16 +396,7 @@ mat-icon {
 .item-details {
   flex: 1;
 }
-/* .item-title {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #007BFF;
-  margin-bottom: 0.3em;
-} */
-/* .item-title {
-  font-size: 1rem;
-  color: #666;
-} */
+
 .item-meta-card {
   font-size: 0.9rem;
   color: #FFFF;
@@ -457,9 +441,10 @@ mat-icon {
   color: white;
   object-fit: cover;
   padding: 0.1rem 0.1rem;
-  border-radius: 5px;
+  border-radius: 1rem;
+  text-align: center;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 0.8rem;
   z-index: 0;
 }
 
