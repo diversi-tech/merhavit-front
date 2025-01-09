@@ -20,6 +20,7 @@
       class="far fa-heart"
       style="color: #434343; font-size: 3vh; width: 2vw"
       [routerLink]="['/favorites']"
+    title="מועדפים"
     ></i>
 
     <!-- אייקון פעמון ריק (Font Awesome) -->
@@ -57,6 +58,7 @@
           <li (click)="onSelectFilter('שיר')">שירים</li>
           <li (click)="onSelectFilter('ספר דיגיטלי')">ספר דיגיטלי</li>
           <li (click)="onSelectFilter('ספר להשאלה')">ספר להשאלה</li>
+          <li (click)="onSelectFilter('טקסט')">טקסט</li>
         </ul>
       </div>
 
@@ -66,9 +68,9 @@
         class="fas fa-filter"
         style="color: #434343; font-size: 4vh; cursor: pointer"
       ></i>
-      <!-- <i (click)="toggleDetails()" class="fas fa-sliders-h" style="color:#000; font-size:4vh; cursor:pointer;"></i> -->
 
       <div class="filter-details-container" *ngIf="showDetails">
+        
         <div *ngIf="!isUserManagementComponent" class="filter-details-box">
           <!-- עמודה שנייה - צד שמאל -->
           <div class="filter-column">
@@ -90,7 +92,6 @@
             </div>
             <div class="filter-row">
               <label for="sku">מק"ט</label>
-              <!-- מה עושים במקט? -->
               <input id="sku" type="text" placeholder="מקט" [formControl]="searchControl"/>
             </div>
             <div class="filter-row">
@@ -109,8 +110,8 @@
               <input id="publisher" type="text" placeholder="מול" [formControl]="createdByControl" />
             </div>
             <div class="filter-row">
-              <label for="hebrew-year">שנת הוצאה עברי</label>
-              <input id="hebrew-year" type="text" placeholder="שנת הוצאה עברי" [formControl]="publicationDateControl" />
+              <label for="hebrew-year">גיל</label>
+              <input id="hebrew-year" type="text" placeholder="גיל" [formControl]="agesControl" />
             </div>
             <div class="filter-row">
               <label for="latin-year">שנת הוצאה לועזי</label>
@@ -118,7 +119,7 @@
             </div>
             <div class="filter-row">
               <label for="level">גיל/רמה</label>
-              <input id="level" type="text" placeholder="גיל/רמה" [formControl]="levelControl" />
+              <input id="level" type="text" placeholder="רמה" [formControl]="levelControl" />
             </div>
             <div class="filter-row">
               <label for="new-in-database">חדש במאגר</label>

@@ -90,7 +90,9 @@
 
 
 .grid-container {
-  display: grid;
+  /* display: grid; */
+display: flex;
+flex-direction: row-reverse;
   grid-template-areas: 
     "item-2 item-1"
     "item-3 item-3";

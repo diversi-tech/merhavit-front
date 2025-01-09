@@ -20,6 +20,7 @@ export class ItemsService {
   public limit: number = 10;
   public searchTerm: string = '';
   public typeFilter: string = '';
+  public type: string = '';
   public title: string = '';
   public  author: string = '';
   public borrowed: string = '';
@@ -163,20 +164,15 @@ export class ItemsService {
   fetchItems(page: number = 0,
     limit: number = 100): void {
     this.isFetching = true;
-    
   let params = new HttpParams()
-    // .set('page', this.page.toString())
-    // .set('limit', this.limit.toString());
-    console.log("************",page,limit);
-
   if (this.searchTerm) {
     params = params.set('searchTerm', this.searchTerm);
+    console.log("searchTerm", this.searchTerm);
   }
-    console.log("type in service", this.typeFilter);
 
-  if (this.typeFilter && this.typeFilter !== 'all') {
-      
+  if (this.typeFilter && this.typeFilter !== 'all') {   
     params = params.set('filterType', this.typeFilter);
+    console.log("filterType", this.typeFilter);
   }
     if (this.title) {
       params = params.set('title', this.title);
@@ -211,7 +207,6 @@ export class ItemsService {
     if (this.duration) {
       params = params.set('duration', this.duration);
     }
-  
     console.log("URL with parameters:", `/EducationalResource/getAll?${params.toString()}`);
     console.log("params",params)
     console.log("params.toString",params.toString)

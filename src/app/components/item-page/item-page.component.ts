@@ -14,31 +14,42 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { signal } from '@angular/core';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import {ChangeDetectionStrategy, model} from '@angular/core';
-import {MatCardModule} from '@angular/material/card';
-import {provideNativeDateAdapter} from '@angular/material/core';
-import {JsonPipe} from '@angular/common';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import { ChangeDetectionStrategy, model } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { JsonPipe } from '@angular/common';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatButtonModule} from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { DateRange } from '@angular/material/datepicker';
+import { jwtDecode } from 'jwt-decode';
+import { from } from 'rxjs';
+import { DialogComponent } from '../dialog/dialog.component';
 
 
 
+interface BorrowRequests {
+  resourceId: Object;
+  studentId: string;
+  fromDate: Date;
+  toDate: Date;
+}
 @Component({
   selector: 'app-item-page',
-  templateUrl:'./item-page.component.html', //'./item-page.component.html',
+  templateUrl: './item-page.component.html', //'./item-page.component.html',
   styleUrls: ['./item-page.component.css'],
   standalone: true,
   providers: [provideNativeDateAdapter()],
-  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule,MatCardModule, MatFormFieldModule,
-    FormsModule, ReactiveFormsModule, JsonPipe, MatDatepickerModule,MatInputModule,MatNativeDateModule,
-     MatButtonModule, MatDividerModule, ], // ייבוא המודולים
+  imports: [CommonModule, MatFormFieldModule, MatChipsModule, MatIconModule, MatCardModule, MatFormFieldModule,
+    FormsModule, ReactiveFormsModule, JsonPipe, MatDatepickerModule, MatInputModule, MatNativeDateModule,
+    MatButtonModule, MatDividerModule,], // ייבוא המודולים
   changeDetection: ChangeDetectionStrategy.OnPush,
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class ItemPageComponent implements OnInit {
   item: Item | null = null;
@@ -54,9 +65,13 @@ export class ItemPageComponent implements OnInit {
   physicalBook = false;
   isDocument = false; // ניהול הצגת המסמך
   inputValue: string = '';
-  startDate: Date | null = null;
-  endDate: Date | null = null;
-
+  public maxDate: Date = new Date();
+  public minDate: Date = new Date();
+  borrowRequests: BorrowRequests[] = [];
+  userId: string = '';
+  public startDate: Date | null = null;
+  public endDate: Date | null = null;
+  dateRange: DateRange<Date> | null = null;
   readonly addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   announcer = inject(LiveAnnouncer); // שימוש ב-inject להזרקת ה-LiveAnnouncer
@@ -77,69 +92,86 @@ export class ItemPageComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog // הוספת MatDialog
-  ) {}
+  ) { const today = new Date();
+    this.minDate = new Date(today); // תאריך מינימלי הוא היום
+    this.maxDate = new Date(today); 
+    this.maxDate.setFullYear(this.maxDate.getFullYear() + 1); }
 
   ngOnInit(): void {
-  const itemId = this.route.snapshot.paramMap.get('id');
-  if (itemId) {
-    this.fetchItemDetails(itemId);
-    this.fetchSimilarItems(itemId);
-    this.fetchTagsFromServer(itemId); // טעינת התגיות מהשרת
-  } else {
-    console.error('Item ID not found in route');
-  }
-  this.cdr.detectChanges();
-}
-borrowItem(){
 
-}
-
-
-fetchItemDetails(itemId: string) {
-  if (!itemId) {
-    console.error('Invalid item ID');
-    return;
+    const itemId = this.route.snapshot.paramMap.get('id');
+    if (itemId) {
+      this.fetchItemDetails(itemId);
+      this.fetchSimilarItems(itemId);
+      this.fetchTagsFromServer(itemId); // טעינת התגיות מהשרת
+    } else {
+      console.error('Item ID not found in route');
+    }
+    this.cdr.detectChanges();
   }
 
-  console.log('Fetching item details for ID:', itemId);
-  this.apiService.Read(`/item-page/${itemId}`).subscribe({
-    next: (response) => {
-      console.log('Item details received:', response);
-      if (!Array.isArray(response.tags)) {
-        response.tags = [];
-      }
-      this.item = response;
-      // כאן נעדכן את ה-tags מתוך פרטי הפריט
-      this.tags.set(response.tags || []);
-      this.setPreviewUrl(response);
-       // סימון שהמידע השתנה ויש לעדכן את התצוגה
-       this.cdr.markForCheck();
-    },
-    error: (err) => {
-      console.error('Error fetching item details', err);
-    },
-  });
-}
-
-fetchSimilarItems(itemId: string) {
-  if (!itemId) {
-    console.error('Invalid item ID');
-    return;
+  // עדכון תאריך התחלה
+  onStartDateChange(event: MatDatepickerInputEvent<Date>) {
+    // נוודא שתאריך הסיום לא לפני תאריך ההתחלה
+    if (this.startDate && this.endDate && this.endDate < this.startDate) {
+      this.endDate = null; // מאפס את תאריך הסיום אם הוא לפני תאריך ההתחלה
+    }
   }
 
-  console.log('Fetching similar items for ID:', itemId);
-  this.apiService.Read(`/item-page/${itemId}/similar`).subscribe({
-    next: (response) => {
-      console.log('Similar items received:', response);
-      this.similarItems = response;
-       // סימון שהמידע השתנה ויש לעדכן את התצוגה
-       this.cdr.markForCheck();
-    },
-    error: (err) => {
-      console.error('Error fetching similar items', err);
-    },
-  });
-}
+  // עדכון תאריך סיום
+  onEndDateChange(event: MatDatepickerInputEvent<Date>) {
+    // לא מאפשר לבחור תאריך סיום לפני תאריך התחלה
+    if (this.startDate && this.endDate && this.endDate < this.startDate) {
+      this.endDate = null; // מאפס את תאריך הסיום אם הוא לפני תאריך ההתחלה
+    }
+  }
+
+
+  fetchItemDetails(itemId: string) {
+    if (!itemId) {
+      console.error('Invalid item ID');
+      return;
+    }
+
+    console.log('Fetching item details for ID:', itemId);
+    this.apiService.Read(`/item-page/${itemId}`).subscribe({
+      next: (response) => {
+        console.log('Item details received:', response);
+        if (!Array.isArray(response.tags)) {
+          response.tags = [];
+        }
+        this.item = response;
+        // כאן נעדכן את ה-tags מתוך פרטי הפריט
+        this.tags.set(response.tags || []);
+        this.setPreviewUrl(response);
+        // סימון שהמידע השתנה ויש לעדכן את התצוגה
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error fetching item details', err);
+      },
+    });
+  }
+
+  fetchSimilarItems(itemId: string) {
+    if (!itemId) {
+      console.error('Invalid item ID');
+      return;
+    }
+
+    console.log('Fetching similar items for ID:', itemId);
+    this.apiService.Read(`/item-page/${itemId}/similar`).subscribe({
+      next: (response) => {
+        console.log('Similar items received:', response);
+        this.similarItems = response;
+        // סימון שהמידע השתנה ויש לעדכן את התצוגה
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error fetching similar items', err);
+      },
+    });
+  }
 
   setPreviewUrl(item: Item) {
     const fileType = item?.type?.toLowerCase() ?? '';
@@ -172,7 +204,7 @@ fetchSimilarItems(itemId: string) {
     } else if (fileType.includes('pdf') || fileType.includes('ספר דיגיטלי') || fileType.includes('digitalBook')) {
       this.clearPreviewsExcept('ספר דיגיטלי');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
-    }else if (fileType.includes('ספר להשאלה') || fileType.includes('physicalBook')) {
+    } else if (fileType.includes('ספר להשאלה') || fileType.includes('physicalBook')) {
       this.clearPreviewsExcept('ספר להשאלה');
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl);
     } else {
@@ -180,7 +212,7 @@ fetchSimilarItems(itemId: string) {
       this.previewUrl = null;
     }
     console.log('Cover image URL:', this.item?.coverImage);
-  }  
+  }
 
   clearPreviewsExcept(type: 'כרזה' | 'דף עבודה' | 'איור' | 'יצירה' | 'סרטון' | 'מערך' | 'ספר דיגיטלי' | 'ספר להשאלה' | 'שיר') {
     this.isPoster = type === 'כרזה';
@@ -215,7 +247,7 @@ fetchSimilarItems(itemId: string) {
           console.error('Unexpected response format:', response);
           this.reactiveKeywords.set([]); // מוודא שאין שגיאה בקונסול
         }
-         // סימון שהמידע השתנה ויש לעדכן את התצוגה
+        // סימון שהמידע השתנה ויש לעדכן את התצוגה
         this.cdr.markForCheck();
       },
       error: (err) => {
@@ -224,49 +256,49 @@ fetchSimilarItems(itemId: string) {
       },
     });
   }
-  
-  
+
+
 
   addReactiveKeyword(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
-  
+
     if (value) {
       this.reactiveKeywords.update((keywords) => {
         const updatedKeywords = [...keywords, value];
-  
+
         // שליחת התגיות המעודכנות לשרת
         this.updateTagsOnServer(updatedKeywords);
-  
+
         return updatedKeywords;
       });
-  
+
       // ניקוי שדה הקלט
       event.chipInput!.clear();
     }
   }
-  
-  
+
+
   removeReactiveKeyword(keyword: string): void {
     this.reactiveKeywords.update((keywords) => {
       const updatedKeywords = keywords.filter((tag) => tag !== keyword);
-  
+
       // עדכון התגיות בשרת
       this.updateTagsOnServer(updatedKeywords);
-  
+
       return updatedKeywords;
     });
-  
+
     this.announcer.announce(`Removed tag: ${keyword}`);
   }
-  
-  
-  
+
+
+
   updateTagsOnServer(tags: string[]): void {
     if (!this.item?._id) {
       console.error('Item ID is missing. Cannot update tags.');
       return;
     }
-  
+
     const url = `/item-page/${this.item._id}/tags`;
     this.apiService.Put(url, { tags }).subscribe({
       next: () => {
@@ -290,5 +322,76 @@ fetchSimilarItems(itemId: string) {
       this.endDate = null; // איפוס התאריך
     }
   }
-  
-}
+
+  onDateRangeChange() {
+    if (this.dateRange) {
+      const startDate = this.dateRange.start;
+      const endDate = this.dateRange.end;
+
+      console.log('תאריך התחלה:', startDate);
+      console.log('תאריך סיום:', endDate);
+    }
+  }
+  // const newClass = {
+  //   name: this.newClassName,
+  //   createdByIdNumber: createdByIdNumber, // מוסיף את ה-ID שנמצא ב-LocalStorage
+  // };
+
+
+  onBorrow() {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          // this.userType = decodedToken.userType || '';
+          this.userId = decodedToken.idNumber || '';
+          console.log('userId', this.userId);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
+      }
+    } else {
+      console.warn('Code is running on the server. Skipping token check.');
+    }
+
+    
+    const newClass = {
+      resourceId: this.item?._id,
+      studentId: this.userId,
+      fromDate: this.minDate,
+      toDate: this.maxDate
+    }
+    this.apiService
+      .Post('/borrowRequests/addBorrowRequest', newClass)
+      .subscribe({
+        next: (response) => {
+          console.log("responce of borrowRequests",response)
+          this.borrowRequests.push({
+            resourceId: response.insertedId,
+            studentId: this.userId ,
+            fromDate:this.minDate, 
+            toDate:  this.maxDate, 
+          });
+
+        }
+      });
+  }
+  validateDateRange() {
+    if (this.startDate && (this.startDate < this.minDate || this.startDate > this.maxDate)) {
+      this.showDialog('Invalid start date');
+      this.startDate = null;
+    }
+
+    if (this.endDate && (this.endDate < this.minDate || this.endDate > this.maxDate)) {
+      this.showDialog('Invalid end date');
+      this.endDate = null;
+    }
+  }
+
+  showDialog(message: string) {
+    this.dialog.open(DialogComponent, {
+      data: { message },
+    });
+  }}
+

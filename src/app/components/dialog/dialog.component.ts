@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
+
 @Component({
   selector: 'app-dialog',
   standalone: true,
@@ -23,7 +24,8 @@ export class DialogComponent
   newVal: string = '';
   description:string='';
 
-  constructor(public dialogRef: MatDialogRef<DialogComponent>,@Inject(MAT_DIALOG_DATA) public data: any) {
+  constructor(public dialogRef: MatDialogRef<DialogComponent>,@Inject(MAT_DIALOG_DATA) public data: any
+,@Inject(MAT_DIALOG_DATA) public dat: { message: string }) {
     console.log("data",data);
     
   }

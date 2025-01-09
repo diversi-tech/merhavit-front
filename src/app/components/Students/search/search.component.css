@@ -71,6 +71,8 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  position: relative;
+  z-index: 9999;
 }
 
 .file-type-dropdown {
@@ -134,6 +136,7 @@
   padding: 0.5rem;
   width: 90%;
   max-width: 30rem;
+  z-index: 999999;
 }
 
 .filter-row {
@@ -238,12 +241,6 @@
 }
 
 
-.white-box-icons {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
 .file-type-dropdown {
   border: 0.1rem solid #000;
   border-radius: 0.3rem;
@@ -308,11 +305,7 @@
 
 
 
-.white-box-icons {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
+
 
 
 .top-icons {
@@ -428,7 +421,7 @@
   border-radius: 0.5rem;
   box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.1);
   padding: 2rem;
-  z-index: 1000;
+  z-index: 99999;
   width: max-content;
   min-width: 45rem;
 }
@@ -493,10 +486,6 @@
   box-shadow: 0 0 0 1px #4299e1;
 }
 
-.white-box-icons {
-  position: relative;
-}
-
 
 /* להוסיף מיקום יחסי לאייקון הפילטר כדי שהחלון יתמקם ביחס אליו */
 .fa-filter {
@@ -534,5 +523,6 @@
   max-width: 400px; 
   position: relative; */
 }
+
 
 

@@ -252,8 +252,20 @@ export class SearchComponent implements OnInit {
     this.selectedFilter = filterType;
     this.selectedFileType = filterType;
     this.showFilterOptions = false;
-    console.log('סוג הקובץ שנבחר:', filterType);
     this.itemsService.typeFilter = filterType; // מעדכן את הסינון ב-service
+    this.itemsService.searchTerm = this.searchControl.value;
+    this.itemsService.type = this.typeControl.value;
+    this.itemsService.title = this.titleControl.value;
+    this.itemsService.borrowed = this.borrowedControl.value;
+    this.itemsService.publicationDate = this.publicationDateControl.value;
+    this.itemsService.language = this.languageControl.value;
+    this.itemsService.subject = this.subjectControl.value;
+    this.itemsService.ages = this.agesControl.value;
+    this.itemsService.level = this.levelControl.value;
+    this.itemsService.createdBy = this.createdByControl.value;
+    this.itemsService.isnew = this.isnewControl.value;
+    this.itemsService.duration = this.durationControl.value;
+
     this.itemsService.fetchItems(); // שולח את הבקשה לשרת עם הסינון החדש
   }
 
