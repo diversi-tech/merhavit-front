@@ -1,0 +1,16 @@
+.error-dialog-card {
+    max-width: 400px;
+    margin: auto;
+    text-align: center;
+  }
+  mat-card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  mat-card-content p {
+    font-size: 1.2rem;
+    color: #D32F2F; /* צבע אדום להדגשה */
+  }
+  mat-card-actions {
+    margin-top: 10px;
+  }
