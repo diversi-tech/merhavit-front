@@ -425,9 +425,7 @@ mat-icon {
   color: #11457B;
   margin-bottom: 10vh;
 }
-.item-content {
-  position: relative;
-}
+
 .new-label {
   position: absolute;
   top: 0.8vh;
