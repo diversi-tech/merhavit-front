@@ -7,13 +7,14 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './app/auth.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 bootstrapApplication(AppComponent, {
   providers: [
    // importProvidersFrom(RouterModule.forRoot(routes)) ,
     provideRouter(routes, withHashLocation()), // שימוש ב-HashLocationStrategy
-
+    MatDialogModule ,
     provideHttpClient(withInterceptors([authInterceptor])), // רישום ה-Interceptor
     provideAnimations(), provideAnimationsAsync(), provideAnimationsAsync(), provideAnimationsAsync(), provideAnimationsAsync(),
     // הגדרת הנתיבים

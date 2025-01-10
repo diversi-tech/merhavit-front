@@ -15,7 +15,7 @@ import { ItemPageComponent } from './components/item-page/item-page.component';
 import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { HeaderComponent } from './components/header/header.component';
-
+ 
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -39,7 +39,7 @@ import { HeaderComponent } from './components/header/header.component';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'routing-app';
+  title = 'Merhavit-front-end';
   showHeaderComponent: boolean = true;
 
   navigationBar: boolean = true;
