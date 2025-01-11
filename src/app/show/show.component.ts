@@ -18,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 // import { ChangeDetectionStrategy } from '@angular/core';
+import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
 
 import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { catchError, Subscription, switchMap, takeUntil } from 'rxjs';
@@ -243,7 +244,7 @@ defultViewMode() {
     console.log('Delete item: ', itemToDelete);
     // הוסף כאן את הלוגיקה למחיקת משתמש
 
-    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent1);
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
