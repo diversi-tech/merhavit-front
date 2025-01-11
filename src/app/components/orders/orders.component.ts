@@ -73,8 +73,14 @@ export class OrdersComponent {
                         const requestDate = borrowRequest.requestDate;
                         console.log('resourceId', resourceId);
                         this.fetchResourceDetails(resourceId, status,requestDate);
+
                       });
-                    } else {
+                      console.log('orders', this.orders);
+                    }
+                   
+                    
+                    
+                    else {
                       console.log('No borrow requests found for this user.');
                       this.showNoDataMessage = true;
                     }
@@ -105,9 +111,8 @@ export class OrdersComponent {
         console.log('resourceData', resourceData);
 
         this.orders.push({
-          coverImage: 'path-to-default-image.jpg', // או התמונה האמיתית אם קיימת
+          coverImage: resourceData.coverImage, 
           title: resourceData.title,
-          // description: resourceData.description || ' ',
           Author: resourceData.author,
           publicationDate: resourceData.publicationDate,
           resourceId: resourceData._id,
