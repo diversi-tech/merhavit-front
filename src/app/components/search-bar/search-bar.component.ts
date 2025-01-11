@@ -44,7 +44,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatIconModule,
   ],
   templateUrl: './search-bar.component.html',
-  styleUrl: './search-bar.component.css',
+  styleUrl: './search-bar.component.css'
 })
 export class SearchBarComponent {
   @Output() search: EventEmitter<string | null> = new EventEmitter<
