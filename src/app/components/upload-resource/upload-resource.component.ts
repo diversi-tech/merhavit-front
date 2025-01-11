@@ -259,7 +259,9 @@ export class UploadResourceComponent {
             specializationsArray.push(this.fb.control(specialization));
           });
           
-          if(this.resourceItem.contentOption=='physicalBook' || this.resourceItem.type==='ספר דיגיטלי'|| this.resourceItem.type==='ספר פיזי')  
+          if(this.resourceItem.contentOption=='physicalBook' || this.resourceItem.type==='ספר דיגיטלי'|| this.resourceItem.type==='ספר פיזי'||
+            this.resourceItem.type==='שיר' || this.resourceItem.type==='סרטון'
+          )  
             this.downloadFile(this.resourceItem.coverImage)
           else
                this.downloadFile(this.resourceItem.filePath)

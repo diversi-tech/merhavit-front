@@ -22,6 +22,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { catchError, Subscription, switchMap, takeUntil } from 'rxjs';
 import { Subject, combineLatest, of } from 'rxjs';
+import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
 
 
 @Component({
@@ -243,7 +244,7 @@ defultViewMode() {
     console.log('Delete item: ', itemToDelete);
     // הוסף כאן את הלוגיקה למחיקת משתמש
 
-    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent1);
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
@@ -278,37 +279,19 @@ defultViewMode() {
               console.log('Delete request completed.');
               this.removeFromFavorites(itemToDelete)
               
-//               if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-//                 const token = localStorage.getItem('access_token');
-//                 if (!token) return;
-              
-              
-//               const decodedToken: any = jwtDecode(token);
-//               const userId = decodedToken.idNumber;
-//               const status='Rejected'
-//               const idb=itemToDelete._id
+             
+                const query = `/borrowRequests/delete-by-resource/${itemToDelete._id}`;
+                console.log('Deleting borrow request with URL:', `delete-by-resource/${itemToDelete._id}`);
 
-//               const data={idb,userId,status}  
-//               console.log("data",data)
- 
-//               //
-//               this.apiService.Put('/borrowRequests/approve-or-reject', data).subscribe({
-//                 next: (response) => {
-//                   console.log("response!!!!",response);
-                  
-//                   // this.getBorrowRequests();  // לשאול את מוריה מה זה? 
-//                 },
-//                 error: (err) => {
-//                   console.error(
-//                     `Error processing borrow request :`,
-//                     err
-//                   );
-//                 },
-//               });
-//               //
-// }
-
-
+                this.apiService.Delete(query, {}).subscribe({
+                    next: (response) => {
+                        // פעולה במידה והמחיקה הצליחה                        console.log('Borrow request deleted successfully:', response);
+                    },
+                    error: (err) => {
+                        // טיפול במקרה של שגיאה
+                        console.error('Error deleting borrow request:', err);
+                    },
+                });
            },
         });
       }
