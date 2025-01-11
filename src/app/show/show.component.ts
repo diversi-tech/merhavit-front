@@ -11,14 +11,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ItemsService } from '../items.service';
 import { MatDialog } from '@angular/material/dialog';
- import { log } from 'console';
+//  import { log } from 'console';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 // import { ChangeDetectionStrategy } from '@angular/core';
-import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
+
 import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { catchError, Subscription, switchMap, takeUntil } from 'rxjs';
 import { Subject, combineLatest, of } from 'rxjs';
@@ -243,7 +243,7 @@ defultViewMode() {
     console.log('Delete item: ', itemToDelete);
     // הוסף כאן את הלוגיקה למחיקת משתמש
 
-    const dialogRef = this.dialog.open(ConfirmDialogComponent1);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
@@ -318,7 +318,6 @@ defultViewMode() {
   downloadResource(item: Item): void {
     if (!item._id) {
       console.error('Item ID is missing.');
-      // alert('לא ניתן להוריד את הקובץ. חסר ID');
       this._snackBar.open('לא ניתן להוריד את הקובץ. חסר ID', 'סגור', {
         duration: 3000,
         panelClass: ['error-snackbar'],
@@ -328,7 +327,6 @@ defultViewMode() {
     }
     if (!item.filePath) {
       console.error('File path is missing.');
-      // alert('לא ניתן להוריד את הקובץ. חסר ניתוב');
       this._snackBar.open('לא ניתן להוריד את הקובץ. חסר ניתוב', 'סגור', {
         duration: 3000,
         panelClass: ['error-snackbar'],
@@ -354,7 +352,6 @@ defultViewMode() {
             document.body.removeChild(downloadLink);
           } else {
             console.error('Invalid response for download URL.');
-            // alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
             this._snackBar.open(
               'לא ניתן להוריד את הקובץ. אנא נסה שוב.',
               'סגור',
@@ -368,7 +365,6 @@ defultViewMode() {
         },
         error: (err) => {
           console.error('Error fetching presigned URL:', err);
-          // alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
           this._snackBar.open('שגיאה בהורדת הקובץ. אנא נסה שוב.', 'סגור', {
             duration: 3000,
             panelClass: ['error-snackbar'],
