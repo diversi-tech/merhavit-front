@@ -8,7 +8,6 @@
   align-items: center;
   grid-area: item-1;
   display: flex;
-  justify-content: flex-end; /* הצמדת התמונה לימין */
 }
 .ng-container{
   max-width: 100%; /* תמונה לא תחרוג מהרוחב הקבוע */
@@ -17,7 +16,7 @@
 }
 
 .item-1 img{
-  margin-top: 14vh;
+  margin-top: 2vh;
   width: 25vw; 
   height: 55vh;
   display: flex;
@@ -38,7 +37,7 @@
 }
 
 .item-1 .document-cover-image {
-  margin-top: 17vh;
+  margin-top: 2vh;
   width: 25vw; /* שומר על פרופורציות ברוחב */
   height: 67vh; /* שומר על פרופורציות בגובה */
 }
@@ -91,9 +90,9 @@
 
 
 .grid-container {
-  /* display: grid; */
-display: flex;
-flex-direction: row-reverse;
+  display: grid;
+  /* display: flex; */
+  flex-direction: row-reverse;
   grid-template-areas: 
     "item-2 item-1"
     "item-3 item-3";
@@ -103,9 +102,10 @@ flex-direction: row-reverse;
 
 .grid-item {
   padding: 1.5rem;
-  display: flex;
+  /* display: flex; */
+  display: grid;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
   font-size: 1rem;
   font-weight: bold;
 }
@@ -114,15 +114,19 @@ flex-direction: row-reverse;
 
 .item-2 {
   grid-area: item-2;
-  display: flex;
+  /* display: flex; */
+  display: grid;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: end;
   align-items: flex-end; 
+  direction: ltr;
+  text-align: right;
 }
 
 .item-3 {
   grid-area: item-3;
-  display: flex;
+  /* display: flex; */
+  display: grid;
   flex-direction: column;
   align-items: flex-end; 
 }
@@ -141,7 +145,7 @@ flex-direction: row-reverse;
 /* תמונה לאודיו */
 #audio-cover-image {
   display: block;
-  margin: 15vh auto 1vh;
+  margin: 2vh auto 1vh;
   width: 50vw; 
   height: 50vh;
   max-width: 25vw; 
@@ -303,6 +307,7 @@ section {
 .example-button-row {
   display: table-cell;
   max-width: 6vw;
+
 }
 
 .example-button-row .mat-mdc-button-base {
@@ -310,13 +315,16 @@ section {
 }
 
 
-.calender{width: 20vw;}
+.calender{
   width: 22vw;
-
+  display: flex;
+  align-items: self-start; /* ליישור אנכי */
+  gap: 1rem; /* ריווח בין האלמנטים */
+}
 
 .subjects-wrapper {
   display: flex;
-  justify-content: flex-start; /* מקם את כל התוכן בצד ימין */
+  justify-content: end; /* מקם את כל התוכן בצד ימין */
   align-items: center; /* לוודא שהכותרת והנושאים יהיו באותו גובה */
 }
 

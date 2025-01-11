@@ -11,14 +11,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ItemsService } from '../items.service';
 import { MatDialog } from '@angular/material/dialog';
- import { log } from 'console';
+//  import { log } from 'console';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 // import { ChangeDetectionStrategy } from '@angular/core';
-import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
+
 import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { catchError, Subscription, switchMap, takeUntil } from 'rxjs';
 import { Subject, combineLatest, of } from 'rxjs';
@@ -67,7 +67,10 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
-    this.itemsService.fetchItems(); // שליחת בקשה לשרת עם הסינון החדש
+    this.itemsService.page = 0;
+    this.itemsService.limit = 10;
+
+    this.itemsService.fetchItems(this.itemsService.page, this.itemsService.limit); // שליחת בקשה לשרת עם הסינון החדש
      // ביצוע הבדיקה בטעינת הדף
      this.subscription = this.itemsService.ifArrIsEmty$.subscribe((isEmpty) => {
       this.ifArrIsEmty = isEmpty;
@@ -83,8 +86,7 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
       if (this.itemsService.typeFilter !== type) {
         this.itemsService.typeFilter = type; // עדכון סוג הסינון בשירות
         this.itemsService.page = 0; // התחלה מחדש
-        this.itemsService.getItems(0,10, '', type)
-
+        this.itemsService.getItems(this.itemsService.page, this.itemsService.limit, '', type);
       }
       //return this.itemsService.items$; // האזנה לזרם הנתונים
       return combineLatest([this.itemsService.items$, this.itemsService.totalItems$]);
@@ -154,7 +156,6 @@ defultViewMode() {
   onPageChange(event: PageEvent) {
     this.page = event.pageIndex;
     this.limit = event.pageSize;
-    // this.getItems(this.page, this.limit).then(() => this.updateFavoriteStatus());
     this.itemsService.fetchItems(this.page, this.limit)
     this.updateFavoriteStatus();
   }
@@ -242,13 +243,10 @@ defultViewMode() {
     console.log('Delete item: ', itemToDelete);
     // הוסף כאן את הלוגיקה למחיקת משתמש
 
-    const dialogRef = this.dialog.open(ConfirmDialogComponent1);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // כאן תוכל לקרוא לפונקציה שמוחקת את הפריט מהשרת
-        //הפונקציה מקבלת את הנתיב שאיתו היא תתחבר לפונ המחיקה בשרת
-        //וכן את האובייקט למחיקה
         this.apiService
           .Delete(`/EducationalResource/${itemToDelete._id}`, {})
           .subscribe({
@@ -278,8 +276,41 @@ defultViewMode() {
             complete: () => {
               // פעולה כאשר הקריאה הסתיימה (אופציונלי)
               console.log('Delete request completed.');
-            },
-          });
+              this.removeFromFavorites(itemToDelete)
+              
+//               if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+//                 const token = localStorage.getItem('access_token');
+//                 if (!token) return;
+              
+              
+//               const decodedToken: any = jwtDecode(token);
+//               const userId = decodedToken.idNumber;
+//               const status='Rejected'
+//               const idb=itemToDelete._id
+
+//               const data={idb,userId,status}  
+//               console.log("data",data)
+ 
+//               //
+//               this.apiService.Put('/borrowRequests/approve-or-reject', data).subscribe({
+//                 next: (response) => {
+//                   console.log("response!!!!",response);
+                  
+//                   // this.getBorrowRequests();  // לשאול את מוריה מה זה? 
+//                 },
+//                 error: (err) => {
+//                   console.error(
+//                     `Error processing borrow request :`,
+//                     err
+//                   );
+//                 },
+//               });
+//               //
+// }
+
+
+           },
+        });
       }
     });
   }
