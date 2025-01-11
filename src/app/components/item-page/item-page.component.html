@@ -42,7 +42,10 @@
   <!-- פרטי הפריט -->
   <div *ngIf="item" class="grid-item item-2 item-details">
     <h2>{{ item.title || 'לא ידוע' }}</h2>
-    <p><strong>תאריך פרסום:</strong> {{ item.publicationDate || 'לא ידוע' }}</p>
+    <div class="subjects-wrapper" *ngIf="item.publicationDate">
+      <p> {{ item.publicationDate }}</p>
+      <p><strong>תאריך פרסום:</strong></p>
+    </div>
     <div class="subjects-wrapper">
       <div class="subjects-container">
         <p class="subjects-design" *ngFor="let subject of item.subjects">
@@ -50,24 +53,43 @@
         </p>
       </div>
       <p><strong>נושא:</strong></p>
+    </div>  
+    <div class="subjects-wrapper" *ngIf="item.ages">
+      <p> {{ item.ages }}</p>
+      <p><strong>גיל:</strong></p>
     </div>
-    <p><strong>גיל:</strong> {{ item.ages || 'לא ידוע' }}</p>
-    <p><strong>רמה:</strong> {{ item.level || 'לא ידוע' }}</p>
-    <p><strong>שפה:</strong> {{ item.language || 'לא ידוע' }}</p>
-    <p><strong>שנת הוצאה לאור:</strong> {{ item.releaseYear || 'לא ידוע' }}</p>
-    <p><strong>מחבר:</strong> {{ item.author || 'לא ידוע' }}</p>
-    <p *ngIf="item.physicalBook==true"><strong>מיקום בסיפריה:</strong> {{ item.filePath || 'לא ידוע' }}</p>
-    <p><strong>תיאור:</strong> {{ item.description || 'לא ידוע' }}</p>
+    <div class="subjects-wrapper" *ngIf="item.level">
+      <p> {{ item.level }}</p>
+      <p><strong>רמה:</strong></p>
+    </div>
+    <div class="subjects-wrapper" *ngIf="item.language">
+      <p> {{ item.language }}</p>
+      <p><strong>שפה:</strong></p>
+    </div>
+    <div class="subjects-wrapper" *ngIf="item.releaseYear">
+      <p> {{ item.releaseYear }}</p>
+      <p><strong>שנת הוצאה לאור:</strong></p>
+    </div>
+    <div class="subjects-wrapper" *ngIf="item.author">
+      <p> {{ item.author }}</p>
+      <p><strong>מחבר:</strong></p>
+    </div>
+    <div class="subjects-wrapper" *ngIf="physicalBook">
+      <p> {{ item.filePath || 'לא ידוע' }}</p>
+      <p><strong>מיקום בסיפריה:</strong></p>
+    </div>
+    <div class="subjects-wrapper" *ngIf="item.description">
+      <p>{{ item.description || 'לא ידוע' }}</p>
+      <p><strong>תיאור:</strong></p>
+    </div>
     <!-- הצגת התגיות -->
-    <section>
+    <section *ngIf="item.tags">
       <div class="chip-container">
         <mat-chip-row *ngFor="let keyword of tags()">
-          {{ getOptionNameById(keyword, 'tags') || 'אין תגיות ' }}
+          {{ getOptionNameById(keyword, 'tags') }}
         </mat-chip-row>
       </div>
     </section>
-
-    <!-- <div class="calender" *ngIf="physicalBook"> -->
 
     <div class="calender" *ngIf="physicalBook && item.approved!=='לא'">
       <section>
@@ -86,7 +108,9 @@
       </mat-form-field>
     </div>
   </div>
-  <!-- פריטים דומים -->
+  
+</div>
+<!-- פריטים דומים -->
   <div class="grid-item item-3">
     <div class="similar-items">
       <ng-container *ngIf="this.isHeaderDisplayed">
@@ -140,4 +164,3 @@
       </div>
     </div>
   </div>
-</div>
