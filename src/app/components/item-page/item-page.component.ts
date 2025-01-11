@@ -436,7 +436,7 @@ export class ItemPageComponent implements OnInit {
   // }
 
 
-  onBorrow() {
+  async onBorrow() {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const token = localStorage.getItem('access_token');
       if (token) {
@@ -480,10 +480,11 @@ export class ItemPageComponent implements OnInit {
             fromDate:this.startDate, 
             toDate:  this.endDate, 
           });
-
         }
       });
-    
+      if (this.startDate || this.endDate) {
+        this.router.navigate(['/question-successful']);
+      } 
   }
 
   timeErrorDialog() {

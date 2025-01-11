@@ -10,6 +10,7 @@ import { ItemsListComponent } from './show/show.component';
 import { ForgotPasswordComponent } from './components/Users/forgot-password';
 import { ResetPasswordComponent } from './components/Users/reset-password';
 import { SuccessRegistrationComponent } from './components/Users/success-registration';
+import { QuestionSuccessfulComponent } from './components/item-page/question-successful/question-successful';
 import { ItemPageComponent } from './components/item-page/item-page.component';
 import { UploadResourceComponent } from './components/upload-resource/upload-resource.component';
 import { FavoritesComponent } from './components/Favorites/favorites';
@@ -36,6 +37,7 @@ export const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'success-registration', component: SuccessRegistrationComponent },
+  { path: 'question-successful', component: QuestionSuccessfulComponent },
   { path: 'borrowRequests', component: BorrowRequestManagementComponent },
   { path: 'item-page/:id', component: ItemPageComponent },
   { path: 'upload-resource/:_id', component: UploadResourceComponent },
