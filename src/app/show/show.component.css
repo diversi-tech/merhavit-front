@@ -37,6 +37,16 @@
   background-color: #007BFF;
   color: #fff;
 }
+
+.table-container {
+  padding-bottom: 6vw; /* או גובה ה-paginator */
+  direction: rtl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+}
+
 .row {
   display: flex;
   justify-content: space-between;
@@ -148,19 +158,25 @@
     flex-wrap: wrap;
   }
   .pagination-container {
+    left: 0vw;
+    width:86vw;
+    top: 92vh;
+    z-index:2;
+    position: absolute;
+    direction: ltr;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: "Roboto", sans-serif;
     /* position: fixed; */
-    color: #444;
-    margin: 10px 0;
+    bottom: 0; /* מציב את ה-div בתחתית */
+    left: 0;
+    right: 0;
     background-color: white; /* רקע כדי להפריד אותו מהתוכן */
     padding: 5rem; /* ריווח פנימי אם צריך */
-  }
+}
+
+
  .pagination-container .arrow {
-    font-size: 18px;
-    margin: 0 10px;
+    font-size: 1.8vw;
+    margin: 0 1vw;
     cursor: pointer;
     color: #888;
     transition: color 0.3s;
@@ -440,10 +456,14 @@ mat-icon {
   font-size: 0.8rem;
   z-index: 0;
 }
-
-.matPagin{
+.matPagin
+{
+  left: 0vw;
+  width:86vw;
+  top: 92vh;
+  z-index: 2;
+  position: absolute;
   direction: ltr;
-
 }
 .disabled {
   pointer-events: none;
