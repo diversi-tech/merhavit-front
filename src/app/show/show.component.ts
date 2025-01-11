@@ -156,7 +156,6 @@ defultViewMode() {
   onPageChange(event: PageEvent) {
     this.page = event.pageIndex;
     this.limit = event.pageSize;
-    // this.getItems(this.page, this.limit).then(() => this.updateFavoriteStatus());
     this.itemsService.fetchItems(this.page, this.limit)
     this.updateFavoriteStatus();
   }
@@ -248,9 +247,6 @@ defultViewMode() {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // כאן תוכל לקרוא לפונקציה שמוחקת את הפריט מהשרת
-        //הפונקציה מקבלת את הנתיב שאיתו היא תתחבר לפונ המחיקה בשרת
-        //וכן את האובייקט למחיקה
         this.apiService
           .Delete(`/EducationalResource/${itemToDelete._id}`, {})
           .subscribe({
