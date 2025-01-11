@@ -1,3 +1,4 @@
+// import { error } from 'node:console';
 import { Component, OnInit, inject } from '@angular/core';
 import { ApiService } from '../../api.service';
 import { Item } from '../interfaces/item-page.interface';
@@ -9,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { COMMA, ENTER, I } from '@angular/cdk/keycodes';
-import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
+import {  MatChipInputEvent } from '@angular/material/chips';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { signal } from '@angular/core';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
@@ -25,11 +26,23 @@ import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { DateRange } from '@angular/material/datepicker';
+import { jwtDecode } from 'jwt-decode';
+// import { from } from 'rxjs';
+import { DialogComponent } from '../dialog/dialog.component';
+import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
 import { lastValueFrom, Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
+interface BorrowRequests {
+  resourceId: Object;
+  studentId: string;
+  fromDate: Date;
+  toDate: Date;
+}
 @Component({
   selector: 'app-item-page',
   templateUrl: './item-page.component.html', //'./item-page.component.html',
@@ -57,8 +70,15 @@ export class ItemPageComponent implements OnInit {
   isDocument = false; // ניהול הצגת המסמך
   text = false;
   inputValue: string = '';
-  startDate: Date | null = null;
-  endDate: Date | null = null;
+  startDate!: Date; // משתנה לתאריך התחלה
+  endDate!: Date;   // משתנה לתאריך סיום
+  minDate = new Date(); // לדוגמה, מינימום תאריך (אופציונלי)
+  maxDate = new Date(); 
+  // maxdays=this.item!.loanValidity;
+  maxdays = this.item?.loanValidity ?? 0;
+  borrowRequests: BorrowRequests[] = [];
+  userId: string = '';
+  dateRange: DateRange<Date> | null = null;
   allOptions: any[] = []; // שמירת כל האפשרויות
   public isHeaderDisplayed = false;
   readonly addOnBlur = true;
@@ -111,10 +131,15 @@ export class ItemPageComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog, // הוספת MatDialog
-    private _snackBar: MatSnackBar
-  ) { }
+    private _snackBar: MatSnackBar,
+    private errordialog: MatDialog
+  ) { const today = new Date();
+    this.minDate = new Date(today); // תאריך מינימלי הוא היום
+    this.maxDate = new Date(today); 
+    this.maxDate.setFullYear(this.maxDate.getFullYear() + 1); }
 
   ngOnInit(): void {
+
     const itemId = this.route.snapshot.paramMap.get('id');
     if (itemId) {
       this.fetchItemDetails(itemId);
@@ -138,7 +163,14 @@ export class ItemPageComponent implements OnInit {
       return key
   }
 
-  borrowItem() { }
+
+  
+  // עדכון תאריך סיום
+  // onEndDateChange(event: MatDatepickerInputEvent<Date>) {
+  //   // לא מאפשר לבחור תאריך סיום לפני תאריך התחלה
+  //   if (this.startDate && this.endDate && this.endDate < this.startDate) {
+  //     this.endDate = null; // מאפס את תאריך הסיום אם הוא לפני תאריך ההתחלה
+  //   }}
   fetchItemDetails(itemId: string) {
     if (!itemId) {
       console.error('Invalid item ID');
@@ -393,49 +425,89 @@ export class ItemPageComponent implements OnInit {
     });
   }
 
-  validateDates(): void {
-    const today = new Date();
-    if (this.startDate && this.startDate < today) {
-      alert('תאריך ההתחלה חייב להיות מאוחר או שווה להיום!');
-      this.startDate = null; // איפוס התאריך
+  // onDateRangeChange() {
+  //   if (this.dateRange) {
+  //     const startDate = this.dateRange.start;
+  //     const endDate = this.dateRange.end;
+
+  //     console.log('תאריך התחלה:', startDate);
+  //     console.log('תאריך סיום:', endDate);
+  //   }
+  // }
+
+
+  async onBorrow() {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          // this.userType = decodedToken.userType || '';
+          this.userId = decodedToken.idNumber || '';
+          console.log('userId', this.userId);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
+      }
+    } else {
+      console.warn('Code is running on the server. Skipping token check.');
     }
-    if (this.endDate && this.endDate > new Date(today.setFullYear(today.getFullYear() + 1))) {
-      alert('תאריך הסיום לא יכול להיות רחוק יותר משנה מהתאריך הנוכחי!');
-      this.endDate = null; // איפוס התאריך
+
+    if (!this.startDate || !this.endDate) {
+      this.openErrorDialog();
+    } 
+    if (this.startDate && this.endDate && this.item?.loanValidity) { 
+      const start = new Date(this.startDate).getTime(); 
+      const end = new Date(this.endDate).getTime(); 
+      const differenceInDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)); // חישוב מספר הימים
+      if (differenceInDays > this.item.loanValidity) { this.openErrorDialog();} // פתח דיאלוג במקרה של חריגה 
     }
+    // if(this.endDate-this.startDate)
+    const newClass = {
+      resourceId: this.item?._id,
+      studentId: this.userId,
+      fromDate: this.startDate,
+      toDate: this.endDate
+    }
+    this.apiService
+      .Post('/borrowRequests', newClass)
+      .subscribe({
+        next: (response) => {
+          console.log("responce of borrowRequests",response)
+          this.borrowRequests.push({
+            resourceId: response.insertedId,
+            studentId: this.userId ,
+            fromDate:this.startDate, 
+            toDate:  this.endDate, 
+          });
+        }
+      });
+      if (this.startDate || this.endDate) {
+        this.router.navigate(['/question-successful']);
+      } 
   }
 
-  // async getFromServer(path: string): Promise<void> {
-  //   try {
-  //     const response = await lastValueFrom(this.apiService.Read(path));
-  //     console.log('Response from server:', response); // לוג של התשובה
-  //     if (Array.isArray(response)) {
-  //       this.allOptions = response;
-  //     } else {
-  //       this.allOptions = response.data || [];
-  //     }
-  //   } catch (err) {
-  //     console.error(`Error fetching options from ${path}:`, err);
+  timeErrorDialog() {
+    this.dialog.open(ErrorDialogComponent, {
+      width: '400px',
+      data: {
+        message: 'משך הזמן שנבחר גדול מהזמן המותר להשאלה. יש לבחור טווח תאריכים קצר יותר.'
+      },
+    });
+  }
+  // openErrorDialog() {
+  //     const dialogRef = this.dialog.open(ErrorDialogComponent);
+    
+      
+  // dialogRef.afterClosed().subscribe(() => {
+  //   console.log('הדיאלוג נסגר');
+  // });
   //   }
-  // }
+    
 
 
 
 
-  // getOptionById(optionId: string): any | undefined {
-  //   const option = this.allOptions.find(opt => opt._id === optionId);
-  //   if (!option) {
-  //     console.warn(`Option with ID ${optionId} not found`);
-  //   }
-  //   return option;
-  // }
-
-
-
-  //   //קבלת שם התגית לפי ה_id שלה
-  //   getOptionNameById(optionId: string) {
-  //     return this.getOptionById(optionId)?.name
-  //   }
   getfromServer(path: string, fieldKey: string): Promise<void> {
     return lastValueFrom(this.apiService.Read(path)).then((response) => {
       if (Array.isArray(response)) {
@@ -444,7 +516,7 @@ export class ItemPageComponent implements OnInit {
         this.multipleChoiceFields[fieldKey].allOption = response.data || [];
       }
     }).catch((err) => {
-      console.error(`Error fetching ${fieldKey}`, err);
+      // console.error(`Error fetching ${fieldKey}`, err);
       return
     });
   }
@@ -453,7 +525,7 @@ export class ItemPageComponent implements OnInit {
 
   //קבלת התגית לפי ה_id שלה
   getOptionById(optionId: string, fieldKey: string) {
-    console.log("OptionById", this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
+    // console.log("OptionById", this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
 
     return this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId)
   }
@@ -464,5 +536,72 @@ export class ItemPageComponent implements OnInit {
     return this.getOptionById(optionId, fieldKey)?.name
   }
 
-
-}
+  onDateRangeChange() {
+    if (this.dateRange) {
+      const startDate = this.dateRange.start;
+      const endDate = this.dateRange.end;
+      console.log('תאריך התחלה:', startDate);
+      console.log('תאריך סיום:', endDate);
+    }
+  }
+  // onBorrow() {
+  //   if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+  //     const token = localStorage.getItem('access_token');
+  //     if (token) {
+  //       try {
+  //         const decodedToken: any = jwtDecode(token);
+  //         // this.userType = decodedToken.userType || '';
+  //         this.userId = decodedToken.idNumber || '';
+  //         console.log('userId', this.userId);
+  //       } catch (error) {
+  //         console.error('Error decoding token:', error);
+  //       }
+  //     }
+  //   } else {
+  //     console.warn('Code is running on the server. Skipping token check.');
+  //   }
+  //   if (!this.startDate || !this.endDate) {
+  //     this.openErrorDialog();
+  //   }
+  //   // if(this.endDate-this.startDate)
+  //   const newClass = {
+  //     resourceId: this.item?._id,
+  //     studentId: this.userId,
+  //     fromDate: this.startDate,
+  //     toDate: this.endDate
+  //   }
+  //   this.apiService
+  //     .Post('/borrowRequests', newClass)
+  //     .subscribe({
+  //       next: (response) => {
+  //         console.log("responce of borrowRequests",response)
+  //         this.borrowRequests.push({
+  //           resourceId: response.insertedId,
+  //           studentId: this.userId ,
+  //           fromDate:this.startDate,
+  //           toDate:  this.endDate,
+  //         });
+  //       }
+  //     });
+  // }
+  openErrorDialog() {
+      const dialogRef = this.dialog.open(ErrorDialogComponent);
+  dialogRef.afterClosed().subscribe(() => {
+    console.log('הדיאלוג נסגר');
+  });
+    }
+  validateDateRange() {
+    if (this.startDate && (this.startDate < this.minDate || this.startDate > this.maxDate)) {
+      this.showDialog('Invalid start date');
+      // this.minDate = null;
+    }
+    if (this.endDate && (this.endDate < this.minDate || this.endDate > this.maxDate)) {
+      this.showDialog('Invalid end date');
+      // this.endDate = null;
+    }
+  }
+  showDialog(message: string) {
+    this.dialog.open(DialogComponent, {
+      data: { message },
+    });
+  }}

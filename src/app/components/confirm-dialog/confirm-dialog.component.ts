@@ -8,11 +8,11 @@ import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-confirm-dialog',
+  providers: [MatDialogRef, MatDialogModule],
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
-    MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,

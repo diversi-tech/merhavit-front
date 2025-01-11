@@ -26,7 +26,7 @@ import { importProvidersFrom } from '@angular/core';
     </div>
   `,
   standalone: true,
-  imports: [MatDialogModule], // הוספת MatDialogModule כאן
+  providers: [MatDialogModule], // הוספת MatDialogModule כאן
 })
 export class ConfirmDialogComponent1 {
   constructor(public dialogRef: MatDialogRef<ConfirmDialogComponent1>) {}

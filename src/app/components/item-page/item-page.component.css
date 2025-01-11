@@ -3,12 +3,11 @@
 .item-1 {
   width: 25vw; /* קביעת רוחב קבוע */
   height: 55vh; /* קביעת גובה קבוע */
-  display: flex;
+  display: grid;
   justify-content: center;
   align-items: center;
   grid-area: item-1;
-  display: flex;
-  justify-content: flex-end; /* הצמדת התמונה לימין */
+  /* display: flex; */
 }
 .ng-container{
   max-width: 100%; /* תמונה לא תחרוג מהרוחב הקבוע */
@@ -17,10 +16,10 @@
 }
 
 .item-1 img{
-  margin-top: 14vh;
+  margin-top: 2vh;
   width: 25vw; 
   height: 55vh;
-  display: flex;
+  display: grid;
   justify-content: center;
   align-items: center;
 }
@@ -28,7 +27,7 @@
 .item-1 video{
   width: 25vw;
   height: 40vh; 
-  display: flex;
+  display: grid;
   justify-content: center;
   align-items: center;
 }
@@ -38,7 +37,7 @@
 }
 
 .item-1 .document-cover-image {
-  margin-top: 17vh;
+  margin-top: 2vh;
   width: 25vw; /* שומר על פרופורציות ברוחב */
   height: 67vh; /* שומר על פרופורציות בגובה */
 }
@@ -92,6 +91,8 @@
 
 .grid-container {
   display: grid;
+  /* display: flex; */
+  /* flex-direction: row-reverse; */
   grid-template-areas: 
     "item-2 item-1"
     "item-3 item-3";
@@ -101,9 +102,10 @@
 
 .grid-item {
   padding: 1.5rem;
-  display: flex;
+  /* display: flex; */
+  display: grid;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
   font-size: 1rem;
   font-weight: bold;
 }
@@ -112,15 +114,19 @@
 
 .item-2 {
   grid-area: item-2;
-  display: flex;
+  /* display: flex; */
+  display: grid;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-end; 
+  justify-content: end;
+  align-items: start; 
+  direction: ltr;
+  text-align: right;
 }
 
 .item-3 {
-  grid-area: item-3;
-  display: flex;
+  /* grid-area: item-3; */
+  /* display: flex; */
+  display: grid;
   flex-direction: column;
   align-items: flex-end; 
 }
@@ -139,7 +145,7 @@
 /* תמונה לאודיו */
 #audio-cover-image {
   display: block;
-  margin: 15vh auto 1vh;
+  margin: 2vh auto 1vh;
   width: 50vw; 
   height: 50vh;
   max-width: 25vw; 
@@ -263,6 +269,36 @@ mat-form-field {
   width: 100%;
   margin-bottom: 1rem;
 }
+section {
+  display: table;
+}
+.example-label {
+  display: table-cell;
+  font-size: 14px;
+  margin-left: 8px;
+  min-width: 120px;
+}
+.example-button-row {
+  display: table-cell;
+  max-width: 600px;
+}
+.example-button-row .mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
+}
+.example-flex-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.example-button-container {
+  display: flex;
+  justify-content: center;
+  width: 140px;
+}
+mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
 
 section {
   display: table;
@@ -271,6 +307,7 @@ section {
 .example-button-row {
   display: table-cell;
   max-width: 6vw;
+
 }
 
 .example-button-row .mat-mdc-button-base {
@@ -279,15 +316,15 @@ section {
 
 
 .calender{
-  width: 27vw;
+  width: 22vw;
   display: flex;
+  align-items: self-start; /* ליישור אנכי */
+  gap: 1rem; /* ריווח בין האלמנטים */
 }
-
-
 
 .subjects-wrapper {
   display: flex;
-  justify-content: flex-start; /* מקם את כל התוכן בצד ימין */
+  justify-content: end; /* מקם את כל התוכן בצד ימין */
   align-items: center; /* לוודא שהכותרת והנושאים יהיו באותו גובה */
 }
 
@@ -310,5 +347,48 @@ section {
   margin-left: 0.1vw; /* קטנה את המרווח בין הנושאים */
   margin-right: 0.1vw; /* קטנה את המרווח בין הנושאים */
 }
+
+
+
+
+
+
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.message-box {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.message-box p {
+  margin-bottom: 15px;
+}
+
+/* .message-box button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.message-box button:hover {
+  background-color: #45a049;
+} */
 
 

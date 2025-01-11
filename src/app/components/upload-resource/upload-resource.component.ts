@@ -9,9 +9,10 @@ import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTri
 import { MatInputModule } from '@angular/material/input';
 import { lastValueFrom, map, Observable, startWith, tap } from 'rxjs';
 import { ApiService } from '../../api.service';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
+//import { title } from 'process';
+// import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatIconModule } from '@angular/material/icon';
-import { Overlay, OverlayModule, OverlayPositionBuilder } from '@angular/cdk/overlay';
+import {  OverlayModule, OverlayPositionBuilder } from '@angular/cdk/overlay';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { DialogComponent } from '../dialog/dialog.component';
@@ -25,7 +26,7 @@ import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 import { Router, RouterModule } from '@angular/router';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { HttpResponse } from '@angular/common/http';
+// import { HttpResponse } from '@angular/common/http';
 import { ItemsService } from '../../items.service';
 
 
@@ -41,6 +42,8 @@ import { ItemsService } from '../../items.service';
   styleUrls: ['./upload-resource.component.css']
 })
 export class UploadResourceComponent {
+  filePath: string = ''; // משתנה לשמירה על הערך של ה-input
+
   isFirstEdit: boolean = false
   itemID: string = '' //i added
   resourceItem: any; // משתנה חדש לשמירת האובייקט שהתקבל
@@ -141,7 +144,7 @@ export class UploadResourceComponent {
       tags: this.fb.array([[]]),
       libraryLocation: ['']
     });
-
+    
     Object.entries(this.multipleChoiceFields).forEach(([key, value]) => {
       value.filteredOption$ = value.Ctrl.valueChanges.pipe(
         startWith(''),
@@ -186,7 +189,6 @@ export class UploadResourceComponent {
 
     const requests:Promise<void>[]= Object.keys(this.multipleChoiceFields).map((key) => {
       const Array = this.fileForm.get(key) as FormArray;
-      //console.log("Array:",Array);
 
       while (Array?.length > 0) {
         Array.removeAt(0);
@@ -210,7 +212,7 @@ export class UploadResourceComponent {
           this.resourceItem = response; // resourceItem הוא משתנה חדש בקומפוננטה שלך
            this.contentOption = this.getContentOption(this.resourceItem.contentOption)
            console.log("file "+this.resourceItem.filePath);
-
+           
           this.fileForm.patchValue({
             title: this.resourceItem.title || "",
             description: this.resourceItem.description || "",
@@ -226,17 +228,45 @@ export class UploadResourceComponent {
             price:this.resourceItem.price ||"",
             catalogNumber:this.resourceItem.catalogNumber ||"",
             libraryLocation:this.resourceItem.libraryLocation ||"",
-            subjects: Array.isArray(this.resourceItem.subjects) ? this.resourceItem.subjects : [],
-            tags: Array.isArray(this.resourceItem.tags) ? this.resourceItem.tags : [],
-            specializations: Array.isArray(this.resourceItem.specializations) ? this.resourceItem.specializations : [],
-            classes: Array.isArray(this.resourceItem.classes) ? this.resourceItem.classes : [],
+            // subjects: Array.isArray(this.resourceItem.subjects) ? this.resourceItem.subjects : [],
+            // tags: Array.isArray(this.resourceItem.tags) ? this.resourceItem.tags : [],
+            // specializations: Array.isArray(this.resourceItem.specializations) ? this.resourceItem.specializations : [],
+            // classes: Array.isArray(this.resourceItem.classes) ? this.resourceItem.classes : [],
+          });
+          if (this.contentOption == 'physicalBook') {            
+            this.fileForm.patchValue({ libraryLocation:this.resourceItem.filePath || '' })}
+
+          const subjectsArray = this.fileForm.get('subjects') as FormArray;
+          this.resourceItem.subjects.forEach((subject:any) => {
+            subjectsArray.push(this.fb.control(subject));
+          });
+          const classesArray = this.fileForm.get('classes') as FormArray;
+          this.resourceItem.classes.forEach((classItem: any) => {
+            classesArray.push(this.fb.control(classItem));
+          });
+          // this.fileForm.get('libraryLocation')?.valueChanges.subscribe(value => {
+          //   this.filePath = value; // עדכון הערך של filePath
+          // });
+          
+          
+          const tagsArray = this.fileForm.get('tags') as FormArray;
+          this.resourceItem.tags.forEach((tag:any) => {
+            tagsArray.push(this.fb.control(tag));
+          });
+
+          const specializationsArray = this.fileForm.get('specializations') as FormArray;
+          this.resourceItem.specializations.forEach((specialization:any) => {
+            specializationsArray.push(this.fb.control(specialization));
           });
           
-          
-          this.downloadFile(this.resourceItem.filePath)
-          if(this.contentOption=='add' || this.contentOption=='physicalBook')
+          if(this.resourceItem.contentOption=='physicalBook' || this.resourceItem.type==='ספר דיגיטלי'|| this.resourceItem.type==='ספר פיזי')  
+            this.downloadFile(this.resourceItem.coverImage)
+          else
+               this.downloadFile(this.resourceItem.filePath)
+          if(this.contentOption=='add' || this.contentOption=='edit')  //?
              this.isFirstEdit = true
-Promise.all(requests).then(() => {
+
+          Promise.all(requests).then(() => {
             // עכשיו כל הקריאות הושלמו, תוכל לבצע את ההדפסה בבטחה
             Object.entries(this.multipleChoiceFields).forEach(([key, value]) => {
               console.log("array in map", key, value.allOption);
@@ -263,12 +293,11 @@ Promise.all(requests).then(() => {
             console.error("Error in one of the requests", err);
           });
           
-          // עדכון optionSelected
-          //  this.multipleChoiceFields['subjects'].optionSelected = this.resourceItem.subjects;
-          //  this.multipleChoiceFields['tags'].optionSelected = this.resourceItem.tags;
-          //  this.multipleChoiceFields['specializations'].optionSelected = this.resourceItem.specializations;
-          //  this.multipleChoiceFields['classes'].optionSelected = this.resourceItem.classes;
-
+         if(this.contentOption=='addLink')
+            {  
+              this.link=this.resourceItem.filePath
+              this.disabledOptions['addLink'] = this.link && this.isValidLink ? true : false;
+            }
         },
         error: (err) => {
           console.error('Error fetching resource by ID', err);
@@ -357,46 +386,77 @@ Promise.all(requests).then(() => {
 
   //בעת בחירת קובץ ממחשב
   downloadFile(filePath: string) {
-    console.log('Query URL:', filePath);
+    if (this.contentOption != 'addLink') {
+      console.log("path in download " + filePath);
+      this.apiService
+        .Read(`/EducationalResource/presigned-url?filePath=${filePath}`)
+        .subscribe({
+          next: async (response) => {
+            const presignedUrl = response.url;
+            if (response && response.url) {
+              try {
+                const fileResponse = await fetch(presignedUrl);
+                console.log("file response----", fileResponse.ok);
+  
+                if (!fileResponse.ok) {
+                  throw new Error('Network response was not ok');
+                }
+                const blob = await fileResponse.blob();
+                const file = new File([blob], this.resourceItem.title, { type: blob.type });
+                console.log('File received:', file, this.file);
 
-    this.apiService
-      .Read(`/EducationalResource/presigned-url?filePath=${encodeURIComponent(filePath)}`)
-      .subscribe({
-        next: async (response) => {
-          const presignedUrl = response.url;
-          if (response && response.url) {
-            try {
-              const fileResponse = await fetch(presignedUrl);
-              if (!fileResponse.ok) {
-                throw new Error('Network response was not ok');
+              if(this.contentOption=='add')
+              {
+                this.file = file;
+                this.onFileSelected();
               }
-              const blob = await fileResponse.blob();
-              const file = new File([blob], this.resourceItem.title, { type: blob.type });
-              this.file = file
-
-              // כאן תוכל להשתמש במשתנה file כפי שצריך
-              console.log('File received:', file, this.file);
-              this.onFileSelected();
-
-            } catch (error) {
-              console.error('Error fetching the file:', error);
-              alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
+              else
+              {
+                this.coverImage=file;
+                this.onImageSelected()
+              }
+               if(this.contentOption==='edit')
+               {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                  if (event.target) {
+                    this.content = event.target.result as string; // שמירת התוכן במשתנה content
+                  } else {
+                    console.error('FileReader event target is null.');
+                  }
+                };
+                reader.readAsText(file); // קריאה כטקסט (אם זה קובץ טקסט)
+              }
+              
+              } catch (error) {
+                console.error('Error fetching the file:', error);
+                this.snackBar.open('שגיאה בהורדת הקובץ', 'סגור', {
+                  duration: 3000,
+                  panelClass: ['error-snackbar'],
+                  direction: 'rtl',
+                });
+              }
+            } else {
+              console.error('Invalid response for download URL.');
+              this.snackBar.open('לא ניתן להוריד את הקובץ', 'סגור', {
+                duration: 3000,
+                panelClass: ['error-snackbar'],
+                direction: 'rtl',
+              });
             }
-          } else {
-            console.error('Invalid response for download URL.');
-            alert('לא ניתן להוריד את הקובץ. אנא נסה שוב.');
-          }
-        },
-        error: (err) => {
-          console.error('Error fetching presigned URL:', err);
-          alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
-        },
-      });
-
+          },
+          error: (err) => {
+            console.error('Error fetching presigned URL:', err);
+            alert('שגיאה בהורדת הקובץ. אנא נסה שוב.');
+          },
+        });
+    }
   }
-
+  
 
   onFileSelected(event?: Event, filePath?: string): void {
+    if(this.contentOption!='Link')
+    {
     if (this.isFirstEdit === false) {
       if (event) {
         const input = event.target as HTMLInputElement;
@@ -408,11 +468,13 @@ Promise.all(requests).then(() => {
 
     }
     this.isFirstEdit = false
-
+    
     if (this.file) {
       const fileType = this.file.type;
+      
+      
       const fileName = this.file.name.toLowerCase();
-
+      
 
       if (fileType.startsWith('video/')) {
         this.clearPreviewsExcept('video');
@@ -432,7 +494,8 @@ Promise.all(requests).then(() => {
         const reader = new FileReader();
         reader.onload = () => {
           this.previewImage = reader.result; //  שמירת התצוגה המקדימה לתמונה 
-        };
+         
+        };   
         reader.readAsDataURL(this.file);
       }
     }
@@ -442,6 +505,7 @@ Promise.all(requests).then(() => {
       this.formErrorMessage = null
     }
   }
+}
 
   //מחיקת הקובץ הנבחר
   removeSelectedFile() {
@@ -479,8 +543,11 @@ Promise.all(requests).then(() => {
   }
 
   //בעת בחירת תמונת שער
-  onImageSelected(event: Event): void {
+  onImageSelected(event?: Event,filePath?:string): void {
     
+    
+    if(event)
+    {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       this.coverImage = input.files[0];
@@ -490,8 +557,8 @@ Promise.all(requests).then(() => {
       }
       reader.readAsDataURL(this.coverImage);
       
-      
     }
+  }
     if (this.coverImage) {
       this.coverImageErrorMessage = null
       this.formErrorMessage = null
@@ -500,11 +567,16 @@ Promise.all(requests).then(() => {
       this.coverImageErrorMessage = "חסר תמונת תצוגה מקדימה לקובץ"
     }
       
-
+    
     if(this.contentOption=='physicalBook')
        {
         this.disabledOptions['physicalBook'] = this.coverImage ? true : false
        }
+
+       if (this.coverImage) {
+        const objectUrl = URL.createObjectURL(this.coverImage);
+        this.displayImage = objectUrl; // שמירת התצוגה המקדימה לתמונה
+    }
   }
 
   //שמירה איזה סוג קובץ נבחר
@@ -594,17 +666,9 @@ Promise.all(requests).then(() => {
       field.optionSelected.splice(index, 1);
       array.removeAt(index);
     }
-    // const updatedValues = field.optionSelected.join(', ');
-    // this.fileForm.get(fieldKey)?.setValue(updatedValues);
+  
   }
-  // updateFormattedFields(fieldKey: string): void {
-  //   // עדכן את formattedTags או שדות אחרים לפי הצורך
-  //   if (fieldKey === 'tags') {
-  //     this.formattedTags = this.multipleChoiceFields['tags'].optionSelected.map(tagId => this.getTagById(tagId)).join(', ');
-  //   }
-  //   // הוסף כאן לוגיקה לשדות אחרים במידת הצורך
-  // }
-
+  
   //טיפול בהכנסת הערך הנבחר למערכים
   toggleSelection(option: any, fieldKey: string) {
     const field = this.multipleChoiceFields[fieldKey];
@@ -679,7 +743,7 @@ Promise.all(requests).then(() => {
 //קבלת התגית לפי ה_id שלה
 getOptionById(optionId: string, fieldKey: string)
   {
-    console.log("OptionById",this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
+    // console.log("OptionById",this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
     
     return this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId)
   }
@@ -810,6 +874,12 @@ getOptionById(optionId: string, fieldKey: string)
     }
   }
 
+  onInputChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.fileForm.get('libraryLocation')?.setValue(input.value);
+   }
+
+
   //שליחת הטופס
   onSubmit(): void {
     this.isSubmitting = true;//לחסימת אפשרות ליותר משליחה אחת
@@ -820,7 +890,6 @@ getOptionById(optionId: string, fieldKey: string)
     }
 
     if (this.contentOption == 'physicalBook') {
-      this.fileForm.patchValue({ type: 'ספר פיזי' }); // הגדרת ערך ברירת מחדל
       this.updateTypeValidator(false);
     } else {
       this.fileForm.patchValue({ approved: '' })
@@ -838,6 +907,7 @@ getOptionById(optionId: string, fieldKey: string)
       const metadata = {
         ...form,
         createdBy: this.userId,
+        coverImage:'',
         filePath: libraryLocation || this.link, //אם לא הוכנס קישור או מיקום נכנס מחרוזת ריקה
         contentOption: this.getContentOption(this.contentOption)//מצב הטופס
       }
@@ -852,7 +922,7 @@ getOptionById(optionId: string, fieldKey: string)
       if (this.isImage && this.contentOption!=='physicalBook') {
         this.coverImage = this.file //אם סוג תמונה -תמונת השער היא אותה תמונה
       }
-
+      
      
 
       if (this.coverImage && this.contentOption !== 'edit')//הכנסת תמונת שער לאוביקט לשליחה
@@ -924,54 +994,87 @@ getOptionById(optionId: string, fieldKey: string)
   onSubmitEdit(): void {
     
 
-
-    if (this.content && !this.file)//אם הקובץ הוא של העלאת תוכן שמירה שלו במשתנה
+    if (this.content && this.contentOption==='edit')//אם הקובץ הוא של העלאת תוכן שמירה שלו במשתנה
     {
       this.file = this.createTextFile();
     }
-    if (this.fileForm.valid && (this.file || this.link) && ((!this.isImage && this.coverImage) || this.isImage)) //ולידציה של השדות
+    console.log(this.fileForm.value);
+   
+    if (this.contentOption == 'physicalBook') {
+      this.fileForm.patchValue({ type: 'ספר פיזי' }); // הגדרת ערך ברירת מחדל
+      // this.fileForm.patchValue({ libraryLocation:this.resourceItem.filePath || '' })
+      this.updateTypeValidator(false);
+    } else {
+      this.fileForm.patchValue({ approved: '' })
+      // this.fileForm.patchValue({ loanValidity: '' })
+      this.fileForm.patchValue({ purchaseLocation: '' })
+      this.fileForm.patchValue({ price: '' })
+      this.fileForm.patchValue({ catalogNumber: '' })
+      this.fileForm.patchValue({ libraryLocation:'' })
+    }
+    console.log("---");
+    
+    if ((this.fileForm.valid || (this.contentOption!== 'physicalBook' && this.fileForm.value.loanValidity=='')) && (this.file || this.link || (this.contentOption == 'physicalBook' && this.coverImage)) && ((!this.isImage && this.coverImage) || this.isImage)) //ולידציה של השדות
     {
+      
       const formData = new FormData();
-
+      console.log("link",this.link);
+      
+      const { libraryLocation, ...form } = this.fileForm.value;
       const metadata = {
-        ...this.fileForm.value,
-         filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
-        contentOption:this.getContentOption(this.contentOption)//מצב הטופס
+        ...form,
+        coverImage:'',
+        filePath: libraryLocation || this.link, //אם לא הוכנס קישור או מיקום נכנס מחרוזת ריקה
+        contentOption: this.getContentOption(this.contentOption)//מצב הטופס
       }
-
+      console.log("file path",metadata.filePath);
+      
+      // const metadata = {
+      //   ...this.fileForm.value,
+      //    filePath:this.link, //אם לא הוכנס קישור נכנס מחרוזת ריקה
+      //   contentOption:this.getContentOption(this.contentOption)//מצב הטופס
+      // }
+      
       let str: string = JSON.stringify(metadata)
       console.log("string data: " + str)
       formData.append('metadata', str) //הכנסת אוביקט של הנתונים לאוביקט שליחה
       if (this.file) {
         const rename = this.renameFile(this.file)
         console.log(rename);
-
-        formData.append('files', rename)//הכנסת הקובץ לאוביקט לשליחה
+        
+        formData.append('resource', rename)//הכנסת הקובץ לאוביקט לשליחה
       }
-
-      if (this.isImage) {
+      console.log("this is image "+this.isImage);
+      
+      if (this.isImage && this.contentOption!=='physicalBook') {
+        console.log("file",this.file);
+        
         this.coverImage = this.file //אם סוג תמונה תמונת השער היא אותה תמונה
+        console.log("co",this.coverImage);
+
       }
-
-
+      
+      // if (this.coverImage &&(this.contentOption === 'addLink' || this.contentOption === 'edit') )  //?
+      //   this.coverImage=null
+      // else
       if (this.coverImage && this.contentOption !== 'edit')//הכנסת תמונת שער לאוביקט לשליחה
       {
         console.log("image " + this.coverImage);
 
-        formData.append('files', this.renameFile(this.coverImage))
+        formData.append('coverImage', this.renameFile(this.coverImage))
       }
 
       formData.forEach((value, key) => {
         console.log(`${key}: ${value}`);
       });
-
+      
 
       const query = `/EducationalResource/${this.itemID}`;
       console.log("********qeury*** " + query);
 
-      this.apiService.PutWithoutHeaders(query, formData).subscribe({ // put 
+      this.apiService.PutWithoutHeaders(query, formData).subscribe({ 
         next: (response) => {
-          console.log('טופס נשלח בהצלחה:', this.fileForm.value);
+          console.log('טופס נשלח בהצלחה:', response);
           this.snackBar.open('הפריט נערך בהצלחה', 'Close', {
             duration: 3000,
             panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
@@ -980,7 +1083,7 @@ getOptionById(optionId: string, fieldKey: string)
         },
         error: (err) => {
           console.log('תקלה בשליחת טופס', err);
-          this.snackBar.open('בעיה בעריכת הפריט, נסה שוב', 'סגור', {
+          this.snackBar.open('תקלה בשליחת טופס', 'סגור', {
             duration: 3000,
             panelClass: ['custom-snack-bar'], // הוספת הכיתה המותאמת אישית
           });
@@ -994,7 +1097,5 @@ getOptionById(optionId: string, fieldKey: string)
       });
     }
     this.location.back()
-
   }
-
 }

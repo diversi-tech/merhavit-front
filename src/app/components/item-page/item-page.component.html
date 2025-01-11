@@ -19,12 +19,13 @@
         <p>לחצי 👆 על הכריכה להצגת המסמך*</p>
       </div>
 
-          <div class="example-button-container" *ngIf="item.type === 'טקסט'" (click)="downloadResource(item); $event.stopPropagation()">
-            <button mat-fab extended>
-              <mat-icon>download</mat-icon>
-              להורדת הקובץ
-            </button>
-          </div>
+      <div class="example-button-container" *ngIf="item.type === 'טקסט'"
+        (click)="downloadResource(item); $event.stopPropagation()">
+        <button mat-fab extended>
+          <mat-icon>download</mat-icon>
+          להורדת הקובץ
+        </button>
+      </div>
 
       <div *ngIf="isAudio">
         <!-- הצגת תמונת הכריכה מעל השיר -->
@@ -40,65 +41,76 @@
 
   <!-- פרטי הפריט -->
   <div *ngIf="item" class="grid-item item-2 item-details">
-    <h2>{{ item.title || '' }}</h2>
-    <p><strong>תאריך פרסום:</strong> {{ item.publicationDate || 'לא ידוע' }}</p>
-      <div class="subjects-wrapper"> 
-        <div class="subjects-container">
-          <p class="subjects-design" *ngFor="let subject of item.subjects">
-            {{ getOptionNameById(subject, 'subjects') || 'לא ידוע' }}
-          </p>
-        </div>
-        <p><strong>נושא:</strong></p>
+    <h2>{{ item.title || 'לא ידוע' }}</h2>
+    <div class="subjects-wrapper" *ngIf="item.publicationDate">
+      <p> {{ item.publicationDate }}</p>
+      <p><strong>תאריך פרסום:</strong></p>
+    </div>
+    <div class="subjects-wrapper">
+      <div class="subjects-container">
+        <p class="subjects-design" *ngFor="let subject of item.subjects">
+          {{ getOptionNameById(subject, 'subjects') || 'לא ידוע' }}
+        </p>
       </div>
-      <p><strong>גיל:</strong> {{ item.ages || 'לא ידוע' }}</p>
-    <p><strong>רמה:</strong> {{ item.level || 'לא ידוע' }}</p>
-    <p><strong>שפה:</strong> {{ item.language || 'לא ידוע' }}</p>
-    <p><strong>שנת הוצאה לאור:</strong> {{ item.releaseYear || 'לא ידוע' }}</p>
-    <p><strong>מחבר:</strong> {{ item.author || 'לא ידוע' }}</p>
-    <p *ngIf="item.physicalBook==true"><strong>מיקום בסיפריה:</strong> {{ item.filePath || 'לא ידוע' }}</p>
-    <p><strong>תיאור:</strong> {{ item.description || 'לא ידוע' }}</p>
+      <p><strong>נושא:</strong></p>
+    </div>  
+    <div class="subjects-wrapper" *ngIf="item.ages">
+      <p> {{ item.ages }}</p>
+      <p><strong>גיל:</strong></p>
+    </div>
+    <div class="subjects-wrapper" *ngIf="item.level">
+      <p> {{ item.level }}</p>
+      <p><strong>רמה:</strong></p>
+    </div>
+    <div class="subjects-wrapper" *ngIf="item.language">
+      <p> {{ item.language }}</p>
+      <p><strong>שפה:</strong></p>
+    </div>
+    <div class="subjects-wrapper" *ngIf="item.releaseYear">
+      <p> {{ item.releaseYear }}</p>
+      <p><strong>שנת הוצאה לאור:</strong></p>
+    </div>
+    <div class="subjects-wrapper" *ngIf="item.author">
+      <p> {{ item.author }}</p>
+      <p><strong>מחבר:</strong></p>
+    </div>
+    <div class="subjects-wrapper" *ngIf="physicalBook">
+      <p> {{ item.filePath || 'לא ידוע' }}</p>
+      <p><strong>מיקום בסיפריה:</strong></p>
+    </div>
+    <div class="subjects-wrapper" *ngIf="item.description">
+      <p>{{ item.description || 'לא ידוע' }}</p>
+      <p><strong>תיאור:</strong></p>
+    </div>
     <!-- הצגת התגיות -->
-     <section>
-          <div class="chip-container">
-            <mat-chip-row *ngFor="let keyword of tags()">
-              {{ getOptionNameById(keyword, 'tags') || 'אין תגיות ' }}
-            </mat-chip-row>
-          </div>
-    </section>
-    
- 
-      <div class="calender">
-        <!-- כפתור להזמנה -->
-        <section>
-          <div class="example-button-row">
-            <button mat-button>להזמנה</button>
-          </div>
-        </section>
-        <mat-form-field appearance="fill">
-          <mat-label>תאריך סיום</mat-label>
-          <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" (dateChange)="validateDates()" />
-          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-          <mat-datepicker #endPicker></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>תאריך התחלה</mat-label>
-          <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" (dateChange)="validateDates()" />
-          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-          <mat-datepicker #startPicker></mat-datepicker>
-        </mat-form-field>
-          <!-- הודעת שגיאה -->
-          <div *ngIf="range.controls.start.errors?.['matDatepickerParse']">
-            <mat-error>תאריך התחלה לא תקין</mat-error>
-          </div>
-          <div *ngIf="range.controls.end.errors?.['matDatepickerParse']">
-            <mat-error>תאריך סיום לא תקין</mat-error>
-          </div>
-
+    <section *ngIf="item.tags">
+      <div class="chip-container">
+        <mat-chip-row *ngFor="let keyword of tags()">
+          {{ getOptionNameById(keyword, 'tags') }}
+        </mat-chip-row>
       </div>
-      
+    </section>
 
+    <div class="calender" *ngIf="physicalBook">
+      <section>
+        <div class="example-button-row">
+          <button mat-button class="brrow" (click)="onBorrow()">להזמנה</button>
+        </div>
+      </section>
+      <mat-form-field>
+        <mat-label>בחרי טווח תאריכים</mat-label>
+        <mat-date-range-input [rangePicker]="picker" [min]="minDate" [max]="maxDate" (dateChange)="validateDateRange()">
+          <input matStartDate placeholder="Start date" [(ngModel)]="startDate">
+          <input matEndDate placeholder="End date" [(ngModel)]="endDate">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
   </div>
-  <!-- פריטים דומים -->
+  
+</div>
+<!-- פריטים דומים -->
   <div class="grid-item item-3">
     <div class="similar-items">
       <ng-container *ngIf="this.isHeaderDisplayed">
@@ -152,4 +164,3 @@
       </div>
     </div>
   </div>
-</div>

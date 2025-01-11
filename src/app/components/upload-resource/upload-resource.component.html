@@ -299,16 +299,18 @@
             </div>
           </div>
 
-          <div class="form-group" *ngIf="contentOption=='physicalBook'">
+          <div class="form-group" *ngIf="contentOption === 'physicalBook'">
             <label for="libraryLocation">מיקום בספרייה</label>
-            <input class="input_fields" type="text" id="libraryLocation" formControlName="libraryLocation" [placeholder]="formMode === 'edit' ? this.resourceItem.filePath : ''"/>
-          </div>
+            <input class="input_fields" type="text" id="libraryLocation" formControlName="libraryLocation" 
+                   [value]="formMode === 'edit' ? fileForm.get('libraryLocation')?.value : ''" />
         </div>
+        </div>
+        
         <!-- כותרת: סטטוס -->
       <div class="form-section" *ngIf="contentOption=='physicalBook'">
         <h2>סטטוס</h2>
         <div class="form-group">
-          <label for="approved">מאושר להשאלה</label>
+          <label for="approved">מאושר פיזי</label>
           <mat-radio-group
           aria-labelledby="example-radio-group-label"
           class="example-radio-group"

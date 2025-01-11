@@ -20,7 +20,7 @@
       class="far fa-heart"
       style="color: #434343; font-size: 3vh; width: 2vw"
       [routerLink]="['/favorites']"
-      title="מועדפים"
+    title="מועדפים"
     ></i>
     <!-- אייקון פעמון ריק (Font Awesome) -->
     <i
@@ -69,6 +69,7 @@
         style="color: #434343; font-size: 4vh; cursor: pointer"
       ></i>
       <div class="filter-details-container" *ngIf="showDetails">
+        
         <div *ngIf="!isUserManagementComponent" class="filter-details-box">
           <!-- עמודה שנייה - צד שמאל -->
           <div class="filter-column">
@@ -82,11 +83,11 @@
               />
             </div>
             <div class="filter-row">
-              <label for="borrowable">ניתן להשאלה</label>
+              <label for="borrowable">ניתן פיזי</label>
               <input
                 id="borrowable"
                 type="text"
-                placeholder="ניתן להשאלה"
+                placeholder="ניתן פיזי"
                 [formControl]="borrowedControl"
               />
             </div>
@@ -148,13 +149,9 @@
               />
             </div>
             <div class="filter-row">
-              <label for="hebrew-year">שנת הוצאה עברי</label>
-              <input
-                id="hebrew-year"
-                type="text"
-                placeholder="שנת הוצאה עברי"
-                [formControl]="publicationDateControl"
-              />
+              <label for="hebrew-year">גיל</label>
+              <input id="age" type="text" placeholder="גיל" [formControl]="agesControl" />
+         
             </div>
             <div class="filter-row">
               <label for="latin-year">שנת הוצאה לועזי</label>
@@ -166,13 +163,10 @@
               />
             </div>
             <div class="filter-row">
-              <label for="level">גיל/רמה</label>
-              <input
-                id="level"
-                type="text"
-                placeholder="גיל/רמה"
-                [formControl]="levelControl"
-              />
+              <label for="level">רמה</label>
+              <input id="level" type="text" placeholder="רמה" [formControl]="levelControl" />
+              
+            
             </div>
             <div class="filter-row">
               <label for="new-in-database">חדש במאגר</label>
