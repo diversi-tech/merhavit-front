@@ -16,5 +16,6 @@ export interface Item {
   filePath: string;
   specializations: string[];
   physicalBook?: boolean; // האם מדובר בספר פיזי
+ loanValidity:number;
   approved: string;
 }

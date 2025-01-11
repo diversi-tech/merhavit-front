@@ -1,0 +1,23 @@
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f3f7fd;
+  padding: 2vh;
+  height: 10vh;
+  z-index: -1;
+}
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f3f7fd;
+  padding: 1vh;
+  height: 8vh;
+  position: relative;
+}
+
+app-search-bar {
+  position: relative;
+  left: -1.875rem; /* מתאים ל-30px */
+}

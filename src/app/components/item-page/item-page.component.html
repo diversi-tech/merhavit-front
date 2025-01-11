@@ -19,6 +19,14 @@
         <p>לחצי 👆 על הכריכה להצגת המסמך*</p>
       </div>
 
+      <div class="example-button-container" *ngIf="item.type === 'טקסט'"
+        (click)="downloadResource(item); $event.stopPropagation()">
+        <button mat-fab extended>
+          <mat-icon>download</mat-icon>
+          להורדת הקובץ
+        </button>
+      </div>
+
       <div *ngIf="isAudio">
         <!-- הצגת תמונת הכריכה מעל השיר -->
         <img *ngIf="item.coverImage" [src]="item.coverImage" [alt]="'Cover image for ' + (item.title || 'שיר')"
@@ -33,57 +41,50 @@
 
   <!-- פרטי הפריט -->
   <div *ngIf="item" class="grid-item item-2 item-details">
-    <h2>{{ item.title || '' }}</h2>
-    <p><strong>תאריך פרסום:</strong> {{ item.publicationDate || '' }}</p>
-    <p><strong>נושא:</strong> {{ item.subjects.join(', ') || '' }}</p>
-    <p><strong>גיל:</strong> {{ item.ages || '' }}</p>
-    <p><strong>רמה:</strong> {{ item.level || '' }}</p>
-    <p><strong>שפה:</strong> {{ item.language || '' }}</p>
-    <p><strong>שנת הוצאה לאור:</strong> {{ item.releaseYear || '' }}</p>
-    <p><strong>מחבר:</strong> {{ item.author || '' }}</p>
-    <p *ngIf="item.physicalBook==true"><strong>מיקום בסיפריה:</strong> {{ item.filePath || '' }}</p>
-    <p><strong>תיאור:</strong> {{ item.description || '' }}</p>
-    <!-- הצגת התגיות -->
-     <section>
-          <div class="chip-container">
-            <mat-chip-row *ngFor="let keyword of tags()">
-              {{ keyword }}
-            </mat-chip-row>
-          </div>
-    </section>
-    
- 
-      <div *ngIf="item.approved!=='לא'" class="calender">
-        <div>a {{item.approved}}</div>
-        <!-- כפתור להזמנה -->
-        <section>
-          <div class="example-button-row">
-            <button  mat-button>להזמנה</button>
-          </div>
-        </section>
-        <mat-form-field appearance="fill">
-          <mat-label>תאריך סיום</mat-label>
-          <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" (dateChange)="validateDates()" />
-          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-          <mat-datepicker #endPicker></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>תאריך התחלה</mat-label>
-          <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" (dateChange)="validateDates()" />
-          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-          <mat-datepicker #startPicker></mat-datepicker>
-        </mat-form-field>
-          <!-- הודעת שגיאה -->
-          <div *ngIf="range.controls.start.errors?.['matDatepickerParse']">
-            <mat-error>תאריך התחלה לא תקין</mat-error>
-          </div>
-          <div *ngIf="range.controls.end.errors?.['matDatepickerParse']">
-            <mat-error>תאריך סיום לא תקין</mat-error>
-          </div>
-
+    <h2>{{ item.title || 'לא ידוע' }}</h2>
+    <p><strong>תאריך פרסום:</strong> {{ item.publicationDate || 'לא ידוע' }}</p>
+    <div class="subjects-wrapper">
+      <div class="subjects-container">
+        <p class="subjects-design" *ngFor="let subject of item.subjects">
+          {{ getOptionNameById(subject, 'subjects') || 'לא ידוע' }}
+        </p>
       </div>
-      
+      <p><strong>נושא:</strong></p>
+    </div>
+    <p><strong>גיל:</strong> {{ item.ages || 'לא ידוע' }}</p>
+    <p><strong>רמה:</strong> {{ item.level || 'לא ידוע' }}</p>
+    <p><strong>שפה:</strong> {{ item.language || 'לא ידוע' }}</p>
+    <p><strong>שנת הוצאה לאור:</strong> {{ item.releaseYear || 'לא ידוע' }}</p>
+    <p><strong>מחבר:</strong> {{ item.author || 'לא ידוע' }}</p>
+    <p *ngIf="item.physicalBook==true"><strong>מיקום בסיפריה:</strong> {{ item.filePath || 'לא ידוע' }}</p>
+    <p><strong>תיאור:</strong> {{ item.description || 'לא ידוע' }}</p>
+    <!-- הצגת התגיות -->
+    <section>
+      <div class="chip-container">
+        <mat-chip-row *ngFor="let keyword of tags()">
+          {{ getOptionNameById(keyword, 'tags') || 'אין תגיות ' }}
+        </mat-chip-row>
+      </div>
+    </section>
 
+    <!-- <div class="calender" *ngIf="physicalBook"> -->
+
+    <div class="calender" *ngIf="physicalBook && item.approved!=='לא'">
+      <section>
+        <div class="example-button-row">
+          <button mat-button class="brrow" (click)="onBorrow()">להזמנה</button>
+        </div>
+      </section>
+      <mat-form-field>
+        <mat-label>בחרי טווח תאריכים</mat-label>
+        <mat-date-range-input [rangePicker]="picker" [min]="minDate" [max]="maxDate" (dateChange)="validateDateRange()">
+          <input matStartDate placeholder="Start date" [(ngModel)]="startDate">
+          <input matEndDate placeholder="End date" [(ngModel)]="endDate">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
   </div>
   <!-- פריטים דומים -->
   <div class="grid-item item-3">

@@ -18,6 +18,7 @@ export class ItemsService {
   public limit: number = 10;
   public searchTerm: string = '';
   public typeFilter: string = '';
+  public type: string = '';
   public title: string = '';
   public  author: string = '';
   public borrowed: string = '';
@@ -34,7 +35,7 @@ export class ItemsService {
   public ifArrIsEmty$ = this.ifArrIsEmtySubject.asObservable(); // Observable
   private totalSubject = new BehaviorSubject<number>(0); // Subject לניהול המספר 
   totalItems$ = this.totalSubject.asObservable(); // Observable שניתן להאזין לו
-  type: any;
+  // type: any;
 
   constructor(private apiService: ApiService) { }
   ngOnInit(): void {
@@ -135,7 +136,7 @@ export class ItemsService {
  
 
   searchItems(searchTerm: string = this.searchTerm,page: number = 0,
-    limit: number = 100): Observable<Item[]> {
+    limit: number = 10): Observable<Item[]> {
     let params = new HttpParams()
       // .set('page', this.page.toString())
       // .set('limit', this.limit.toString());
@@ -151,6 +152,8 @@ export class ItemsService {
           this.items = response.data || [];
           this.itemsSubject.next(this.items);
           this.totalItems = response.totalCount;  // עדכון של totalItems לפי התוצאות שסוננו
+         
+          
           this.totalSubject.next(this.totalItems)
           return this.items;
         })
@@ -160,8 +163,10 @@ export class ItemsService {
   
 
   fetchItems(page: number = 0,
-    limit: number = 100): void {
+    limit: number = 10): void {
     this.isFetching = true;
+    this.page=0
+    this.limit=10
     
   let params = new HttpParams()
     // .set('page', this.page.toString())
@@ -170,12 +175,12 @@ export class ItemsService {
 
   if (this.searchTerm) {
     params = params.set('searchTerm', this.searchTerm);
+    console.log("searchTerm", this.searchTerm);
   }
-    console.log("type in service", this.typeFilter);
 
-  if (this.typeFilter && this.typeFilter !== 'all') {
-      
+  if (this.typeFilter && this.typeFilter !== 'all') {   
     params = params.set('filterType', this.typeFilter);
+    console.log("filterType", this.typeFilter);
   }
     if (this.title) {
       params = params.set('title', this.title);
@@ -210,7 +215,6 @@ export class ItemsService {
     if (this.duration) {
       params = params.set('duration', this.duration);
     }
-  
     console.log("URL with parameters:", `/EducationalResource/getAll?${params.toString()}`);
     console.log("params",params)
     console.log("params.toString",params.toString)
