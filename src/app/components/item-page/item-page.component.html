@@ -53,11 +53,12 @@
     </section>
     
  
-      <div class="calender">
+      <div *ngIf="item.approved!=='לא'" class="calender">
+        <div>a {{item.approved}}</div>
         <!-- כפתור להזמנה -->
         <section>
           <div class="example-button-row">
-            <button mat-button>להזמנה</button>
+            <button  mat-button>להזמנה</button>
           </div>
         </section>
         <mat-form-field appearance="fill">

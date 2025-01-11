@@ -11,7 +11,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ItemsService } from '../items.service';
 import { MatDialog } from '@angular/material/dialog';
- import { log } from 'console';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';

@@ -9,7 +9,6 @@ import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTri
 import { MatInputModule } from '@angular/material/input';
 import { lastValueFrom, map, Observable, startWith, tap } from 'rxjs';
 import { ApiService } from '../../api.service';
-import { title } from 'process';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatIconModule } from '@angular/material/icon';
 import { Overlay, OverlayModule, OverlayPositionBuilder } from '@angular/cdk/overlay';
@@ -73,7 +72,7 @@ export class UploadResourceComponent {
   isPDF: boolean = false;
   isImage: boolean = true
   isAudio: boolean = false
-  fileTypes: Array<string> = ['ספר פיזי' ,'ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
+  fileTypes: Array<string> = ['ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
   userId: string = ''
   purchaseLocations: Array<string> = ["חנות ספרים", "פוטומן"];
 
@@ -121,14 +120,14 @@ export class UploadResourceComponent {
 
   readonly addOnBlur = true;
 
-  constructor(private itemService:ItemsService, private pr: ActivatedRoute, private location: Location, private me: ActivatedRoute, private fb: FormBuilder, private sanitizer: DomSanitizer, private apiService: ApiService, private dialog: MatDialog, private snackBar: MatSnackBar, private router: Router) {
+  constructor(private itemService:ItemsService, private pr: ActivatedRoute, private location: Location, private me: ActivatedRoute, private fb: FormBuilder, private sanitizer: DomSanitizer, public apiService: ApiService, private dialog: MatDialog, private snackBar: MatSnackBar, private router: Router) {
     // יצירת טופס
     this.fileForm = this.fb.group({
       title: ['', Validators.required],
       type: ['', Validators.required],
       subjects: this.fb.array([], [Validators.required]),
-      approved: [''],
-      loanValidity: ['',[Validators.required]],
+      approved: ['כן'],
+      loanValidity: [0,[Validators.required]],
       specializations: this.fb.array([], [Validators.required]),
       classes: this.fb.array([], [Validators.required]),
       level: ['', Validators.required],
@@ -679,9 +678,7 @@ Promise.all(requests).then(() => {
 
 //קבלת התגית לפי ה_id שלה
 getOptionById(optionId: string, fieldKey: string)
-  {
-    console.log("OptionById",this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
-    
+  {    
     return this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId)
   }
 

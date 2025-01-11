@@ -256,9 +256,9 @@
         </div>
       </div>
       
-    </div> 
+    
 
-      <div class="form-section-container">
+      
         
         <!-- כותרת: אודות הקובץ -->
         <div class="form-section">
@@ -303,6 +303,48 @@
             <label for="libraryLocation">מיקום בספרייה</label>
             <input class="input_fields" type="text" id="libraryLocation" formControlName="libraryLocation" [placeholder]="formMode === 'edit' ? this.resourceItem.filePath : ''"/>
           </div>
+          <div class="form-group">
+            <label for="tagsInput">תגיות</label>
+            <mat-form-field  class="autocomplete-container">
+              <mat-chip-grid #tagsChipList  aria-label="רשימת תגיות">
+                <div class="input-container">
+                <mat-icon matPrefix class="dropdown-icon">expand_more</mat-icon>
+                <input
+                id="tagsInput"
+                class="input_fields"
+                matInput
+                  [matChipInputFor]="tagsChipList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                  [matChipInputAddOnBlur]="true"
+                  (matChipInputTokenEnd)="add($event,'tags')"
+                  [matAutocomplete]="tagsAuto"
+                  (focus)="updateFilteredOptions('tags')"
+                  [placeholder]="formMode === 'edit' ? '' : ''"                
+                  [formArrayName]="'tags'"
+                />
+                </div>
+                <mat-chip-row *ngFor="let tag of multipleChoiceFields['tags'].optionSelected" [removable]="true" (removed)="remove(tag,'tags')">
+                  {{getOptionNameById(tag,'tags')}}
+                  <button matChipRemove>×</button>
+                </mat-chip-row>
+              </mat-chip-grid>
+              <mat-autocomplete #tagsAuto="matAutocomplete" (optionSelected)="select($event,'tags')" [displayWith]="displayFn" [autoActiveFirstOption]="false" >
+                <mat-option *ngFor="let tag of (multipleChoiceFields['tags'].filteredOption$ | async)" [value]="tag._id" (change)="toggleSelection( tag, 'tags')" (click)="$event.stopPropagation()" >
+                  <div (click)="optionClicked($event, tag,'tags')">
+                    <mat-checkbox [checked]="multipleChoiceFields['tags'].optionSelected.includes(tag._id)">
+                  {{ tag.name }}
+                </mat-checkbox>
+              </div>
+                </mat-option>
+                <button mat-raised-button color="primary" class="custom-button" (click)="openDialog('tags','/tags/addTag')" >+ תגית חדשה </button>
+              </mat-autocomplete>
+            </mat-form-field>
+            
+          </div>
+          <div class="form-group">
+            <label for="description">מה עוד כדאי לדעת?</label>
+            <textarea class="input_fields" id="description" rows="4" formControlName="description" [placeholder]="formMode === 'edit' ? fileForm.get('description')?.value : ''"></textarea>
+          </div>
         </div>
         <!-- כותרת: סטטוס -->
       <div class="form-section" *ngIf="contentOption=='physicalBook'">
@@ -320,7 +362,7 @@
         </div>
         <div class="form-group">
           <label for="loanValidity">משך השאלה</label>
-          <input class="input_fields" type="text" id="loanValidity" formControlName="loanValidity" [placeholder]="formMode === 'edit' ? fileForm.get('loanValidity')?.value : ''"/>
+          <input class="input_fields" type="number" id="loanValidity" formControlName="loanValidity" [placeholder]="formMode === 'edit' ? fileForm.get('loanValidity')?.value : ''"/>
         <div class="error-fields" *ngIf="fileForm.get('loanValidity')?.invalid && fileForm.get('loanValidity')?.touched">
             <small *ngIf="fileForm.get('loanValidity')?.errors?.['required']">יש להזין תוקף</small>
           </div>
@@ -328,50 +370,7 @@
       </div>
       </div>
 
-      <div class="form-section">
-        <div class="form-group">
-          <label for="tagsInput">תגיות</label>
-          <mat-form-field  class="autocomplete-container">
-            <mat-chip-grid #tagsChipList  aria-label="רשימת תגיות">
-              <div class="input-container">
-              <mat-icon matPrefix class="dropdown-icon">expand_more</mat-icon>
-              <input
-              id="tagsInput"
-              class="input_fields"
-              matInput
-                [matChipInputFor]="tagsChipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                [matChipInputAddOnBlur]="true"
-                (matChipInputTokenEnd)="add($event,'tags')"
-                [matAutocomplete]="tagsAuto"
-                (focus)="updateFilteredOptions('tags')"
-                [placeholder]="formMode === 'edit' ? '' : ''"                
-                [formArrayName]="'tags'"
-              />
-              </div>
-              <mat-chip-row *ngFor="let tag of multipleChoiceFields['tags'].optionSelected" [removable]="true" (removed)="remove(tag,'tags')">
-                {{getOptionNameById(tag,'tags')}}
-                <button matChipRemove>×</button>
-              </mat-chip-row>
-            </mat-chip-grid>
-            <mat-autocomplete #tagsAuto="matAutocomplete" (optionSelected)="select($event,'tags')" [displayWith]="displayFn" [autoActiveFirstOption]="false" >
-              <mat-option *ngFor="let tag of (multipleChoiceFields['tags'].filteredOption$ | async)" [value]="tag._id" (change)="toggleSelection( tag, 'tags')" (click)="$event.stopPropagation()" >
-                <div (click)="optionClicked($event, tag,'tags')">
-                  <mat-checkbox [checked]="multipleChoiceFields['tags'].optionSelected.includes(tag._id)">
-                {{ tag.name }}
-              </mat-checkbox>
-            </div>
-              </mat-option>
-              <button mat-raised-button color="primary" class="custom-button" (click)="openDialog('tags','/tags/addTag')" >+ תגית חדשה </button>
-            </mat-autocomplete>
-          </mat-form-field>
-          
-        </div>
-        <div class="form-group">
-          <label for="description">מה עוד כדאי לדעת?</label>
-          <textarea class="input_fields" id="description" rows="4" formControlName="description" [placeholder]="formMode === 'edit' ? fileForm.get('description')?.value : ''"></textarea>
-        </div>
-      </div>
+     
        <div *ngIf="formErrorMessage" class="error-message">{{formErrorMessage}}</div>
       <!-- כפתור שליחה -->
       <button type="submit" [disabled]="isSubmitting">
