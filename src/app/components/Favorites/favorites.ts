@@ -7,7 +7,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
 
-
 @Component({
   selector: 'app-favorites',
   templateUrl: './favorites.html',
@@ -21,7 +20,11 @@ export class FavoritesComponent implements OnInit {
   activeTab = 'favorites';
   isLoading = true;
 
-  constructor(private apiService: ApiService, private router: Router, private _snackBar: MatSnackBar) {}
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private _snackBar: MatSnackBar
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.getUserIdFromToken();
@@ -54,8 +57,11 @@ export class FavoritesComponent implements OnInit {
       return new Promise<void>((resolve, reject) => {
         this.apiService.Read(`/favorites/user/${this.userId}`).subscribe({
           next: (data) => {
-            this.favorites = data.favorites;
-            console.log('favorites', this.favorites);
+            console.log('API Response in fetchFavorites:', data);
+            // this.favorites = data.favorites;
+            this.favorites = data.favorites || [];
+
+            console.log('Updated favorites in fetchFavorites:', this.favorites);
             this.fetchFavoriteItemsDetails();
             resolve(); // מסיים את ההמתנה
           },
@@ -106,7 +112,9 @@ export class FavoritesComponent implements OnInit {
       .Delete('/favorites/remove', { userId: this.userId, itemId })
       .subscribe({
         next: () => {
-          this.favorites = this.favorites.filter((item) => item.itemId !== itemId);
+          this.favorites = this.favorites.filter(
+            (item) => item.itemId !== itemId
+          );
           this._snackBar.open('הפריט הוסר מהמועדפים !', 'סגור', {
             duration: 2000,
             panelClass: ['my-custom-snackbar'],
@@ -115,15 +123,11 @@ export class FavoritesComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error removing favorite:', error);
-          this._snackBar.open(
-            'שגיאה במחיקת הפריט מהמועדפים.',
-            'סגור',
-            {
-              duration: 3000,
-              panelClass: ['error-snackbar'],
-              direction: 'rtl',
-            }
-          );
+          this._snackBar.open('שגיאה במחיקת הפריט מהמועדפים.', 'סגור', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+            direction: 'rtl',
+          });
         },
       });
   }
@@ -144,5 +148,4 @@ export class FavoritesComponent implements OnInit {
     const match = filePath.match(/\.[0-9a-z]+$/i);
     return match ? match[0] : null;
   }
-  
 }

@@ -60,7 +60,7 @@ export class OrdersComponent {
 
             if (userId) {
               this.apiService
-                .Read(`/borrow-requests/student/${userId}`)
+                .Read(`/borrowRequests/student/${userId}`)
                 .subscribe({
                   next: (borrowRequestsData) => {
                     console.log('borrowRequestsData', borrowRequestsData);

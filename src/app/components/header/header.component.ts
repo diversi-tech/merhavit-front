@@ -15,7 +15,7 @@ import { ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class HeaderComponent implements OnInit {
-  showSearchBar: boolean = true; // התחלה ב-true כדי למנוע מצב שהחיפוש לא מוצג כברירת מחדל
+  showSearchBar: boolean = true;
 
   constructor(
     private router: Router,
@@ -37,10 +37,8 @@ export class HeaderComponent implements OnInit {
       '/management/classes',
     ];
 
-    // בדיקת הנתיב הנוכחי בעת טעינת הקומפוננטה
     this.updateSearchBarVisibility(hiddenSearchRoutes);
 
-    // מאזין לשינויי ניווט
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         setTimeout(() => {
@@ -55,7 +53,6 @@ export class HeaderComponent implements OnInit {
     const isHiddenRoute = hiddenSearchRoutes.includes(currentRoute);
     const isSpecificItemPage = /^\/item-page\/[^/]+$/.test(currentRoute);
 
-    // עדכון הערך של showSearchBar
     this.showSearchBar = !isHiddenRoute && !isSpecificItemPage;
 
     console.log('Show search bar:', this.showSearchBar);
