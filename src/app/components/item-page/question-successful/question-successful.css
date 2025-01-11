@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #e2f5eb;
+}
+
+.message-box {
+  text-align: center;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  background-color: #f4f4f4;
+  padding: 3vh 3vw; /* padding פנימי קטן יותר */
+  width: 25vw;  /* רוחב קטן יותר */
+  height: 25vw; /* גובה שווה לרוחב (ריבוע) */
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon {
+  width: 9vw;  /* צמצום גודל האייקון */
+  height: 8vw;  /* צמצום גודל האייקון */
+  margin-bottom: 2vh;  /* מרווח קטן יותר */
+}
+
+h1 {
+  font-size: 2vw;  /* צמצום גודל הגופן */
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 1.5vh; /* צמצום המרווח התחתון */
+}
+
+p {
+  font-size: 1rem;  /* צמצום גודל הגופן */
+  color: #333;
+  margin-top: 0;
+}

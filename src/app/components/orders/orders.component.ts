@@ -60,7 +60,7 @@ export class OrdersComponent {
 
             if (userId) {
               this.apiService
-                .Read(`/borrow-requests/student/${userId}`)
+                .Read(`/borrowRequests/student/${userId}`)
                 .subscribe({
                   next: (borrowRequestsData) => {
                     console.log('borrowRequestsData', borrowRequestsData);
@@ -72,8 +72,13 @@ export class OrdersComponent {
                         const status = borrowRequest.status;
                         const requestDate = borrowRequest.requestDate;
                         console.log('resourceId', resourceId);
-                        this.fetchResourceDetails(resourceId, status,requestDate);
+                        this.fetchResourceDetails(
+                          resourceId,
+                          status,
+                          requestDate
+                        );
                       });
+                      console.log('orders', this.orders);
                     } else {
                       console.log('No borrow requests found for this user.');
                       this.showNoDataMessage = true;
@@ -99,15 +104,18 @@ export class OrdersComponent {
     }
   }
 
-  fetchResourceDetails(resourceId: string, status: string, requestDate:string): void {
+  fetchResourceDetails(
+    resourceId: string,
+    status: string,
+    requestDate: string
+  ): void {
     this.apiService.Read(`/EducationalResource/${resourceId}`).subscribe({
       next: (resourceData) => {
         console.log('resourceData', resourceData);
 
         this.orders.push({
-          coverImage: 'path-to-default-image.jpg', // או התמונה האמיתית אם קיימת
+          coverImage: resourceData.coverImage || resourceData.filePath,
           title: resourceData.title,
-          // description: resourceData.description || ' ',
           Author: resourceData.author,
           publicationDate: resourceData.publicationDate,
           resourceId: resourceData._id,
@@ -115,8 +123,10 @@ export class OrdersComponent {
           requestDate: requestDate,
         });
       },
-      error: (error) =>
+      error: (error) => {
         console.error('Error fetching educational resource:', error),
+          (this.showNoDataMessage = true);
+      },
     });
   }
 
@@ -143,7 +153,4 @@ export class OrdersComponent {
     };
     return statusMap[status] || 'לא ידוע';
   }
-  
-
-
 }

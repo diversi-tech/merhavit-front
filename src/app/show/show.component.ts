@@ -1,10 +1,22 @@
-import { Component, Injectable, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import {
+  Component,
+  Injectable,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../api.service';
 import { jwtDecode } from 'jwt-decode';
-import {RouterModule,Router,ActivatedRoute,RouterLink,RouterOutlet,} from '@angular/router';
+import {
+  RouterModule,
+  Router,
+  ActivatedRoute,
+  RouterLink,
+  RouterOutlet,
+} from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { Item } from '../components/interfaces/item.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -18,11 +30,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PageEvent } from '@angular/material/paginator';
 // import { ChangeDetectionStrategy } from '@angular/core';
+import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
 
 import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { catchError, Subscription, switchMap, takeUntil } from 'rxjs';
 import { Subject, combineLatest, of } from 'rxjs';
-import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog.component';
 
 
 @Component({
@@ -41,11 +53,11 @@ import { ConfirmDialogComponent1 } from '../confirm-dialog-delete/confirm-dialog
     MatPaginatorModule,
   ],
 })
-export class ItemsListComponent implements OnInit, OnDestroy  {
+export class ItemsListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private refresh$ = new Subject<void>();
   public items: Item[] = []; //מערך המוצרים של הספריה
-  
+
   public totalItems: number = 0; // תכונה חדשה למעקב אחרי מספר הנתונים
   public userType: string = ''; // משתנה לשמירת סוג המשתמש
   public showNoDataMessage: boolean = false; // משתנה לשליטה בהצגת ההודעה
@@ -53,19 +65,29 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
   itemsFromServer: any[] = []; // משתנה לשמירת כל הפריטים שהתקבלו מהשרת
   public allItems: Item[] = []; // מערך המכיל את כל הפריטים
   private itemsInterval: any;
-  public page: number=0;
-  public limit: number=10;
+  public page: number = 0;
+  public limit: number = 10;
   public typeFilter: string = 'all';
   public searchTerm: string = '';
   public ifArrIsEmty: boolean = false;
   private subscription: Subscription = new Subscription();
-  viewMode: 'list' |'grid' = 'list';  // ברירת המחדל היא כרטיסיות
- 
-  @ViewChild(MatPaginator) paginator!: MatPaginator; 
-  
-  constructor(private http: HttpClient, private _snackBar: MatSnackBar ,private snackBar: MatSnackBar,private dialog: MatDialog, private apiService: ApiService, private router: Router,private ro: Router,private itemsService: ItemsService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
+  viewMode: 'list' | 'grid' = 'list'; // ברירת המחדל היא כרטיסיות
 
-  
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  constructor(
+    private http: HttpClient,
+    private _snackBar: MatSnackBar,
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+    private apiService: ApiService,
+    private router: Router,
+    private ro: Router,
+    private itemsService: ItemsService,
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
+  ) {}
+
   async ngOnInit(): Promise<void> {
     this.getUserTypeFromToken();
     this.itemsService.page = 0;
@@ -76,39 +98,45 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
      this.subscription = this.itemsService.ifArrIsEmty$.subscribe((isEmpty) => {
       this.ifArrIsEmty = isEmpty;
       this.showNoDataMessage = isEmpty; // קיצור לוגיקה
-      this.defultViewMode()
+      this.defultViewMode();
     });
-  // קריאה לשרת כשמשתנה פרמטר
+    // קריאה לשרת כשמשתנה פרמטר
     this.route.queryParams // האזנה לפרמטרים ב-URL
-  .pipe(
-    switchMap((params) => {
-      takeUntil(this.destroy$)
-      const type = params['type'] || '';
-      if (this.itemsService.typeFilter !== type) {
-        this.itemsService.typeFilter = type; // עדכון סוג הסינון בשירות
-        this.itemsService.page = 0; // התחלה מחדש
-        this.itemsService.getItems(this.itemsService.page, this.itemsService.limit, '', type);
-      }
-      //return this.itemsService.items$; // האזנה לזרם הנתונים
-      return combineLatest([this.itemsService.items$, this.itemsService.totalItems$]);
-
-     }),
+      .pipe(
+        switchMap((params) => {
+          takeUntil(this.destroy$);
+          const type = params['type'] || '';
+          if (this.itemsService.typeFilter !== type) {
+            this.itemsService.typeFilter = type; // עדכון סוג הסינון בשירות
+            this.itemsService.page = 0; // התחלה מחדש
+            this.itemsService.getItems(
+              this.itemsService.page,
+              this.itemsService.limit,
+              '',
+              type
+            );
+          }
+          //return this.itemsService.items$; // האזנה לזרם הנתונים
+          return combineLatest([
+            this.itemsService.items$,
+            this.itemsService.totalItems$,
+          ]);
+        }),
         catchError((err) => {
           console.error('Error fetching items:', err);
           return of([]); // במקרה של טעות
-    }),
-  )
-  .subscribe(([items, totalItems]
-) => {
-    this.items = items;
-    this.totalItems=totalItems;
+        })
+      )
+      .subscribe(([items, totalItems]) => {
+        this.items = items;
+        this.totalItems = totalItems;
 
-    this.cdr.detectChanges();
-  });
-  await this.initializeData();
+        this.cdr.detectChanges();
+      });
+    await this.initializeData();
   }
 
-   async initializeData() {
+  async initializeData() {
     try {
       console.log('items before favorites:', this.items);
 
@@ -124,15 +152,15 @@ export class ItemsListComponent implements OnInit, OnDestroy  {
     this.destroy$.next();
     this.destroy$.complete();
   }
-defultViewMode() {
-  if (this.itemsService.typeFilter || this.typeFilter != 'all') {
-    this.viewMode = 'grid'; // שינוי תצוגה לרשימה כאשר הסוג הוא 'all'
-  } else {
-    this.viewMode = 'list'; // שינוי תצוגה לגריד כאשר הסוג שונה מ-'all'
+  defultViewMode() {
+    if (this.itemsService.typeFilter || this.typeFilter != 'all') {
+      this.viewMode = 'grid'; // שינוי תצוגה לרשימה כאשר הסוג הוא 'all'
+    } else {
+      this.viewMode = 'list'; // שינוי תצוגה לגריד כאשר הסוג שונה מ-'all'
+    }
   }
-}
 
- toggleViewMode() {
+  toggleViewMode() {
     this.viewMode = this.viewMode === 'grid' ? 'list' : 'grid'; // שינוי תצוגה
   }
   getUserTypeFromToken(): void {
@@ -151,17 +179,21 @@ defultViewMode() {
       console.warn('Code is running on the server. Skipping token check.');
     }
   }
-  
-  resetPaginator(): void { if (this.paginator) { this.paginator.pageIndex = this.page; this.paginator.pageSize = this.limit; } }
-  
+
+  resetPaginator(): void {
+    if (this.paginator) {
+      this.paginator.pageIndex = this.page;
+      this.paginator.pageSize = this.limit;
+    }
+  }
+
   onPageChange(event: PageEvent) {
     this.page = event.pageIndex;
     this.limit = event.pageSize;
     this.itemsService.fetchItems(this.page, this.limit)
     this.updateFavoriteStatus();
   }
-  
-  
+
   async getItems(
     page: number = 0,
     limit: number = 10,
@@ -184,14 +216,14 @@ defultViewMode() {
             this.totalItems = response.totalCount; // משתמשים ב-totalCount מהשרת
 
             console.log('Items received from server:', this.itemsFromServer);
-            
+
             // מבצע סינון לפי סוג
-                 this.filterItemsByType(searchTerm, typeFilter);
+            this.filterItemsByType(searchTerm, typeFilter);
           } else {
             this.itemsFromServer = response.data;
             this.filterItemsByType(searchTerm, typeFilter);
           }
-          
+
           resolve();
         },
         error: (err) => {
@@ -231,8 +263,6 @@ defultViewMode() {
     console.log('Final filtered items:', this.items);
     // this.totalItems=this.items.length
   }
-
-
 
   async editItem(item1: Item) {
     this.router.navigate(['/upload-resource', item1._id], {
@@ -292,8 +322,8 @@ defultViewMode() {
                         console.error('Error deleting borrow request:', err);
                     },
                 });
-           },
-        });
+            },
+          });
       }
     });
   }
@@ -561,8 +591,8 @@ defultViewMode() {
     return options.filter(option => option <= this.totalItems);
     
   }
-  
- isNewItem(item: Item): boolean {
+
+  isNewItem(item: Item): boolean {
     const currentDate = new Date();
     const publicationDate = new Date(item.publicationDate);
     const differenceInTime = currentDate.getTime() - publicationDate.getTime();
