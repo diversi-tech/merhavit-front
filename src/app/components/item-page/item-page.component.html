@@ -90,8 +90,9 @@
         </mat-chip-row>
       </div>
     </section>
-
-    <div class="calender" *ngIf="physicalBook">
+     <div *ngIf="(userType=='Student' && item.approved=='לא') ">הספר לא זמין להשאלה</div>
+    <div class="calender" *ngIf="physicalBook && item.approved!=='לא'" >
+      
       <section>
         <div class="example-button-row">
           <button mat-button class="brrow" (click)="onBorrow()">להזמנה</button>

@@ -9,10 +9,9 @@ import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTri
 import { MatInputModule } from '@angular/material/input';
 import { lastValueFrom, map, Observable, startWith, tap } from 'rxjs';
 import { ApiService } from '../../api.service';
-// import { title } from 'process';
-// import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatIconModule } from '@angular/material/icon';
-import {  OverlayModule, OverlayPositionBuilder } from '@angular/cdk/overlay';
+import { Overlay, OverlayModule, OverlayPositionBuilder } from '@angular/cdk/overlay';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { DialogComponent } from '../dialog/dialog.component';
@@ -75,7 +74,7 @@ export class UploadResourceComponent {
   isPDF: boolean = false;
   isImage: boolean = true
   isAudio: boolean = false
-  fileTypes: Array<string> = ['ספר פיזי' ,'ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
+  fileTypes: Array<string> = ['ספר דיגיטלי', "סרטון", "שיר", "מערך", "כרזה", "דף עבודה", "איור", "יצירה"];
   userId: string = ''
   purchaseLocations: Array<string> = ["חנות ספרים", "פוטומן"];
 
@@ -123,14 +122,14 @@ export class UploadResourceComponent {
 
   readonly addOnBlur = true;
 
-  constructor(private itemService:ItemsService, private pr: ActivatedRoute, private location: Location, private me: ActivatedRoute, private fb: FormBuilder, private sanitizer: DomSanitizer, private apiService: ApiService, private dialog: MatDialog, private snackBar: MatSnackBar, private router: Router) {
+  constructor(private itemService:ItemsService, private pr: ActivatedRoute, private location: Location, private me: ActivatedRoute, private fb: FormBuilder, private sanitizer: DomSanitizer, public apiService: ApiService, private dialog: MatDialog, private snackBar: MatSnackBar, private router: Router) {
     // יצירת טופס
     this.fileForm = this.fb.group({
       title: ['', Validators.required],
       type: ['', Validators.required],
       subjects: this.fb.array([], [Validators.required]),
-      approved: [''],
-      loanValidity: ['',[Validators.required]],
+      approved: ['כן'],
+      loanValidity: [0,[Validators.required]],
       specializations: this.fb.array([], [Validators.required]),
       classes: this.fb.array([], [Validators.required]),
       level: ['', Validators.required],
@@ -259,7 +258,9 @@ export class UploadResourceComponent {
             specializationsArray.push(this.fb.control(specialization));
           });
           
-          if(this.resourceItem.contentOption=='physicalBook' || this.resourceItem.type==='ספר דיגיטלי'|| this.resourceItem.type==='ספר פיזי')  
+          if(this.resourceItem.contentOption=='physicalBook' || this.resourceItem.type==='ספר דיגיטלי'|| this.resourceItem.type==='ספר פיזי'||
+            this.resourceItem.type==='שיר' || this.resourceItem.type==='סרטון'
+          )  
             this.downloadFile(this.resourceItem.coverImage)
           else
                this.downloadFile(this.resourceItem.filePath)
@@ -742,9 +743,7 @@ export class UploadResourceComponent {
 
 //קבלת התגית לפי ה_id שלה
 getOptionById(optionId: string, fieldKey: string)
-  {
-    // console.log("OptionById",this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
-    
+  {    
     return this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId)
   }
 
@@ -890,6 +889,7 @@ getOptionById(optionId: string, fieldKey: string)
     }
 
     if (this.contentOption == 'physicalBook') {
+      this.fileForm.patchValue({ type: 'ספר פיזי' }); // הגדרת ערך ברירת מחדל
       this.updateTypeValidator(false);
     } else {
       this.fileForm.patchValue({ approved: '' })

@@ -4,9 +4,9 @@
     (ngSubmit)="onSubmit()"
     class="registration-form"
   >
-  <div class="icon-wrapper">
-    <img src="assets/books-icon.png" alt="ספרים" class="books-image" />
-  </div>
+    <div class="icon-wrapper">
+      <img src="assets/books-icon.png" alt="ספרים" class="books-image" />
+    </div>
     <h1>הרשמה</h1>
 
     <label for="firstName">שם פרטי</label>
@@ -27,7 +27,7 @@
       <small>שדה חובה</small>
     </div>
 
-    <!-- <label for="idNumber">תעודת זהות</label>
+    <label for="idNumber">תעודת זהות</label>
     <input formControlName="idNumber" type="text" placeholder="123456789" />
     <div
       *ngIf="registrationForm.get('idNumber')?.touched && registrationForm.get('idNumber')?.invalid"
@@ -42,9 +42,9 @@
       <small *ngIf="registrationForm.get('idNumber')?.errors?.['maxlength']">
         ת.ז חייבת לכלול בדיוק 9 תווים
       </small>
-    </div> -->
+    </div>
 
-    <div>
+    <!-- <div>
       <label for="idNumber">תעודת זהות:</label>
       <input id="idNumber" formControlName="idNumber" />
       <div *ngIf="idNumber?.hasError('required') && idNumber?.touched">
@@ -53,7 +53,7 @@
       <div *ngIf="idNumber?.hasError('invalidId') && idNumber?.touched">
         תעודת זהות אינה תקינה.
       </div>
-    </div>
+    </div> -->
 
     <label for="address">כתובת</label>
     <input formControlName="address" type="text" placeholder="שאגת אריה 3" />
@@ -145,24 +145,11 @@
           {{ class.name }}
         </option>
       </select>
-    
     </div>
 
     <div>
       <label for="specialization">התמחות</label>
       <select id="specialization" formControlName="specialization">
-        <option *ngIf="specializations.length === 0" disabled>
-          אין התמחות זמינה
-        </option>
-        <option *ngFor="let specialization of specializations" [value]="specialization._id">
-          {{ specialization.name }}
-        </option>
-      </select>
-      <!-- <select
-        id="specialization"
-        formControlName="specialization"
-        [disabled]="specializations.length === 0"
-      >
         <option *ngIf="specializations.length === 0" disabled>
           אין התמחות זמינה
         </option>
@@ -172,16 +159,14 @@
         >
           {{ specialization.name }}
         </option>
-      </select> -->
+      </select>
     </div>
 
     <div>
       <label for="seminar">סמינר</label>
- 
+
       <select id="seminar" formControlName="seminar">
-        <option *ngIf="seminaries.length === 0" disabled>
-          אין סמינר זמין
-        </option>
+        <option *ngIf="seminaries.length === 0" disabled>אין סמינר זמין</option>
         <option *ngFor="let seminary of seminaries" [value]="seminary._id">
           {{ seminary.name }}
         </option>

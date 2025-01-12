@@ -86,6 +86,7 @@ export class ItemPageComponent implements OnInit {
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   announcer = inject(LiveAnnouncer); // שימוש ב-inject להזרקת ה-LiveAnnouncer
   // formControl = new FormControl();
+  public userType: string = ''; // משתנה לשמירת סוג המשתמש
   tags = signal<string[]>([]);
   readonly reactiveKeywords = signal(['']);
   readonly formControl = new FormControl(['angular']);
@@ -142,7 +143,7 @@ export class ItemPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.getUserTypeFromToken();
     const itemId = this.route.snapshot.paramMap.get('id');
     if (itemId) {
       this.fetchItemDetails(itemId);
@@ -166,7 +167,22 @@ export class ItemPageComponent implements OnInit {
       return key
   }
 
-
+  getUserTypeFromToken(): void {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          this.userType = decodedToken.userType || '';
+          console.log(this.userType);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
+      }
+    } else {
+      console.warn('Code is running on the server. Skipping token check.');
+    }
+  }
 
   // עדכון תאריך סיום
   // onEndDateChange(event: MatDatepickerInputEvent<Date>) {

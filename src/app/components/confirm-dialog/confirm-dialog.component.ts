@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-confirm-dialog',
-  providers: [MatDialogRef, MatDialogModule],
+  // providers: [MatDialogRef, MatDialogModule],
   standalone: true,
   imports: [
     CommonModule,
@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatDialogModule,
   ],
   templateUrl: './confirm-dialog.component.html',
   styleUrls: ['./confirm-dialog.component.css'], // שים לב ל-"styleUrls" במקום "styleUrl"

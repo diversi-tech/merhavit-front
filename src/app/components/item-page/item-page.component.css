@@ -61,7 +61,7 @@
 }
 
 .similar-items {
-  margin-top: 2vh;
+  margin-top: 10vh;
   overflow-x: auto;
   white-space: nowrap;
   text-align: right; /* הצמדת הכותרת והספרים לימין */
@@ -390,5 +390,6 @@ section {
 .message-box button:hover {
   background-color: #45a049;
 } */
+
 
 

@@ -256,9 +256,9 @@
         </div>
       </div>
       
-    </div> 
+    
 
-      <div class="form-section-container">
+      
         
         <!-- כותרת: אודות הקובץ -->
         <div class="form-section">
@@ -304,33 +304,8 @@
             <input class="input_fields" type="text" id="libraryLocation" formControlName="libraryLocation" 
                    [value]="formMode === 'edit' ? fileForm.get('libraryLocation')?.value : ''" />
         </div>
-        </div>
         
-        <!-- כותרת: סטטוס -->
-      <div class="form-section" *ngIf="contentOption=='physicalBook'">
-        <h2>סטטוס</h2>
-        <div class="form-group">
-          <label for="approved">מאושר פיזי</label>
-          <mat-radio-group
-          aria-labelledby="example-radio-group-label"
-          class="example-radio-group"
-          id="approved" 
-          formControlName="approved">
-          <mat-radio-button  [value]="'כן'">כן</mat-radio-button>
-          <mat-radio-button  [value]="'לא'">לא</mat-radio-button>
-        </mat-radio-group>
-        </div>
-        <div class="form-group">
-          <label for="loanValidity">משך השאלה</label>
-          <input class="input_fields" type="text" id="loanValidity" formControlName="loanValidity" [placeholder]="formMode === 'edit' ? fileForm.get('loanValidity')?.value : ''"/>
-        <div class="error-fields" *ngIf="fileForm.get('loanValidity')?.invalid && fileForm.get('loanValidity')?.touched">
-            <small *ngIf="fileForm.get('loanValidity')?.errors?.['required']">יש להזין תוקף</small>
-          </div>
-        </div>
-      </div>
-      </div>
-
-      <div class="form-section">
+       
         <div class="form-group">
           <label for="tagsInput">תגיות</label>
           <mat-form-field  class="autocomplete-container">
@@ -372,8 +347,31 @@
         <div class="form-group">
           <label for="description">מה עוד כדאי לדעת?</label>
           <textarea class="input_fields" id="description" rows="4" formControlName="description" [placeholder]="formMode === 'edit' ? fileForm.get('description')?.value : ''"></textarea>
+          </div>
+        </div>
+        <div class="form-section" *ngIf="contentOption=='physicalBook'">
+        <!-- כותרת: סטטוס -->
+        <h2>סטטוס</h2>
+        <div class="form-group">
+          <label for="approved">מאושר להשאלה</label>
+          <mat-radio-group
+          aria-labelledby="example-radio-group-label"
+          class="example-radio-group"
+          id="approved" 
+          formControlName="approved">
+          <mat-radio-button  [value]="'כן'">כן</mat-radio-button>
+          <mat-radio-button  [value]="'לא'">לא</mat-radio-button>
+        </mat-radio-group>
+        </div>
+        <div class="form-group">
+          <label for="loanValidity">משך השאלה</label>
+          <input class="input_fields" type="number" id="loanValidity" formControlName="loanValidity" [placeholder]="formMode === 'edit' ? fileForm.get('loanValidity')?.value : ''"/>
+        <div class="error-fields" *ngIf="fileForm.get('loanValidity')?.invalid && fileForm.get('loanValidity')?.touched">
+            <small *ngIf="fileForm.get('loanValidity')?.errors?.['required']">יש להזין תוקף</small>
+          </div>
         </div>
       </div>
+    </div>
        <div *ngIf="formErrorMessage" class="error-message">{{formErrorMessage}}</div>
       <!-- כפתור שליחה -->
       <button type="submit" [disabled]="isSubmitting">

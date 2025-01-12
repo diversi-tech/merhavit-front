@@ -130,13 +130,15 @@ border: solid;
     flex-wrap: wrap;
     justify-content: space-between; /* מרווח בין הכותרות */
     margin-bottom: 20px;
+    gap: 10px; /* רווח בין הכותרות */
   }
   
   .form-section {
     width:50%;
-    flex: 1 1 45%; /* שתי כותרות בשורה */
+     flex: 1 1 45%; /*שתי כותרות בשורה */
     margin-bottom: 20px;
     padding-bottom: 0 !important;
+    background-color:rgb(237, 252, 233);
   }
   
   h2 {

@@ -152,3 +152,17 @@
   color: #11457b; /* צבע כחול */
   margin-bottom: 5vh; /* ריווח קטן יותר מתחת לאייקון */
 }
+
+.item-image-order{
+  height: 4rem;
+  width: auto;
+  object-fit: cover;
+  max-width: 7vw;
+  max-height: 12vh;
+  min-width: 7vw;
+  min-height: 12vh;
+
+  /* width: 5vw; */
+  /* height: 5vw; */
+  border-radius: 0.5rem;
+}
