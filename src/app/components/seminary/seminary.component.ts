@@ -65,8 +65,12 @@ export class SeminaryComponent implements OnInit {
     if(this.userType==='Admin'){
        this.confirmSeminar = seminar;
     }
+    
       if(this.getStudentsBySeminar(this.confirmSeminar).length>0){
         this.isStudentExisted=true;
+      }
+      else{
+        this.isStudentExisted=false;
       }
         
   }
@@ -202,7 +206,7 @@ export class SeminaryComponent implements OnInit {
 
 getLibrarianById(librarianId: string): string {
     if (!this.librarians || this.librarians.length === 0) {
-      return 'Unknown'; // החזר ערך ברירת מחדל אם הנתונים עדיין לא נטענו
+      return 'טוען...'; // החזר ערך ברירת מחדל אם הנתונים עדיין לא נטענו
     }
     const findLibrarian=this.librarians.find(lib=>lib._id===librarianId)
     
