@@ -1,4 +1,4 @@
-import { error } from 'node:console';
+// import { error } from 'node:console';
 import { Component, OnInit, inject } from '@angular/core';
 import { ApiService } from '../../api.service';
 import { Item } from '../interfaces/item-page.interface';
@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { COMMA, ENTER, I } from '@angular/cdk/keycodes';
-import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
+import {  MatChipInputEvent } from '@angular/material/chips';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { signal } from '@angular/core';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
@@ -29,7 +29,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { DateRange } from '@angular/material/datepicker';
 import { jwtDecode } from 'jwt-decode';
-import { from } from 'rxjs';
+// import { from } from 'rxjs';
 import { DialogComponent } from '../dialog/dialog.component';
 import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
 import { lastValueFrom, Observable } from 'rxjs';
@@ -74,7 +74,8 @@ export class ItemPageComponent implements OnInit {
   endDate!: Date;   // משתנה לתאריך סיום
   minDate = new Date(); // לדוגמה, מינימום תאריך (אופציונלי)
   maxDate = new Date(); 
-  maxdays=this.item!.loanValidity;
+  // maxdays=this.item!.loanValidity;
+  maxdays = this.item?.loanValidity ?? 0;
   borrowRequests: BorrowRequests[] = [];
   userId: string = '';
   dateRange: DateRange<Date> | null = null;
@@ -84,6 +85,7 @@ export class ItemPageComponent implements OnInit {
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   announcer = inject(LiveAnnouncer); // שימוש ב-inject להזרקת ה-LiveAnnouncer
   // formControl = new FormControl();
+  public userType: string = ''; // משתנה לשמירת סוג המשתמש
   tags = signal<string[]>([]);
   readonly reactiveKeywords = signal(['']);
   readonly formControl = new FormControl(['angular']);
@@ -130,7 +132,7 @@ export class ItemPageComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog, // הוספת MatDialog
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
     private errordialog: MatDialog
   ) { const today = new Date();
     this.minDate = new Date(today); // תאריך מינימלי הוא היום
@@ -138,7 +140,7 @@ export class ItemPageComponent implements OnInit {
     this.maxDate.setFullYear(this.maxDate.getFullYear() + 1); }
 
   ngOnInit(): void {
-
+    this.getUserTypeFromToken();
     const itemId = this.route.snapshot.paramMap.get('id');
     if (itemId) {
       this.fetchItemDetails(itemId);
@@ -162,7 +164,22 @@ export class ItemPageComponent implements OnInit {
       return key
   }
 
-
+  getUserTypeFromToken(): void {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          this.userType = decodedToken.userType || '';
+          console.log(this.userType);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
+      }
+    } else {
+      console.warn('Code is running on the server. Skipping token check.');
+    }
+  }
   
   // עדכון תאריך סיום
   // onEndDateChange(event: MatDatepickerInputEvent<Date>) {
@@ -424,18 +441,18 @@ export class ItemPageComponent implements OnInit {
     });
   }
 
-  onDateRangeChange() {
-    if (this.dateRange) {
-      const startDate = this.dateRange.start;
-      const endDate = this.dateRange.end;
+  // onDateRangeChange() {
+  //   if (this.dateRange) {
+  //     const startDate = this.dateRange.start;
+  //     const endDate = this.dateRange.end;
 
-      console.log('תאריך התחלה:', startDate);
-      console.log('תאריך סיום:', endDate);
-    }
-  }
+  //     console.log('תאריך התחלה:', startDate);
+  //     console.log('תאריך סיום:', endDate);
+  //   }
+  // }
 
 
-  onBorrow() {
+  async onBorrow() {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
       const token = localStorage.getItem('access_token');
       if (token) {
@@ -455,7 +472,12 @@ export class ItemPageComponent implements OnInit {
     if (!this.startDate || !this.endDate) {
       this.openErrorDialog();
     } 
-
+    if (this.startDate && this.endDate && this.item?.loanValidity) { 
+      const start = new Date(this.startDate).getTime(); 
+      const end = new Date(this.endDate).getTime(); 
+      const differenceInDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)); // חישוב מספר הימים
+      if (differenceInDays > this.item.loanValidity) { this.openErrorDialog();} // פתח דיאלוג במקרה של חריגה 
+    }
     // if(this.endDate-this.startDate)
     const newClass = {
       resourceId: this.item?._id,
@@ -474,21 +496,29 @@ export class ItemPageComponent implements OnInit {
             fromDate:this.startDate, 
             toDate:  this.endDate, 
           });
-
         }
       });
-    
+      if (this.startDate || this.endDate) {
+        this.router.navigate(['/question-successful']);
+      } 
   }
 
-
-  openErrorDialog() {
-      const dialogRef = this.dialog.open(ErrorDialogComponent);
+  timeErrorDialog() {
+    this.dialog.open(ErrorDialogComponent, {
+      width: '400px',
+      data: {
+        message: 'משך הזמן שנבחר גדול מהזמן המותר להשאלה. יש לבחור טווח תאריכים קצר יותר.'
+      },
+    });
+  }
+  // openErrorDialog() {
+  //     const dialogRef = this.dialog.open(ErrorDialogComponent);
     
       
-  dialogRef.afterClosed().subscribe(() => {
-    console.log('הדיאלוג נסגר');
-  });
-    }
+  // dialogRef.afterClosed().subscribe(() => {
+  //   console.log('הדיאלוג נסגר');
+  // });
+  //   }
     
 
 
@@ -502,7 +532,7 @@ export class ItemPageComponent implements OnInit {
         this.multipleChoiceFields[fieldKey].allOption = response.data || [];
       }
     }).catch((err) => {
-      console.error(`Error fetching ${fieldKey}`, err);
+      // console.error(`Error fetching ${fieldKey}`, err);
       return
     });
   }
@@ -511,7 +541,7 @@ export class ItemPageComponent implements OnInit {
 
   //קבלת התגית לפי ה_id שלה
   getOptionById(optionId: string, fieldKey: string) {
-    console.log("OptionById", this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
+    // console.log("OptionById", this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId));
 
     return this.multipleChoiceFields[fieldKey].allOption.find(opt => opt._id === optionId)
   }
@@ -522,17 +552,70 @@ export class ItemPageComponent implements OnInit {
     return this.getOptionById(optionId, fieldKey)?.name
   }
 
-
+  onDateRangeChange() {
+    if (this.dateRange) {
+      const startDate = this.dateRange.start;
+      const endDate = this.dateRange.end;
+      console.log('תאריך התחלה:', startDate);
+      console.log('תאריך סיום:', endDate);
     }
-
+  }
+  // onBorrow() {
+  //   if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+  //     const token = localStorage.getItem('access_token');
+  //     if (token) {
+  //       try {
+  //         const decodedToken: any = jwtDecode(token);
+  //         // this.userType = decodedToken.userType || '';
+  //         this.userId = decodedToken.idNumber || '';
+  //         console.log('userId', this.userId);
+  //       } catch (error) {
+  //         console.error('Error decoding token:', error);
+  //       }
+  //     }
+  //   } else {
+  //     console.warn('Code is running on the server. Skipping token check.');
+  //   }
+  //   if (!this.startDate || !this.endDate) {
+  //     this.openErrorDialog();
+  //   }
+  //   // if(this.endDate-this.startDate)
+  //   const newClass = {
+  //     resourceId: this.item?._id,
+  //     studentId: this.userId,
+  //     fromDate: this.startDate,
+  //     toDate: this.endDate
+  //   }
+  //   this.apiService
+  //     .Post('/borrowRequests', newClass)
+  //     .subscribe({
+  //       next: (response) => {
+  //         console.log("responce of borrowRequests",response)
+  //         this.borrowRequests.push({
+  //           resourceId: response.insertedId,
+  //           studentId: this.userId ,
+  //           fromDate:this.startDate,
+  //           toDate:  this.endDate,
+  //         });
+  //       }
+  //     });
+  // }
+  openErrorDialog() {
+      const dialogRef = this.dialog.open(ErrorDialogComponent);
+  dialogRef.afterClosed().subscribe(() => {
+    console.log('הדיאלוג נסגר');
+  });
+    }
+  validateDateRange() {
+    if (this.startDate && (this.startDate < this.minDate || this.startDate > this.maxDate)) {
+      this.showDialog('Invalid start date');
+      // this.minDate = null;
+    }
     if (this.endDate && (this.endDate < this.minDate || this.endDate > this.maxDate)) {
       this.showDialog('Invalid end date');
       // this.endDate = null;
     }
   }
-
-
-
   showDialog(message: string) {
     this.dialog.open(DialogComponent, {
       data: { message },

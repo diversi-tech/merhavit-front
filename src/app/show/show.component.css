@@ -34,9 +34,19 @@
 }
 .filter-button.active,
 .filter-button:hover {
-  background-color: #007BFF;
+  background-color: #007bff;
   color: #fff;
 }
+
+.table-container {
+  padding-bottom: 6vw; /* או גובה ה-paginator */
+  direction: rtl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+}
+
 .row {
   display: flex;
   justify-content: space-between;
@@ -44,12 +54,12 @@
   width: 90%;
   max-width: 50rem;
   padding: 2vh 0;
-  border-bottom: 0.1em solid #DCDCDC;
+  border-bottom: 0.1em solid #dcdcdc;
   transition: background-color 0.3s;
   cursor: pointer;
 }
 .row:hover {
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   cursor: pointer;
 }
 .item-image {
@@ -73,16 +83,16 @@
   text-align: center;
 }
 .status.sold {
-  background-color: #FFCCCC;
-  color: #D80000;
+  background-color: #ffcccc;
+  color: #d80000;
 }
 .status.unique {
-  background-color: #FFF4CC;
-  color: #D4A017;
+  background-color: #fff4cc;
+  color: #d4a017;
 }
 .status.published {
-  background-color: #D4F5D4;
-  color: #007B00;
+  background-color: #d4f5d4;
+  color: #007b00;
 }
 .action-button {
   border: none;
@@ -94,11 +104,11 @@
   background-color: transparent;
 }
 .action-button.edit {
-  border: 0.1em solid #28A745;
-  color: #28A745;
+  border: 0.1em solid #28a745;
+  color: #28a745;
 }
 .action-button.edit:hover {
-  background-color: #28A745;
+  background-color: #28a745;
   color: #fff;
 }
 .action-button.delete {
@@ -108,7 +118,7 @@
   cursor: pointer;
 }
 .action-button.delete:hover {
-  background-color: #F3F7FD;
+  background-color: #f3f7fd;
   cursor: pointer;
   color: red;
 }
@@ -120,7 +130,7 @@
   color: #218838;
 }
 .action-button.order {
-  background-color: #28A745;
+  background-color: #28a745;
   color: #fff;
   border-radius: 2em;
 }
@@ -148,26 +158,31 @@
     flex-wrap: wrap;
   }
   .pagination-container {
+    left: 0vw;
+    width: 86vw;
+    top: 92vh;
+    z-index: 2;
+    position: absolute;
+    direction: ltr;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: "Roboto", sans-serif;
     /* position: fixed; */
-    color: #444;
-    margin: 10px 0;
+    bottom: 0; /* מציב את ה-div בתחתית */
+    left: 0;
+    right: 0;
     background-color: white; /* רקע כדי להפריד אותו מהתוכן */
     padding: 5rem; /* ריווח פנימי אם צריך */
   }
- .pagination-container .arrow {
-    font-size: 18px;
-    margin: 0 10px;
+
+  .pagination-container .arrow {
+    font-size: 1.8vw;
+    margin: 0 1vw;
     cursor: pointer;
     color: #888;
     transition: color 0.3s;
   }
   .pagination-container .arrow:hover {
     color: #000;
-    cursor: pointer; 
+    cursor: pointer;
   }
 }
 .file-extension-container {
@@ -177,8 +192,8 @@
   justify-content: center;
   height: 5vw;
   width: 5vw;
-  background-color: #F8F8F8;
-  border: 1px solid #ddd;
+  background-color: #f8f8f8;
+  border: 0.5rem solid #ddd;
   font-size: 1.2rem;
   font-weight: bold;
   color: #555;
@@ -194,7 +209,8 @@
 .doc-icon {
   color: blue;
 }
-.jpg-icon,.png-icon {
+.jpg-icon,
+.png-icon {
   color: green;
 }
 .default-icon {
@@ -231,7 +247,7 @@
   }
 }
 
-.card-container .item-card .item-image {
+.item-card .item-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -274,9 +290,9 @@
   border-bottom: 0.2vh solid #ccc;
   padding: 1rem;
 }
-.item-image {
+/* .item-image {
   width: 10rem;
-  height: 10rem;
+  height: 20rem;
   object-fit: cover;
   border-radius: 0.1rem;
   object-fit: cover;
@@ -284,7 +300,7 @@
   max-height: 30vh;
   min-width: 20vw;
   min-height: 30vh;
-}
+} */
 .mat-mdc-card-header {
   padding: 0 !important;
 }
@@ -323,7 +339,7 @@ mat-icon {
   flex-direction: column;
   align-items: center;
   direction: rtl;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 
 .item-card-content {
@@ -339,8 +355,6 @@ mat-icon {
   /* justify-content: center; */
   align-items: self-start;
   justify-content: space-between;
-  /* text-align: end; */
-  /* box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1); */
 }
 
 .item-card:hover .item-card-content {
@@ -349,7 +363,6 @@ mat-icon {
   max-height: 25vh;
   border-radius: 1rem;
   z-index: 0;
-
 }
 
 /* .item-card-header:hover {
@@ -363,7 +376,7 @@ mat-icon {
   position: relative;
   cursor: pointer;
 }
-.overlay-svg:hover{
+.overlay-svg:hover {
   cursor: pointer;
 }
 .overlay-svg {
@@ -373,23 +386,16 @@ mat-icon {
   transform: translate(-50%, -50%);
   height: 14vh;
   width: 15vw;
-  fill: #FFFF;
+  fill: #ffff;
 }
 .item-image-list {
-  width: 100px;
-  height: 100px;
+  width: 10vw;
+  height: 10vh;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 1rem;
   position: relative;
 }
-.overlay-svg-list {
-  position: absolute;
-  top: 2vh;
-  left: 53.5vw;
-  width: 3rem;
-  height: 3rem;
-  fill: #fff;
-}
+
 .item-content {
   display: flex;
   flex: 1;
@@ -400,28 +406,19 @@ mat-icon {
 .item-details {
   flex: 1;
 }
-/* .item-title {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #007BFF;
-  margin-bottom: 0.3em;
-} */
-/* .item-title {
-  font-size: 1rem;
-  color: #666;
-} */
+
 .item-meta-card {
   font-size: 0.9rem;
-  color: #FFFF;
+  color: #ffff;
   line-height: 20rem;
 }
-.no-data-message{
+.no-data-message {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #F8F9FA;
-  border: 0.5vh dashed #11457B;
+  background-color: #f8f9fa;
+  border: 0.5vh dashed #11457b;
   border-radius: 1rem;
   padding: 2vw;
   margin: 20vh auto;
@@ -429,21 +426,19 @@ mat-icon {
   max-width: 400vw;
   box-shadow: 0 4vh 6vh rgba(0, 0, 0, 0.1);
 }
-.no-data-message p{
+.no-data-message p {
   margin-top: 6vh;
-  color: #6C757D;
+  color: #6c757d;
   text-align: center;
   font-weight: 500;
 }
 .icon-no-data-message {
   margin-top: 6vh;
   font-size: 2rem;
-  color: #11457B;
+  color: #11457b;
   margin-bottom: 10vh;
 }
-.item-content {
-  position: relative;
-}
+
 .new-label {
   position: absolute;
   top: 0.8vh;
@@ -454,16 +449,21 @@ mat-icon {
   color: white;
   object-fit: cover;
   padding: 0.1rem 0.1rem;
-  border-radius: 5px;
+  border-radius: 1rem;
+  text-align: center;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 0.8rem;
   z-index: 0;
 }
-
-.matPagin{
+.matPagin {
+  left: 0vw;
+  width: 86vw;
+  top: 92vh;
+  z-index: 2;
+  position: absolute;
   direction: ltr;
 }
 .disabled {
   pointer-events: none;
-  opacity: 0.6; 
+  opacity: 0.6;
 }

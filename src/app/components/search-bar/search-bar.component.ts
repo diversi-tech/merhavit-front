@@ -44,7 +44,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatIconModule,
   ],
   templateUrl: './search-bar.component.html',
-  styleUrl: './search-bar.component.css',
+  styleUrl: './search-bar.component.css'
 })
 export class SearchBarComponent {
   @Output() search: EventEmitter<string | null> = new EventEmitter<
@@ -79,14 +79,15 @@ export class SearchBarComponent {
   items: Item[] = [];
   filters = {
     email: '',
-    class: '',
+    classId: '',
+    assignedSeminaryId:'',
     specialization: '',
     userType: '',
     firstName: '',
     lastName: '',
     idNumber: '',
     address: '',
-    phone: '',
+    phoneNumber: '',
   };
 
   searchHistories: { [key: string]: string[] } = {}; // מילון לאחסון היסטוריות חיפוש
@@ -326,7 +327,7 @@ export class SearchBarComponent {
         this.showDetails = false;
       }
       // איפוס השדות באובייקט filters
-      this.resetFilters();
+      // this.resetFilters();
     }
 
     // בדיקה אם הלחיצה הייתה מחוץ לאזור הסינון
@@ -336,7 +337,7 @@ export class SearchBarComponent {
       !target.classList.contains('fa-filter')
     ) {
       this.showDetails = false;
-      this.resetFilters();
+      // this.resetFilters();
     }
   }
 
@@ -344,14 +345,15 @@ export class SearchBarComponent {
     resetFilters() {
       this.filters = {
         email: '',
-        class: '',
+        classId: '',
+        assignedSeminaryId:'',
         specialization: '',
         userType: '',
         firstName: '',
         lastName: '',
         idNumber: '',
         address: '',
-        phone: '',
+        phoneNumber: '',
       };
       this.onFilterChangeUsers();
     }
