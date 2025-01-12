@@ -349,6 +349,7 @@
           <textarea class="input_fields" id="description" rows="4" formControlName="description" [placeholder]="formMode === 'edit' ? fileForm.get('description')?.value : ''"></textarea>
           </div>
         </div>
+        <div class="form-section" *ngIf="contentOption=='physicalBook'">
         <!-- כותרת: סטטוס -->
         <h2>סטטוס</h2>
         <div class="form-group">
@@ -370,6 +371,7 @@
           </div>
         </div>
       </div>
+    </div>
        <div *ngIf="formErrorMessage" class="error-message">{{formErrorMessage}}</div>
       <!-- כפתור שליחה -->
       <button type="submit" [disabled]="isSubmitting">
