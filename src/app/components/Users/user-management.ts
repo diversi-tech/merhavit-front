@@ -20,6 +20,9 @@ export class UserManagementComponent implements OnInit {
   loggedInUserRole: any = null; // התפקיד של המשתמש המחובר
   searchTerm: string = 'all';
   filterOption: string = '';
+  seminaries: any[] = [];
+  specializations: any[] = [];
+  classes: any[] = [];
   readonly roleTranslations: { [key: string]: string } = {
     'Admin': 'מנהל',
     'Site Manager': 'מנהל סמינר',
@@ -33,9 +36,45 @@ export class UserManagementComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadData();
+
     this.getUsers();
     this.setUserRole();
     this.subscribeToSearchService();
+  }
+
+  loadData() {
+    // טוען סמינרים, התמחויות וכיתות תחילה
+    this.apiService.Read('/seminaries').subscribe(
+      (seminariesData: any[]) => {
+        this.seminaries = seminariesData;
+
+        this.apiService.Read('/specializations').subscribe(
+          (specializationsData: any[]) => {
+            this.specializations = specializationsData;
+
+            this.apiService.Read('/classes').subscribe(
+              (classesData: any[]) => {
+                this.classes = classesData;
+
+                // כעת טוען את פרטי המשתמש
+                this.getUsers();
+
+              },
+              (error) => {
+                console.error('Error fetching classes:', error);
+              }
+            );
+          },
+          (error) => {
+            console.error('Error fetching specializations:', error);
+          }
+        );
+      },
+      (error) => {
+        console.error('Error fetching seminaries:', error);
+      }
+    );
   }
 
   private setUserRole(): void {
@@ -178,5 +217,10 @@ export class UserManagementComponent implements OnInit {
       this.filterOption = option;
       this.filterUsers();
     });
+  }
+
+  getEntityName(entityId: string, entities: any[]): string {
+    const entity = entities.find(ent => ent._id === entityId);
+    return entity ? entity.name : 'N/A';
   }
 }
