@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { COMMA, ENTER, I } from '@angular/cdk/keycodes';
-import {  MatChipInputEvent } from '@angular/material/chips';
+import { MatChipInputEvent } from '@angular/material/chips';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { signal } from '@angular/core';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
@@ -34,6 +34,7 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
 import { lastValueFrom, Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 
 
@@ -73,7 +74,7 @@ export class ItemPageComponent implements OnInit {
   startDate!: Date; // משתנה לתאריך התחלה
   endDate!: Date;   // משתנה לתאריך סיום
   minDate = new Date(); // לדוגמה, מינימום תאריך (אופציונלי)
-  maxDate = new Date(); 
+  maxDate = new Date();
   // maxdays=this.item!.loanValidity;
   maxdays = this.item?.loanValidity ?? 0;
   borrowRequests: BorrowRequests[] = [];
@@ -133,10 +134,12 @@ export class ItemPageComponent implements OnInit {
     private dialog: MatDialog, // הוספת MatDialog
     private _snackBar: MatSnackBar,
     private errordialog: MatDialog
-  ) { const today = new Date();
+  ) {
+    const today = new Date();
     this.minDate = new Date(today); // תאריך מינימלי הוא היום
-    this.maxDate = new Date(today); 
-    this.maxDate.setFullYear(this.maxDate.getFullYear() + 1); }
+    this.maxDate = new Date(today);
+    this.maxDate.setFullYear(this.maxDate.getFullYear() + 1);
+  }
 
   ngOnInit(): void {
 
@@ -164,7 +167,7 @@ export class ItemPageComponent implements OnInit {
   }
 
 
-  
+
   // עדכון תאריך סיום
   // onEndDateChange(event: MatDatepickerInputEvent<Date>) {
   //   // לא מאפשר לבחור תאריך סיום לפני תאריך התחלה
@@ -278,7 +281,7 @@ export class ItemPageComponent implements OnInit {
     this.physicalBook = type === 'ספר פיזי';
   }
 
-    downloadResource(item: Item): void {
+  downloadResource(item: Item): void {
     if (!item._id) {
       console.error('Item ID is missing.');
       // alert('לא ניתן להוריד את הקובץ. חסר ID');
@@ -455,12 +458,12 @@ export class ItemPageComponent implements OnInit {
 
     if (!this.startDate || !this.endDate) {
       this.openErrorDialog();
-    } 
-    if (this.startDate && this.endDate && this.item?.loanValidity) { 
-      const start = new Date(this.startDate).getTime(); 
-      const end = new Date(this.endDate).getTime(); 
+    }
+    if (this.startDate && this.endDate && this.item?.loanValidity) {
+      const start = new Date(this.startDate).getTime();
+      const end = new Date(this.endDate).getTime();
       const differenceInDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)); // חישוב מספר הימים
-      if (differenceInDays > this.item.loanValidity) { this.openErrorDialog();} // פתח דיאלוג במקרה של חריגה 
+      if (differenceInDays > this.item.loanValidity) { this.openErrorDialog(); } // פתח דיאלוג במקרה של חריגה 
     }
     // if(this.endDate-this.startDate)
     const newClass = {
@@ -473,18 +476,19 @@ export class ItemPageComponent implements OnInit {
       .Post('/borrowRequests', newClass)
       .subscribe({
         next: (response) => {
-          console.log("responce of borrowRequests",response)
+          console.log("responce of borrowRequests", response)
           this.borrowRequests.push({
             resourceId: response.insertedId,
-            studentId: this.userId ,
-            fromDate:this.startDate, 
-            toDate:  this.endDate, 
+            studentId: this.userId,
+            fromDate: this.startDate,
+            toDate: this.endDate,
           });
         }
       });
-      if (this.startDate || this.endDate) {
-        this.router.navigate(['/question-successful']);
-      } 
+    if (this.startDate || this.endDate) {
+   
+      this.router.navigate(['/question-successful']);
+    }
   }
 
   timeErrorDialog() {
@@ -497,13 +501,13 @@ export class ItemPageComponent implements OnInit {
   }
   // openErrorDialog() {
   //     const dialogRef = this.dialog.open(ErrorDialogComponent);
-    
-      
+
+
   // dialogRef.afterClosed().subscribe(() => {
   //   console.log('הדיאלוג נסגר');
   // });
   //   }
-    
+
 
 
 
@@ -585,11 +589,13 @@ export class ItemPageComponent implements OnInit {
   //     });
   // }
   openErrorDialog() {
-      const dialogRef = this.dialog.open(ErrorDialogComponent);
-  dialogRef.afterClosed().subscribe(() => {
-    console.log('הדיאלוג נסגר');
-  });
-    }
+    const dialogRef = this.dialog.open(ErrorDialogComponent);
+    dialogRef.afterClosed().subscribe(() => {
+      console.log('הדיאלוג נסגר');
+    });
+  }
+
+
   validateDateRange() {
     if (this.startDate && (this.startDate < this.minDate || this.startDate > this.maxDate)) {
       this.showDialog('Invalid start date');
@@ -604,4 +610,5 @@ export class ItemPageComponent implements OnInit {
     this.dialog.open(DialogComponent, {
       data: { message },
     });
-  }}
+  }
+}
