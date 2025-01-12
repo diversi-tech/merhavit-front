@@ -77,8 +77,6 @@ export class ItemsService {
     duration: number = this.duration
   ): Observable<Item[]> {
     let params = new HttpParams()
-      // .set('page', page.toString())
-      // .set('limit', limit.toString());
     
     if (searchTerm) {
       params = params.set('searchTerm', searchTerm);

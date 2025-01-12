@@ -2,6 +2,7 @@
     max-width: 400px;
     margin: auto;
     text-align: center;
+    direction: rtl;
   }
   mat-card-title {
     font-size: 1.5rem;
