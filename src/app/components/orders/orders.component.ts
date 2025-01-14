@@ -18,6 +18,8 @@ export class OrdersComponent {
   userId: string = '';
   orders: any[] = [];
   public showNoDataMessage: boolean = false;
+  isLoading = true;
+
 
   constructor(
     private apiService: ApiService,
@@ -28,7 +30,9 @@ export class OrdersComponent {
   async ngOnInit(): Promise<void> {
     this.getUserIdFromToken();
     await this.fetchOrders();
-    // console.log('favorites', this.favorites);
+    console.log('showNoDataMessage', this.showNoDataMessage);
+    this.isLoading = false;
+
   }
 
   getUserIdFromToken(): void {
@@ -71,7 +75,7 @@ export class OrdersComponent {
                         const resourceId = borrowRequest.resourceId;
                         const status = borrowRequest.status;
                         const requestDate = borrowRequest.requestDate;
-                        console.log('resourceId', resourceId);
+                        console.log('requestDate', requestDate);
                         this.fetchResourceDetails(
                           resourceId,
                           status,
@@ -79,6 +83,7 @@ export class OrdersComponent {
                         );
                       });
                       console.log('orders', this.orders);
+
                     } else {
                       console.log('No borrow requests found for this user.');
                       this.showNoDataMessage = true;

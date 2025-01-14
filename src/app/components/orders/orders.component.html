@@ -18,52 +18,56 @@
       שמירות
     </div>
   </div>
+  <div *ngIf="isLoading">
+    <p>טוען נתונים...</p>
+  </div>
+  <div *ngIf="!isLoading">
+    <!-- <div class="container"> -->
+    <mat-card
+      appearance="outlined"
+      class="no-data-message"
+      *ngIf="!orders || orders.length === 0"
+    >
+      <mat-card-header>
+        <mat-card-content>
+          <p>אין נתונים להצגה</p>
+        </mat-card-content>
+      </mat-card-header>
+    </mat-card>
 
-  <!-- <div class="container"> -->
-  <mat-card
-    appearance="outlined"
-    class="no-data-message"
-    *ngIf="showNoDataMessage"
-  >
-    <mat-card-header>
-      <mat-card-content>
-        <p>אין נתונים להצגה</p>
-      </mat-card-content>
-    </mat-card-header>
-  </mat-card>
-
-  <div class="row" *ngFor="let order of orders">
-    <div class="item-content">
-      <img
-        [src]="order.coverImage || '.jpg'"
-        alt="Item Image"
-        class="item-image-order"
-      />
-      <div class="item-details">
-        <div class="item-title">{{ order.title }}</div>
-        <div class="item-meta">
-          <span class="meta-label">מחבר: </span>
-          <span class="meta-value">{{ order.Author }}</span> |
-          <span class="meta-label">תאריך בקשה:</span>
-          <span class="meta-value">{{
-            order.requestDate | date : "dd/MM/yyyy"
-          }}</span>
+    <div class="row" *ngFor="let order of orders">
+      <div class="item-content">
+        <img
+          [src]="order.coverImage || '.jpg'"
+          alt="Item Image"
+          class="item-image-order"
+        />
+        <div class="item-details">
+          <div class="item-title">{{ order.title }}</div>
+          <div class="item-meta">
+            <span class="meta-label">מחבר: </span>
+            <span class="meta-value">{{ order.Author }}</span> |
+            <span class="meta-label">תאריך בקשה:</span>
+            <span class="meta-value">{{
+              order.requestDate | date : "dd/MM/yyyy"
+            }}</span>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="action-buttons">
-      <button
-        [ngClass]="{
-          'status-approved': order.status === 'Approved',
-          'status-rejected': order.status === 'Rejected',
-          'status-pending': order.status === 'Pending'
-        }"
-      >
-        {{ getStatusInHebrew(order.status) }}
-      </button>
-      <button class="action-button order" (click)="navigateToItemPage(order)">
-        לצפיה
-      </button>
+      <div class="action-buttons">
+        <button
+          [ngClass]="{
+            'status-approved': order.status === 'Approved',
+            'status-rejected': order.status === 'Rejected',
+            'status-pending': order.status === 'Pending'
+          }"
+        >
+          {{ getStatusInHebrew(order.status) }}
+        </button>
+        <button class="action-button order" (click)="navigateToItemPage(order)">
+          לצפיה
+        </button>
+      </div>
     </div>
   </div>
 </div>
