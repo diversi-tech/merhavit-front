@@ -27,50 +27,44 @@
   margin-left: auto; /* יידחוף את המיכל לשמאל */
   margin-right: 4.375rem; /* 70px -> 4.375rem */
 }
-
-.status-approved {
-  background-color: green;
+.status-approved,
+.status-rejected,
+.status-pending {
+  background-color: gray; /* צבע רקע דיפולטי */
   color: white;
   border: none;
   cursor: pointer;
   border-radius: 2em;
   padding: 0.5em 1em;
   font-size: 1rem;
-  transition: background-color 0.3s ease; /* מעבר חלק */
+  transition: background-color 0.3s ease;
+  min-width: 6rem; /* רוחב מינימלי */
+  text-align: center; /* ממרכז את הטקסט */
+  display: inline-block; /* מבטיח שהכפתור לא יימתח יותר מדי */
 }
 
-.status-approved:hover {
-  background-color: #006400; /* ירוק כהה יותר */
+.status-approved {
+  background-color: green;
 }
 
 .status-rejected {
   background-color: red;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 2em;
-  padding: 0.5em 1em;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-}
-
-.status-rejected:hover {
-  background-color: #8b0000; /* אדום כהה יותר */
 }
 
 .status-pending {
   background-color: gray;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 2em;
-  padding: 0.5em 0.8em;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+}
+
+.status-approved:hover {
+  background-color: #006400;
+}
+
+.status-rejected:hover {
+  background-color: #8b0000;
 }
 
 .status-pending:hover {
-  background-color: #505050; /* אפור כהה יותר */
+  background-color: #505050;
 }
 
 .action-buttons {
@@ -153,7 +147,7 @@
   margin-bottom: 5vh; /* ריווח קטן יותר מתחת לאייקון */
 }
 
-.item-image-order{
+.item-image-order {
   height: 4rem;
   width: auto;
   object-fit: cover;
